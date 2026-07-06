@@ -1,8 +1,8 @@
-# Installing Zero
+# Installing PVYai
 
-Zero is distributed as:
+PVYai is distributed as:
 
-- an npm package, `@gitlawb/zero`
+- an npm package, `@pvyswiss/pvyai`
 - release archives on GitHub Releases
 - source builds with Go 1.25+
 
@@ -12,12 +12,12 @@ They require a published GitHub Release for the requested version.
 ## npm
 
 ```bash
-npm install -g @gitlawb/zero
-zero
+npm install -g @pvyswiss/pvyai
+pvyai
 ```
 
 The package supports Linux, macOS, and Windows on x64 and arm64. It installs the
-`zero` command and downloads the matching release binary during `postinstall`.
+`pvyai` command and downloads the matching release binary during `postinstall`.
 
 Requirements:
 
@@ -28,7 +28,7 @@ Requirements:
 
 Bun is "default-secure" and does not run lifecycle scripts of installed
 dependencies (only the installing project's own scripts), so the `postinstall`
-that fetches the Zero binary is silently skipped. The first run then fails with
+that fetches the PVYai binary is silently skipped. The first run then fails with
 `No native binary found next to the npm wrapper`.
 
 The simplest fix is to trust the package after installing, which runs the
@@ -36,12 +36,12 @@ blocked postinstall. This works for project and global installs:
 
 ```bash
 # project install
-bun add @gitlawb/zero
-bun pm trust @gitlawb/zero
+bun add @pvyswiss/pvyai
+bun pm trust @pvyswiss/pvyai
 
 # global install
-bun add -g @gitlawb/zero
-bun pm -g trust @gitlawb/zero
+bun add -g @pvyswiss/pvyai
+bun pm -g trust @pvyswiss/pvyai
 ```
 
 `bun pm untrusted` (or `bun pm -g untrusted`) lists the blocked postinstalls if
@@ -52,19 +52,19 @@ package to your project's `trustedDependencies` before installing:
 
 ```json
 {
-  "trustedDependencies": ["@gitlawb/zero"]
+  "trustedDependencies": ["@pvyswiss/pvyai"]
 }
 ```
 
 ```bash
-bun add @gitlawb/zero
+bun add @pvyswiss/pvyai
 ```
 
 On Bun versions that do not have `bun pm trust`, run the installer manually
 after installing:
 
 ```bash
-node node_modules/@gitlawb/zero/scripts/postinstall.mjs
+node node_modules/@pvyswiss/pvyai/scripts/postinstall.mjs
 ```
 
 Reference: <https://bun.sh/docs/pm/lifecycle>
@@ -74,7 +74,7 @@ Reference: <https://bun.sh/docs/pm/lifecycle>
 Install the latest release:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Gitlawb/zero/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/pvyswiss/pvyai/main/scripts/install.sh | bash
 ```
 
 From a checkout:
@@ -86,22 +86,22 @@ scripts/install.sh
 Install a specific version:
 
 ```bash
-ZERO_VERSION=0.1.0 scripts/install.sh
+PVYAI_VERSION=0.1.0 scripts/install.sh
 scripts/install.sh --version 0.1.0
 ```
 
 Install somewhere else:
 
 ```bash
-ZERO_INSTALL_DIR="$HOME/bin" scripts/install.sh
+PVYAI_INSTALL_DIR="$HOME/bin" scripts/install.sh
 scripts/install.sh --install-dir "$HOME/bin"
 ```
 
 Defaults:
 
-- Repository: `Gitlawb/zero`
+- Repository: `pvyswiss/pvyai`
 - Version: latest GitHub release
-- Install path: `~/.local/bin/zero`
+- Install path: `~/.local/bin/pvyai`
 
 Requirements: Bash, `curl` or `wget`, `tar`, and `shasum` or `sha256sum`.
 
@@ -110,7 +110,7 @@ Requirements: Bash, `curl` or `wget`, `tar`, and `shasum` or `sha256sum`.
 Install the latest release:
 
 ```powershell
-irm https://raw.githubusercontent.com/Gitlawb/zero/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/pvyswiss/pvyai/main/scripts/install.ps1 | iex
 ```
 
 From a checkout:
@@ -133,22 +133,22 @@ powershell -ExecutionPolicy Bypass -File scripts/install.ps1 -InstallDir "$env:U
 
 Defaults:
 
-- Repository: `Gitlawb/zero`
+- Repository: `pvyswiss/pvyai`
 - Version: latest GitHub release
-- Install path: `%LOCALAPPDATA%\zero\bin\zero.exe`
+- Install path: `%LOCALAPPDATA%\pvyai\bin\pvyai.exe`
 
 ## From Source
 
 ```bash
-git clone https://github.com/Gitlawb/zero.git
-cd zero
-go run ./cmd/zero
+git clone https://github.com/pvyswiss/pvyai.git
+cd pvyai
+go run ./cmd/pvyai
 ```
 
 Build a local binary:
 
 ```bash
-go build -o zero ./cmd/zero
+go build -o pvyai ./cmd/pvyai
 ```
 
 Source builds require Go 1.25+.
@@ -161,13 +161,13 @@ from source, build the helpers you need:
 Linux:
 
 ```bash
-go build -o zero ./cmd/zero
-go build -o zero-linux-sandbox ./cmd/zero-linux-sandbox
-go build -o zero-seccomp ./cmd/zero-seccomp
+go build -o pvyai ./cmd/pvyai
+go build -o pvyai-linux-sandbox ./cmd/pvyai-linux-sandbox
+go build -o pvyai-seccomp ./cmd/pvyai-seccomp
 ```
 
-Put `zero` and `zero-linux-sandbox` in the same directory on `PATH`, for example
-`~/.local/bin`. `zero-seccomp` is kept as a compatibility wrapper; the sandbox
+Put `pvyai` and `pvyai-linux-sandbox` in the same directory on `PATH`, for example
+`~/.local/bin`. `pvyai-seccomp` is kept as a compatibility wrapper; the sandbox
 helper applies the Unix-socket filter itself when that sandbox option is enabled.
 Linux native sandboxing also requires Bubblewrap to be installed.
 
@@ -175,7 +175,7 @@ macOS uses the system sandbox and does not need an extra helper binary.
 
 ### Termux (Android)
 
-Zero can run natively on Android via [Termux](https://termux.dev/). Build with
+PVYai can run natively on Android via [Termux](https://termux.dev/). Build with
 `GOOS=android` to avoid the `faccessat2` syscall that is blocked by Samsung's
 seccomp filter on Android:
 
@@ -183,68 +183,68 @@ seccomp filter on Android:
 # Install Go in Termux
 pkg install golang
 
-# Build Zero for Android
-git clone https://github.com/Gitlawb/zero.git
-cd zero
-CGO_ENABLED=0 GOOS=android GOARCH=arm64 go build -ldflags="-s -w" -o zero ./cmd/zero
+# Build PVYai for Android
+git clone https://github.com/pvyswiss/pvyai.git
+cd pvyai
+CGO_ENABLED=0 GOOS=android GOARCH=arm64 go build -ldflags="-s -w" -o pvyai ./cmd/pvyai
 
 # Move into PATH
-mv zero ~/.local/bin/
+mv pvyai ~/.local/bin/
 ```
 
 > **Why `GOOS=android`?** Go 1.26+ detects `runtime.GOOS == "android"` and skips
 > the `faccessat2` syscall inside `os/exec.findExecutable`, falling back to
 > permission-bit checks. Without this flag, Android's seccomp sends SIGSYS and
-> kills the process whenever Zero looks up a binary on `PATH` (git, sh, etc.).
+> kills the process whenever PVYai looks up a binary on `PATH` (git, sh, etc.).
 
 **DNS.** Android does not expose `/etc/resolv.conf`. Go's pure-Go DNS resolver
 needs one. Use `proot` to bind-mount Termux's resolver config:
 
 ```bash
 pkg install proot
-proot -b "$PREFIX/etc/resolv.conf:/etc/resolv.conf" zero
+proot -b "$PREFIX/etc/resolv.conf:/etc/resolv.conf" pvyai
 ```
 
-Create a wrapper at `~/.local/bin/zero` to avoid typing proot every time:
+Create a wrapper at `~/.local/bin/pvyai` to avoid typing proot every time:
 
 ```bash
 #!/data/data/com.termux/files/usr/bin/bash
-exec proot -b "$PREFIX/etc/resolv.conf:/etc/resolv.conf" ~/.local/bin/zero.bin "$@"
+exec proot -b "$PREFIX/etc/resolv.conf:/etc/resolv.conf" ~/.local/bin/pvyai.bin "$@"
 ```
 
 **Scroll.** On native Termux (not under PRoot), mouse scrolling works out of the
-box. The TUI uses Bubble Tea's `AllMotion` mouse mode by default. If you run Zero
+box. The TUI uses Bubble Tea's `AllMotion` mouse mode by default. If you run PVYai
 inside PRoot (e.g. through proot-distro), the scroll fix activates `CellMotion`
 to avoid PRoot's ptrace interference with the 1003 escape sequence.
 
-**Providers.** Zero works with any OpenAI-compatible provider on Termux. For
+**Providers.** PVYai works with any OpenAI-compatible provider on Termux. For
 example, to use OpenCode Zen's free tier:
 
 ```bash
-zero providers add opencode \
+pvyai providers add opencode \
   --name opencode \
   --model deepseek-v4-flash-free \
   --base-url https://opencode.ai/zen/v1 \
   --set-active
 ```
 
-Windows source builds can use the main `zero.exe` as the command runner and setup
-helper through Zero's built-in self-dispatch path. If you want a release-style
-layout anyway, build the standalone helper executables next to `zero.exe`:
+Windows source builds can use the main `pvyai.exe` as the command runner and setup
+helper through PVYai's built-in self-dispatch path. If you want a release-style
+layout anyway, build the standalone helper executables next to `pvyai.exe`:
 
 ```powershell
-go build -o zero.exe ./cmd/zero
-go build -o zero-windows-command-runner.exe ./cmd/zero-windows-command-runner
-go build -o zero-windows-sandbox-setup.exe ./cmd/zero-windows-sandbox-setup
+go build -o pvyai.exe ./cmd/pvyai
+go build -o pvyai-windows-command-runner.exe ./cmd/pvyai-windows-command-runner
+go build -o pvyai-windows-sandbox-setup.exe ./cmd/pvyai-windows-sandbox-setup
 ```
 
 ## Release Archive Format
 
 Release archives are named:
 
-- `zero-v<version>-linux-<arch>.tar.gz`
-- `zero-v<version>-macos-<arch>.tar.gz`
-- `zero-v<version>-windows-<arch>.zip`
+- `pvyai-v<version>-linux-<arch>.tar.gz`
+- `pvyai-v<version>-macos-<arch>.tar.gz`
+- `pvyai-v<version>-windows-<arch>.zip`
 
 Supported targets:
 
@@ -264,7 +264,7 @@ directory.
 Check for a newer release:
 
 ```bash
-zero update --check
+pvyai update --check
 ```
 
 Then reinstall with npm or rerun the install script for the version you want.

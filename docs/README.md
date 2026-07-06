@@ -1,7 +1,7 @@
-# Zero Documentation
+# PVYai Documentation
 
 This directory contains public documentation for using, extending, and releasing
-Zero.
+PVYai.
 
 ## User Docs
 

@@ -1,13 +1,13 @@
 # Update Flow
 
-`zero update --check` checks the latest GitHub release and compares it with the
+`pvyai update --check` checks the latest GitHub release and compares it with the
 local CLI version.
 
 ```bash
-zero update --check
-zero update --check --json
-zero update --check --repo Gitlawb/zero
-zero update --check --target windows-x64
+pvyai update --check
+pvyai update --check --json
+pvyai update --check --repo pvyswiss/pvyai
+pvyai update --check --target windows-x64
 ```
 
 The command is intentionally check-only:
@@ -29,16 +29,16 @@ Useful flags:
 | `--target <platform-arch>` | Validate release metadata for another supported target. |
 
 Supported targets are `linux-x64`, `linux-arm64`, `macos-x64`, `macos-arm64`,
-`windows-x64`, and `windows-arm64`. Without `--target`, Zero checks the current
+`windows-x64`, and `windows-arm64`. Without `--target`, PVYai checks the current
 platform.
 
 Endpoint resolution order:
 
 1. `--endpoint`
-2. `ZERO_UPDATE_RELEASE_URL`
+2. `PVYAI_UPDATE_RELEASE_URL`
 3. `--repo`
-4. `https://api.github.com/repos/Gitlawb/zero/releases/latest`
+4. `https://api.github.com/repos/pvyswiss/pvyai/releases/latest`
 
 Installer scripts download the matching release asset for the local platform and
-verify its `.sha256` file. If Zero is already installed, run `zero update --check`
+verify its `.sha256` file. If PVYai is already installed, run `pvyai update --check`
 before reinstalling.
