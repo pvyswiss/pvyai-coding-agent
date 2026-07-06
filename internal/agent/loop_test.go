@@ -10,26 +10,26 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/specmode"
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/specmode"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 type mockProvider struct {
-	turns    [][]zeroruntime.StreamEvent
-	requests []zeroruntime.CompletionRequest
+	turns    [][]pvyruntime.StreamEvent
+	requests []pvyruntime.CompletionRequest
 }
 
-func (provider *mockProvider) StreamCompletion(ctx context.Context, request zeroruntime.CompletionRequest) (<-chan zeroruntime.StreamEvent, error) {
+func (provider *mockProvider) StreamCompletion(ctx context.Context, request pvyruntime.CompletionRequest) (<-chan pvyruntime.StreamEvent, error) {
 	provider.requests = append(provider.requests, request)
 
-	events := []zeroruntime.StreamEvent{{Type: zeroruntime.StreamEventDone}}
+	events := []pvyruntime.StreamEvent{{Type: pvyruntime.StreamEventDone}}
 	if len(provider.turns) >= len(provider.requests) {
 		events = provider.turns[len(provider.requests)-1]
 	}
 
-	ch := make(chan zeroruntime.StreamEvent, len(events))
+	ch := make(chan pvyruntime.StreamEvent, len(events))
 	for _, event := range events {
 		ch <- event
 	}
@@ -169,7 +169,7 @@ func agentNativeBackendStub() sandbox.Backend {
 	return sandbox.Backend{
 		Name:            sandbox.BackendLinuxBwrap,
 		Available:       true,
-		Executable:      "/nonexistent/zero-linux-sandbox-stub",
+		Executable:      "/nonexistent/pvyai-linux-sandbox-stub",
 		CommandWrapping: true,
 		NativeIsolation: true,
 	}
@@ -217,16 +217,16 @@ func TestRunRetriesShellUnsandboxedAfterSandboxNamespaceLimitedOutput(t *testing
 	registry := tools.NewRegistry()
 	registry.Register(retryTool)
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"ps aux"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"ps aux"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -288,12 +288,12 @@ func TestRunUsesEscalatedJustificationForPermissionPrompt(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(&sandboxDeniedRetryTool{})
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"ps aux","sandbox_permissions":"require_escalated","justification":"Need host process visibility."}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"ps aux","sandbox_permissions":"require_escalated","justification":"Need host process visibility."}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -328,12 +328,12 @@ func TestRunUsesUserFacingEscalatedFallbackForPermissionPrompt(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(&sandboxDeniedExecCommandRetryTool{})
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "exec_command"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"ps aux","sandbox_permissions":"require_escalated"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "exec_command"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"ps aux","sandbox_permissions":"require_escalated"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -372,16 +372,16 @@ func TestRunRetriesNetworkDeniedShellWithNetworkGrant(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(retryTool)
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"node server.js"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"node server.js"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -458,16 +458,16 @@ func TestRunRetriesShellUnsandboxedAfterSandboxDeniedExit(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(retryTool)
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"npm install --save http-server"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"npm install --save http-server"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -530,16 +530,16 @@ func TestRunDoesNotRetryUnsandboxedWhenDeniedReadsActive(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(retryTool)
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"touch cache-file"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"touch cache-file"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -593,10 +593,10 @@ func TestRunDoesNotRetryUnsandboxedWhenDeniedReadsActive(t *testing.T) {
 
 func TestRunReturnsProviderText(t *testing.T) {
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{{
-			{Type: zeroruntime.StreamEventText, Content: "hello"},
-			{Type: zeroruntime.StreamEventText, Content: " zero"},
-			{Type: zeroruntime.StreamEventDone},
+		turns: [][]pvyruntime.StreamEvent{{
+			{Type: pvyruntime.StreamEventText, Content: "hello"},
+			{Type: pvyruntime.StreamEventText, Content: " zero"},
+			{Type: pvyruntime.StreamEventDone},
 		}},
 	}
 
@@ -607,22 +607,22 @@ func TestRunReturnsProviderText(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if result.FinalAnswer != "hello zero" {
+	if result.FinalAnswer != "hello pvyai" {
 		t.Fatalf("expected final answer, got %q", result.FinalAnswer)
 	}
 	if len(provider.requests) != 1 {
 		t.Fatalf("expected one provider turn, got %d", len(provider.requests))
 	}
-	assertMessage(t, provider.requests[0].Messages[0], zeroruntime.MessageRoleSystem, "")
-	assertMessage(t, provider.requests[0].Messages[1], zeroruntime.MessageRoleUser, "say hi")
+	assertMessage(t, provider.requests[0].Messages[0], pvyruntime.MessageRoleSystem, "")
+	assertMessage(t, provider.requests[0].Messages[1], pvyruntime.MessageRoleUser, "say hi")
 }
 
 func TestRunDoesNotPersistReasoningAsAssistantText(t *testing.T) {
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{{
-			{Type: zeroruntime.StreamEventReasoning, Content: "private reasoning"},
-			{Type: zeroruntime.StreamEventText, Content: "public answer"},
-			{Type: zeroruntime.StreamEventDone},
+		turns: [][]pvyruntime.StreamEvent{{
+			{Type: pvyruntime.StreamEventReasoning, Content: "private reasoning"},
+			{Type: pvyruntime.StreamEventText, Content: "public answer"},
+			{Type: pvyruntime.StreamEventDone},
 		}},
 	}
 	var reasoning []string
@@ -642,7 +642,7 @@ func TestRunDoesNotPersistReasoningAsAssistantText(t *testing.T) {
 		t.Fatal("expected persisted messages")
 	}
 	last := result.Messages[len(result.Messages)-1]
-	if last.Role != zeroruntime.MessageRoleAssistant || last.Content != "public answer" {
+	if last.Role != pvyruntime.MessageRoleAssistant || last.Content != "public answer" {
 		t.Fatalf("assistant message = %#v, want answer-only assistant content", last)
 	}
 	if len(reasoning) != 1 || reasoning[0] != "private reasoning" {
@@ -652,9 +652,9 @@ func TestRunDoesNotPersistReasoningAsAssistantText(t *testing.T) {
 
 func TestRunReportsTruncationFinishReason(t *testing.T) {
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{{
-			{Type: zeroruntime.StreamEventText, Content: "partial answer"},
-			{Type: zeroruntime.StreamEventDone, FinishReason: zeroruntime.FinishReasonLength},
+		turns: [][]pvyruntime.StreamEvent{{
+			{Type: pvyruntime.StreamEventText, Content: "partial answer"},
+			{Type: pvyruntime.StreamEventDone, FinishReason: pvyruntime.FinishReasonLength},
 		}},
 	}
 
@@ -667,8 +667,8 @@ func TestRunReportsTruncationFinishReason(t *testing.T) {
 	if result.FinalAnswer != "partial answer" {
 		t.Fatalf("final answer = %q", result.FinalAnswer)
 	}
-	if result.FinishReason != zeroruntime.FinishReasonLength {
-		t.Fatalf("FinishReason = %q, want %q", result.FinishReason, zeroruntime.FinishReasonLength)
+	if result.FinishReason != pvyruntime.FinishReasonLength {
+		t.Fatalf("FinishReason = %q, want %q", result.FinishReason, pvyruntime.FinishReasonLength)
 	}
 	if !result.Truncated() {
 		t.Fatal("Truncated() = false, want true for a length-capped response")
@@ -680,9 +680,9 @@ func TestRunReportsTruncationFinishReason(t *testing.T) {
 
 func TestRunNormalCompletionIsNotTruncated(t *testing.T) {
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{{
-			{Type: zeroruntime.StreamEventText, Content: "done"},
-			{Type: zeroruntime.StreamEventDone},
+		turns: [][]pvyruntime.StreamEvent{{
+			{Type: pvyruntime.StreamEventText, Content: "done"},
+			{Type: pvyruntime.StreamEventDone},
 		}},
 	}
 
@@ -700,8 +700,8 @@ func TestResultTruncationNotice(t *testing.T) {
 		reason     string
 		wantNotice bool
 	}{
-		"length":         {zeroruntime.FinishReasonLength, true},
-		"content_filter": {zeroruntime.FinishReasonContentFilter, true},
+		"length":         {pvyruntime.FinishReasonLength, true},
+		"content_filter": {pvyruntime.FinishReasonContentFilter, true},
 		"unknown":        {"weird_reason", true},
 		"normal":         {"", false},
 	}
@@ -717,10 +717,10 @@ func TestResultTruncationNotice(t *testing.T) {
 
 func TestRunEmitsTextDeltas(t *testing.T) {
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{{
-			{Type: zeroruntime.StreamEventText, Content: "hello"},
-			{Type: zeroruntime.StreamEventText, Content: " zero"},
-			{Type: zeroruntime.StreamEventDone},
+		turns: [][]pvyruntime.StreamEvent{{
+			{Type: pvyruntime.StreamEventText, Content: "hello"},
+			{Type: pvyruntime.StreamEventText, Content: " zero"},
+			{Type: pvyruntime.StreamEventDone},
 		}},
 	}
 
@@ -740,17 +740,17 @@ func TestRunEmitsTextDeltas(t *testing.T) {
 
 func TestRunEmitsUsageEvents(t *testing.T) {
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{{
-			{Type: zeroruntime.StreamEventUsage, Usage: zeroruntime.Usage{PromptTokens: 12, CompletionTokens: 5, CachedInputTokens: 2}},
-			{Type: zeroruntime.StreamEventText, Content: "done"},
-			{Type: zeroruntime.StreamEventDone},
+		turns: [][]pvyruntime.StreamEvent{{
+			{Type: pvyruntime.StreamEventUsage, Usage: pvyruntime.Usage{PromptTokens: 12, CompletionTokens: 5, CachedInputTokens: 2}},
+			{Type: pvyruntime.StreamEventText, Content: "done"},
+			{Type: pvyruntime.StreamEventDone},
 		}},
 	}
 
-	var usages []zeroruntime.Usage
+	var usages []pvyruntime.Usage
 	_, err := Run(context.Background(), "track usage", provider, Options{
 		Registry: tools.NewRegistry(),
-		OnUsage:  func(usage zeroruntime.Usage) { usages = append(usages, usage) },
+		OnUsage:  func(usage pvyruntime.Usage) { usages = append(usages, usage) },
 	})
 
 	if err != nil {
@@ -769,9 +769,9 @@ func TestRunAdvertisesRuntimeToolDefinitions(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewReadFileTool(root))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{{
-			{Type: zeroruntime.StreamEventText, Content: "done"},
-			{Type: zeroruntime.StreamEventDone},
+		turns: [][]pvyruntime.StreamEvent{{
+			{Type: pvyruntime.StreamEventText, Content: "done"},
+			{Type: pvyruntime.StreamEventDone},
 		}},
 	}
 
@@ -821,9 +821,9 @@ func TestRunAdvertisesWebFetchInAutoMode(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewWebFetchTool())
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{{
-			{Type: zeroruntime.StreamEventText, Content: "done"},
-			{Type: zeroruntime.StreamEventDone},
+		turns: [][]pvyruntime.StreamEvent{{
+			{Type: pvyruntime.StreamEventText, Content: "done"},
+			{Type: pvyruntime.StreamEventDone},
 		}},
 	}
 
@@ -847,16 +847,16 @@ func TestRunRejectsLocalWebFetchBeforePermissionRequest(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewWebFetchTool())
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "web_fetch"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"url":"http://localhost:8000/index.html"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "web_fetch"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"url":"http://localhost:8000/index.html"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -895,7 +895,7 @@ func TestRunRejectsLocalWebFetchBeforePermissionRequest(t *testing.T) {
 }
 
 func TestRunAdvertisesPromptedWebSearchInAutoMode(t *testing.T) {
-	t.Setenv("ZERO_WEBSEARCH_BASE_URL", "https://search.example/api")
+	t.Setenv("PVYAI_WEBSEARCH_BASE_URL", "https://search.example/api")
 	registry := tools.NewRegistry()
 	for _, tool := range tools.CoreNetworkTools() {
 		if tool.Name() == "web_search" {
@@ -903,9 +903,9 @@ func TestRunAdvertisesPromptedWebSearchInAutoMode(t *testing.T) {
 		}
 	}
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{{
-			{Type: zeroruntime.StreamEventText, Content: "done"},
-			{Type: zeroruntime.StreamEventDone},
+		turns: [][]pvyruntime.StreamEvent{{
+			{Type: pvyruntime.StreamEventText, Content: "done"},
+			{Type: pvyruntime.StreamEventDone},
 		}},
 	}
 
@@ -930,16 +930,16 @@ func TestRunRequestsPermissionBeforeWebSearchExecution(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(search)
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "web_search"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"query":"private workspace detail"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "web_search"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"query":"private workspace detail"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -978,9 +978,9 @@ func TestRunFiltersAdvertisedTools(t *testing.T) {
 	registry.Register(tools.NewGrepTool(root))
 	registry.Register(tools.NewWriteFileTool(root))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{{
-			{Type: zeroruntime.StreamEventText, Content: "done"},
-			{Type: zeroruntime.StreamEventDone},
+		turns: [][]pvyruntime.StreamEvent{{
+			{Type: pvyruntime.StreamEventText, Content: "done"},
+			{Type: pvyruntime.StreamEventDone},
 		}},
 	}
 
@@ -1006,16 +1006,16 @@ func TestRunRejectsFilteredToolCalls(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewReadFileTool(root))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call_1", ToolName: "read_file"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call_1", ArgumentsFragment: `{"path":"README.md"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call_1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call_1", ToolName: "read_file"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call_1", ArgumentsFragment: `{"path":"README.md"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call_1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -1043,16 +1043,16 @@ func TestRunRejectsToolCallsOutsideEnabledList(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewReadFileTool(root))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call_1", ToolName: "read_file"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call_1", ArgumentsFragment: `{"path":"README.md"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call_1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call_1", ToolName: "read_file"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call_1", ArgumentsFragment: `{"path":"README.md"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call_1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -1081,16 +1081,16 @@ func TestRunExecutesToolCallThroughRegistry(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewReadFileTool(root))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "read_file"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"notes.txt"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "read_file"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"notes.txt"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "read done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "read done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -1111,7 +1111,7 @@ func TestRunExecutesToolCallThroughRegistry(t *testing.T) {
 		t.Fatalf("expected provider to be called twice, got %d", len(provider.requests))
 	}
 	lastMessage := provider.requests[1].Messages[len(provider.requests[1].Messages)-1]
-	assertMessage(t, lastMessage, zeroruntime.MessageRoleTool, "alpha")
+	assertMessage(t, lastMessage, pvyruntime.MessageRoleTool, "alpha")
 	if lastMessage.ToolCallID != "call-1" {
 		t.Fatalf("expected tool_call_id call-1, got %q", lastMessage.ToolCallID)
 	}
@@ -1125,19 +1125,19 @@ func TestRunSanitizesMalformedToolCallArgumentsBeforeRetry(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewReadFileTool(root))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "read_file"},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "read_file"},
 				// Genuinely malformed (truncated) args: still error -> sanitize -> retry.
 				// (Concatenated multi-object args are now tolerated; see
 				// TestRunRecoversFirstObjectFromConcatenatedToolArgs.)
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"README.md"`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"README.md"`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "recovered"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "recovered"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -1157,13 +1157,13 @@ func TestRunSanitizesMalformedToolCallArgumentsBeforeRetry(t *testing.T) {
 		t.Fatalf("expected retry request after malformed tool args, got %d requests", len(provider.requests))
 	}
 
-	var assistantCall *zeroruntime.ToolCall
+	var assistantCall *pvyruntime.ToolCall
 	var toolParseError string
 	for _, message := range provider.requests[1].Messages {
-		if message.Role == zeroruntime.MessageRoleAssistant && len(message.ToolCalls) > 0 {
+		if message.Role == pvyruntime.MessageRoleAssistant && len(message.ToolCalls) > 0 {
 			assistantCall = &message.ToolCalls[0]
 		}
-		if message.Role == zeroruntime.MessageRoleTool && strings.Contains(message.Content, "Failed to parse arguments for read_file") {
+		if message.Role == pvyruntime.MessageRoleTool && strings.Contains(message.Content, "Failed to parse arguments for read_file") {
 			toolParseError = message.Content
 		}
 	}
@@ -1193,16 +1193,16 @@ func TestRunRecoversFirstObjectFromConcatenatedToolArgs(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewReadFileTool(root))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "read_file"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"README.md"}{"path":"AGENTS.md"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "read_file"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"README.md"}{"path":"AGENTS.md"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -1216,7 +1216,7 @@ func TestRunRecoversFirstObjectFromConcatenatedToolArgs(t *testing.T) {
 	}
 	var toolResult string
 	for _, message := range provider.requests[1].Messages {
-		if message.Role == zeroruntime.MessageRoleTool {
+		if message.Role == pvyruntime.MessageRoleTool {
 			toolResult = message.Content
 		}
 	}
@@ -1242,19 +1242,19 @@ func TestRunDefersSelfCorrectFeedbackUntilAfterToolBatch(t *testing.T) {
 	registry.Register(tools.NewReadFileTool(root))
 
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "write_file"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"notes.txt","content":"hello"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-2", ToolName: "read_file"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-2", ArgumentsFragment: `{"path":"existing.txt"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-2"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "write_file"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"notes.txt","content":"hello"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-2", ToolName: "read_file"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-2", ArgumentsFragment: `{"path":"existing.txt"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-2"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -1285,9 +1285,9 @@ func TestRunDefersSelfCorrectFeedbackUntilAfterToolBatch(t *testing.T) {
 	feedbackIdx := -1
 	for i, m := range msgs {
 		switch m.Role {
-		case zeroruntime.MessageRoleTool:
+		case pvyruntime.MessageRoleTool:
 			toolIdx = append(toolIdx, i)
-		case zeroruntime.MessageRoleUser:
+		case pvyruntime.MessageRoleUser:
 			if strings.Contains(m.Content, "Verification failed after your edit") {
 				feedbackIdx = i
 			}
@@ -1317,19 +1317,19 @@ func TestRunBatchesSelfCorrectOncePerTurn(t *testing.T) {
 	registry.Register(tools.NewWriteFileTool(root))
 
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "write_file"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"a.txt","content":"hello"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-2", ToolName: "write_file"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-2", ArgumentsFragment: `{"path":"b.txt","content":"hello"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-2"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "write_file"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"a.txt","content":"hello"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-2", ToolName: "write_file"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-2", ArgumentsFragment: `{"path":"b.txt","content":"hello"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-2"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -1359,7 +1359,7 @@ func TestRunBatchesSelfCorrectOncePerTurn(t *testing.T) {
 	}
 	feedbackCount := 0
 	for _, m := range provider.requests[1].Messages {
-		if m.Role == zeroruntime.MessageRoleUser && strings.Contains(m.Content, "Verification failed after your edit") {
+		if m.Role == pvyruntime.MessageRoleUser && strings.Contains(m.Content, "Verification failed after your edit") {
 			feedbackCount++
 		}
 	}
@@ -1737,22 +1737,22 @@ func TestRunSessionAllowSkipsMatchingPromptWithoutPersistentGrant(t *testing.T) 
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewWriteFileTool(root))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "write_file"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"notes.txt","content":"first","overwrite":true}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "write_file"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"notes.txt","content":"first","overwrite":true}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-2", ToolName: "write_file"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-2", ArgumentsFragment: `{"path":"notes.txt","content":"second","overwrite":true}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-2"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-2", ToolName: "write_file"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-2", ArgumentsFragment: `{"path":"notes.txt","content":"second","overwrite":true}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-2"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -1818,22 +1818,22 @@ func TestRunCommandPrefixApprovalSkipsLaterMatchingBashPrompt(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewBashTool(root))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"echo prefix-ok"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"echo prefix-ok"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-2", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-2", ArgumentsFragment: `{"command":"echo prefix-ok again"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-2"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-2", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-2", ArgumentsFragment: `{"command":"echo prefix-ok again"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-2"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -1889,22 +1889,22 @@ func TestRunCommandPrefixApprovalBypassesSandboxForMatchingShellCalls(t *testing
 	registry := tools.NewRegistry()
 	registry.Register(retryTool)
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"echo prefix-ok"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"echo prefix-ok"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-2", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-2", ArgumentsFragment: `{"command":"echo prefix-ok again"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-2"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-2", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-2", ArgumentsFragment: `{"command":"echo prefix-ok again"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-2"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -1949,22 +1949,22 @@ func TestRunCommandPrefixApprovalCoversSegmentedShellWithSafeTail(t *testing.T) 
 	registry := tools.NewRegistry()
 	registry.Register(retryTool)
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"ps aux"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"ps aux"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-2", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-2", ArgumentsFragment: `{"command":"ps aux | head -5"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-2"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-2", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-2", ArgumentsFragment: `{"command":"ps aux | head -5"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-2"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -2018,16 +2018,16 @@ func TestRunPersistentCommandPrefixApprovalSkipsFutureSessionPrompt(t *testing.T
 	policy.Network = sandbox.NetworkAllow
 
 	firstProvider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"echo persist-ok"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"echo persist-ok"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "first done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "first done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -2071,16 +2071,16 @@ func TestRunPersistentCommandPrefixApprovalSkipsFutureSessionPrompt(t *testing.T
 	}
 
 	secondProvider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-2", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-2", ArgumentsFragment: `{"command":"echo persist-ok again"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-2"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-2", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-2", ArgumentsFragment: `{"command":"echo persist-ok again"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-2"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "second done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "second done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -2122,16 +2122,16 @@ func TestRunPersistentCommandPrefixStillPromptsForNetwork(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewBashTool(root))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"curl https://example.com"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"curl https://example.com"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -2183,16 +2183,16 @@ func TestRunApprovedNetworkBashPromptAppliesTurnNetworkGrant(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewBashTool(root))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":` + quoteJSONString(command) + `}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":` + quoteJSONString(command) + `}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -2250,16 +2250,16 @@ func TestRunDoesNotOfferPrefixApprovalForUnsafeBashCommand(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewBashTool(root))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"echo hi && npm install","prefix_rule":["echo"]}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"echo hi && npm install","prefix_rule":["echo"]}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -2293,16 +2293,16 @@ func TestRunPromptsForDestructiveShellInsteadOfSandboxDeny(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewBashTool(root))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"echo rm -rf /"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"echo rm -rf /"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -2405,9 +2405,9 @@ func containsPermissionDecision(decisions []PermissionDecisionAction, want Permi
 // never sends a terminal event, so CollectStream returns via ctx.Done().
 type cancelMidStreamProvider struct{ cancel context.CancelFunc }
 
-func (p cancelMidStreamProvider) StreamCompletion(_ context.Context, _ zeroruntime.CompletionRequest) (<-chan zeroruntime.StreamEvent, error) {
+func (p cancelMidStreamProvider) StreamCompletion(_ context.Context, _ pvyruntime.CompletionRequest) (<-chan pvyruntime.StreamEvent, error) {
 	p.cancel()
-	return make(chan zeroruntime.StreamEvent), nil
+	return make(chan pvyruntime.StreamEvent), nil
 }
 
 func TestRunCancellationPreservesContextCanceledIdentity(t *testing.T) {
@@ -2591,19 +2591,19 @@ func TestRunSessionAllowsLaterOutsideWorkspaceWrite(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewScopedWriteFileTool(root, engine.Scope()))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "write_file"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":` + quoteJSONString(outside) + `,"content":"first"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-2", ToolName: "write_file"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-2", ArgumentsFragment: `{"path":` + quoteJSONString(outside) + `,"content":"second","overwrite":true}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-2"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "write_file"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":` + quoteJSONString(outside) + `,"content":"first"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-2", ToolName: "write_file"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-2", ArgumentsFragment: `{"path":` + quoteJSONString(outside) + `,"content":"second","overwrite":true}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-2"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -2706,11 +2706,11 @@ func TestRunStopsAfterMaxTurns(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewReadFileTool(root))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{{
-			{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "read_file"},
-			{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"notes.txt"}`},
-			{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-			{Type: zeroruntime.StreamEventDone},
+		turns: [][]pvyruntime.StreamEvent{{
+			{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "read_file"},
+			{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"notes.txt"}`},
+			{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+			{Type: pvyruntime.StreamEventDone},
 		}},
 	}
 
@@ -2736,16 +2736,16 @@ func TestRunRequestsFinalAnswerAfterMaxTurns(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewReadFileTool(root))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "read_file"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"notes.txt"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "read_file"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"notes.txt"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "I read notes.txt and found alpha."},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "I read notes.txt and found alpha."},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -2769,7 +2769,7 @@ func TestRunRequestsFinalAnswerAfterMaxTurns(t *testing.T) {
 		t.Fatalf("finalization request must not advertise tools, got %#v", finalRequest.Tools)
 	}
 	lastMessage := finalRequest.Messages[len(finalRequest.Messages)-1]
-	if lastMessage.Role != zeroruntime.MessageRoleUser || !strings.Contains(lastMessage.Content, "tool-turn limit") {
+	if lastMessage.Role != pvyruntime.MessageRoleUser || !strings.Contains(lastMessage.Content, "tool-turn limit") {
 		t.Fatalf("expected max-turns finalization prompt, got %#v", lastMessage)
 	}
 	if result.Turns != 1 {
@@ -2783,16 +2783,16 @@ func providerCallingWriteFileThenAnswer(answer string) *mockProvider {
 
 func providerCallingWritePathThenAnswer(path string, answer string) *mockProvider {
 	return &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "write_file"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":` + quoteJSONString(path) + `,"content":"hello"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "write_file"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":` + quoteJSONString(path) + `,"content":"hello"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: answer},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: answer},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -2817,9 +2817,9 @@ func equalPermissionDecisions(a, b []PermissionDecisionAction) bool {
 
 func TestRunAppendsConfirmationPolicyToSystemPrompt(t *testing.T) {
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{{
-			{Type: zeroruntime.StreamEventText, Content: "ok"},
-			{Type: zeroruntime.StreamEventDone},
+		turns: [][]pvyruntime.StreamEvent{{
+			{Type: pvyruntime.StreamEventText, Content: "ok"},
+			{Type: pvyruntime.StreamEventDone},
 		}},
 	}
 
@@ -2833,7 +2833,7 @@ func TestRunAppendsConfirmationPolicyToSystemPrompt(t *testing.T) {
 		t.Fatal("expected at least one provider request")
 	}
 	system := provider.requests[0].Messages[0]
-	if system.Role != zeroruntime.MessageRoleSystem {
+	if system.Role != pvyruntime.MessageRoleSystem {
 		t.Fatalf("expected first message to be system, got %s", system.Role)
 	}
 	// The overhauled core prompt: identity + the mandatory testing gate.
@@ -2967,9 +2967,9 @@ func TestSpecDraftAdvertisesOnlySafeDraftTools(t *testing.T) {
 	}
 	specmode.RegisterDraftTools(registry, root, nil)
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{{
-			{Type: zeroruntime.StreamEventText, Content: "done"},
-			{Type: zeroruntime.StreamEventDone},
+		turns: [][]pvyruntime.StreamEvent{{
+			{Type: pvyruntime.StreamEventText, Content: "done"},
+			{Type: pvyruntime.StreamEventDone},
 		}},
 	}
 
@@ -3016,7 +3016,7 @@ func TestSpecDraftDeniesHiddenToolCalls(t *testing.T) {
 	}
 	var denied string
 	for _, message := range result.Messages {
-		if message.Role == zeroruntime.MessageRoleTool {
+		if message.Role == pvyruntime.MessageRoleTool {
 			denied = message.Content
 			break
 		}
@@ -3034,16 +3034,16 @@ func TestSpecDraftDeniesBashToolCalls(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewBashTool(root))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"printf ran > ran.txt"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "bash"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"command":"printf ran > ran.txt"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -3062,7 +3062,7 @@ func TestSpecDraftDeniesBashToolCalls(t *testing.T) {
 	}
 	var denied string
 	for _, message := range result.Messages {
-		if message.Role == zeroruntime.MessageRoleTool {
+		if message.Role == pvyruntime.MessageRoleTool {
 			denied = message.Content
 			break
 		}
@@ -3080,11 +3080,11 @@ func TestRunStopsWhenSubmitSpecReturnsReviewControl(t *testing.T) {
 	registry := tools.NewRegistry()
 	specmode.RegisterDraftTools(registry, root, nil)
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{{
-			{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "exit-1", ToolName: specmode.SubmitToolName},
-			{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "exit-1", ArgumentsFragment: `{"title":"Implementation Plan","plan":"# Goal\n\nAdd implementation plan."}`},
-			{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "exit-1"},
-			{Type: zeroruntime.StreamEventDone},
+		turns: [][]pvyruntime.StreamEvent{{
+			{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "exit-1", ToolName: specmode.SubmitToolName},
+			{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "exit-1", ArgumentsFragment: `{"title":"Implementation Plan","plan":"# Goal\n\nAdd implementation plan."}`},
+			{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "exit-1"},
+			{Type: pvyruntime.StreamEventDone},
 		}},
 	}
 
@@ -3103,12 +3103,12 @@ func TestRunStopsWhenSubmitSpecReturnsReviewControl(t *testing.T) {
 	if len(provider.requests) != 1 {
 		t.Fatalf("expected run to stop after submit_spec, got %d requests", len(provider.requests))
 	}
-	if !strings.Contains(result.FinalAnswer, ".zero/specs/") {
+	if !strings.Contains(result.FinalAnswer, ".pvyai/specs/") {
 		t.Fatalf("final answer should mention saved spec, got %q", result.FinalAnswer)
 	}
 }
 
-func assertMessage(t *testing.T, message zeroruntime.Message, role zeroruntime.MessageRole, contentContains string) {
+func assertMessage(t *testing.T, message pvyruntime.Message, role pvyruntime.MessageRole, contentContains string) {
 	t.Helper()
 
 	if message.Role != role {
@@ -3132,15 +3132,15 @@ func writeAgentTestFile(t *testing.T, path string, content string) {
 
 func TestRunRetriesOnDroppedToolCall(t *testing.T) {
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventText, Content: "Let me write the files."},
-				{Type: zeroruntime.StreamEventToolCallDropped},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "Let me write the files."},
+				{Type: pvyruntime.StreamEventToolCallDropped},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "All done."},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "All done."},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -3158,7 +3158,7 @@ func TestRunRetriesOnDroppedToolCall(t *testing.T) {
 	// The retry turn must carry synthetic feedback to the model.
 	var fedback bool
 	for _, m := range provider.requests[1].Messages {
-		if m.Role == zeroruntime.MessageRoleUser && strings.Contains(strings.ToLower(m.Content), "tool name") {
+		if m.Role == pvyruntime.MessageRoleUser && strings.Contains(strings.ToLower(m.Content), "tool name") {
 			fedback = true
 		}
 	}
@@ -3176,18 +3176,18 @@ func TestRunSurfacesDroppedToolCallAlongsideValidCall(t *testing.T) {
 	registry.Register(tools.NewReadFileTool(root))
 
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
 				// One valid tool call AND a dropped (nameless) call in the same turn.
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "read_file"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"notes.txt"}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
-				{Type: zeroruntime.StreamEventToolCallDropped},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: "read_file"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: `{"path":"notes.txt"}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"},
+				{Type: pvyruntime.StreamEventToolCallDropped},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "All done."},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "All done."},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -3205,7 +3205,7 @@ func TestRunSurfacesDroppedToolCallAlongsideValidCall(t *testing.T) {
 	// The valid tool call must still have executed (a tool result for call-1).
 	var sawToolResult bool
 	for _, m := range provider.requests[1].Messages {
-		if m.Role == zeroruntime.MessageRoleTool && m.ToolCallID == "call-1" {
+		if m.Role == pvyruntime.MessageRoleTool && m.ToolCallID == "call-1" {
 			sawToolResult = true
 		}
 	}
@@ -3215,7 +3215,7 @@ func TestRunSurfacesDroppedToolCallAlongsideValidCall(t *testing.T) {
 	// The dropped call must ALSO be surfaced via the malformed-call notice.
 	var sawDroppedNotice bool
 	for _, m := range provider.requests[1].Messages {
-		if m.Role == zeroruntime.MessageRoleUser && strings.Contains(strings.ToLower(m.Content), "malformed") {
+		if m.Role == pvyruntime.MessageRoleUser && strings.Contains(strings.ToLower(m.Content), "malformed") {
 			sawDroppedNotice = true
 		}
 	}
@@ -3241,12 +3241,12 @@ func TestRunAppendsAbortedPlaceholderForUnexecutedToolCallsOnGuardStop(t *testin
 
 	// The halting turn carries TWO tool calls: the first (flaky-stop) trips the
 	// guard before the second (flaky-2) is executed.
-	haltingTurn := []zeroruntime.StreamEvent{
-		{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "flaky-stop", ToolName: "flaky"},
-		{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "flaky-stop"},
-		{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "flaky-2", ToolName: "flaky"},
-		{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "flaky-2"},
-		{Type: zeroruntime.StreamEventDone},
+	haltingTurn := []pvyruntime.StreamEvent{
+		{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "flaky-stop", ToolName: "flaky"},
+		{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "flaky-stop"},
+		{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "flaky-2", ToolName: "flaky"},
+		{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "flaky-2"},
+		{Type: pvyruntime.StreamEventDone},
 	}
 
 	provider := &mockProvider{turns: append(primingTurns, haltingTurn)}
@@ -3262,7 +3262,7 @@ func TestRunAppendsAbortedPlaceholderForUnexecutedToolCallsOnGuardStop(t *testin
 	// Both tool calls must have a matching tool_result message.
 	toolResultIDs := map[string]string{}
 	for _, message := range result.Messages {
-		if message.Role == zeroruntime.MessageRoleTool {
+		if message.Role == pvyruntime.MessageRoleTool {
 			toolResultIDs[message.ToolCallID] = message.Content
 		}
 	}
@@ -3279,7 +3279,7 @@ func TestRunAppendsAbortedPlaceholderForUnexecutedToolCallsOnGuardStop(t *testin
 
 	// Every tool_use in the final assistant message must have a matching result.
 	for _, message := range result.Messages {
-		if message.Role != zeroruntime.MessageRoleAssistant {
+		if message.Role != pvyruntime.MessageRoleAssistant {
 			continue
 		}
 		for _, call := range message.ToolCalls {
@@ -3309,15 +3309,15 @@ func TestRunScrubsSecretsFromToolOutput(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(secretEmittingTool{output: "the token is " + secret + " ok"})
 
-	provider := &mockProvider{turns: [][]zeroruntime.StreamEvent{
+	provider := &mockProvider{turns: [][]pvyruntime.StreamEvent{
 		{
-			{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "c1", ToolName: "leak"},
-			{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "c1"},
-			{Type: zeroruntime.StreamEventDone},
+			{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "c1", ToolName: "leak"},
+			{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "c1"},
+			{Type: pvyruntime.StreamEventDone},
 		},
 		{
-			{Type: zeroruntime.StreamEventText, Content: "done"},
-			{Type: zeroruntime.StreamEventDone},
+			{Type: pvyruntime.StreamEventText, Content: "done"},
+			{Type: pvyruntime.StreamEventDone},
 		},
 	}}
 
@@ -3351,13 +3351,13 @@ func TestRunScrubsSecretsFromToolOutput(t *testing.T) {
 func TestRunDoesNotFlagCleanToolOutput(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(secretEmittingTool{output: "perfectly ordinary output"})
-	provider := &mockProvider{turns: [][]zeroruntime.StreamEvent{
+	provider := &mockProvider{turns: [][]pvyruntime.StreamEvent{
 		{
-			{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "c1", ToolName: "leak"},
-			{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "c1"},
-			{Type: zeroruntime.StreamEventDone},
+			{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "c1", ToolName: "leak"},
+			{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "c1"},
+			{Type: pvyruntime.StreamEventDone},
 		},
-		{{Type: zeroruntime.StreamEventText, Content: "done"}, {Type: zeroruntime.StreamEventDone}},
+		{{Type: pvyruntime.StreamEventText, Content: "done"}, {Type: pvyruntime.StreamEventDone}},
 	}}
 	var captured ToolResult
 	if _, err := Run(context.Background(), "go", provider, Options{Registry: registry, OnToolResult: func(r ToolResult) { captured = r }}); err != nil {

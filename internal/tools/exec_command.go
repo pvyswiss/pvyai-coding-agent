@@ -13,7 +13,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	zeroSandbox "github.com/Gitlawb/zero/internal/sandbox"
+	pvySandbox "github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 const (
@@ -37,8 +37,8 @@ const (
 	// OOM-killed by the OS.
 	maxExecOutputBufferBytes         = 2 * 1024 * 1024
 	execSessionStopTimeout           = 3 * time.Second
-	execSessionEvictedMessage        = "[zero] session evicted: too many background terminals\n"
-	execOutputBufferTruncatedMessage = "[zero] output buffer truncated: undrained output exceeded 2MiB, oldest output dropped"
+	execSessionEvictedMessage        = "[pvyai] session evicted: too many background terminals\n"
+	execOutputBufferTruncatedMessage = "[pvyai] output buffer truncated: undrained output exceeded 2MiB, oldest output dropped"
 )
 
 type execSessionManager struct {
@@ -263,7 +263,7 @@ type execSession struct {
 	lastUsedAt  time.Time
 	tty         bool
 	command     *exec.Cmd
-	plan        zeroSandbox.CommandPlan
+	plan        pvySandbox.CommandPlan
 	cancel      context.CancelFunc
 	stdin       io.WriteCloser
 	cleanup     func()
@@ -476,7 +476,7 @@ func (tool execCommandTool) Run(ctx context.Context, args map[string]any) Result
 	return tool.run(ctx, args, nil)
 }
 
-func (tool execCommandTool) RunWithSandbox(ctx context.Context, args map[string]any, engine *zeroSandbox.Engine) Result {
+func (tool execCommandTool) RunWithSandbox(ctx context.Context, args map[string]any, engine *pvySandbox.Engine) Result {
 	return tool.run(ctx, args, engine)
 }
 
@@ -492,7 +492,7 @@ func (tool execCommandTool) StopAllExecSessions() []int {
 	return tool.manager.stopAll()
 }
 
-func (tool execCommandTool) run(ctx context.Context, args map[string]any, engine *zeroSandbox.Engine) Result {
+func (tool execCommandTool) run(ctx context.Context, args map[string]any, engine *pvySandbox.Engine) Result {
 	commandText, err := aliasedStringArg(args, []string{"cmd", "command", "script", "shell"}, "", true, false)
 	if err != nil {
 		return errorResult("Error: Invalid arguments for exec_command: " + err.Error())
@@ -520,7 +520,7 @@ func (tool execCommandTool) run(ctx context.Context, args map[string]any, engine
 	if issue := detectShellCommandIssue(commandText, runtimeGOOS()); issue != nil {
 		return shellIssueBlockResult(*issue)
 	}
-	if interactive := zeroSandbox.DetectInteractiveCommand(commandText, runtimeGOOS()); interactive.Interactive {
+	if interactive := pvySandbox.DetectInteractiveCommand(commandText, runtimeGOOS()); interactive.Interactive {
 		return interactiveBlockResult(interactive)
 	}
 	absoluteCwd, relativeCwd, err := resolveScopedPath(tool.workspaceRoot, tool.scope, workdir)
@@ -557,7 +557,7 @@ func (tool execCommandTool) run(ctx context.Context, args map[string]any, engine
 	})
 }
 
-func (tool execCommandTool) startSession(commandText string, absoluteCwd string, relativeCwd string, ttyRequested bool, engine *zeroSandbox.Engine, sandboxPermissions SandboxPermissionOverride) (*execSession, error) {
+func (tool execCommandTool) startSession(commandText string, absoluteCwd string, relativeCwd string, ttyRequested bool, engine *pvySandbox.Engine, sandboxPermissions SandboxPermissionOverride) (*execSession, error) {
 	id := tool.manager.allocateID()
 	commandCtx, cancel := context.WithCancel(context.Background())
 	commandEngine := commandEngineForSandboxPermissions(engine, sandboxPermissions)
@@ -567,7 +567,7 @@ func (tool execCommandTool) startSession(commandText string, absoluteCwd string,
 		return nil, err
 	}
 	output := newExecOutputBuffer()
-	monitor := zeroSandbox.StartDenialMonitor(context.Background(), plan.MonitorTag)
+	monitor := pvySandbox.StartDenialMonitor(context.Background(), plan.MonitorTag)
 	stdin, tty, cleanup, err := startExecProcess(command, output, ttyRequested)
 	if err != nil {
 		_ = monitor.Stop()
@@ -829,7 +829,7 @@ type execToolResultInput struct {
 	relativeCwd           string
 	tty                   bool
 	interrupted           bool
-	plan                  zeroSandbox.CommandPlan
+	plan                  pvySandbox.CommandPlan
 	maxOutputTokens       int
 }
 
@@ -924,9 +924,9 @@ func truncateExecOutputSpill(output string, maxOutputTokens int, toolName string
 	if len(output) <= maxBytes {
 		return output, false
 	}
-	notice := "\n[zero] output truncated\n"
+	notice := "\n[pvyai] output truncated\n"
 	if spillPath := spillTruncatedOutput(toolName, output); spillPath != "" {
-		notice = "\n[zero] output truncated — full output saved to " + spillPath + " (grep or read_file it instead of re-running)\n"
+		notice = "\n[pvyai] output truncated — full output saved to " + spillPath + " (grep or read_file it instead of re-running)\n"
 	}
 	head := maxBytes / 2
 	tail := maxBytes - head

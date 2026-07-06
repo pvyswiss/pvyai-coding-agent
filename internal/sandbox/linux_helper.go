@@ -14,7 +14,7 @@ import (
 	"strings"
 )
 
-const LinuxSandboxHelperName = "zero-linux-sandbox"
+const LinuxSandboxHelperName = "pvyai-sandbox"
 
 const linuxSandboxBackendEnv = BackendLinuxBwrap
 
@@ -368,7 +368,7 @@ func findLinuxSandboxHelperCommand() (LinuxSandboxHelperCommand, error) {
 			}
 		}
 	}
-	return LinuxSandboxHelperCommand{}, errors.New("zero-linux-sandbox helper is not available")
+	return LinuxSandboxHelperCommand{}, errors.New("pvyai-sandbox helper is not available")
 }
 
 func executableRegularFile(path string) bool {

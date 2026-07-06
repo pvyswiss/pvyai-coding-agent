@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/daemon"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/daemon"
 )
 
 const defaultDialTimeout = 15 * time.Second

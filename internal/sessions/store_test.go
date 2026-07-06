@@ -409,10 +409,10 @@ func TestListAndLatestResumableExcludeSubRuns(t *testing.T) {
 
 func TestDefaultRootHonorsXDGDataHome(t *testing.T) {
 	got := DefaultRoot(map[string]string{
-		"XDG_DATA_HOME": "/tmp/zero-data",
+		"XDG_DATA_HOME": "/tmp/pvyai-data",
 		"HOME":          "/tmp/home",
 	})
-	want := filepath.Join("/tmp/zero-data", "zero", "sessions")
+	want := filepath.Join("/tmp/pvyai-data", "pvyai", "sessions")
 	if got != want {
 		t.Fatalf("DefaultRoot = %q, want %q", got, want)
 	}
@@ -698,7 +698,7 @@ func TestRecordSpecUpdatesMetadataAndAppendsEvents(t *testing.T) {
 
 	updated, event, err := store.RecordSpec(session.SessionID, RecordSpecInput{
 		SpecID:       "2026-06-08-spec-mode",
-		SpecFilePath: "/repo/.zero/specs/2026-06-08-spec-mode.md",
+		SpecFilePath: "/repo/.pvyai/specs/2026-06-08-spec-mode.md",
 		SpecStatus:   SpecStatusDraft,
 	})
 
@@ -761,7 +761,7 @@ func TestEnsureSpecImplementationReusesExistingPromptSession(t *testing.T) {
 		ModelID:             draft.ModelID,
 		Provider:            draft.Provider,
 		SpecID:              draft.SpecID,
-		SpecFilePath:        "/repo/.zero/specs/2026-06-08-spec.md",
+		SpecFilePath:        "/repo/.pvyai/specs/2026-06-08-spec.md",
 		SpecDraftModelID:    "gpt-5",
 		SpecDraftReasoning:  "high",
 		SpecUserComment:     "ship it",

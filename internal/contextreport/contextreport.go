@@ -8,15 +8,15 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/providers"
-	"github.com/Gitlawb/zero/internal/repomap"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providers"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/repomap"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
-const ContractV1 = "zero.context.report.v1"
+const ContractV1 = "pvyai.context.report.v1"
 const RuntimeGo = "go"
 
 const (
@@ -27,7 +27,7 @@ const (
 	CategoryFree              = "free"
 )
 
-var defaultProjectContextFiles = []string{"AGENTS.md", "ZERO.md", ".zero/AGENTS.md"}
+var defaultProjectContextFiles = []string{"AGENTS.md", "ZERO.md", ".pvyai/AGENTS.md"}
 
 const maxProjectContextBytes = 8 << 10
 const maxWorkspaceMapContextBytes = 4 << 10
@@ -157,7 +157,7 @@ func systemPromptFootprint(root string, modelID string) string {
 
 func Format(report Report) string {
 	lines := []string{
-		"Zero context report",
+		"PVYai context report",
 		"root: " + report.Root,
 	}
 	if report.ProviderName != "" {

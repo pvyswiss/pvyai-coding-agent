@@ -1,7 +1,7 @@
 // Package usercommands loads user-defined slash commands from markdown files.
 //
-// A user drops a file at `.zero/commands/<name>.md` (project, checked into the
-// repo and shared with the team) or `<userConfigDir>/zero/commands/<name>.md`
+// A user drops a file at `.pvyai/commands/<name>.md` (project, checked into the
+// repo and shared with the team) or `<userConfigDir>/pvyai/commands/<name>.md`
 // (personal), with optional YAML-style frontmatter:
 //
 //	---
@@ -31,7 +31,7 @@ type Command struct {
 	Agent       string // optional frontmatter `agent:`/`mode:` routing
 	Template    string // the markdown body, expanded on invocation
 	Path        string // source file, for diagnostics
-	Project     bool   // true if from the project `.zero/commands` dir
+	Project     bool   // true if from the project `.pvyai/commands` dir
 }
 
 // Paths are the directories scanned for command files, project first.
@@ -48,7 +48,7 @@ func DefaultPaths(workspaceRoot, userConfigDir string) Paths {
 		p.ProjectDir = filepath.Join(workspaceRoot, ".zero", "commands")
 	}
 	if strings.TrimSpace(userConfigDir) != "" {
-		p.UserDir = filepath.Join(userConfigDir, "zero", "commands")
+		p.UserDir = filepath.Join(userConfigDir, "pvyai", "commands")
 	}
 	return p
 }

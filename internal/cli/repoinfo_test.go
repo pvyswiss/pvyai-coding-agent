@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/repoinfo"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/repoinfo"
 )
 
 func TestParseRepoInfoArgs(t *testing.T) {

@@ -70,7 +70,7 @@ func TestCheckReportsAvailableUpdate(t *testing.T) {
 	if !result.UpdateAvailable || result.LatestVersion != "0.2.0" {
 		t.Fatalf("unexpected update result: %#v", result)
 	}
-	if !result.ReleaseAsset.Verified || result.ReleaseAsset.ArchiveName != "zero-v0.2.0-linux-x64.tar.gz" || result.ReleaseAsset.ChecksumName != "zero-v0.2.0-linux-x64.tar.gz.sha256" {
+	if !result.ReleaseAsset.Verified || result.ReleaseAsset.ArchiveName != "pvyai-v0.2.0-linux-x64.tar.gz" || result.ReleaseAsset.ChecksumName != "pvyai-v0.2.0-linux-x64.tar.gz.sha256" {
 		t.Fatalf("unexpected release asset check: %#v", result.ReleaseAsset)
 	}
 }
@@ -199,14 +199,14 @@ func TestCheckFallsBackReleaseURL(t *testing.T) {
 		t.Fatalf("Check returned error: %v", err)
 	}
 
-	wantURL := "https://github.com/Gitlawb/zero/releases/tag/v0.2.0"
+	wantURL := "https://github.com/pvyswiss/pvyai-coding-agent/releases/tag/v0.2.0"
 	if result.ReleaseURL != wantURL {
 		t.Fatalf("ReleaseURL = %q, want %q", result.ReleaseURL, wantURL)
 	}
 }
 
 func TestCheckFetchesDataEndpoint(t *testing.T) {
-	payload := url.QueryEscape(`{"tag_name":"v0.2.0","html_url":"https://example.test/release","assets":[{"name":"zero-v0.2.0-linux-x64.tar.gz","browser_download_url":"https://example.test/zero-v0.2.0-linux-x64.tar.gz"},{"name":"zero-v0.2.0-linux-x64.tar.gz.sha256","browser_download_url":"https://example.test/zero-v0.2.0-linux-x64.tar.gz.sha256"}]}`)
+	payload := url.QueryEscape(`{"tag_name":"v0.2.0","html_url":"https://example.test/release","assets":[{"name":"pvyai-v0.2.0-linux-x64.tar.gz","browser_download_url":"https://example.test/pvyai-v0.2.0-linux-x64.tar.gz"},{"name":"pvyai-v0.2.0-linux-x64.tar.gz.sha256","browser_download_url":"https://example.test/pvyai-v0.2.0-linux-x64.tar.gz.sha256"}]}`)
 
 	result, err := Check(context.Background(), Options{
 		CurrentVersion: "0.1.0",
@@ -258,9 +258,9 @@ func TestCheckResolvesEndpointPrecedence(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.clearEnv {
-				t.Setenv("ZERO_UPDATE_RELEASE_URL", "")
+				t.Setenv("PVYAI_UPDATE_RELEASE_URL", "")
 			} else {
-				t.Setenv("ZERO_UPDATE_RELEASE_URL", tt.env)
+				t.Setenv("PVYAI_UPDATE_RELEASE_URL", tt.env)
 			}
 			options := tt.options
 			options.CurrentVersion = "0.1.0"
@@ -298,7 +298,7 @@ func TestCheckRejectsMissingReleaseAssets(t *testing.T) {
 	if err == nil {
 		t.Fatal("Check should reject release metadata without expected assets")
 	}
-	if !strings.Contains(err.Error(), "zero-v0.2.0-linux-x64.tar.gz") || !strings.Contains(err.Error(), "zero-v0.2.0-linux-x64.tar.gz.sha256") {
+	if !strings.Contains(err.Error(), "pvyai-v0.2.0-linux-x64.tar.gz") || !strings.Contains(err.Error(), "pvyai-v0.2.0-linux-x64.tar.gz.sha256") {
 		t.Fatalf("Check error = %v, want missing archive and checksum names", err)
 	}
 }
@@ -318,7 +318,7 @@ func TestExpectedAssetCheckUsesInstallerArchiveNames(t *testing.T) {
 			version:     "0.2.0",
 			goos:        "linux",
 			goarch:      "amd64",
-			archiveName: "zero-v0.2.0-linux-x64.tar.gz",
+			archiveName: "pvyai-v0.2.0-linux-x64.tar.gz",
 			platform:    "linux",
 			arch:        "x64",
 		},
@@ -425,7 +425,7 @@ func TestFormatResult(t *testing.T) {
 	output := Format(Result{
 		CurrentVersion:  "0.1.0",
 		LatestVersion:   "0.2.0",
-		ReleaseURL:      "https://github.com/Gitlawb/zero/releases/tag/v0.2.0",
+		ReleaseURL:      "https://github.com/pvyswiss/pvyai-coding-agent/releases/tag/v0.2.0",
 		TagName:         "v0.2.0",
 		ReleaseAsset:    assetCheckForTest(t, "v0.2.0", "linux", "amd64"),
 		UpdateAvailable: true,
@@ -433,7 +433,7 @@ func TestFormatResult(t *testing.T) {
 	if !strings.Contains(output, "Update available: 0.1.0 -> 0.2.0") {
 		t.Fatalf("unexpected update output: %q", output)
 	}
-	if !strings.Contains(output, "Release asset: zero-v0.2.0-linux-x64.tar.gz") || !strings.Contains(output, "Checksum asset: zero-v0.2.0-linux-x64.tar.gz.sha256") {
+	if !strings.Contains(output, "Release asset: pvyai-v0.2.0-linux-x64.tar.gz") || !strings.Contains(output, "Checksum asset: pvyai-v0.2.0-linux-x64.tar.gz.sha256") {
 		t.Fatalf("update output did not include release assets: %q", output)
 	}
 	if !strings.Contains(output, "Release target: linux-x64") || !strings.Contains(output, "Download the verified linux-x64 release asset") {
@@ -446,7 +446,7 @@ func TestFormatResult(t *testing.T) {
 	output = Format(Result{
 		CurrentVersion:  "0.2.0",
 		LatestVersion:   "0.2.0",
-		ReleaseURL:      "https://github.com/Gitlawb/zero/releases/tag/v0.2.0",
+		ReleaseURL:      "https://github.com/pvyswiss/pvyai-coding-agent/releases/tag/v0.2.0",
 		TagName:         "v0.2.0",
 		ReleaseAsset:    assetCheckForTest(t, "v0.2.0", "linux", "amd64"),
 		UpdateAvailable: false,
@@ -464,7 +464,7 @@ func releaseForTarget(t *testing.T, tag string, goos string, goarch string) Rele
 	check := assetCheckForTest(t, tag, goos, goarch)
 	return Release{
 		TagName: tag,
-		HTMLURL: "https://github.com/Gitlawb/zero/releases/tag/" + tag,
+		HTMLURL: "https://github.com/pvyswiss/pvyai-coding-agent/releases/tag/" + tag,
 		Assets: []Asset{
 			{Name: check.ArchiveName, BrowserDownloadURL: "https://example.test/" + check.ArchiveName},
 			{Name: check.ChecksumName, BrowserDownloadURL: "https://example.test/" + check.ChecksumName},

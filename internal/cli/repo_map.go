@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/repomap"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/repomap"
 )
 
 const defaultRepoMapOutputFiles = 40

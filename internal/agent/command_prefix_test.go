@@ -3,7 +3,7 @@ package agent
 import (
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 func TestProposedCommandPrefixUsesSafeSimpleCommands(t *testing.T) {

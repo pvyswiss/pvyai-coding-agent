@@ -10,8 +10,8 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/providermodeldiscovery"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providermodeldiscovery"
 )
 
 func TestSetupMethodOptionsDropsOAuthWithoutOAuthProviders(t *testing.T) {
@@ -1537,7 +1537,7 @@ func absInt(value int) int {
 	return value
 }
 
-// Completing setup switches the live provider, so it must export ZERO_PROVIDER
+// Completing setup switches the live provider, so it must export PVYAI_PROVIDER
 // exactly like the /model, /provider, and wizard switch paths — a stale value
 // from an earlier switch would otherwise win over config in every spawned
 // child (applyEnv) and pin specialists/swarm members to the OLD provider's

@@ -9,18 +9,18 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/oauth"
-	"github.com/Gitlawb/zero/internal/provideroauth"
-	"github.com/Gitlawb/zero/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/oauth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/provideroauth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
 )
 
-// runAuth dispatches `zero auth <command>` for provider OAuth login. It is
+// runAuth dispatches `pvyai auth <command>` for provider OAuth login. It is
 // additive and independent of `zero mcp oauth` (MCP server auth), which is
 // unchanged.
 func runAuth(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) int {
 	if len(args) == 0 {
-		return writeExecUsageError(stderr, "auth subcommand required. Use `zero auth status`.")
+		return writeExecUsageError(stderr, "auth subcommand required. Use `pvyai auth status`.")
 	}
 	if args[0] == "-h" || args[0] == "--help" || args[0] == "help" {
 		if err := writeAuthHelp(stdout); err != nil {
@@ -60,7 +60,7 @@ func runAuthOpenRouter(args []string, stdout io.Writer, stderr io.Writer, _ appD
 	// openrouter takes no positional args or flags; reject the unexpected so a
 	// typo/unsupported flag fails fast instead of silently running the login.
 	if len(args) > 0 {
-		return writeExecUsageError(stderr, fmt.Sprintf("zero auth openrouter takes no arguments (got %q)", args[0]))
+		return writeExecUsageError(stderr, fmt.Sprintf("pvyai auth openrouter takes no arguments (got %q)", args[0]))
 	}
 	key, err := provideroauth.OpenRouterLogin(context.Background(), provideroauth.OpenRouterOptions{
 		Out:        stdout,
@@ -90,7 +90,7 @@ func runAuthChatGPT(args []string, stdout io.Writer, stderr io.Writer, deps appD
 		}
 	}
 	if len(args) > 0 {
-		return writeExecUsageError(stderr, fmt.Sprintf("zero auth chatgpt takes no arguments (got %q)", args[0]))
+		return writeExecUsageError(stderr, fmt.Sprintf("pvyai auth chatgpt takes no arguments (got %q)", args[0]))
 	}
 
 	// Build the same env map the oauth engine reads so the chatgpt preset is
@@ -120,7 +120,7 @@ func runAuthChatGPT(args []string, stdout io.Writer, stderr io.Writer, deps appD
 	}
 
 	// Persist via the oauth manager's store so the same path
-	// zero auth status / zero auth refresh / TokenResolver use is hit.
+	// pvyai auth status / pvyai auth refresh / TokenResolver use is hit.
 	// We bypass Manager.Login because the account-id extraction happens
 	// inside provideroauth.ChatGPTLogin; the manager would not pick up
 	// the customized Token.Account field.
@@ -145,7 +145,7 @@ func runAuthChatGPT(args []string, stdout io.Writer, stderr io.Writer, deps appD
 }
 
 // oauthFormatChatGPTStatus formats the saved ChatGPT token into the same
-// shape `zero auth status` prints, so the user sees a consistent view.
+// shape `pvyai auth status` prints, so the user sees a consistent view.
 func oauthFormatChatGPTStatus(token oauth.Token) (string, error) {
 	store, err := oauth.NewStore(oauth.StoreOptions{})
 	if err != nil {
@@ -236,7 +236,7 @@ func validateAuthFlags(sub string, a authArgs) error {
 		"status":  {"json": true},
 		"refresh": {"watch": true},
 	}[sub]
-	bad := func(name string) error { return fmt.Errorf("zero auth %s does not accept %s", sub, name) }
+	bad := func(name string) error { return fmt.Errorf("pvyai auth %s does not accept %s", sub, name) }
 	if a.json && !allowed["json"] {
 		return bad("--json")
 	}
@@ -283,7 +283,7 @@ func newAuthManager(deps appDeps, out io.Writer) (*oauth.Manager, error) {
 		// carries no token material. A real browser launch is intentionally not
 		// performed (the sandbox/headless contexts make printing the safer default).
 		OpenBrowser: func(string) error { return nil },
-		// `zero auth login <preset>` (e.g. xai) should resolve the baked-in preset
+		// `pvyai auth login <preset>` (e.g. xai) should resolve the baked-in preset
 		// without the operator exporting ZERO_OAUTH_ALLOW_PRESETS first.
 		AllowPresets: true,
 	})
@@ -299,14 +299,14 @@ func runAuthLogin(args []string, stdout io.Writer, stderr io.Writer, deps appDep
 		return exitSuccess
 	}
 	if len(parsed.positional) != 1 {
-		return writeExecUsageError(stderr, "usage: zero auth login <provider> [--device] [--scope <scope>]")
+		return writeExecUsageError(stderr, "usage: pvyai auth login <provider> [--device] [--scope <scope>]")
 	}
 	provider := parsed.positional[0]
 	// ChatGPT (Codex) requires a fixed redirect_uri (http://localhost:1455/
 	// auth/callback) and mandatory authorize params (id_token_add_organizations,
 	// codex_cli_simplified_flow, originator) that the generic loopback flow
 	// cannot supply. Route it to the dedicated ChatGPT login so
-	// `zero auth login chatgpt` behaves identically to `zero auth chatgpt`.
+	// `pvyai auth login chatgpt` behaves identically to `pvyai auth chatgpt`.
 	if strings.EqualFold(provider, "chatgpt") {
 		if parsed.device {
 			return writeExecUsageError(stderr, "ChatGPT login does not support --device (it is loopback-only)")
@@ -344,7 +344,7 @@ func runAuthLogout(args []string, stdout io.Writer, stderr io.Writer, deps appDe
 		return exitSuccess
 	}
 	if len(parsed.positional) != 1 {
-		return writeExecUsageError(stderr, "usage: zero auth logout <provider>")
+		return writeExecUsageError(stderr, "usage: pvyai auth logout <provider>")
 	}
 	provider := parsed.positional[0]
 	manager, err := newAuthManager(deps, stdout)
@@ -398,7 +398,7 @@ func runAuthStatus(args []string, stdout io.Writer, stderr io.Writer, deps appDe
 		return exitSuccess
 	}
 	if len(parsed.positional) > 1 {
-		return writeExecUsageError(stderr, "usage: zero auth status [provider]")
+		return writeExecUsageError(stderr, "usage: pvyai auth status [provider]")
 	}
 	manager, err := newAuthManager(deps, stdout)
 	if err != nil {
@@ -436,7 +436,7 @@ func runAuthRefresh(args []string, stdout io.Writer, stderr io.Writer, deps appD
 		return exitSuccess
 	}
 	if len(parsed.positional) != 1 {
-		return writeExecUsageError(stderr, "usage: zero auth refresh <provider>")
+		return writeExecUsageError(stderr, "usage: pvyai auth refresh <provider>")
 	}
 	provider := parsed.positional[0]
 	manager, err := newAuthManager(deps, stdout)
@@ -491,7 +491,7 @@ func filterAuthStatuses(statuses []oauth.Status, provider string) []oauth.Status
 
 func writeAuthHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero auth <command>
+  pvyai auth <command>
 
 Commands:
   login <provider> [--device] [--scope <scope>]   Log in to a provider via OAuth
@@ -501,11 +501,11 @@ Commands:
   openrouter                                      Log in to OpenRouter in the browser; mints an API key
   chatgpt                                         Log in to ChatGPT in the browser (Codex backend, ChatGPT Plus/Pro)
 
-A provider is any OAuth 2.0 / OIDC server. "openrouter" ('zero auth openrouter')
-works out of the box. "xai" ('zero auth login xai') uses a built-in preset that is
+A provider is any OAuth 2.0 / OIDC server. "openrouter" ('pvyai auth openrouter')
+works out of the box. "xai" ('pvyai auth login xai') uses a built-in preset that is
 off by default — enable it with ZERO_OAUTH_ALLOW_PRESETS=1, or set the
-ZERO_OAUTH_XAI_* vars yourself. "chatgpt" ('zero auth login chatgpt' or
-'zero auth chatgpt') uses a fixed-port loopback flow against the Codex backend.
+ZERO_OAUTH_XAI_* vars yourself. "chatgpt" ('pvyai auth login chatgpt' or
+'pvyai auth chatgpt') uses a fixed-port loopback flow against the Codex backend.
 Any preset field is overridable via the env vars below. For a custom provider named <name>, set:
   ZERO_OAUTH_<NAME>_CLIENT_ID       (required)
   ZERO_OAUTH_<NAME>_CLIENT_SECRET   (optional)

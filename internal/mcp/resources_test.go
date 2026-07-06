@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 func TestServeInitializeAdvertisesResourcesAndPrompts(t *testing.T) {

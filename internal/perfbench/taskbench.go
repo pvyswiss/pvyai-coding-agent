@@ -236,7 +236,7 @@ func FormatTaskSummary(result TaskRunResult) string {
 		}
 	}
 	lines := []string{
-		"Zero task benchmark: " + displayOrUnknown(result.Suite),
+		"PVYai task benchmark: " + displayOrUnknown(result.Suite),
 		"model: " + displayOrUnknown(result.Model),
 	}
 	if mode := strings.TrimSpace(result.Mode); mode != "" {
@@ -331,7 +331,7 @@ func NewExecRunner(binary string, extraArgs ...string) TaskRunner {
 			if detail == "" {
 				detail = "missing terminal run_end event"
 			}
-			return TaskOutcome{Err: fmt.Errorf("zero exec failed: %s", detail)}
+			return TaskOutcome{Err: fmt.Errorf("pvyai exec failed: %s", detail)}
 		}
 
 		if len(task.VerificationCommand) > 0 {

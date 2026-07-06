@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/agenteval"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agenteval"
 )
 
 type agentEvalOptions struct {
@@ -345,7 +345,7 @@ func parseEvalTimeout(value string) (time.Duration, error) {
 
 func formatAgentEvalReport(report agentEvalReport) string {
 	lines := []string{
-		"Zero agent eval",
+		"PVYai agent eval",
 		"suite: " + report.Suite,
 	}
 	if report.Name != "" {
@@ -481,7 +481,7 @@ func agentEvalBenchWorkRoot(options agentEvalOptions) (string, string, error) {
 	if workRoot != "" {
 		return workRoot, "", nil
 	}
-	created, err := os.MkdirTemp("", "zero-eval-")
+	created, err := os.MkdirTemp("", "pvyai-eval-")
 	if err != nil {
 		return "", "", agentEvalRuntimeError{fmt.Errorf("create benchmark work root: %w", err)}
 	}

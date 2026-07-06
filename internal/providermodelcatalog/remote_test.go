@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
 )
 
 func TestParseModelsDevProviderScopesAndMapsMetadata(t *testing.T) {
@@ -121,13 +121,13 @@ func TestModelsDevProviderIDMapsZeroAliases(t *testing.T) {
 		"zai-cn":       "zai",
 		"minimaxi-cn":  "minimax",
 	}
-	for zeroID, want := range tests {
-		provider, ok := providercatalog.Get(zeroID)
+	for providerID, want := range tests {
+		provider, ok := providercatalog.Get(providerID)
 		if !ok {
-			t.Fatalf("provider %q missing from catalog", zeroID)
+			t.Fatalf("provider %q missing from catalog", providerID)
 		}
 		if got := ModelsDevProviderID(provider); got != want {
-			t.Fatalf("ModelsDevProviderID(%q) = %q, want %q", zeroID, got, want)
+			t.Fatalf("ModelsDevProviderID(%q) = %q, want %q", providerID, got, want)
 		}
 	}
 }

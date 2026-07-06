@@ -10,12 +10,12 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Gitlawb/zero/internal/hooks"
-	"github.com/Gitlawb/zero/internal/redaction"
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/streamjson"
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/hooks"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/streamjson"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 const maxTurnsAnswer = "Agent reached maximum number of turns without a final answer."
@@ -132,7 +132,7 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 	options.runPermissions = runPermissions
 	defer runPermissions.cleanup()
 
-	messages := zeroruntime.SeedMessagesWithImages(buildSystemPrompt(options), prompt, options.Images)
+	messages := pvyruntime.SeedMessagesWithImages(buildSystemPrompt(options), prompt, options.Images)
 
 	guards := newGuardState()
 	compactor := newCompactionState(options)
@@ -159,7 +159,7 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 	// toolDefCache memoizes each tool's rendered JSON-schema definition across
 	// turns (a tool's advertised schema is stable for the run), so partitionTools
 	// doesn't re-run the recursive schema→map conversion for every tool every turn.
-	toolDefCache := map[string]zeroruntime.ToolDefinition{}
+	toolDefCache := map[string]pvyruntime.ToolDefinition{}
 
 	result := Result{Messages: copyMessages(messages)}
 	for turn := 0; turn < maxTurns; turn++ {
@@ -170,8 +170,8 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 		// A brief wait at most (asyncDiagnosticsDrainTimeout); an unfinished check
 		// simply delivers on a later turn.
 		if nudge := postEditDiagnostics.drain(ctx); nudge != "" {
-			messages = append(messages, zeroruntime.Message{
-				Role:    zeroruntime.MessageRoleUser,
+			messages = append(messages, pvyruntime.Message{
+				Role:    pvyruntime.MessageRoleUser,
 				Content: nudge,
 			})
 		}
@@ -186,7 +186,7 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 		// context window, summarize the oldest middle before building the
 		// request. A no-op when ContextWindow == 0 (compaction disabled).
 		messages = compactor.maybeCompact(ctx, provider, messages, exposed)
-		request := zeroruntime.CompletionRequest{
+		request := pvyruntime.CompletionRequest{
 			Messages:        copyMessages(messages),
 			Tools:           exposed,
 			ReasoningEffort: options.ReasoningEffort,
@@ -222,7 +222,7 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 				// on registry+loaded, not on the messages, so they stay valid after
 				// compaction. Using the bare toolDefinitions here would route through an
 				// empty-loaded partition, re-hiding every already-loaded deferred tool.
-				request = zeroruntime.CompletionRequest{
+				request = pvyruntime.CompletionRequest{
 					Messages:        copyMessages(messages),
 					Tools:           exposed,
 					ReasoningEffort: options.ReasoningEffort,
@@ -250,7 +250,7 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 		// before the append), so the retry re-sends clean context with no
 		// conversation-state duplication.
 		forwardedVisibleText := false
-		forwardingOpts := zeroruntime.CollectOptions{OnUsage: options.OnUsage}
+		forwardingOpts := pvyruntime.CollectOptions{OnUsage: options.OnUsage}
 		if options.OnText != nil {
 			forwardingOpts.OnText = func(s string) { forwardedVisibleText = true; options.OnText(s) }
 		}
@@ -269,7 +269,7 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 		// gets one compaction + reactive reissue (omitting visible callbacks, since
 		// any pre-error output was already forwarded). It returns the possibly-updated
 		// collected and a non-nil stop error when the run must end now.
-		recoverStreamError := func(collected zeroruntime.CollectedStream) (zeroruntime.CollectedStream, error) {
+		recoverStreamError := func(collected pvyruntime.CollectedStream) (pvyruntime.CollectedStream, error) {
 			if isImageRejectionError(errors.New(collected.Error)) {
 				return collected, fmt.Errorf("model %s rejected the image: %s. The model may not support image input — try switching to a vision-capable model (claude, gpt-4o, gemini)", options.Model, collected.Error)
 			}
@@ -283,7 +283,7 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 				// Reuse the SAME active-mode partition (exposed) from this turn rather
 				// than the bare toolDefinitions: exposed depends on registry+loaded (not
 				// the messages), so it stays valid after compaction.
-				retryRequest := zeroruntime.CompletionRequest{
+				retryRequest := pvyruntime.CompletionRequest{
 					Messages:        copyMessages(messages),
 					Tools:           exposed,
 					ReasoningEffort: options.ReasoningEffort,
@@ -293,14 +293,14 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 				if retryStreamErr != nil {
 					return collected, retryStreamErr
 				}
-				collected = zeroruntime.CollectStreamWithOptions(ctx, retryStream, zeroruntime.CollectOptions{
+				collected = pvyruntime.CollectStreamWithOptions(ctx, retryStream, pvyruntime.CollectOptions{
 					OnUsage: options.OnUsage,
 				})
 			}
 			return collected, nil
 		}
 
-		collected := zeroruntime.CollectStreamWithOptions(ctx, stream, forwardingOpts)
+		collected := pvyruntime.CollectStreamWithOptions(ctx, stream, forwardingOpts)
 		if collected.Error != "" {
 			updated, stop := recoverStreamError(collected)
 			collected = updated
@@ -342,7 +342,7 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 				result.Messages = copyMessages(messages)
 				return result, err
 			}
-			retryRequest := zeroruntime.CompletionRequest{
+			retryRequest := pvyruntime.CompletionRequest{
 				Messages:        copyMessages(messages),
 				Tools:           exposed,
 				ReasoningEffort: options.ReasoningEffort,
@@ -353,7 +353,7 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 				result.Messages = copyMessages(messages)
 				return result, retryErr
 			}
-			collected = zeroruntime.CollectStreamWithOptions(ctx, retryStream, forwardingOpts)
+			collected = pvyruntime.CollectStreamWithOptions(ctx, retryStream, forwardingOpts)
 		}
 		if collected.Error != "" {
 			// Route a reissued stream's non-stall error through the SAME recovery as
@@ -386,8 +386,8 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 		// tool-call turn normalizes to "" and clears any prior reason.
 		result.FinishReason = collected.FinishReason
 
-		messages = append(messages, zeroruntime.Message{
-			Role:      zeroruntime.MessageRoleAssistant,
+		messages = append(messages, pvyruntime.Message{
+			Role:      pvyruntime.MessageRoleAssistant,
 			Content:   collected.Text,
 			ToolCalls: historySafeToolCalls(collected.ToolCalls),
 			// Preserve thinking blocks so the next turn can replay them; providers
@@ -401,8 +401,8 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 			// This path is handled before the no-output guard so a dropped-call
 			// turn is never counted as a runaway empty turn.
 			if collected.DroppedToolCalls > 0 {
-				messages = append(messages, zeroruntime.Message{
-					Role:    zeroruntime.MessageRoleUser,
+				messages = append(messages, pvyruntime.Message{
+					Role:    pvyruntime.MessageRoleUser,
 					Content: droppedToolCallNotice,
 				})
 				continue
@@ -418,8 +418,8 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 			if strings.TrimSpace(collected.Text) == "" {
 				// Empty-but-under-cap turn: nudge the model to make progress
 				// rather than treating the empty response as a final answer.
-				messages = append(messages, zeroruntime.Message{
-					Role: zeroruntime.MessageRoleUser,
+				messages = append(messages, pvyruntime.Message{
+					Role: pvyruntime.MessageRoleUser,
 					Content: "Your previous response had no visible output and no tool calls. " +
 						"Continue the task by using a tool or reply with your final answer.",
 				})
@@ -459,8 +459,8 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 						if !cue {
 							reason = "pending plan items remain — finish them, or mark them complete with update_plan if you are done"
 						}
-						messages = append(messages, zeroruntime.Message{
-							Role:    zeroruntime.MessageRoleUser,
+						messages = append(messages, pvyruntime.Message{
+							Role:    pvyruntime.MessageRoleUser,
 							Content: continueNudge(reason),
 						})
 						continue
@@ -484,8 +484,8 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 				// (no admission, no cue) then finalizes as success on the next turn.
 				if options.SelfCorrect != nil && !acceptanceRequested {
 					acceptanceRequested = true
-					messages = append(messages, zeroruntime.Message{
-						Role:    zeroruntime.MessageRoleUser,
+					messages = append(messages, pvyruntime.Message{
+						Role:    pvyruntime.MessageRoleUser,
 						Content: acceptanceVerificationNudge(),
 					})
 					continue
@@ -498,8 +498,8 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 			// the model one more turn to see (and fix) it instead of being lost.
 			// Free for runs that never edited: an idle collector returns "".
 			if nudge := postEditDiagnostics.drainFinal(ctx); nudge != "" {
-				messages = append(messages, zeroruntime.Message{
-					Role:    zeroruntime.MessageRoleUser,
+				messages = append(messages, pvyruntime.Message{
+					Role:    pvyruntime.MessageRoleUser,
 					Content: nudge,
 				})
 				continue
@@ -570,8 +570,8 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 			if turnRequestedModel == "" && toolResult.RequestedModel != "" {
 				turnRequestedModel = toolResult.RequestedModel
 			}
-			messages = append(messages, zeroruntime.Message{
-				Role:       zeroruntime.MessageRoleTool,
+			messages = append(messages, pvyruntime.Message{
+				Role:       pvyruntime.MessageRoleTool,
 				Content:    toolResult.Output,
 				ToolCallID: toolResult.ToolCallID,
 			})
@@ -637,8 +637,8 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 		// tool_results breaks strict provider replay). nil SelfCorrect is a no-op.
 		if options.SelfCorrect != nil && len(changedFilesThisBatch) > 0 {
 			if feedback, _ := options.SelfCorrect.AfterEdit(ctx, dedupeStrings(changedFilesThisBatch)); feedback != "" {
-				messages = append(messages, zeroruntime.Message{
-					Role:    zeroruntime.MessageRoleUser,
+				messages = append(messages, pvyruntime.Message{
+					Role:    pvyruntime.MessageRoleUser,
 					Content: feedback,
 				})
 			}
@@ -652,8 +652,8 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 		if turnRequestedModel != "" && options.ModelSwitcher != nil {
 			newProvider, switchErr := options.ModelSwitcher(ctx, turnRequestedModel)
 			if switchErr != nil {
-				messages = append(messages, zeroruntime.Message{
-					Role:    zeroruntime.MessageRoleUser,
+				messages = append(messages, pvyruntime.Message{
+					Role:    pvyruntime.MessageRoleUser,
 					Content: escalationFailedNoticePrefix + " (" + turnRequestedModel + "): " + switchErr.Error() + ". Continuing on " + options.Model + ".",
 				})
 			} else if newProvider != nil {
@@ -675,8 +675,8 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 		// silently ignored just because the turn also did real work. This is
 		// independent of (and additive to) the failure-hint / plan-reminder nudges.
 		if collected.DroppedToolCalls > 0 {
-			messages = append(messages, zeroruntime.Message{
-				Role:    zeroruntime.MessageRoleUser,
+			messages = append(messages, pvyruntime.Message{
+				Role:    pvyruntime.MessageRoleUser,
 				Content: droppedToolCallNotice,
 			})
 		}
@@ -685,18 +685,18 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 		// planning reminders — fixing the failing call matters more than plan
 		// hygiene. Both are light, one-shot, user-role nudges.
 		if failureHint != "" {
-			messages = append(messages, zeroruntime.Message{
-				Role:    zeroruntime.MessageRoleUser,
+			messages = append(messages, pvyruntime.Message{
+				Role:    pvyruntime.MessageRoleUser,
 				Content: failureHint,
 			})
 		} else if reminder := guards.progressReminder(); reminder != "" {
-			messages = append(messages, zeroruntime.Message{
-				Role:    zeroruntime.MessageRoleUser,
+			messages = append(messages, pvyruntime.Message{
+				Role:    pvyruntime.MessageRoleUser,
 				Content: reminder,
 			})
 		} else if reminder := guards.planReminder(result.Turns); reminder != "" {
-			messages = append(messages, zeroruntime.Message{
-				Role:    zeroruntime.MessageRoleUser,
+			messages = append(messages, pvyruntime.Message{
+				Role:    pvyruntime.MessageRoleUser,
 				Content: reminder,
 			})
 		}
@@ -716,8 +716,8 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 	// there is no later turn to defer to — otherwise an error introduced by
 	// the final edit would go unreported in the summary.
 	if nudge := postEditDiagnostics.drainFinal(ctx); nudge != "" {
-		messages = append(messages, zeroruntime.Message{
-			Role:    zeroruntime.MessageRoleUser,
+		messages = append(messages, pvyruntime.Message{
+			Role:    pvyruntime.MessageRoleUser,
 			Content: nudge,
 		})
 	}
@@ -741,16 +741,16 @@ func Run(ctx context.Context, prompt string, provider Provider, options Options)
 	return result, nil
 }
 
-func finalAnswerAfterMaxTurns(ctx context.Context, provider Provider, messages []zeroruntime.Message, options Options) (string, []zeroruntime.Message, string) {
+func finalAnswerAfterMaxTurns(ctx context.Context, provider Provider, messages []pvyruntime.Message, options Options) (string, []pvyruntime.Message, string) {
 	finalMessages := copyMessages(messages)
-	finalMessages = append(finalMessages, zeroruntime.Message{
-		Role:    zeroruntime.MessageRoleUser,
+	finalMessages = append(finalMessages, pvyruntime.Message{
+		Role:    pvyruntime.MessageRoleUser,
 		Content: maxTurnsFinalAnswerPrompt,
 	})
 	// The max-turns final-answer call is a pre-content connect, often after a long
 	// autonomous/cron run — route it through the reconnect helper so a single
 	// transient hiccup doesn't drop the final summary (AUDIT-L1).
-	stream, err := streamWithReconnect(ctx, provider, zeroruntime.CompletionRequest{
+	stream, err := streamWithReconnect(ctx, provider, pvyruntime.CompletionRequest{
 		Messages:        copyMessages(finalMessages),
 		ReasoningEffort: options.ReasoningEffort,
 		PromptCacheKey:  options.SessionID,
@@ -758,7 +758,7 @@ func finalAnswerAfterMaxTurns(ctx context.Context, provider Provider, messages [
 	if err != nil {
 		return "", messages, ""
 	}
-	collected := zeroruntime.CollectStreamWithOptions(ctx, stream, zeroruntime.CollectOptions{
+	collected := pvyruntime.CollectStreamWithOptions(ctx, stream, pvyruntime.CollectOptions{
 		OnText:          options.OnText,
 		OnReasoning:     options.OnReasoning,
 		OnUsage:         options.OnUsage,
@@ -768,8 +768,8 @@ func finalAnswerAfterMaxTurns(ctx context.Context, provider Provider, messages [
 	if ctx.Err() != nil || collected.Error != "" || strings.TrimSpace(collected.Text) == "" {
 		return "", messages, ""
 	}
-	finalMessages = append(finalMessages, zeroruntime.Message{
-		Role:    zeroruntime.MessageRoleAssistant,
+	finalMessages = append(finalMessages, pvyruntime.Message{
+		Role:    pvyruntime.MessageRoleAssistant,
 		Content: collected.Text,
 	})
 	return collected.Text, finalMessages, collected.FinishReason
@@ -2560,7 +2560,7 @@ func permissionActionFromSandbox(action sandbox.Action) PermissionAction {
 // through tool_search. Non-deferred tools (including tool_search) are always
 // exposed. The exposed slice is alpha-sorted by name, matching the legacy order
 // so the inactive path is stable.
-func partitionTools(registry *tools.Registry, permissionMode PermissionMode, options Options, loaded map[string]bool) ([]zeroruntime.ToolDefinition, string) {
+func partitionTools(registry *tools.Registry, permissionMode PermissionMode, options Options, loaded map[string]bool) ([]pvyruntime.ToolDefinition, string) {
 	return partitionToolsCached(registry, permissionMode, options, loaded, nil)
 }
 
@@ -2571,7 +2571,7 @@ func partitionTools(registry *tools.Registry, permissionMode PermissionMode, opt
 // rendering each tool's JSON-schema parameters — is memoized by tool name, since a
 // tool's advertised name/description/schema is stable for the run. defCache nil
 // disables caching (used by tests and the plain partitionTools entrypoint).
-func partitionToolsCached(registry *tools.Registry, permissionMode PermissionMode, options Options, loaded map[string]bool, defCache map[string]zeroruntime.ToolDefinition) ([]zeroruntime.ToolDefinition, string) {
+func partitionToolsCached(registry *tools.Registry, permissionMode PermissionMode, options Options, loaded map[string]bool, defCache map[string]pvyruntime.ToolDefinition) ([]pvyruntime.ToolDefinition, string) {
 	registeredTools := registry.All()
 
 	visible := make([]tools.Tool, 0, len(registeredTools))
@@ -2610,7 +2610,7 @@ func partitionToolsCached(registry *tools.Registry, permissionMode PermissionMod
 	// deferral there is no mid-session loading, so this is byte-stable across turns
 	// and byte-identical to the pre-deferral output.
 	if !active {
-		definitions := make([]zeroruntime.ToolDefinition, 0, len(visible))
+		definitions := make([]pvyruntime.ToolDefinition, 0, len(visible))
 		for _, tool := range visible {
 			if tool.Name() == tools.ToolSearchToolName {
 				continue
@@ -2637,8 +2637,8 @@ func partitionToolsCached(registry *tools.Registry, permissionMode PermissionMod
 	// (tool_search's discovery text still shrinks as tools load, so keeping it and
 	// the loaded tail AFTER the eager block preserves the eager tools' cache across a
 	// load; fully stabilizing the loader's own description is a scoped follow-up.)
-	eager := make([]zeroruntime.ToolDefinition, 0, len(visible))
-	loadedTail := make([]zeroruntime.ToolDefinition, 0)
+	eager := make([]pvyruntime.ToolDefinition, 0, len(visible))
+	loadedTail := make([]pvyruntime.ToolDefinition, 0)
 	var hiddenTools []tools.Tool
 	for _, tool := range visible {
 		name := tool.Name()
@@ -2675,9 +2675,9 @@ func partitionToolsCached(registry *tools.Registry, permissionMode PermissionMod
 	if discovery != "" {
 		description = discovery
 	}
-	definitions := make([]zeroruntime.ToolDefinition, 0, len(eager)+1+len(loadedTail))
+	definitions := make([]pvyruntime.ToolDefinition, 0, len(eager)+1+len(loadedTail))
 	definitions = append(definitions, eager...)
-	definitions = append(definitions, zeroruntime.ToolDefinition{
+	definitions = append(definitions, pvyruntime.ToolDefinition{
 		Name:        loader.Name(),
 		Description: description,
 		Parameters:  schemaToRuntimeMap(loader.Parameters()),
@@ -2693,7 +2693,7 @@ func partitionToolsCached(registry *tools.Registry, permissionMode PermissionMod
 // conversion (schemaToRuntimeMap) that would otherwise run for every tool on every
 // turn. tool_search is excluded by its callers (its description is dynamic), so it
 // never poisons the cache. A nil cache computes fresh.
-func cachedRuntimeToolDefinition(defCache map[string]zeroruntime.ToolDefinition, tool tools.Tool) zeroruntime.ToolDefinition {
+func cachedRuntimeToolDefinition(defCache map[string]pvyruntime.ToolDefinition, tool tools.Tool) pvyruntime.ToolDefinition {
 	if defCache == nil {
 		return runtimeToolDefinition(tool)
 	}
@@ -2707,8 +2707,8 @@ func cachedRuntimeToolDefinition(defCache map[string]zeroruntime.ToolDefinition,
 
 // runtimeToolDefinition renders a tool's advertised definition (name, description,
 // JSON-schema parameters) as sent to the provider.
-func runtimeToolDefinition(tool tools.Tool) zeroruntime.ToolDefinition {
-	return zeroruntime.ToolDefinition{
+func runtimeToolDefinition(tool tools.Tool) pvyruntime.ToolDefinition {
+	return pvyruntime.ToolDefinition{
 		Name:        tool.Name(),
 		Description: tool.Description(),
 		Parameters:  schemaToRuntimeMap(tool.Parameters()),
@@ -2869,8 +2869,8 @@ func loadedToolsFromResult(meta map[string]string) []string {
 // matching tool_result when the loop halts a turn before all calls have run.
 func appendAbortedToolResults(messages []Message, remaining []ToolCall) []Message {
 	for _, call := range remaining {
-		messages = append(messages, zeroruntime.Message{
-			Role:       zeroruntime.MessageRoleTool,
+		messages = append(messages, pvyruntime.Message{
+			Role:       pvyruntime.MessageRoleTool,
 			Content:    abortedToolResultNotice,
 			ToolCallID: call.ID,
 		})
@@ -2901,11 +2901,11 @@ func copyMessages(messages []Message) []Message {
 			copied[index].ToolCalls = append([]ToolCall{}, message.ToolCalls...)
 		}
 		if message.Reasoning != nil {
-			copied[index].Reasoning = append([]zeroruntime.ReasoningBlock{}, message.Reasoning...)
+			copied[index].Reasoning = append([]pvyruntime.ReasoningBlock{}, message.Reasoning...)
 		}
 		// Deep-copy image attachments (slice AND each Data byte slice) so the
 		// raw image bytes are never aliased across history/request/result copies.
-		copied[index].Images = zeroruntime.CloneImageBlocks(message.Images)
+		copied[index].Images = pvyruntime.CloneImageBlocks(message.Images)
 	}
 	return copied
 }

@@ -6,10 +6,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/background"
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/streamjson"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/background"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/streamjson"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 func TestRegisteredSpecialistToolsLifecycle(t *testing.T) {
@@ -44,7 +44,7 @@ func TestRegisteredSpecialistToolsLifecycle(t *testing.T) {
 	var backgroundArgs []string
 	var resumeArgs []string
 	executor := Executor{
-		BinaryPath:        "/usr/local/bin/zero",
+		BinaryPath:        "/usr/local/bin/pvyai",
 		SessionStore:      store,
 		BackgroundManager: manager,
 		NewSessionID:      func() (string, error) { return "child_task", nil },
@@ -52,7 +52,7 @@ func TestRegisteredSpecialistToolsLifecycle(t *testing.T) {
 			return LoadResult{Specialists: []Manifest{manifest}}, nil
 		},
 		LaunchBackground: func(binaryPath string, args []string, outputFile string, onExit func(exitCode int)) (int, error) {
-			if binaryPath != "/usr/local/bin/zero" {
+			if binaryPath != "/usr/local/bin/pvyai" {
 				t.Fatalf("background binaryPath = %q", binaryPath)
 			}
 			backgroundArgs = append([]string(nil), args...)
@@ -75,7 +75,7 @@ func TestRegisteredSpecialistToolsLifecycle(t *testing.T) {
 			}, "\n")), 0o600)
 		},
 		RunChild: func(ctx context.Context, binaryPath string, args []string, progress func(streamjson.Event)) (ChildRunResult, error) {
-			if binaryPath != "/usr/local/bin/zero" {
+			if binaryPath != "/usr/local/bin/pvyai" {
 				t.Fatalf("resume binaryPath = %q", binaryPath)
 			}
 			resumeArgs = append([]string(nil), args...)

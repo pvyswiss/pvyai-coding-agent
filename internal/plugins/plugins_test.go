@@ -389,10 +389,10 @@ func TestResolveRootsUsesConfigHomeAndProjectRoot(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ResolveRoots returned error: %v", err)
 	}
-	if roots[0].Path != filepath.Join(dir, "xdg", "zero", "plugins") {
+	if roots[0].Path != filepath.Join(dir, "xdg", "pvyai", "plugins") {
 		t.Fatalf("user root = %q", roots[0].Path)
 	}
-	if roots[1].Path != filepath.Join(dir, ".zero", "plugins") {
+	if roots[1].Path != filepath.Join(dir, ".pvyai", "plugins") {
 		t.Fatalf("project root = %q", roots[1].Path)
 	}
 }

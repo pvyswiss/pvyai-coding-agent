@@ -14,13 +14,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/mcp"
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/tui"
-	"github.com/Gitlawb/zero/internal/update"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/mcp"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tui"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/update"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 var errWriteFailed = errors.New("write failed")
@@ -85,14 +85,14 @@ func TestRunNoArgsLaunchesSetupTUIWithNilProviderWhenNoProviderConfigured(t *tes
 	var stderr bytes.Buffer
 	cwd := t.TempDir()
 	setCLIUserConfigRoot(t)
-	projectConfigPath := filepath.Join(cwd, ".zero", "config.json")
+	projectConfigPath := filepath.Join(cwd, ".pvyai", "config.json")
 	if err := os.MkdirAll(filepath.Dir(projectConfigPath), 0o700); err != nil {
 		t.Fatalf("create project config parent: %v", err)
 	}
 	if err := os.WriteFile(projectConfigPath, []byte("{}"), 0o600); err != nil {
 		t.Fatalf("write project config: %v", err)
 	}
-	userConfigPath := filepath.Join(t.TempDir(), "zero", "config.json")
+	userConfigPath := filepath.Join(t.TempDir(), "pvyai", "config.json")
 	var launchedOptions tui.Options
 
 	exitCode := runWithDeps([]string{}, &stdout, &stderr, appDeps{
@@ -105,7 +105,7 @@ func TestRunNoArgsLaunchesSetupTUIWithNilProviderWhenNoProviderConfigured(t *tes
 			}
 			return config.ResolvedConfig{MaxTurns: 12}, nil
 		},
-		newProvider: func(config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(config.ProviderProfile) (pvyruntime.Provider, error) {
 			t.Fatal("newProvider should not be called without a resolved provider")
 			return nil, nil
 		},
@@ -163,7 +163,7 @@ func TestRunNoArgsEntersSetupWhenResolveReportsNoActiveProvider(t *testing.T) {
 	var stderr bytes.Buffer
 	cwd := t.TempDir()
 	setCLIUserConfigRoot(t)
-	userConfigPath := filepath.Join(t.TempDir(), "zero", "config.json")
+	userConfigPath := filepath.Join(t.TempDir(), "pvyai", "config.json")
 	var launchedOptions tui.Options
 	launched := false
 
@@ -174,7 +174,7 @@ func TestRunNoArgsEntersSetupWhenResolveReportsNoActiveProvider(t *testing.T) {
 		resolveConfig: func(workspaceRoot string, overrides config.Overrides) (config.ResolvedConfig, error) {
 			return config.ResolvedConfig{}, fmt.Errorf("%w: active provider %q not found", config.ErrNoActiveProvider, "ghost")
 		},
-		newProvider: func(config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(config.ProviderProfile) (pvyruntime.Provider, error) {
 			t.Fatal("newProvider should not be called without a resolved provider")
 			return nil, nil
 		},
@@ -210,7 +210,7 @@ func TestRunNoArgsFallsBackToUsableProviderWhenNoneMarkedActive(t *testing.T) {
 	var stderr bytes.Buffer
 	cwd := t.TempDir()
 	setCLIUserConfigRoot(t)
-	userConfigPath := filepath.Join(t.TempDir(), "zero", "config.json")
+	userConfigPath := filepath.Join(t.TempDir(), "pvyai", "config.json")
 	var launchedOptions tui.Options
 	launched := false
 	var providerProfile config.ProviderProfile
@@ -235,7 +235,7 @@ func TestRunNoArgsFallsBackToUsableProviderWhenNoneMarkedActive(t *testing.T) {
 			return config.ResolvedConfig{Providers: []config.ProviderProfile{usable}},
 				fmt.Errorf("%w: active provider %q not found", config.ErrNoActiveProvider, "")
 		},
-		newProvider: func(profile config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(profile config.ProviderProfile) (pvyruntime.Provider, error) {
 			providerProfile = profile
 			return fake, nil
 		},
@@ -297,7 +297,7 @@ func TestRunNoArgsLaunchesTUIWithMCPState(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 	cwd := t.TempDir()
-	userConfigPath := filepath.Join(t.TempDir(), "zero", "config.json")
+	userConfigPath := filepath.Join(t.TempDir(), "pvyai", "config.json")
 	mcpConfig := config.MCPConfig{Servers: map[string]config.MCPServerConfig{
 		"docs": {Type: "stdio", Command: "docs-mcp"},
 	}}
@@ -380,7 +380,7 @@ func TestTUIMCPCommandUsesLastGoodConfigOnRefreshError(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 	cwd := t.TempDir()
-	userConfigPath := filepath.Join(t.TempDir(), "zero", "config.json")
+	userConfigPath := filepath.Join(t.TempDir(), "pvyai", "config.json")
 	startupConfig := config.MCPConfig{Servers: map[string]config.MCPServerConfig{
 		"docs": {Type: "stdio", Command: "docs-mcp"},
 	}}
@@ -445,7 +445,7 @@ func TestRunNoArgsClosesPartialMCPRuntimeWhenRegistrationFails(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 	cwd := t.TempDir()
-	userConfigPath := filepath.Join(t.TempDir(), "zero", "config.json")
+	userConfigPath := filepath.Join(t.TempDir(), "pvyai", "config.json")
 	permissionStore, err := mcp.NewPermissionStore(mcp.StoreOptions{FilePath: filepath.Join(t.TempDir(), "mcp-permissions.json")})
 	if err != nil {
 		t.Fatalf("NewPermissionStore() error = %v", err)
@@ -504,7 +504,7 @@ func TestRunNoArgsSoftFailsMCPTokenStoreInit(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 	cwd := t.TempDir()
-	userConfigPath := filepath.Join(t.TempDir(), "zero", "config.json")
+	userConfigPath := filepath.Join(t.TempDir(), "pvyai", "config.json")
 	permissionStore, err := mcp.NewPermissionStore(mcp.StoreOptions{FilePath: filepath.Join(t.TempDir(), "mcp-permissions.json")})
 	if err != nil {
 		t.Fatalf("NewPermissionStore() error = %v", err)
@@ -551,7 +551,7 @@ func TestRunNoArgsLaunchesTUIWithResolvedProviderMetadata(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 	cwd := t.TempDir()
-	userConfigPath := filepath.Join(t.TempDir(), "zero", "config.json")
+	userConfigPath := filepath.Join(t.TempDir(), "pvyai", "config.json")
 	fake := &cliFakeProvider{}
 	var launchedOptions tui.Options
 	var providerProfile config.ProviderProfile
@@ -577,7 +577,7 @@ func TestRunNoArgsLaunchesTUIWithResolvedProviderMetadata(t *testing.T) {
 				MaxTurns:    5,
 			}, nil
 		},
-		newProvider: func(profile config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(profile config.ProviderProfile) (pvyruntime.Provider, error) {
 			providerProfile = profile
 			return fake, nil
 		},
@@ -1007,7 +1007,7 @@ func TestRunSetupNoArgsForcesSetupTUI(t *testing.T) {
 				MaxTurns: 3,
 			}, nil
 		},
-		newProvider: func(config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(config.ProviderProfile) (pvyruntime.Provider, error) {
 			return &cliFakeProvider{}, nil
 		},
 		registerMCPTools: func(context.Context, *tools.Registry, config.MCPConfig, mcp.RegisterOptions) (mcpToolRuntime, error) {
@@ -1073,15 +1073,15 @@ func TestRunUpdateCheckTextAndJSON(t *testing.T) {
 	result := update.Result{
 		CurrentVersion: "dev",
 		LatestVersion:  "0.2.0",
-		ReleaseURL:     "https://github.com/Gitlawb/zero/releases/tag/v0.2.0",
+		ReleaseURL:     "https://github.com/pvyswiss/pvyai-coding-agent/releases/tag/v0.2.0",
 		TagName:        "v0.2.0",
 		ReleaseAsset: update.AssetCheck{
 			Platform:      "linux",
 			Arch:          "x64",
-			ArchiveName:   "zero-v0.2.0-linux-x64.tar.gz",
-			ArchiveURL:    "https://example.test/zero-v0.2.0-linux-x64.tar.gz",
-			ChecksumName:  "zero-v0.2.0-linux-x64.tar.gz.sha256",
-			ChecksumURL:   "https://example.test/zero-v0.2.0-linux-x64.tar.gz.sha256",
+			ArchiveName:   "pvyai-v0.2.0-linux-x64.tar.gz",
+			ArchiveURL:    "https://example.test/pvyai-v0.2.0-linux-x64.tar.gz",
+			ChecksumName:  "pvyai-v0.2.0-linux-x64.tar.gz.sha256",
+			ChecksumURL:   "https://example.test/pvyai-v0.2.0-linux-x64.tar.gz.sha256",
 			ArchiveFound:  true,
 			ChecksumFound: true,
 			Verified:      true,
@@ -1104,7 +1104,7 @@ func TestRunUpdateCheckTextAndJSON(t *testing.T) {
 	if !strings.Contains(stdout.String(), "Update available: dev -> 0.2.0") {
 		t.Fatalf("unexpected update text: %q", stdout.String())
 	}
-	if !strings.Contains(stdout.String(), "Release asset: zero-v0.2.0-linux-x64.tar.gz") || !strings.Contains(stdout.String(), "Checksum asset: zero-v0.2.0-linux-x64.tar.gz.sha256") {
+	if !strings.Contains(stdout.String(), "Release asset: pvyai-v0.2.0-linux-x64.tar.gz") || !strings.Contains(stdout.String(), "Checksum asset: pvyai-v0.2.0-linux-x64.tar.gz.sha256") {
 		t.Fatalf("unexpected update asset text: %q", stdout.String())
 	}
 	if stderr.Len() != 0 {
@@ -1310,7 +1310,7 @@ func TestRunUpdateReportsUpToDate(t *testing.T) {
 			return update.Result{
 				CurrentVersion:  "dev",
 				LatestVersion:   "dev",
-				ReleaseURL:      "https://github.com/Gitlawb/zero/releases/tag/dev",
+				ReleaseURL:      "https://github.com/pvyswiss/pvyai-coding-agent/releases/tag/dev",
 				TagName:         "dev",
 				UpdateAvailable: false,
 			}, nil
@@ -1337,7 +1337,7 @@ func TestRunUpdateApplyTextAndJSON(t *testing.T) {
 		},
 		Applied:       true,
 		InstallMethod: update.InstallMethodStandalone,
-		BinaryPath:    "/usr/local/bin/zero",
+		BinaryPath:    "/usr/local/bin/pvyai",
 		Message:       "updated to 0.2.0",
 	}
 	var gotOptions update.Options
@@ -1489,7 +1489,7 @@ func assertHelpOutput(t *testing.T, args []string) {
 
 	output := stdout.String()
 	for _, want := range []string{
-		"ZERO terminal coding agent",
+		"PVYai terminal coding agent",
 		"Usage:",
 		"zero [command]",
 		"exec",
@@ -1579,8 +1579,8 @@ func TestRunRejectsUnknownCommand(t *testing.T) {
 
 type cliFakeProvider struct{}
 
-func (cliFakeProvider) StreamCompletion(context.Context, zeroruntime.CompletionRequest) (<-chan zeroruntime.StreamEvent, error) {
-	ch := make(chan zeroruntime.StreamEvent)
+func (cliFakeProvider) StreamCompletion(context.Context, pvyruntime.CompletionRequest) (<-chan pvyruntime.StreamEvent, error) {
+	ch := make(chan pvyruntime.StreamEvent)
 	close(ch)
 	return ch, nil
 }
@@ -1636,7 +1636,7 @@ func assertAgentOptions(t *testing.T, options tui.Options, maxTurns int, permiss
 
 func TestRunThemeFlagPopulatesTUIOptions(t *testing.T) {
 	// The --theme flag must reach tui.Options.Theme (resolveThemeMode prefers it
-	// over ZERO_THEME). Previously Options.Theme was read but never set by the CLI.
+	// over PVYAI_THEME). Previously Options.Theme was read but never set by the CLI.
 	for _, tc := range []struct {
 		args []string
 		want string
@@ -1711,11 +1711,11 @@ func TestRunNoArgsEntersSetupWhenActiveProviderMissesModel(t *testing.T) {
 		resolveConfig: func(string, config.Overrides) (config.ResolvedConfig, error) {
 			return config.Resolve(config.ResolveOptions{UserConfigPath: brokenConfig, Env: map[string]string{}})
 		},
-		newProvider: func(config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(config.ProviderProfile) (pvyruntime.Provider, error) {
 			t.Fatal("newProvider must not be called without a resolved provider")
 			return nil, nil
 		},
-		userConfigPath: func() (string, error) { return filepath.Join(t.TempDir(), "zero", "config.json"), nil },
+		userConfigPath: func() (string, error) { return filepath.Join(t.TempDir(), "pvyai", "config.json"), nil },
 		registerMCPTools: func(context.Context, *tools.Registry, config.MCPConfig, mcp.RegisterOptions) (mcpToolRuntime, error) {
 			return noopMCPRuntime{}, nil
 		},

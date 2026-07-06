@@ -13,8 +13,8 @@ import (
 
 	"charm.land/lipgloss/v2"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 func displayValue(value string, fallback string) string {
@@ -342,7 +342,7 @@ var userHomeDir = os.UserHomeDir
 // trailing segments with a `…/` prefix:
 //
 //	under cwd      → examples/calc/calc.go
-//	under $HOME    → ~/projects/zero/main.go
+//	under $HOME    → ~/projects/pvyai/main.go
 //	elsewhere      → …/other/calc.go   (last displayPathTailSegments segments)
 //	already short  → returned unchanged (relative input, no separators, etc.)
 //
@@ -846,7 +846,7 @@ func renderMCPManagerCard(text string, width int) string {
 			lines = append(lines, zeroTheme.ink.Bold(true).Render(line))
 		case isMCPManagerHeading(trimmed):
 			lines = append(lines, zeroTheme.accent.Bold(true).Render(line))
-		case strings.Contains(trimmed, "zero mcp "):
+		case strings.Contains(trimmed, "pvyai mcp "):
 			lines = append(lines, zeroTheme.ink.Render(line))
 		case strings.HasPrefix(trimmed, "›") || strings.HasPrefix(trimmed, "- "):
 			lines = append(lines, zeroTheme.ink.Render(line))

@@ -15,7 +15,7 @@ func (store *Store) CreateChild(parentSessionID string, input ChildInput) (Metad
 		return Metadata{}, err
 	}
 	if parent == nil {
-		return Metadata{}, fmt.Errorf("zero session not found: %s", parentSessionID)
+		return Metadata{}, fmt.Errorf("pvyai session not found: %s", parentSessionID)
 	}
 	parentEvents, err := store.ReadEvents(parent.SessionID)
 	if err != nil {
@@ -69,7 +69,7 @@ func (store *Store) ListChildren(parentSessionID string) ([]Metadata, error) {
 		return nil, err
 	}
 	if parent == nil {
-		return nil, fmt.Errorf("zero session not found: %s", parentSessionID)
+		return nil, fmt.Errorf("pvyai session not found: %s", parentSessionID)
 	}
 	all, err := store.List()
 	if err != nil {
@@ -113,7 +113,7 @@ func (store *Store) Lineage(sessionID string) ([]Metadata, error) {
 			return nil, err
 		}
 		if session == nil {
-			return nil, fmt.Errorf("zero session not found: %s", currentID)
+			return nil, fmt.Errorf("pvyai session not found: %s", currentID)
 		}
 		lineage = append(lineage, *session)
 		currentID = session.ParentSessionID
@@ -139,7 +139,7 @@ func (store *Store) Tree(rootSessionID string) (TreeNode, error) {
 	if root == nil {
 		// Get returns (nil, nil) for a session that does not exist; treat that as a
 		// clean not-found rather than dereferencing nil below.
-		return TreeNode{}, fmt.Errorf("zero session not found: %s", rootSessionID)
+		return TreeNode{}, fmt.Errorf("pvyai session not found: %s", rootSessionID)
 	}
 	// Snapshot every session once and index children by parent in memory. The
 	// previous recursion called ListChildren per node, and each ListChildren ran a
@@ -173,7 +173,7 @@ func (store *Store) treeFrom(sessionID string, byID map[string]Metadata, childre
 	seen[sessionID] = true
 	session, ok := byID[sessionID]
 	if !ok {
-		return TreeNode{}, fmt.Errorf("zero session not found: %s", sessionID)
+		return TreeNode{}, fmt.Errorf("pvyai session not found: %s", sessionID)
 	}
 	children := childrenByParent[sessionID]
 	node := TreeNode{Session: session, Children: make([]TreeNode, 0, len(children))}
@@ -198,7 +198,7 @@ func childTitle(title string, agentName string, parentTitle string) string {
 	if trimmed := strings.TrimSpace(parentTitle); trimmed != "" {
 		return trimmed + " (child)"
 	}
-	return "Zero child session"
+	return "PVYai child session"
 }
 
 func childLinkPayload(parent *Metadata, child Metadata, input ChildInput, lastParentEvent Event) map[string]any {

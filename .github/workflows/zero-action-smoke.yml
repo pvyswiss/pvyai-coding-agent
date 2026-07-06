@@ -48,7 +48,7 @@ jobs:
               "prompt", "prompt-file", "provider", "api-key", "api-key-env",
               "model", "mode", "auto", "self-correct", "add-dir", "worktree",
               "output-format", "post-to", "slack-webhook-url", "github-token",
-              "working-directory", "zero-version", "zero-repo",
+              "working-directory", pvyai-version", pvyai-repo",
           ]
           missing = [name for name in expected_inputs if name not in inputs]
           assert not missing, f"action.yml is missing inputs: {missing}"

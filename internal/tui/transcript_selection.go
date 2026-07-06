@@ -12,7 +12,7 @@ import (
 	"github.com/atotto/clipboard"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 type transcriptSelectionPoint struct {

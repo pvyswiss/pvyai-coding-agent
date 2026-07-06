@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/update"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/update"
 )
 
 type updateOptions struct {

@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/specialist"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/specialist"
 )
 
 func parseExecArgs(args []string) (execOptions, bool, error) {

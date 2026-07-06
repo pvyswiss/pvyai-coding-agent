@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // Stale tool-output pruning reclaims context at ZERO token/latency cost before
@@ -43,7 +43,7 @@ func prunedPlaceholder(toolName string, originalTokens int) string {
 //
 // It never drops a message, never touches non-tool messages, and never prunes
 // an already-pruned body — so it is idempotent and safe to run every turn.
-func pruneStaleToolOutput(messages []zeroruntime.Message, preserveLast int) ([]zeroruntime.Message, int) {
+func pruneStaleToolOutput(messages []pvyruntime.Message, preserveLast int) ([]pvyruntime.Message, int) {
 	if len(messages) == 0 {
 		return messages, 0
 	}
@@ -64,7 +64,7 @@ func pruneStaleToolOutput(messages []zeroruntime.Message, preserveLast int) ([]z
 
 	for i := len(messages) - 1; i >= 0; i-- {
 		msg := messages[i]
-		if msg.Role != zeroruntime.MessageRoleTool {
+		if msg.Role != pvyruntime.MessageRoleTool {
 			continue
 		}
 		bodyTokens := ApproxTextTokens(msg.Content)
@@ -89,7 +89,7 @@ func pruneStaleToolOutput(messages []zeroruntime.Message, preserveLast int) ([]z
 	}
 
 	// Copy-on-write so we never mutate the caller's slice in place.
-	out := make([]zeroruntime.Message, len(messages))
+	out := make([]pvyruntime.Message, len(messages))
 	copy(out, messages)
 	reclaimed := 0
 	for _, c := range candidates {
@@ -103,7 +103,7 @@ func pruneStaleToolOutput(messages []zeroruntime.Message, preserveLast int) ([]z
 
 // toolNameForResult finds the tool name for the tool-result message at index by
 // matching its ToolCallID against the assistant tool_call that produced it.
-func toolNameForResult(messages []zeroruntime.Message, index int) string {
+func toolNameForResult(messages []pvyruntime.Message, index int) string {
 	id := messages[index].ToolCallID
 	if id == "" {
 		return ""

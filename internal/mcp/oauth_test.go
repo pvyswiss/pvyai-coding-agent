@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
 )
 
 func TestDiscoverParsesMetadata(t *testing.T) {

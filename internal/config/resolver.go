@@ -9,10 +9,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/notify"
-	"github.com/Gitlawb/zero/internal/providercatalog"
-	"github.com/Gitlawb/zero/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/notify"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 // ErrNoActiveProvider marks a resolve failure caused solely by a missing or

@@ -3,7 +3,7 @@ package tools
 import (
 	"strings"
 
-	zeroSandbox "github.com/Gitlawb/zero/internal/sandbox"
+	pvySandbox "github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 var sandboxDeniedKeywords = []string{
@@ -25,7 +25,7 @@ var sandboxNetworkDeniedKeywords = []string{
 	"network is unreachable",
 }
 
-func markLikelySandboxDenial(meta map[string]string, plan zeroSandbox.CommandPlan, exitCode int, sections ...string) {
+func markLikelySandboxDenial(meta map[string]string, plan pvySandbox.CommandPlan, exitCode int, sections ...string) {
 	kind, keyword := sandboxDenialKind(plan, exitCode, sections...)
 	if meta == nil || kind == "" {
 		return
@@ -38,12 +38,12 @@ func markLikelySandboxDenial(meta map[string]string, plan zeroSandbox.CommandPla
 	}
 }
 
-func likelySandboxDenied(plan zeroSandbox.CommandPlan, exitCode int, sections ...string) bool {
+func likelySandboxDenied(plan pvySandbox.CommandPlan, exitCode int, sections ...string) bool {
 	kind, _ := sandboxDenialKind(plan, exitCode, sections...)
 	return kind != ""
 }
 
-func sandboxDenialKind(plan zeroSandbox.CommandPlan, exitCode int, sections ...string) (string, string) {
+func sandboxDenialKind(plan pvySandbox.CommandPlan, exitCode int, sections ...string) (string, string) {
 	if !plan.Wrapped {
 		return "", ""
 	}
@@ -63,14 +63,14 @@ func sandboxDenialKind(plan zeroSandbox.CommandPlan, exitCode int, sections ...s
 		}
 		return SandboxDenialKindSandbox, sandboxDenialKeyword(sections...)
 	}
-	if plan.TargetBackend == zeroSandbox.BackendLinuxBwrap && exitCode == 128+31 {
+	if plan.TargetBackend == pvySandbox.BackendLinuxBwrap && exitCode == 128+31 {
 		return SandboxDenialKindSandbox, "seccomp"
 	}
 	return "", ""
 }
 
-func networkDeniedBySandbox(plan zeroSandbox.CommandPlan) bool {
-	return plan.PermissionProfile.Network.Mode == zeroSandbox.NetworkDeny || plan.Policy.Network == zeroSandbox.NetworkDeny
+func networkDeniedBySandbox(plan pvySandbox.CommandPlan) bool {
+	return plan.PermissionProfile.Network.Mode == pvySandbox.NetworkDeny || plan.Policy.Network == pvySandbox.NetworkDeny
 }
 
 func sandboxNetworkDenialKeyword(sections ...string) string {

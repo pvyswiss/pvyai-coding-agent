@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 )
 
 func TestRunSessionsListsLineageAndTree(t *testing.T) {

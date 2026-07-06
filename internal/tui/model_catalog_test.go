@@ -3,8 +3,8 @@ package tui
 import (
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/providermodeldiscovery"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providermodeldiscovery"
 )
 
 func TestModelContextWindowUsesCachedCatalog(t *testing.T) {

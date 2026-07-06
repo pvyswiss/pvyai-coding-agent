@@ -25,7 +25,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/daemon"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/daemon"
 )
 
 // Env vars the bridge reads for its bearer token.

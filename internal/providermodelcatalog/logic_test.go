@@ -6,8 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
 )
 
 func TestLooksLikeCodingModelID(t *testing.T) {
@@ -54,7 +54,7 @@ func TestDefaultedOpenGatewayURL(t *testing.T) {
 	if got := defaultedOpenGatewayURL(providercatalog.Descriptor{DefaultBaseURL: "https://gw.example.com/v1"}, ""); got != "https://gw.example.com/zero/models.json" {
 		t.Fatalf("derived = %q", got)
 	}
-	if got := defaultedOpenGatewayURL(providercatalog.Descriptor{DefaultBaseURL: "::not a url"}, ""); got != "https://opengateway.gitlawb.com/zero/models.json" {
+	if got := defaultedOpenGatewayURL(providercatalog.Descriptor{DefaultBaseURL: "::not a url"}, ""); got != "https://opengateway.pvyswiss.com/pvyai/models.json" {
 		t.Fatalf("fallback = %q", got)
 	}
 }

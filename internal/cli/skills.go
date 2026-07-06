@@ -5,8 +5,8 @@ import (
 	"io"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/redaction"
-	"github.com/Gitlawb/zero/internal/skills"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/skills"
 )
 
 type skillListOptions struct {
@@ -27,7 +27,7 @@ func runSkills(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) 
 			command, rest = args[0], args[1:]
 		default:
 			// Treat a leading flag (e.g. --json) as belonging to the implicit
-			// `list` command so `zero skills --json` works like `zero plugins`.
+			// `list` command so `pvyai skills --json` works like `pvyai plugins`.
 			if !strings.HasPrefix(args[0], "-") {
 				return writeExecUsageError(stderr, fmt.Sprintf("unknown skills subcommand %q", args[0]))
 			}
@@ -99,7 +99,7 @@ func formatSkillList(discovered []skills.Skill, dir string) string {
 	if len(discovered) == 0 {
 		return fmt.Sprintf("No Zero skills found in %s.", dir)
 	}
-	lines := []string{"Zero Skills:"}
+	lines := []string{"PVYai Skills:"}
 	for _, skill := range discovered {
 		line := "  " + skill.Name
 		if skill.Description != "" {
@@ -128,7 +128,7 @@ func parseSkillListArgs(args []string) (skillListOptions, bool, error) {
 
 func writeSkillsHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero skills <command>
+  pvyai skills <command>
 
 Commands:
   list                 List discovered Zero skills
@@ -141,7 +141,7 @@ Commands:
 
 func writeSkillsListHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero skills list [flags]
+  pvyai skills list [flags]
 
 Flags:
       --json    Print discovered skills as JSON

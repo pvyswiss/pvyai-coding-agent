@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/oauth"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/oauth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 func TestNewCreatesOpenAIProviderWithFactoryOptions(t *testing.T) {
@@ -33,8 +33,8 @@ func TestNewCreatesOpenAIProviderWithFactoryOptions(t *testing.T) {
 		t.Fatalf("New() error = %v", err)
 	}
 
-	stream, err := provider.StreamCompletion(context.Background(), zeroruntime.CompletionRequest{
-		Messages: []zeroruntime.Message{{Role: zeroruntime.MessageRoleUser, Content: "hello"}},
+	stream, err := provider.StreamCompletion(context.Background(), pvyruntime.CompletionRequest{
+		Messages: []pvyruntime.Message{{Role: pvyruntime.MessageRoleUser, Content: "hello"}},
 	})
 	if err != nil {
 		t.Fatalf("StreamCompletion() error = %v", err)
@@ -75,8 +75,8 @@ func TestNewThreadsCustomProviderHeaders(t *testing.T) {
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
 	}
-	stream, err := provider.StreamCompletion(context.Background(), zeroruntime.CompletionRequest{
-		Messages: []zeroruntime.Message{{Role: zeroruntime.MessageRoleUser, Content: "hello"}},
+	stream, err := provider.StreamCompletion(context.Background(), pvyruntime.CompletionRequest{
+		Messages: []pvyruntime.Message{{Role: pvyruntime.MessageRoleUser, Content: "hello"}},
 	})
 	if err != nil {
 		t.Fatalf("StreamCompletion() error = %v", err)
@@ -154,8 +154,8 @@ func TestNewResolvesKnownModelToAPIModelAndProvider(t *testing.T) {
 		t.Fatalf("New() error = %v", err)
 	}
 
-	stream, err := provider.StreamCompletion(context.Background(), zeroruntime.CompletionRequest{
-		Messages: []zeroruntime.Message{{Role: zeroruntime.MessageRoleUser, Content: "hello"}},
+	stream, err := provider.StreamCompletion(context.Background(), pvyruntime.CompletionRequest{
+		Messages: []pvyruntime.Message{{Role: pvyruntime.MessageRoleUser, Content: "hello"}},
 	})
 	if err != nil {
 		t.Fatalf("StreamCompletion() error = %v", err)
@@ -206,8 +206,8 @@ func TestNewCreatesGeminiProviderFromFactoryOptions(t *testing.T) {
 		t.Fatalf("New() error = %v", err)
 	}
 
-	stream, err := provider.StreamCompletion(context.Background(), zeroruntime.CompletionRequest{
-		Messages: []zeroruntime.Message{{Role: zeroruntime.MessageRoleUser, Content: "hello"}},
+	stream, err := provider.StreamCompletion(context.Background(), pvyruntime.CompletionRequest{
+		Messages: []pvyruntime.Message{{Role: pvyruntime.MessageRoleUser, Content: "hello"}},
 	})
 	if err != nil {
 		t.Fatalf("StreamCompletion() error = %v", err)
@@ -269,8 +269,8 @@ func TestNewRoutesChatGPTCatalogToCodexProvider(t *testing.T) {
 	// OAuth token and the "want empty chatgpt-account-id" assertion fails locally
 	// (it still passes in CI, where no login is stored). Mirrors the isolation in
 	// TestNewRoutesChatGPTCatalogWithStoredAccountID.
-	t.Setenv("ZERO_OAUTH_STORAGE", "file")
-	t.Setenv("ZERO_OAUTH_TOKENS_PATH", t.TempDir()+"/tokens.json")
+	t.Setenv("PVYAI_OAUTH_STORAGE", "file")
+	t.Setenv("PVYAI_OAUTH_TOKENS_PATH", t.TempDir()+"/tokens.json")
 
 	transport := &captureTransport{
 		responseBody: "data: [DONE]\n\n",
@@ -288,8 +288,8 @@ func TestNewRoutesChatGPTCatalogToCodexProvider(t *testing.T) {
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
 	}
-	stream, err := provider.StreamCompletion(context.Background(), zeroruntime.CompletionRequest{
-		Messages: []zeroruntime.Message{{Role: zeroruntime.MessageRoleUser, Content: "hello"}},
+	stream, err := provider.StreamCompletion(context.Background(), pvyruntime.CompletionRequest{
+		Messages: []pvyruntime.Message{{Role: pvyruntime.MessageRoleUser, Content: "hello"}},
 	})
 	if err != nil {
 		t.Fatalf("StreamCompletion() error = %v", err)
@@ -351,8 +351,8 @@ func TestNewRoutesChatGPTCatalogWithStoredAccountID(t *testing.T) {
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
 	}
-	stream, err := provider.StreamCompletion(context.Background(), zeroruntime.CompletionRequest{
-		Messages: []zeroruntime.Message{{Role: zeroruntime.MessageRoleUser, Content: "hi"}},
+	stream, err := provider.StreamCompletion(context.Background(), pvyruntime.CompletionRequest{
+		Messages: []pvyruntime.Message{{Role: pvyruntime.MessageRoleUser, Content: "hi"}},
 	})
 	if err != nil {
 		t.Fatalf("StreamCompletion() error = %v", err)
@@ -409,15 +409,15 @@ func (transport *captureTransport) body() io.Reader {
 }
 
 // newOAuthStoreForTest pins the OAuth token store to a plain temp FILE and
-// returns a Store on it. Pinning ZERO_OAUTH_STORAGE matters as much as the
+// returns a Store on it. Pinning PVYAI_OAUTH_STORAGE matters as much as the
 // path: an inherited "keyring" value would send NewStore to the OS keychain
-// and ignore ZERO_OAUTH_TOKENS_PATH entirely, making the test read/write the
+// and ignore PVYAI_OAUTH_TOKENS_PATH entirely, making the test read/write the
 // developer's real logins. Exists so the chatgpt factory tests can seed a
 // token without copying the path-handling dance from internal/cli.
 func newOAuthStoreForTest(t *testing.T) (*oauth.Store, error) {
 	t.Helper()
-	t.Setenv("ZERO_OAUTH_STORAGE", "file")
-	t.Setenv("ZERO_OAUTH_TOKENS_PATH", t.TempDir()+"/tokens.json")
+	t.Setenv("PVYAI_OAUTH_STORAGE", "file")
+	t.Setenv("PVYAI_OAUTH_TOKENS_PATH", t.TempDir()+"/tokens.json")
 	return oauth.NewStore(oauth.StoreOptions{})
 }
 

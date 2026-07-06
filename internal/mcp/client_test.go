@@ -15,7 +15,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
 )
 
 func TestStdioClientListsAndCallsTools(t *testing.T) {
@@ -31,7 +31,7 @@ func TestStdioClientListsAndCallsTools(t *testing.T) {
 		Type:    ServerTypeStdio,
 		Command: executable,
 		Args:    []string{"-test.run=TestMCPStdioHelperProcess", "--"},
-		Env:     map[string]string{"ZERO_MCP_STDIO_HELPER": "1"},
+		Env:     map[string]string{"PVYAI_MCP_STDIO_HELPER": "1"},
 	})
 	if err != nil {
 		t.Fatalf("Connect() error = %v", err)
@@ -53,7 +53,7 @@ func TestStdioClientListsAndCallsTools(t *testing.T) {
 		t.Fatalf("lookup schema = %#v, want object schema", listed[0].InputSchema)
 	}
 
-	result, err := client.CallTool(ctx, "lookup", map[string]any{"query": "zero"})
+	result, err := client.CallTool(ctx, "lookup", map[string]any{"query": "pvyai"})
 	if err != nil {
 		t.Fatalf("CallTool() error = %v", err)
 	}
@@ -78,7 +78,7 @@ func TestStdioClientCloseAllowsConcurrentCallers(t *testing.T) {
 		Type:    ServerTypeStdio,
 		Command: executable,
 		Args:    []string{"-test.run=TestMCPStdioHelperProcess", "--"},
-		Env:     map[string]string{"ZERO_MCP_STDIO_HELPER": "1"},
+		Env:     map[string]string{"PVYAI_MCP_STDIO_HELPER": "1"},
 	})
 	if err != nil {
 		t.Fatalf("Connect() error = %v", err)
@@ -165,7 +165,7 @@ func TestHTTPClientListsAndCallsTools(t *testing.T) {
 				http.Error(response, "bad params", http.StatusBadRequest)
 				return
 			}
-			if params.Name != "lookup" || params.Arguments["query"] != "zero" {
+			if params.Name != "lookup" || params.Arguments["query"] != "pvyai" {
 				t.Errorf("tools/call params = %#v", params)
 				http.Error(response, "bad tool call", http.StatusBadRequest)
 				return
@@ -203,7 +203,7 @@ func TestHTTPClientListsAndCallsTools(t *testing.T) {
 		t.Fatalf("listed tools = %#v, want lookup", listed)
 	}
 
-	result, err := client.CallTool(ctx, "lookup", map[string]any{"query": "zero"})
+	result, err := client.CallTool(ctx, "lookup", map[string]any{"query": "pvyai"})
 	if err != nil {
 		t.Fatalf("CallTool() error = %v", err)
 	}
@@ -371,7 +371,7 @@ func TestSSEClientListsAndCallsToolsFromRemoteStream(t *testing.T) {
 				http.Error(response, "bad params", http.StatusBadRequest)
 				return
 			}
-			if params.Name != "lookup" || params.Arguments["query"] != "zero" {
+			if params.Name != "lookup" || params.Arguments["query"] != "pvyai" {
 				t.Errorf("tools/call params = %#v", params)
 				http.Error(response, "bad tool call", http.StatusBadRequest)
 				return
@@ -411,7 +411,7 @@ func TestSSEClientListsAndCallsToolsFromRemoteStream(t *testing.T) {
 		t.Fatalf("listed tools = %#v, want lookup", listed)
 	}
 
-	result, err := client.CallTool(ctx, "lookup", map[string]any{"query": "zero"})
+	result, err := client.CallTool(ctx, "lookup", map[string]any{"query": "pvyai"})
 	if err != nil {
 		t.Fatalf("CallTool() error = %v", err)
 	}
@@ -582,7 +582,7 @@ func (closer errorCloser) Close() error {
 }
 
 func TestMCPStdioHelperProcess(t *testing.T) {
-	if os.Getenv("ZERO_MCP_STDIO_HELPER") != "1" {
+	if os.Getenv("PVYAI_MCP_STDIO_HELPER") != "1" {
 		return
 	}
 
@@ -745,7 +745,7 @@ func TestSchemaFromMCPInputSchema(t *testing.T) {
 			"query": map[string]any{
 				"type":        "string",
 				"description": "Search query",
-				"enum":        []any{"zero", "docs"},
+				"enum":        []any{"pvyai", "docs"},
 			},
 			"limit": map[string]any{
 				"type":    "integer",

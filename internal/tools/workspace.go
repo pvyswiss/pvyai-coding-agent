@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/workspaceindex"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/workspaceindex"
 )
 
 var ignoredDirectories = map[string]bool{

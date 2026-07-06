@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/oauth"
-	"github.com/Gitlawb/zero/internal/providers/providerio"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/oauth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providers/providerio"
 )
 
 // oauthLoginForProfile resolves the user's OAuth login for a provider ONCE and

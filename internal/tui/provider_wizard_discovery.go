@@ -8,10 +8,10 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/providercatalog"
-	"github.com/Gitlawb/zero/internal/providermodeldiscovery"
-	"github.com/Gitlawb/zero/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providermodeldiscovery"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
 )
 
 type providerModelsDiscoveredMsg struct {

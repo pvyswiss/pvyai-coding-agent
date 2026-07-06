@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"github.com/Gitlawb/zero/internal/hooks"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/hooks"
 )
 
 // newHookDispatcher builds the per-session hooks dispatcher for a workspace,

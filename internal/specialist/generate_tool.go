@@ -6,7 +6,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 type GenerateTool struct {

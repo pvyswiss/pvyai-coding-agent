@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/plugins"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/plugins"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 func TestScaffoldCreatesManifestAndStub(t *testing.T) {

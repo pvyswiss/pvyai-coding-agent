@@ -15,11 +15,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/providercatalog"
-	"github.com/Gitlawb/zero/internal/providers"
-	"github.com/Gitlawb/zero/internal/providers/providerio"
-	"github.com/Gitlawb/zero/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providers"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providers/providerio"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
 )
 
 type Status string

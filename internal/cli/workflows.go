@@ -8,14 +8,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/redaction"
-	"github.com/Gitlawb/zero/internal/selfverify"
-	"github.com/Gitlawb/zero/internal/testrunner"
-	"github.com/Gitlawb/zero/internal/verify"
-	"github.com/Gitlawb/zero/internal/worktrees"
-	"github.com/Gitlawb/zero/internal/zerogit"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/selfverify"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/testrunner"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/verify"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/worktrees"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvygit"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 type worktreeCommandOptions struct {
@@ -190,7 +190,7 @@ func runChanges(args []string, stdout io.Writer, stderr io.Writer, deps appDeps)
 	}
 	switch command {
 	case "inspect", "status":
-		summary, err := deps.inspectChanges(context.Background(), zerogit.InspectOptions{
+		summary, err := deps.inspectChanges(context.Background(), pvygit.InspectOptions{
 			Cwd:          workspaceRoot,
 			BaseRef:      options.baseRef,
 			MaxDiffBytes: options.maxDiffBytes,
@@ -200,7 +200,7 @@ func runChanges(args []string, stdout io.Writer, stderr io.Writer, deps appDeps)
 		}
 		safeSummary := redactChangeSummary(summary)
 		if options.json {
-			if err := writePrettyJSON(stdout, zerogit.SnapshotFromSummary(safeSummary)); err != nil {
+			if err := writePrettyJSON(stdout, pvygit.SnapshotFromSummary(safeSummary)); err != nil {
 				return exitCrash
 			}
 			return exitSuccess
@@ -212,7 +212,7 @@ func runChanges(args []string, stdout io.Writer, stderr io.Writer, deps appDeps)
 	case "commit":
 		var message string
 		if options.auto {
-			summary, err := deps.inspectChanges(context.Background(), zerogit.InspectOptions{
+			summary, err := deps.inspectChanges(context.Background(), pvygit.InspectOptions{
 				Cwd:          workspaceRoot,
 				MaxDiffBytes: options.maxDiffBytes,
 			})
@@ -253,7 +253,7 @@ func runChanges(args []string, stdout io.Writer, stderr io.Writer, deps appDeps)
 			message = options.message
 		}
 
-		result, err := deps.commitChanges(context.Background(), zerogit.CommitOptions{
+		result, err := deps.commitChanges(context.Background(), pvygit.CommitOptions{
 			Cwd:          workspaceRoot,
 			Message:      message,
 			DryRun:       options.dryRun,
@@ -613,7 +613,7 @@ func redactVerifyLoopReport(report selfverify.Report) selfverify.Report {
 	return report
 }
 
-func redactChangeSummary(summary zerogit.ChangeSummary) zerogit.ChangeSummary {
+func redactChangeSummary(summary pvygit.ChangeSummary) pvygit.ChangeSummary {
 	summary.Root = redactCLIString(summary.Root)
 	summary.Base = redactCLIString(summary.Base)
 	summary.Branch = redactCLIString(summary.Branch)
@@ -627,7 +627,7 @@ func redactChangeSummary(summary zerogit.ChangeSummary) zerogit.ChangeSummary {
 	return summary
 }
 
-func redactCommitResult(result zerogit.CommitResult) zerogit.CommitResult {
+func redactCommitResult(result pvygit.CommitResult) pvygit.CommitResult {
 	result.Root = redactCLIString(result.Root)
 	result.Message = redactCLIString(result.Message)
 	result.CommitHash = redactCLIString(result.CommitHash)
@@ -643,7 +643,7 @@ func redactCLIString(value string) string {
 
 func formatWorktreeResult(result worktrees.Result) string {
 	lines := []string{
-		"Zero worktree ready",
+		"PVYai worktree ready",
 		"name: " + result.Name,
 		"path: " + result.Path,
 		"repo: " + result.RepoRoot,
@@ -662,7 +662,7 @@ func formatWorktreeResult(result worktrees.Result) string {
 
 func formatVerifyReport(report verify.Report) string {
 	lines := []string{
-		"Zero verification",
+		"PVYai verification",
 		"root: " + report.Root,
 		fmt.Sprintf("summary: %d total, %d passed, %d failed, %d errors", report.Summary.Total, report.Summary.Passed, report.Summary.Failed, report.Summary.Errors),
 	}
@@ -702,7 +702,7 @@ func formatVerifyTestSummary(summary *testrunner.Summary) string {
 
 func formatVerifyLoopReport(report selfverify.Report) string {
 	lines := []string{
-		"Zero self-verification",
+		"PVYai self-verification",
 	}
 	if report.Root != "" {
 		lines = append(lines, "root: "+report.Root)
@@ -743,9 +743,9 @@ func formatRemediation(remediation selfverify.Remediation) string {
 	return strings.Join(details, " - ")
 }
 
-func formatChangeSummary(summary zerogit.ChangeSummary) string {
+func formatChangeSummary(summary pvygit.ChangeSummary) string {
 	lines := []string{
-		"Zero changes",
+		"PVYai changes",
 		"root: " + summary.Root,
 		fmt.Sprintf("files: %d changed", len(summary.Files)),
 	}
@@ -768,9 +768,9 @@ func formatChangeSummary(summary zerogit.ChangeSummary) string {
 	return strings.Join(lines, "\n")
 }
 
-func formatCommitResult(result zerogit.CommitResult) string {
+func formatCommitResult(result pvygit.CommitResult) string {
 	lines := []string{
-		"Zero changes commit",
+		"PVYai changes commit",
 		"root: " + result.Root,
 		"message: " + result.Message,
 		fmt.Sprintf("dry-run: %t", result.DryRun),
@@ -862,7 +862,7 @@ func runChangesPush(args []string, stdout io.Writer, stderr io.Writer, deps appD
 		return writeExecUsageError(stderr, err.Error())
 	}
 
-	result, err := deps.pushChanges(context.Background(), zerogit.PushOptions{
+	result, err := deps.pushChanges(context.Background(), pvygit.PushOptions{
 		Cwd:                    workspaceRoot,
 		Remote:                 options.remote,
 		Force:                  options.force,
@@ -919,7 +919,7 @@ func runChangesPR(args []string, stdout io.Writer, stderr io.Writer, deps appDep
 			return exitCrash
 		}
 	}
-	pushResult, err := deps.pushChanges(context.Background(), zerogit.PushOptions{
+	pushResult, err := deps.pushChanges(context.Background(), pvygit.PushOptions{
 		Cwd:                    workspaceRoot,
 		Remote:                 options.remote,
 		Force:                  options.force,
@@ -934,7 +934,7 @@ func runChangesPR(args []string, stdout io.Writer, stderr io.Writer, deps appDep
 		}
 	}
 
-	prResult, err := deps.createPR(context.Background(), zerogit.PROptions{
+	prResult, err := deps.createPR(context.Background(), pvygit.PROptions{
 		Cwd:   workspaceRoot,
 		Fill:  options.fill,
 		Draft: options.draft,
@@ -968,7 +968,7 @@ func runChangesPR(args []string, stdout io.Writer, stderr io.Writer, deps appDep
 	return exitSuccess
 }
 
-func generateAutoCommitMessage(ctx context.Context, provider zeroruntime.Provider, model string, summary zerogit.ChangeSummary) (string, error) {
+func generateAutoCommitMessage(ctx context.Context, provider pvyruntime.Provider, model string, summary pvygit.ChangeSummary) (string, error) {
 	var promptBuilder strings.Builder
 	promptBuilder.WriteString("Analyze the following git diff and generate a concise, conventional commit message.\n")
 	promptBuilder.WriteString("The commit message subject line must be 72 characters or fewer, starting with a conventional commit type (e.g., feat, fix, docs, style, refactor, test, chore) followed by a colon and space, and a lowercase description.\n")
@@ -977,16 +977,16 @@ func generateAutoCommitMessage(ctx context.Context, provider zeroruntime.Provide
 	promptBuilder.WriteString("Git Diff:\n")
 	promptBuilder.WriteString(summary.Diff)
 
-	request := zeroruntime.CompletionRequest{
-		Messages: []zeroruntime.Message{
-			{Role: zeroruntime.MessageRoleUser, Content: promptBuilder.String()},
+	request := pvyruntime.CompletionRequest{
+		Messages: []pvyruntime.Message{
+			{Role: pvyruntime.MessageRoleUser, Content: promptBuilder.String()},
 		},
 	}
 	stream, err := provider.StreamCompletion(ctx, request)
 	if err != nil {
 		return "", err
 	}
-	collected := zeroruntime.CollectStream(ctx, stream)
+	collected := pvyruntime.CollectStream(ctx, stream)
 	if collected.Error != "" {
 		return "", fmt.Errorf("%s", collected.Error)
 	}

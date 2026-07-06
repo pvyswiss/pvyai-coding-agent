@@ -1,6 +1,6 @@
 package tools
 
-import "github.com/Gitlawb/zero/internal/sandbox"
+import "github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 
 // readExcluder skips read-denied paths (the sandbox DenyRead policy) during a
 // search walk. The zero value (both funcs nil) excludes nothing, so a

@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/redaction"
-	"github.com/Gitlawb/zero/internal/testrunner"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/testrunner"
 )
 
 type Status string

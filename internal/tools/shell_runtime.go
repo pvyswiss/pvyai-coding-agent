@@ -90,7 +90,7 @@ func detectShellOutputIssue(command string, output string, goos string) *shellIs
 
 func appendShellIssueHint(output string, issue shellIssue) string {
 	output = strings.TrimRight(output, "\r\n")
-	hint := "[zero] shell issue: " + issue.Message
+	hint := "[pvyai] shell issue: " + issue.Message
 	if strings.TrimSpace(issue.Suggestion) != "" {
 		hint += "\nSuggestion: " + issue.Suggestion
 	}

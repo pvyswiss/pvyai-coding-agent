@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/providerhealth"
-	"github.com/Gitlawb/zero/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providerhealth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 )
 
 func TestRunDoctorFormatsRedactedProviderDiagnostics(t *testing.T) {
@@ -368,9 +368,9 @@ func TestRunSearchJSONRedactsQueryAndSessionMetadata(t *testing.T) {
 
 func TestRunDoctorReportsConfigValidationForMalformedFile(t *testing.T) {
 	cwd := t.TempDir()
-	zeroDir := filepath.Join(cwd, ".zero")
+	zeroDir := filepath.Join(cwd, ".pvyai")
 	if err := os.MkdirAll(zeroDir, 0o755); err != nil {
-		t.Fatalf("mkdir .zero: %v", err)
+		t.Fatalf("mkdir .pvyai: %v", err)
 	}
 	if err := os.WriteFile(filepath.Join(zeroDir, "config.json"), []byte("{\n  \"activeProvider\": \"openai\",\n"), 0o600); err != nil {
 		t.Fatalf("write config: %v", err)

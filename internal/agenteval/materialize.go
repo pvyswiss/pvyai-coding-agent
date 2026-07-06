@@ -181,8 +181,8 @@ func copyFixtureFile(src string, dst string, mode os.FileMode) error {
 func initGitBaseline(ctx context.Context, workspace string) error {
 	commands := [][]string{
 		{"init"},
-		{"config", "user.name", "Zero Eval"},
-		{"config", "user.email", "zero-eval@example.invalid"},
+		{"config", "user.name", "PVYai Eval"},
+		{"config", "user.email", "pvyai-eval@example.invalid"},
 		{"add", "."},
 		{"commit", "-m", "baseline"},
 	}

@@ -19,11 +19,11 @@ func TestBuildOrdersAndClassifiesWorkspaceSeed(t *testing.T) {
 			"internal/agent/loop.go",
 			"docs/STREAM_JSON_PROTOCOL.md",
 			"package.json",
-			"cmd/zero/main.go",
+			"cmd/pvyai/main.go",
 			"AGENTS.md",
 			"docs/INSTALL.md",
 			"README.md",
-			"ZERO.md",
+			"PVYAI.md",
 			"go.mod",
 		},
 	})
@@ -37,13 +37,13 @@ func TestBuildOrdersAndClassifiesWorkspaceSeed(t *testing.T) {
 	if got.GitSummary != "dirty: 3 modified, 1 untracked" {
 		t.Fatalf("GitSummary=%q", got.GitSummary)
 	}
-	if want := []string{"AGENTS.md", "README.md", "ZERO.md", "cmd/", "docs/", "go.mod", "internal/", "package.json"}; !reflect.DeepEqual(got.Layout, want) {
+	if want := []string{"AGENTS.md", "README.md", "PVYAI.md", "cmd/", "docs/", "go.mod", "internal/", "package.json"}; !reflect.DeepEqual(got.Layout, want) {
 		t.Fatalf("Layout=%v want %v", got.Layout, want)
 	}
 	if want := []string{"README.md", "go.mod", "package.json", "AGENTS.md", "docs/INSTALL.md", "docs/STREAM_JSON_PROTOCOL.md"}; !reflect.DeepEqual(got.ProjectFiles, want) {
 		t.Fatalf("ProjectFiles=%v want %v", got.ProjectFiles, want)
 	}
-	if want := []string{"AGENTS.md", "ZERO.md"}; !reflect.DeepEqual(got.MemoryFiles, want) {
+	if want := []string{"AGENTS.md", "PVYAI.md"}; !reflect.DeepEqual(got.MemoryFiles, want) {
 		t.Fatalf("MemoryFiles=%v want %v", got.MemoryFiles, want)
 	}
 }
@@ -113,13 +113,13 @@ func TestRenderHonorsLineAndWidthBudgets(t *testing.T) {
 		GitBranch: "feature/very-long-branch-name",
 		Paths: []string{
 			"averyveryveryverylongdirectoryname/averyveryveryverylongfilename.go",
-			"cmd/zero/main.go",
+			"cmd/pvyai/main.go",
 			"docs/INSTALL.md",
 			"docs/STREAM_JSON_PROTOCOL.md",
 			"go.mod",
 			"package.json",
 			"AGENTS.md",
-			"ZERO.md",
+			"PVYAI.md",
 		},
 	})
 
@@ -152,7 +152,7 @@ func TestRenderClampsOnRuneBoundaries(t *testing.T) {
 func TestBuildFromWorkspaceUsesWorkspaceIndexWithoutGit(t *testing.T) {
 	root := t.TempDir()
 	writeSeedFile(t, root, "go.mod", "module example.test/zero\n")
-	writeSeedFile(t, root, "cmd/zero/main.go", "package main\n")
+	writeSeedFile(t, root, "cmd/pvyai/main.go", "package main\n")
 	writeSeedFile(t, root, "docs/INSTALL.md", "# Install\n")
 	writeSeedFile(t, root, "node_modules/pkg/index.js", "ignored")
 

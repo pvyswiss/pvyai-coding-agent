@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/cron"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/cron"
 )
 
 // fakeExec records each invocation and returns a fixed exit code.

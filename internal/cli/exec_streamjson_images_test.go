@@ -8,8 +8,8 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // capturingImageProvider records the images carried on the last user turn of the
@@ -17,22 +17,22 @@ import (
 // end-to-end (the agent seeds Options.Images onto the initial user message).
 type capturingImageProvider struct {
 	mu     sync.Mutex
-	images []zeroruntime.ImageBlock
+	images []pvyruntime.ImageBlock
 }
 
-func (provider *capturingImageProvider) StreamCompletion(ctx context.Context, request zeroruntime.CompletionRequest) (<-chan zeroruntime.StreamEvent, error) {
+func (provider *capturingImageProvider) StreamCompletion(ctx context.Context, request pvyruntime.CompletionRequest) (<-chan pvyruntime.StreamEvent, error) {
 	provider.mu.Lock()
 	for index := len(request.Messages) - 1; index >= 0; index-- {
-		if request.Messages[index].Role == zeroruntime.MessageRoleUser {
-			provider.images = append([]zeroruntime.ImageBlock(nil), request.Messages[index].Images...)
+		if request.Messages[index].Role == pvyruntime.MessageRoleUser {
+			provider.images = append([]pvyruntime.ImageBlock(nil), request.Messages[index].Images...)
 			break
 		}
 	}
 	provider.mu.Unlock()
 
-	ch := make(chan zeroruntime.StreamEvent, 2)
-	ch <- zeroruntime.StreamEvent{Type: zeroruntime.StreamEventText, Content: "ok"}
-	ch <- zeroruntime.StreamEvent{Type: zeroruntime.StreamEventDone}
+	ch := make(chan pvyruntime.StreamEvent, 2)
+	ch <- pvyruntime.StreamEvent{Type: pvyruntime.StreamEventText, Content: "ok"}
+	ch <- pvyruntime.StreamEvent{Type: pvyruntime.StreamEventDone}
 	close(ch)
 	return ch, nil
 }
@@ -84,7 +84,7 @@ func TestRunExecStreamJSONImageReachesAgent(t *testing.T) {
 				MaxTurns: 3,
 			}, nil
 		},
-		newProvider: func(config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(config.ProviderProfile) (pvyruntime.Provider, error) {
 			return provider, nil
 		},
 	})
@@ -152,7 +152,7 @@ func TestRunExecStreamJSONImageOnlyMessageProceeds(t *testing.T) {
 				MaxTurns: 3,
 			}, nil
 		},
-		newProvider: func(config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(config.ProviderProfile) (pvyruntime.Provider, error) {
 			return provider, nil
 		},
 	})

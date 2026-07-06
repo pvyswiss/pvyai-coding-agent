@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 func TestBuildCountsProjectGuidelinesAndFreeBudget(t *testing.T) {
@@ -77,7 +77,7 @@ func TestBuildCountsProjectGuidelinesAndFreeBudget(t *testing.T) {
 
 func TestBuildHasStableJSONContractAndCategoryMath(t *testing.T) {
 	root := t.TempDir()
-	writeTestFile(t, root, "ZERO.md", strings.Repeat("zero rules\n", 16))
+	writeTestFile(t, root, "PVYAI.md", strings.Repeat("zero rules\n", 16))
 
 	registry := tools.NewRegistry()
 	for _, tool := range tools.CoreTools(root) {
@@ -88,7 +88,7 @@ func TestBuildHasStableJSONContractAndCategoryMath(t *testing.T) {
 		WorkspaceRoot:       root,
 		Registry:            registry,
 		ContextWindow:       50_000,
-		ProjectContextFiles: []string{"AGENTS.md", "ZERO.md"},
+		ProjectContextFiles: []string{"AGENTS.md", "PVYAI.md"},
 	})
 	if err != nil {
 		t.Fatalf("Build returned error: %v", err)
@@ -100,8 +100,8 @@ func TestBuildHasStableJSONContractAndCategoryMath(t *testing.T) {
 			t.Fatalf("missing category %q in %v", want, keys)
 		}
 	}
-	if report.ProjectGuidelineFile != "ZERO.md" {
-		t.Fatalf("ProjectGuidelineFile = %q, want ZERO.md", report.ProjectGuidelineFile)
+	if report.ProjectGuidelineFile != "PVYAI.md" {
+		t.Fatalf("ProjectGuidelineFile = %q, want PVYAI.md", report.ProjectGuidelineFile)
 	}
 	if report.FreeTokens+report.UsedTokens != report.ContextWindow {
 		t.Fatalf("free + used = %d, want %d", report.FreeTokens+report.UsedTokens, report.ContextWindow)
@@ -173,7 +173,7 @@ func TestBuildAccountsForWorkspaceMapContext(t *testing.T) {
 	}
 
 	writeTestFile(t, root, "go.mod", "module example.test/repo\n")
-	writeTestFile(t, root, "cmd/zero/main.go", "package main\n")
+	writeTestFile(t, root, "cmd/pvyai/main.go", "package main\n")
 	writeTestFile(t, root, "README.md", "# Example\n")
 
 	report, err := Build(Options{

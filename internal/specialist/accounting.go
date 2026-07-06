@@ -5,8 +5,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Gitlawb/zero/internal/background"
-	"github.com/Gitlawb/zero/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/background"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 )
 
 const specialistAccountingSource = "specialist"

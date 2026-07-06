@@ -19,7 +19,7 @@ func Run(ctx context.Context, options Options) int {
 	// pipes, regular files, and non-terminal char devices like /dev/null) and
 	// fails closed — anything that is not a verified terminal blocks the shell.
 	if !term.IsTerminal(os.Stdin.Fd()) {
-		fmt.Fprintln(os.Stderr, "zero: the interactive shell needs a terminal (stdin is not a TTY). For non-interactive use, run: zero exec \"<prompt>\"")
+		fmt.Fprintln(os.Stderr, "pvyai: the interactive shell needs a terminal (stdin is not a TTY). For non-interactive use, run: pvyai exec \"<prompt>\"")
 		return 2
 	}
 
@@ -61,7 +61,7 @@ func Run(ctx context.Context, options Options) int {
 	if _, err := program.Run(); err != nil {
 		// Surface the failure: exiting 1 with zero diagnostics left users
 		// guessing why the default chat surface died.
-		fmt.Fprintln(os.Stderr, "zero: tui error:", err)
+		fmt.Fprintln(os.Stderr, "pvyai: tui error:", err)
 		return 1
 	}
 	return 0

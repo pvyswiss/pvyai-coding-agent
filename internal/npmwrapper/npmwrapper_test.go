@@ -35,8 +35,8 @@ func TestPackageBinPointsToNodeWrapper(t *testing.T) {
 	if pkg.Name != "@gitlawb/zero" {
 		t.Fatalf("name = %q, want @gitlawb/zero", pkg.Name)
 	}
-	if pkg.Bin["zero"] != "bin/zero.js" {
-		t.Fatalf("bin.zero = %q, want bin/zero.js", pkg.Bin["zero"])
+	if pkg.Bin["pvyai"] != "bin/zero.js" {
+		t.Fatalf("bin.pvyai = %q, want bin/zero.js", pkg.Bin["pvyai"])
 	}
 	if pkg.Module != "bin/zero.js" {
 		t.Fatalf("module = %q, want bin/zero.js", pkg.Module)
@@ -85,15 +85,15 @@ func TestPostinstallComputesAssetPlan(t *testing.T) {
 		platform, arch        string
 		wantAsset, wantBinary string
 	}{
-		{"linux", "x64", "zero-v" + version + "-linux-x64.tar.gz", "zero"},
-		{"darwin", "arm64", "zero-v" + version + "-macos-arm64.tar.gz", "zero"},
-		{"win32", "x64", "zero-v" + version + "-windows-x64.zip", "zero.exe"},
+		{"linux", "x64", "zero-v" + version + "-linux-x64.tar.gz", "pvyai"},
+		{"darwin", "arm64", "zero-v" + version + "-macos-arm64.tar.gz", "pvyai"},
+		{"win32", "x64", "zero-v" + version + "-windows-x64.zip", "pvyai.exe"},
 	}
 	for _, tc := range cases {
 		stdout, stderr, err := runPostinstall(t,
-			"ZERO_INSTALL_DRY_RUN=1",
-			"ZERO_INSTALL_PLATFORM="+tc.platform,
-			"ZERO_INSTALL_ARCH="+tc.arch,
+			"PVYAI_INSTALL_DRY_RUN=1",
+			"PVYAI_INSTALL_PLATFORM="+tc.platform,
+			"PVYAI_INSTALL_ARCH="+tc.arch,
 		)
 		if err != nil {
 			t.Fatalf("%s/%s: dry-run err=%v stderr=%s", tc.platform, tc.arch, err, stderr)
@@ -113,7 +113,7 @@ func TestPostinstallComputesAssetPlan(t *testing.T) {
 		if plan.BinaryName != tc.wantBinary {
 			t.Fatalf("%s/%s: binaryName=%q want %q", tc.platform, tc.arch, plan.BinaryName, tc.wantBinary)
 		}
-		wantURL := "https://github.com/Gitlawb/zero/releases/download/v" + version + "/" + tc.wantAsset
+		wantURL := "https://github.com/pvyswiss/pvyai-coding-agent/releases/download/v" + version + "/" + tc.wantAsset
 		if plan.AssetURL != wantURL {
 			t.Fatalf("%s/%s: assetUrl=%q want %q", tc.platform, tc.arch, plan.AssetURL, wantURL)
 		}
@@ -125,9 +125,9 @@ func TestPostinstallComputesAssetPlan(t *testing.T) {
 
 func TestPostinstallSkipsUnsupportedPlatform(t *testing.T) {
 	stdout, stderr, err := runPostinstall(t,
-		"ZERO_INSTALL_DRY_RUN=1",
-		"ZERO_INSTALL_PLATFORM=plan9",
-		"ZERO_INSTALL_ARCH=x64",
+		"PVYAI_INSTALL_DRY_RUN=1",
+		"PVYAI_INSTALL_PLATFORM=plan9",
+		"PVYAI_INSTALL_ARCH=x64",
 	)
 	if err != nil {
 		t.Fatalf("unsupported platform should exit 0, got err=%v stderr=%s", err, stderr)
@@ -145,9 +145,9 @@ func TestPostinstallSkipsWindowsArm64(t *testing.T) {
 	// no windows-arm64 artifact, so the install must skip gracefully (exit 0)
 	// rather than hard-fail on a 404 download.
 	stdout, stderr, err := runPostinstall(t,
-		"ZERO_INSTALL_DRY_RUN=1",
-		"ZERO_INSTALL_PLATFORM=win32",
-		"ZERO_INSTALL_ARCH=arm64",
+		"PVYAI_INSTALL_DRY_RUN=1",
+		"PVYAI_INSTALL_PLATFORM=win32",
+		"PVYAI_INSTALL_ARCH=arm64",
 	)
 	if err != nil {
 		t.Fatalf("windows-arm64 should exit 0, got err=%v stderr=%s", err, stderr)
@@ -161,9 +161,9 @@ func TestPostinstallSkipsWindowsArm64(t *testing.T) {
 }
 
 func TestPostinstallHonorsSkipEnv(t *testing.T) {
-	stdout, stderr, err := runPostinstall(t, "ZERO_SKIP_DOWNLOAD=1")
+	stdout, stderr, err := runPostinstall(t, "PVYAI_SKIP_DOWNLOAD=1")
 	if err != nil {
-		t.Fatalf("ZERO_SKIP_DOWNLOAD should exit 0, got err=%v stderr=%s", err, stderr)
+		t.Fatalf("PVYAI_SKIP_DOWNLOAD should exit 0, got err=%v stderr=%s", err, stderr)
 	}
 	if strings.TrimSpace(stdout) != "" {
 		t.Fatalf("skip should print nothing to stdout, got %q", stdout)
@@ -244,7 +244,7 @@ func TestNodeWrapperReportsMissingNativeBinary(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), nodeWrapperTimeout())
 	defer cancel()
 	command := nodeWrapperCommand(ctx, node, wrapperPath, "--version")
-	command.Env = append(withoutEnvKey(command.Env, "ZERO_LOCAL_CONTROL_HELPERS"), "ZERO_LOCAL_CONTROL_HELPERS=")
+	command.Env = append(withoutEnvKey(command.Env, "PVYAI_LOCAL_CONTROL_HELPERS"), "PVYAI_LOCAL_CONTROL_HELPERS=")
 	output, err := command.CombinedOutput()
 	if ctx.Err() != nil {
 		t.Fatalf("wrapper timed out reporting missing native binary: %v; output: %s", ctx.Err(), output)
@@ -268,7 +268,7 @@ func TestNodeWrapperLaunchesNativeBinary(t *testing.T) {
 	node := requireNode(t)
 	wrapperPath := copyWrapperFixture(t)
 	root := filepath.Dir(filepath.Dir(wrapperPath))
-	nativePath := filepath.Join(root, "zero")
+	nativePath := filepath.Join(root, "pvyai")
 	if err := os.WriteFile(nativePath, []byte("#!/usr/bin/env sh\nprintf 'mock-zero'; for arg in \"$@\"; do printf ' %s' \"$arg\"; done; printf '\\n'\n"), 0o755); err != nil {
 		t.Fatalf("WriteFile native fixture: %v", err)
 	}
@@ -295,8 +295,8 @@ func TestNodeWrapperPassesLocalControlHelperManifest(t *testing.T) {
 	node := requireNode(t)
 	wrapperPath := copyWrapperFixture(t)
 	root := filepath.Dir(filepath.Dir(wrapperPath))
-	nativePath := filepath.Join(root, "zero")
-	if err := os.WriteFile(nativePath, []byte("#!/usr/bin/env sh\nprintf '%s\\n' \"$ZERO_LOCAL_CONTROL_HELPERS\"\n"), 0o755); err != nil {
+	nativePath := filepath.Join(root, "pvyai")
+	if err := os.WriteFile(nativePath, []byte("#!/usr/bin/env sh\nprintf '%s\\n' \"$PVYAI_LOCAL_CONTROL_HELPERS\"\n"), 0o755); err != nil {
 		t.Fatalf("WriteFile native fixture: %v", err)
 	}
 	binDir := filepath.Join(root, "node_modules", ".bin")
@@ -356,15 +356,15 @@ func TestNodeWrapperClearsInheritedLocalControlHelperManifestWhenNoHelpers(t *te
 	node := requireNode(t)
 	wrapperPath := copyWrapperFixture(t)
 	root := filepath.Dir(filepath.Dir(wrapperPath))
-	nativePath := filepath.Join(root, "zero")
-	if err := os.WriteFile(nativePath, []byte("#!/usr/bin/env sh\nif [ -n \"${ZERO_LOCAL_CONTROL_HELPERS+x}\" ]; then printf 'set\\n'; else printf 'unset\\n'; fi\n"), 0o755); err != nil {
+	nativePath := filepath.Join(root, "pvyai")
+	if err := os.WriteFile(nativePath, []byte("#!/usr/bin/env sh\nif [ -n \"${PVYAI_LOCAL_CONTROL_HELPERS+x}\" ]; then printf 'set\\n'; else printf 'unset\\n'; fi\n"), 0o755); err != nil {
 		t.Fatalf("WriteFile native fixture: %v", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), nodeWrapperTimeout())
 	defer cancel()
 	command := nodeWrapperCommand(ctx, node, wrapperPath, "--version")
-	command.Env = append(withoutEnvKey(command.Env, "ZERO_LOCAL_CONTROL_HELPERS"), `ZERO_LOCAL_CONTROL_HELPERS={"version":1,"helpers":{"agent-browser":{"command":"stale"}}}`)
+	command.Env = append(withoutEnvKey(command.Env, "PVYAI_LOCAL_CONTROL_HELPERS"), `PVYAI_LOCAL_CONTROL_HELPERS={"version":1,"helpers":{"agent-browser":{"command":"stale"}}}`)
 	output, err := command.CombinedOutput()
 	if ctx.Err() != nil {
 		t.Fatalf("wrapper timed out launching native binary: %v; output: %s", ctx.Err(), output)
@@ -373,7 +373,7 @@ func TestNodeWrapperClearsInheritedLocalControlHelperManifestWhenNoHelpers(t *te
 		t.Fatalf("wrapper returned error: %v; output: %s", err, output)
 	}
 	if got := strings.TrimSpace(string(output)); got != "unset" {
-		t.Fatalf("ZERO_LOCAL_CONTROL_HELPERS state = %q, want unset", got)
+		t.Fatalf("PVYAI_LOCAL_CONTROL_HELPERS state = %q, want unset", got)
 	}
 }
 

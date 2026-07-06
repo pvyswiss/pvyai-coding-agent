@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"time"
 
-	zeroSandbox "github.com/Gitlawb/zero/internal/sandbox"
+	pvySandbox "github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 // bashWaitDelay bounds how long Wait blocks for the I/O pipes to drain after the
@@ -43,5 +43,5 @@ func applyWindowsShellCommandLine(command *exec.Cmd, commandText string, wrapped
 	if wrapped {
 		return
 	}
-	command.SysProcAttr = &syscall.SysProcAttr{CmdLine: zeroSandbox.WindowsShellCommandLine(commandText)}
+	command.SysProcAttr = &syscall.SysProcAttr{CmdLine: pvySandbox.WindowsShellCommandLine(commandText)}
 }

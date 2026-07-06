@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/hooks"
-	"github.com/Gitlawb/zero/internal/plugins"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/hooks"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/plugins"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 // fakePluginDeps builds appDeps whose loadPlugins returns the supplied plugins and

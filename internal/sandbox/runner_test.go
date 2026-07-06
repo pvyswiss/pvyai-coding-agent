@@ -425,7 +425,7 @@ func TestSeatbeltProfileProtectsMetadataAndDenyOrdering(t *testing.T) {
 			WriteRoots: []WritableRoot{{
 				Root:                   "/repo",
 				ReadOnlySubpaths:       []string{"/repo/vendor"},
-				ProtectedMetadataNames: []string{".git", ".zero"},
+				ProtectedMetadataNames: []string{".git", ".pvyai"},
 			}},
 			DenyRead:  []string{"/repo/secret-read"},
 			DenyWrite: []string{"/repo/secret-write"},
@@ -443,7 +443,7 @@ func TestSeatbeltProfileProtectsMetadataAndDenyOrdering(t *testing.T) {
 		`(deny file-write* (literal "/repo/vendor"))`,
 		`(deny file-write* (subpath "/repo/vendor"))`,
 		`(deny file-write* (regex #"^/repo/\.git(/.*)?$"))`,
-		`(deny file-write* (regex #"^/repo/\.zero(/.*)?$"))`,
+		`(deny file-write* (regex #"^/repo/\.pvyai(/.*)?$"))`,
 		denySecretReadRule,
 		denySecretReadUnlinkRule,
 		denySecretWriteRule,

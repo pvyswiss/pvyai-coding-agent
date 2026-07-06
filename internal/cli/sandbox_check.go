@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/config"
-	zeroSandbox "github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/zerocommands"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	pvySandbox "github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvycmd"
 )
 
 type sandboxCheckOptions struct {
@@ -22,14 +22,14 @@ type sandboxCheckOptions struct {
 // sandboxCheckReport is the combined snapshot `zero sandbox check` emits: the
 // active plan (policy + backend + restrictions), the decision the engine would
 // make for the described tool action, and any persistent grant that matches the
-// tool. It is the production consumer of the zerocommands sandbox-snapshot
+// tool. It is the production consumer of the pvycmd sandbox-snapshot
 // contract, giving operators and CI a stable, redacted JSON view of "what would
 // the sandbox do for this action?".
 type sandboxCheckReport struct {
 	Tool     string                                 `json:"tool"`
-	Plan     zerocommands.SandboxPlanSnapshot       `json:"plan"`
-	Decision zerocommands.SandboxDecisionSnapshot   `json:"decision"`
-	Grant    zerocommands.SandboxGrantMatchSnapshot `json:"grant"`
+	Plan     pvycmd.SandboxPlanSnapshot       `json:"plan"`
+	Decision pvycmd.SandboxDecisionSnapshot   `json:"decision"`
+	Grant    pvycmd.SandboxGrantMatchSnapshot `json:"grant"`
 }
 
 func runSandboxCheck(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) int {
@@ -59,8 +59,8 @@ func runSandboxCheck(args []string, stdout io.Writer, stderr io.Writer, deps app
 	if err != nil {
 		return writeAppError(stderr, err.Error(), exitProvider)
 	}
-	policy := applyConfiguredSandboxPolicy(zeroSandbox.DefaultPolicy(), resolved.Sandbox)
-	backend := deps.selectSandboxBackend(zeroSandbox.BackendOptions{})
+	policy := applyConfiguredSandboxPolicy(pvySandbox.DefaultPolicy(), resolved.Sandbox)
+	backend := deps.selectSandboxBackend(pvySandbox.BackendOptions{})
 	plan := backend.BuildPlan(workspaceRoot, policy)
 
 	sideEffect, err := parseSandboxCheckSideEffect(options.sideEffect)
@@ -82,11 +82,11 @@ func runSandboxCheck(args []string, stdout io.Writer, stderr io.Writer, deps app
 	// (workspace root + configured additional write roots) so the check's
 	// decision matches actual enforcement and a stale extra-root config surfaces
 	// here too, instead of silently falling back to a workspace-only scope.
-	scope, err := zeroSandbox.NewScope(workspaceRoot, resolved.Sandbox.AdditionalWriteRoots)
+	scope, err := pvySandbox.NewScope(workspaceRoot, resolved.Sandbox.AdditionalWriteRoots)
 	if err != nil {
 		return writeAppError(stderr, err.Error(), exitProvider)
 	}
-	engine := zeroSandbox.NewEngine(zeroSandbox.EngineOptions{
+	engine := pvySandbox.NewEngine(pvySandbox.EngineOptions{
 		WorkspaceRoot: workspaceRoot,
 		Policy:        policy,
 		Store:         store,
@@ -95,11 +95,11 @@ func runSandboxCheck(args []string, stdout io.Writer, stderr io.Writer, deps app
 	})
 	ctx, stop := signalContext()
 	defer stop()
-	decision := engine.Evaluate(ctx, zeroSandbox.Request{
+	decision := engine.Evaluate(ctx, pvySandbox.Request{
 		WorkspaceRoot:  workspaceRoot,
 		ToolName:       options.tool,
 		SideEffect:     sideEffect,
-		PermissionMode: zeroSandbox.PermissionModeAsk,
+		PermissionMode: pvySandbox.PermissionModeAsk,
 		Args:           requestArgs,
 		Reason:         strings.TrimSpace(options.reason),
 	})
@@ -111,9 +111,9 @@ func runSandboxCheck(args []string, stdout io.Writer, stderr io.Writer, deps app
 
 	report := sandboxCheckReport{
 		Tool:     strings.TrimSpace(options.tool),
-		Plan:     zerocommands.SandboxPlanSnapshotFromPlan(plan),
-		Decision: zerocommands.SandboxDecisionSnapshotFromDecision(decision),
-		Grant:    zerocommands.SandboxGrantMatchSnapshotFromLookup(options.tool, lookup),
+		Plan:     pvycmd.SandboxPlanSnapshotFromPlan(plan),
+		Decision: pvycmd.SandboxDecisionSnapshotFromDecision(decision),
+		Grant:    pvycmd.SandboxGrantMatchSnapshotFromLookup(options.tool, lookup),
 	}
 
 	if options.json {
@@ -188,18 +188,18 @@ func assignSandboxCheckFlag(options *sandboxCheckOptions, flag string, value str
 // parseSandboxCheckSideEffect validates --side-effect against the closed set the
 // help advertises (empty defaults to read), so a typo returns a usage error
 // instead of being passed to the engine as an unknown side effect.
-func parseSandboxCheckSideEffect(value string) (zeroSandbox.SideEffect, error) {
+func parseSandboxCheckSideEffect(value string) (pvySandbox.SideEffect, error) {
 	switch strings.ToLower(strings.TrimSpace(value)) {
 	case "", "read":
-		return zeroSandbox.SideEffectRead, nil
+		return pvySandbox.SideEffectRead, nil
 	case "write":
-		return zeroSandbox.SideEffectWrite, nil
+		return pvySandbox.SideEffectWrite, nil
 	case "shell":
-		return zeroSandbox.SideEffectShell, nil
+		return pvySandbox.SideEffectShell, nil
 	case "network":
-		return zeroSandbox.SideEffectNetwork, nil
+		return pvySandbox.SideEffectNetwork, nil
 	case "none":
-		return zeroSandbox.SideEffectNone, nil
+		return pvySandbox.SideEffectNone, nil
 	default:
 		return "", execUsageError{fmt.Sprintf("invalid --side-effect %q: expected read, write, shell, network, or none", value)}
 	}

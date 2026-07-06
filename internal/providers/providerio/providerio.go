@@ -16,7 +16,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 const maxSSELineBytes = 16 * 1024 * 1024
@@ -181,10 +181,10 @@ func HTTPClient(client *http.Client) *http.Client {
 }
 
 // SendEvent writes a provider event without blocking cancellation cleanup.
-func SendEvent(ctx context.Context, events chan<- zeroruntime.StreamEvent, event zeroruntime.StreamEvent) {
+func SendEvent(ctx context.Context, events chan<- pvyruntime.StreamEvent, event pvyruntime.StreamEvent) {
 	select {
 	case <-ctx.Done():
-		if event.Type == zeroruntime.StreamEventError {
+		if event.Type == pvyruntime.StreamEventError {
 			select {
 			case events <- event:
 			default:

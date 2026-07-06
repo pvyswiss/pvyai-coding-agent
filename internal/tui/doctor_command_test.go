@@ -8,9 +8,9 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/doctor"
-	"github.com/Gitlawb/zero/internal/providerhealth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/doctor"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providerhealth"
 )
 
 func TestParseDoctorCommandArgsRejectsFixWithConnectivity(t *testing.T) {
@@ -26,7 +26,7 @@ func TestParseDoctorCommandArgsRejectsFixWithConnectivity(t *testing.T) {
 func TestDoctorOptionsIncludeConfigPaths(t *testing.T) {
 	m := newModel(context.Background(), Options{
 		UserConfigPath:    "C:/zero/user.json",
-		ProjectConfigPath: "C:/repo/.zero/config.json",
+		ProjectConfigPath: "C:/repo/.pvyai/config.json",
 		ProviderProfile: config.ProviderProfile{
 			Name:         "openai",
 			ProviderKind: config.ProviderKindOpenAI,
@@ -39,8 +39,8 @@ func TestDoctorOptionsIncludeConfigPaths(t *testing.T) {
 	if options.UserConfig != "C:/zero/user.json" {
 		t.Fatalf("UserConfig = %q, want %q", options.UserConfig, "C:/zero/user.json")
 	}
-	if options.ProjectConfig != "C:/repo/.zero/config.json" {
-		t.Fatalf("ProjectConfig = %q, want %q", options.ProjectConfig, "C:/repo/.zero/config.json")
+	if options.ProjectConfig != "C:/repo/.pvyai/config.json" {
+		t.Fatalf("ProjectConfig = %q, want %q", options.ProjectConfig, "C:/repo/.pvyai/config.json")
 	}
 	if options.Connectivity {
 		t.Fatal("Connectivity = true, want false")

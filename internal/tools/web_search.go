@@ -14,8 +14,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/redaction"
-	zeroSandbox "github.com/Gitlawb/zero/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
+	pvySandbox "github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 const (
@@ -98,7 +98,7 @@ func newWebSearchToolWithBackend(backend searchBackend) Tool {
 // RunWithSandbox follows the normal web_search path. The sandbox network policy
 // gates sandboxed shell egress; this in-process hosted search tool is guarded by
 // the permission flow plus backend and result-domain safeguards.
-func (tool webSearchTool) RunWithSandbox(ctx context.Context, args map[string]any, engine *zeroSandbox.Engine) Result {
+func (tool webSearchTool) RunWithSandbox(ctx context.Context, args map[string]any, engine *pvySandbox.Engine) Result {
 	return tool.Run(ctx, args)
 }
 
@@ -255,7 +255,7 @@ func (backend *httpSearchBackend) Search(ctx context.Context, query string, limi
 	}
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Accept", "application/json")
-	request.Header.Set("User-Agent", "zero-web-search/0.1")
+	request.Header.Set("User-Agent", "pvyai-web-search/0.1")
 	if backend.apiKey != "" {
 		request.Header.Set("Authorization", "Bearer "+backend.apiKey)
 	}
@@ -295,7 +295,7 @@ func (backend *httpSearchBackend) searchSearxng(ctx context.Context, query strin
 		return nil, fmt.Errorf("build searxng request: %w", err)
 	}
 	request.Header.Set("Accept", "application/json")
-	request.Header.Set("User-Agent", "zero-web-search/0.1")
+	request.Header.Set("User-Agent", "pvyai-web-search/0.1")
 	if backend.apiKey != "" { // optional, e.g. a reverse-proxy in front of SearXNG
 		request.Header.Set("Authorization", "Bearer "+backend.apiKey)
 	}

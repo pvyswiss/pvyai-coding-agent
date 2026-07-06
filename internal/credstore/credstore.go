@@ -16,12 +16,12 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/keyring"
-	"github.com/Gitlawb/zero/internal/securefile"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/keyring"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/securefile"
 )
 
 const (
-	keyringService = "zero"
+	keyringService = "pvyai"
 	keyringPrefix  = "apikey:" // keyring account = "apikey:<provider>"
 
 	encryptedFileName = "credentials.enc"

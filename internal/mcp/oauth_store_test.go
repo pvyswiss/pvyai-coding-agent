@@ -262,7 +262,7 @@ func TestResolveTokenStorePathUsesXDG(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ResolveTokenStorePath() error = %v", err)
 	}
-	want := filepath.Join(configHome, "zero", "mcp-oauth-tokens.json")
+	want := filepath.Join(configHome, "pvyai", "mcp-oauth-tokens.json")
 	if path != want {
 		t.Fatalf("path = %q, want %q", path, want)
 	}

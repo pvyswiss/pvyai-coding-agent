@@ -190,7 +190,7 @@ func applyWindowsNetworkPlan(plan WindowsNetworkPlan) error {
 }
 
 func openWindowsWFPEngine() (windows.Handle, error) {
-	sessionName, err := windows.UTF16PtrFromString("Zero Windows Sandbox WFP")
+	sessionName, err := windows.UTF16PtrFromString("PVYai Windows Sandbox WFP")
 	if err != nil {
 		return 0, err
 	}
@@ -231,7 +231,7 @@ func abortWindowsWFPTransaction(engine windows.Handle) {
 }
 
 func ensureWindowsWFPProvider(engine windows.Handle, providerKey windows.GUID) error {
-	name, err := windows.UTF16PtrFromString("Zero Windows Sandbox WFP")
+	name, err := windows.UTF16PtrFromString("PVYai Windows Sandbox WFP")
 	if err != nil {
 		return err
 	}
@@ -252,7 +252,7 @@ func ensureWindowsWFPProvider(engine windows.Handle, providerKey windows.GUID) e
 }
 
 func ensureWindowsWFPSubLayer(engine windows.Handle, providerKey windows.GUID, subLayerKey windows.GUID) error {
-	name, err := windows.UTF16PtrFromString("Zero Windows Sandbox WFP")
+	name, err := windows.UTF16PtrFromString("PVYai Windows Sandbox WFP")
 	if err != nil {
 		return err
 	}

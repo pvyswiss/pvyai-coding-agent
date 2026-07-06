@@ -3,7 +3,7 @@ package tools
 import (
 	"context"
 
-	"github.com/Gitlawb/zero/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 type SideEffect string

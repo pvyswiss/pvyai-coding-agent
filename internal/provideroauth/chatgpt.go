@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/oauth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/oauth"
 )
 
 // chatgptAccountClaim is the ID-token claim the ChatGPT backend requires as the

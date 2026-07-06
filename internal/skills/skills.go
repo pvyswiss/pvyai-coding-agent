@@ -29,11 +29,11 @@ type Skill struct {
 const skillFileName = "SKILL.md"
 
 // DefaultDir resolves the skills directory, mirroring sessions.DefaultRoot. An
-// explicit ZERO_SKILLS_DIR override wins; otherwise it is
-// $XDG_DATA_HOME/zero/skills or ~/.local/share/zero/skills. The directory is
+// explicit PVYAI_SKILLS_DIR override wins; otherwise it is
+// $XDG_DATA_HOME/pvyai/skills or ~/.local/share/pvyai/skills. The directory is
 // NOT created — a missing directory simply yields no skills.
 func DefaultDir(env map[string]string) string {
-	if override := strings.TrimSpace(envValue(env, "ZERO_SKILLS_DIR")); override != "" {
+	if override := strings.TrimSpace(envValue(env, "PVYAI_SKILLS_DIR")); override != "" {
 		return override
 	}
 	dataHome := strings.TrimSpace(envValue(env, "XDG_DATA_HOME"))
@@ -47,13 +47,13 @@ func DefaultDir(env map[string]string) string {
 	if base == "" {
 		if home == "" {
 			// No XDG_DATA_HOME and no resolvable home: returning a relative path
-			// here (".local/share/zero/skills") would bind skills to the process
+			// here (".local/share/pvyai/skills") would bind skills to the process
 			// CWD, so signal "no skills dir" and let the caller handle it.
 			return ""
 		}
 		base = filepath.Join(home, ".local", "share")
 	}
-	return filepath.Join(base, "zero", "skills")
+	return filepath.Join(base, "pvyai", "skills")
 }
 
 // DuplicateName records two skills that resolved to the same frontmatter name.
@@ -77,7 +77,7 @@ type DuplicateName struct {
 // winner regardless of sort stability. Use Duplicates to surface a warning about
 // any such collisions.
 //
-// NOTE: Load currently scans a single root (ZERO_SKILLS_DIR / the data dir).
+// NOTE: Load currently scans a single root (PVYAI_SKILLS_DIR / the data dir).
 // Plugin-declared skill paths (the plugins manifest "skills" array) are NOT yet
 // merged into this lookup; multi-root loading is tracked as a separate feature.
 func Load(dir string) ([]Skill, error) {

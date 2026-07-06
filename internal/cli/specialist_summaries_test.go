@@ -3,7 +3,7 @@ package cli
 import (
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/specialist"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/specialist"
 )
 
 // TestSpecialistSummariesIncludesBuiltins confirms the orchestrator delegation

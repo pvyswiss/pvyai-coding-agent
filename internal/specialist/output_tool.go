@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/background"
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/streamjson"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/background"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/streamjson"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 const (

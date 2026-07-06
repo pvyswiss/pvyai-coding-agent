@@ -19,7 +19,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 // maxSidebarFiles caps the FILES rows so the section stays a glanceable set,

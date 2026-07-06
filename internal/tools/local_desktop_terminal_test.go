@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/localcontrol"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/localcontrol"
 )
 
 func TestDesktopSnapshotBuildsDriverJSON(t *testing.T) {

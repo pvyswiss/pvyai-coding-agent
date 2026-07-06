@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-const WindowsSandboxSetupName = "zero-windows-sandbox-setup.exe"
+const WindowsSandboxSetupName = "pvyai-windows-sandbox-setup.exe"
 
 const windowsSandboxSetupMarkerSchemaVersion = 4
 

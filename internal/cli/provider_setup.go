@@ -5,10 +5,10 @@ import (
 	"io"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/providercatalog"
-	"github.com/Gitlawb/zero/internal/providerhealth"
-	"github.com/Gitlawb/zero/internal/zerocommands"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providerhealth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvycmd"
 )
 
 type providerAddOptions struct {
@@ -62,7 +62,7 @@ func runProvidersAdd(args []string, stdout io.Writer, stderr io.Writer, deps app
 		if err := writePrettyJSON(stdout, map[string]any{
 			"configPath":     configPath,
 			"activeProvider": cfg.ActiveProvider,
-			"provider":       zerocommands.ProviderSnapshotFromProfile(profile, cfg.ActiveProvider == profile.Name),
+			"provider":       pvycmd.ProviderSnapshotFromProfile(profile, cfg.ActiveProvider == profile.Name),
 		}); err != nil {
 			return exitCrash
 		}
@@ -112,7 +112,7 @@ func runProvidersCheck(args []string, stdout io.Writer, stderr io.Writer, deps a
 		}
 	}
 
-	snapshot := zerocommands.ProviderSnapshotFromProfile(profile, profile.Name == resolved.ActiveProvider)
+	snapshot := pvycmd.ProviderSnapshotFromProfile(profile, profile.Name == resolved.ActiveProvider)
 	if options.json {
 		payload := map[string]any{"provider": snapshot, "status": "ok"}
 		if options.connectivity {
@@ -180,13 +180,13 @@ func providerCheckErrorMessage(err error, profile config.ProviderProfile) string
 func providerCheckNextActions(profile config.ProviderProfile, connectivity bool, health providerhealth.Result) []string {
 	name := providerCheckName(profile)
 	if !connectivity {
-		return []string{fmt.Sprintf("run zero providers check %s --connectivity", name)}
+		return []string{fmt.Sprintf("run pvyai providers check %s --connectivity", name)}
 	}
 	switch health.Status {
 	case providerhealth.StatusFail:
-		return []string{fmt.Sprintf("verify the API key, base URL, and model, then rerun zero providers check %s --connectivity", name)}
+		return []string{fmt.Sprintf("verify the API key, base URL, and model, then rerun pvyai providers check %s --connectivity", name)}
 	case providerhealth.StatusWarn:
-		return []string{fmt.Sprintf("review the warning, then rerun zero providers check %s --connectivity", name)}
+		return []string{fmt.Sprintf("review the warning, then rerun pvyai providers check %s --connectivity", name)}
 	default:
 		model := strings.TrimSpace(profile.Model)
 		if model == "" {
@@ -204,7 +204,7 @@ func providerCheckMissingKeyNextAction(profile config.ProviderProfile) string {
 	if apiKeyEnv == "" {
 		return ""
 	}
-	return fmt.Sprintf("set %s and rerun zero providers check %s", apiKeyEnv, providerCheckName(profile))
+	return fmt.Sprintf("set %s and rerun pvyai providers check %s", apiKeyEnv, providerCheckName(profile))
 }
 
 func providerCheckAPIKeyEnv(profile config.ProviderProfile) string {

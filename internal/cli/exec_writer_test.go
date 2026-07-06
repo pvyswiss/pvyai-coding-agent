@@ -3,7 +3,7 @@ package cli
 import (
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 // escalate_model is a control-only tool (SideEffectNone). The stream-json tool

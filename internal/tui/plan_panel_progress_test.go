@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 // TestCurrentStepContent: the header/summary name the step actually being

@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/background"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/background"
 )
 
 func TestRuntimeCloseDoesNotCreateUnusedManager(t *testing.T) {
@@ -83,7 +83,7 @@ func TestRuntimeClosePreservesKilledTaskAfterChildExit(t *testing.T) {
 	runtime := NewRuntime(RuntimeOptions{Manager: manager})
 	var exitCallback func(int)
 	executor := Executor{
-		BinaryPath:        "/usr/local/bin/zero",
+		BinaryPath:        "/usr/local/bin/pvyai",
 		BackgroundRuntime: runtime,
 		NewSessionID:      func() (string, error) { return "child_task", nil },
 		Load: func(LoadOptions) (LoadResult, error) {

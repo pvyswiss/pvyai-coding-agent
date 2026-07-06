@@ -10,8 +10,8 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/Gitlawb/zero/internal/redaction"
-	"github.com/Gitlawb/zero/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 )
 
 const (
@@ -318,7 +318,7 @@ func resolveSessions(store *sessions.Store, sessionID string) ([]sessions.Metada
 	if session == nil {
 		// Surfacing the miss beats silently "succeeding" with zero results
 		// against a session that doesn't exist.
-		return []sessions.Metadata{}, fmt.Errorf("zero session not found: %s", sessionID)
+		return []sessions.Metadata{}, fmt.Errorf("pvyai session not found: %s", sessionID)
 	}
 	return []sessions.Metadata{*session}, nil
 }

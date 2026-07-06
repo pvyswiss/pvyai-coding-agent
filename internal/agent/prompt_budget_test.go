@@ -3,7 +3,7 @@ package agent
 import (
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 // These ceilings are a deliberate ratchet on Zero's fixed per-turn overhead — the

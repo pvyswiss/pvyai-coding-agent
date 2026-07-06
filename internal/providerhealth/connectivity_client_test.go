@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
 )
 
 func TestDialValidatedAddrsFallsBackPastDeadAddress(t *testing.T) {

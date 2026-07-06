@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
 )
 
 func TestMCPManagerViewRendersServerActionHints(t *testing.T) {
@@ -86,7 +86,7 @@ func TestMCPManagerTargetsRedactSecretsFromURLsAndArgs(t *testing.T) {
 				Type:    "stdio",
 				Command: "zero-docs-mcp",
 				Args:    []string{"--workspace", ".", "--token", "arg-secret", "--api-key=inline-secret", "--endpoint", "https://remote.example/mcp?access_token=arg-url-secret#token=frag-secret", "--inline-endpoint=https://remote.example/mcp?access_token=inline-url-secret#token=inline-frag-secret"},
-				Env:     map[string]string{"ZERO_DOCS_TOKEN": "env-secret"},
+				Env:     map[string]string{"PVYAI_DOCS_TOKEN": "env-secret"},
 			},
 			"linear": {
 				Type: "http",
@@ -121,7 +121,7 @@ func TestMCPManagerTargetsRedactSecretsFromURLsAndArgs(t *testing.T) {
 		"token=[REDACTED]",
 		"--inline-endpoint=https://remote.example/mcp?access_token=[REDACTED]#token=[REDACTED]",
 		"workspace=public",
-		"ZERO_DOCS_TOKEN=[REDACTED]",
+		"PVYAI_DOCS_TOKEN=[REDACTED]",
 		"Authorization=[REDACTED]",
 	} {
 		if !strings.Contains(got, want) {

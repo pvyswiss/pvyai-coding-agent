@@ -9,11 +9,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/usage"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/usage"
 )
 
 const tuiSessionTitleLimit = 80
@@ -175,7 +175,7 @@ func tuiSessionTitle(prompt string) string {
 	// a multi-byte rune and persist invalid UTF-8 into the session metadata.
 	title := cutRunes(strings.Join(strings.Fields(prompt), " "), tuiSessionTitleLimit)
 	if title == "" {
-		return "Zero TUI session"
+		return "PVYai TUI session"
 	}
 	return title
 }
@@ -237,7 +237,7 @@ func (m model) resolveResumeSession(args string) (*sessions.Metadata, error) {
 			return nil, err
 		}
 		if latest == nil {
-			return nil, errors.New("no zero sessions available to resume")
+			return nil, errors.New("no pvyai sessions available to resume")
 		}
 		return latest, nil
 	}
@@ -247,14 +247,14 @@ func (m model) resolveResumeSession(args string) (*sessions.Metadata, error) {
 		return nil, err
 	}
 	if session == nil {
-		return nil, fmt.Errorf("zero session not found: %s", args)
+		return nil, fmt.Errorf("pvyai session not found: %s", args)
 	}
 	return session, nil
 }
 
 // resumeEvents reads a session's events for resume, preferring the rehydrated
 // (compaction-aware) view so a resumed session honors a prior /compact — matching
-// the CLI's `zero exec --resume` (readExecContextEvents) and the in-TUI /compact
+// the CLI's `pvyai exec --resume` (readExecContextEvents) and the in-TUI /compact
 // reload. Falls back to the raw log if rehydration fails.
 func (m model) resumeEvents(sessionID string) ([]sessions.Event, error) {
 	events, err := m.sessionStore.ReadRehydratedEvents(sessionID)

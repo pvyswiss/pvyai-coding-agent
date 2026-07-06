@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/testrunner"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/testrunner"
 )
 
 func TestSnapshotFromReportRedactsLogsAndBuildsEvents(t *testing.T) {

@@ -9,9 +9,9 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/repomap"
-	"github.com/Gitlawb/zero/internal/workspaceseed"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/repomap"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/workspaceseed"
 )
 
 // coreSystemPrompt is the de-branded coding-craft instruction set: identity,
@@ -37,10 +37,10 @@ const fallbackSystemPrompt = "You are Zero, a terminal coding agent. Help with t
 // The first match at each directory level wins; the loader walks the chain
 // from the git root down to the cwd and injects the matches in
 // general-to-specific order.
-var projectContextFiles = []string{"AGENTS.md", "ZERO.md", ".zero/AGENTS.md"}
+var projectContextFiles = []string{"AGENTS.md", "ZERO.md", ".pvyai/AGENTS.md"}
 
 // userContextFile is the per-user instruction file, resolved under
-// config.UserConfigDir()/zero/ alongside the rest of Zero's per-user config
+// config.UserConfigDir()/pvyai/ alongside the rest of Zero's per-user config
 // (config.json, commands, specialists) so users can keep personal guidance out
 // of individual repositories.
 const userContextFile = "ZERO.md"
@@ -348,7 +348,7 @@ func projectGuidelines(cwd, gitRoot string) string {
 }
 
 // userGuidelines returns the per-user ZERO.md instructions block, if present.
-// The file lives in config.UserConfigDir()/zero/ next to Zero's other
+// The file lives in config.UserConfigDir()/pvyai/ next to Zero's other
 // per-user config; the basename match is case-insensitive so a file saved as
 // zero.md still resolves on case-sensitive filesystems, mirroring the project
 // guideline loader. The section carries an explicit precedence note because
@@ -365,7 +365,7 @@ func userGuidelines() string {
 	if configDir == "" {
 		return ""
 	}
-	match := findCaseInsensitiveFile(filepath.Join(configDir, "zero"), userContextFile)
+	match := findCaseInsensitiveFile(filepath.Join(configDir, "pvyai"), userContextFile)
 	if match == "" {
 		return ""
 	}

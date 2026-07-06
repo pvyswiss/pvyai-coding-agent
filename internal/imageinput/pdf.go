@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 	"github.com/ledongthuc/pdf"
 )
 
@@ -61,7 +61,7 @@ var pdfMagic = []byte("%PDF-")
 // Truncated is set when Text was capped at MaxDocumentTextBytes.
 type Document struct {
 	Text      string
-	Images    []zeroruntime.ImageBlock
+	Images    []pvyruntime.ImageBlock
 	Pages     int
 	Truncated bool
 }
@@ -147,7 +147,7 @@ func LoadDocument(path string, workspaceRoot string, opts DocumentOptions) (Docu
 
 	// Vision path (optional): render pages to images via poppler when available.
 	// Failures here are non-fatal -- we still return the text layer below.
-	var images []zeroruntime.ImageBlock
+	var images []pvyruntime.ImageBlock
 	if opts.Vision && useExternal {
 		if rendered, rerr := rasterizeWithPoppler(data, opts.maxPages()); rerr == nil {
 			images = rendered
@@ -351,7 +351,7 @@ func extractTextWithPoppler(data []byte) (string, bool) {
 // and per-image cap). It returns an error when pdftoppm is absent or rendering
 // produced nothing; the caller treats that as "no rasterization available" and
 // keeps the text layer.
-func rasterizeWithPoppler(data []byte, maxPages int) ([]zeroruntime.ImageBlock, error) {
+func rasterizeWithPoppler(data []byte, maxPages int) ([]pvyruntime.ImageBlock, error) {
 	if !popplerAvailable("pdftoppm") {
 		return nil, fmt.Errorf("pdftoppm not available")
 	}
@@ -359,7 +359,7 @@ func rasterizeWithPoppler(data []byte, maxPages int) ([]zeroruntime.ImageBlock, 
 		maxPages = defaultMaxRasterPages
 	}
 
-	dir, err := os.MkdirTemp("", "zero-pdf-raster-")
+	dir, err := os.MkdirTemp("", "pvyai-pdf-raster-")
 	if err != nil {
 		return nil, fmt.Errorf("cannot create temp dir for rasterization: %w", err)
 	}
@@ -390,7 +390,7 @@ func rasterizeWithPoppler(data []byte, maxPages int) ([]zeroruntime.ImageBlock, 
 	// sort keeps page 10 after page 9 rather than after page 1.
 	sort.Strings(entries)
 
-	images := make([]zeroruntime.ImageBlock, 0, len(entries))
+	images := make([]pvyruntime.ImageBlock, 0, len(entries))
 	for _, name := range entries {
 		if len(images) >= maxPages {
 			break
@@ -411,28 +411,28 @@ func rasterizeWithPoppler(data []byte, maxPages int) ([]zeroruntime.ImageBlock, 
 // loadRenderedPage reads one rendered PNG page, enforces the per-image cap, and
 // normalizes its media type through the same allow-list LoadFile uses, so
 // rasterized pages flow through the existing image pipeline unchanged.
-func loadRenderedPage(name string) (zeroruntime.ImageBlock, error) {
+func loadRenderedPage(name string) (pvyruntime.ImageBlock, error) {
 	info, err := os.Stat(name)
 	if err != nil {
-		return zeroruntime.ImageBlock{}, err
+		return pvyruntime.ImageBlock{}, err
 	}
 	if info.Size() > MaxImageBytes {
-		return zeroruntime.ImageBlock{}, fmt.Errorf("rendered page %s exceeds the per-image limit", filepath.Base(name))
+		return pvyruntime.ImageBlock{}, fmt.Errorf("rendered page %s exceeds the per-image limit", filepath.Base(name))
 	}
 	data, err := os.ReadFile(name)
 	if err != nil {
-		return zeroruntime.ImageBlock{}, err
+		return pvyruntime.ImageBlock{}, err
 	}
 	if len(data) > MaxImageBytes {
-		return zeroruntime.ImageBlock{}, fmt.Errorf("rendered page %s exceeds the per-image limit", filepath.Base(name))
+		return pvyruntime.ImageBlock{}, fmt.Errorf("rendered page %s exceeds the per-image limit", filepath.Base(name))
 	}
 	sniffLen := len(data)
 	if sniffLen > 512 {
 		sniffLen = 512
 	}
-	mediaType := zeroruntime.NormalizeImageMediaType(http.DetectContentType(data[:sniffLen]))
+	mediaType := pvyruntime.NormalizeImageMediaType(http.DetectContentType(data[:sniffLen]))
 	if mediaType == "" {
-		return zeroruntime.ImageBlock{}, fmt.Errorf("rendered page %s has an unsupported image type", filepath.Base(name))
+		return pvyruntime.ImageBlock{}, fmt.Errorf("rendered page %s has an unsupported image type", filepath.Base(name))
 	}
-	return zeroruntime.ImageBlock{MediaType: mediaType, Data: data}, nil
+	return pvyruntime.ImageBlock{MediaType: mediaType, Data: data}, nil
 }

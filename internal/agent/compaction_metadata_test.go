@@ -6,24 +6,24 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 func TestCompactMessagesReturnsMetadataForManualCompaction(t *testing.T) {
-	messages := []zeroruntime.Message{
-		{Role: zeroruntime.MessageRoleSystem, Content: "system prompt"},
-		{Role: zeroruntime.MessageRoleUser, Content: "first question"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "first answer"},
-		{Role: zeroruntime.MessageRoleUser, Content: "second question"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "recent answer"},
-		{Role: zeroruntime.MessageRoleUser, Content: "latest question"},
+	messages := []pvyruntime.Message{
+		{Role: pvyruntime.MessageRoleSystem, Content: "system prompt"},
+		{Role: pvyruntime.MessageRoleUser, Content: "first question"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "first answer"},
+		{Role: pvyruntime.MessageRoleUser, Content: "second question"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "recent answer"},
+		{Role: pvyruntime.MessageRoleUser, Content: "latest question"},
 	}
 
-	var captured []zeroruntime.Message
+	var captured []pvyruntime.Message
 	result, err := CompactMessages(messages, CompactionOptions{
 		PreserveLast: 2,
-		Summarize: func(toSummarize []zeroruntime.Message) (string, error) {
-			captured = append([]zeroruntime.Message(nil), toSummarize...)
+		Summarize: func(toSummarize []pvyruntime.Message) (string, error) {
+			captured = append([]pvyruntime.Message(nil), toSummarize...)
 			return "  manual summary  ", nil
 		},
 	})
@@ -52,7 +52,7 @@ func TestCompactMessagesReturnsMetadataForManualCompaction(t *testing.T) {
 	if result.Messages[0].Content != "system prompt" {
 		t.Fatalf("system message was not preserved at head: %#v", result.Messages)
 	}
-	if result.Messages[1].Role != zeroruntime.MessageRoleUser {
+	if result.Messages[1].Role != pvyruntime.MessageRoleUser {
 		t.Fatalf("summary message role = %s, want user", result.Messages[1].Role)
 	}
 	if !strings.Contains(result.Messages[1].Content, summaryLabel) || !strings.Contains(result.Messages[1].Content, "manual summary") {
@@ -64,15 +64,15 @@ func TestCompactMessagesReturnsMetadataForManualCompaction(t *testing.T) {
 }
 
 func TestCompactMessagesNoopReturnsUncompactedMetadata(t *testing.T) {
-	messages := []zeroruntime.Message{
-		{Role: zeroruntime.MessageRoleSystem, Content: "system"},
-		{Role: zeroruntime.MessageRoleUser, Content: "hi"},
+	messages := []pvyruntime.Message{
+		{Role: pvyruntime.MessageRoleSystem, Content: "system"},
+		{Role: pvyruntime.MessageRoleUser, Content: "hi"},
 	}
 	called := false
 
 	result, err := CompactMessages(messages, CompactionOptions{
 		PreserveLast: 8,
-		Summarize: func([]zeroruntime.Message) (string, error) {
+		Summarize: func([]pvyruntime.Message) (string, error) {
 			called = true
 			return "summary", nil
 		},
@@ -102,18 +102,18 @@ func TestCompactMessagesNoopReturnsUncompactedMetadata(t *testing.T) {
 }
 
 func TestCompactMessagesPropagatesSummarizeError(t *testing.T) {
-	messages := []zeroruntime.Message{
-		{Role: zeroruntime.MessageRoleSystem, Content: "system"},
-		{Role: zeroruntime.MessageRoleUser, Content: "first question"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "first answer"},
-		{Role: zeroruntime.MessageRoleUser, Content: "second question"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "recent answer"},
-		{Role: zeroruntime.MessageRoleUser, Content: "latest question"},
+	messages := []pvyruntime.Message{
+		{Role: pvyruntime.MessageRoleSystem, Content: "system"},
+		{Role: pvyruntime.MessageRoleUser, Content: "first question"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "first answer"},
+		{Role: pvyruntime.MessageRoleUser, Content: "second question"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "recent answer"},
+		{Role: pvyruntime.MessageRoleUser, Content: "latest question"},
 	}
 
 	_, err := CompactMessages(messages, CompactionOptions{
 		PreserveLast: 2,
-		Summarize: func([]zeroruntime.Message) (string, error) {
+		Summarize: func([]pvyruntime.Message) (string, error) {
 			return "", errors.New("summarizer unavailable")
 		},
 	})

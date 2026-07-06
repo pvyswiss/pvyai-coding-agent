@@ -41,7 +41,7 @@ func TestPermissionProfileFromPolicyBuildsWorkspaceWriteProfile(t *testing.T) {
 	if !stringSliceContains(profile.FileSystem.ReadRoots, profileRootPath()) {
 		t.Fatalf("read roots = %#v, want full read root %q", profile.FileSystem.ReadRoots, profileRootPath())
 	}
-	if !stringSliceContains(profile.FileSystem.WriteRoots[0].ProtectedMetadataNames, ".git") || !stringSliceContains(profile.FileSystem.WriteRoots[0].ProtectedMetadataNames, ".zero") {
+	if !stringSliceContains(profile.FileSystem.WriteRoots[0].ProtectedMetadataNames, ".git") || !stringSliceContains(profile.FileSystem.WriteRoots[0].ProtectedMetadataNames, ".pvyai") {
 		t.Fatalf("protected metadata names = %#v, want workspace metadata protected", profile.FileSystem.WriteRoots[0].ProtectedMetadataNames)
 	}
 	if len(profile.FileSystem.DenyRead) != 1 || len(profile.FileSystem.DenyWrite) != 1 {
@@ -178,7 +178,7 @@ func TestSandboxManagerBuildsCommandPlanThroughWindowsRunner(t *testing.T) {
 	restore := windowsSandboxInitialized
 	t.Cleanup(func() { windowsSandboxInitialized = restore })
 	windowsSandboxInitialized = func() bool { return true }
-	backend := Backend{Name: BackendWindowsRestrictedToken, Available: true, Executable: `C:\zero\zero-windows-command-runner.exe`, Platform: "windows"}
+	backend := Backend{Name: BackendWindowsRestrictedToken, Available: true, Executable: `C:\zero\pvyai-windows-command-runner.exe`, Platform: "windows"}
 	policy := DefaultPolicy()
 	manager := NewSandboxManager(SandboxManagerOptions{GOOS: "windows", Backend: backend})
 	plan, err := manager.BuildCommandPlan(SandboxManagerRequest{
@@ -192,7 +192,7 @@ func TestSandboxManagerBuildsCommandPlanThroughWindowsRunner(t *testing.T) {
 	if err != nil {
 		t.Fatalf("BuildCommandPlan: %v", err)
 	}
-	if !plan.Wrapped || plan.Name != `C:\zero\zero-windows-command-runner.exe` || plan.TargetBackend != BackendWindowsRestrictedToken {
+	if !plan.Wrapped || plan.Name != `C:\zero\pvyai-windows-command-runner.exe` || plan.TargetBackend != BackendWindowsRestrictedToken {
 		t.Fatalf("command plan = %#v, want native windows command runner wrapper", plan)
 	}
 	if plan.EnforcementLevel != EnforcementNative {
@@ -251,7 +251,7 @@ func TestSandboxManagerSelectsPlatformBackend(t *testing.T) {
 	}{
 		{name: "linux", goos: "linux", lookupName: LinuxSandboxHelperName, lookupPath: "/usr/bin/zero-linux-sandbox", want: BackendLinuxBwrap, wantTarget: BackendLinuxBwrap},
 		{name: "macos", goos: "darwin", lookupName: "sandbox-exec", lookupPath: "/usr/bin/sandbox-exec", want: BackendMacOSSeatbelt, wantTarget: BackendMacOSSeatbelt},
-		{name: "windows", goos: "windows", lookupName: WindowsSandboxCommandRunnerName, lookupPath: `C:\zero\zero-windows-command-runner.exe`, setupPath: `C:\zero\zero-windows-sandbox-setup.exe`, want: BackendWindowsRestrictedToken, wantTarget: BackendWindowsRestrictedToken},
+		{name: "windows", goos: "windows", lookupName: WindowsSandboxCommandRunnerName, lookupPath: `C:\zero\pvyai-windows-command-runner.exe`, setupPath: `C:\zero\zero-windows-sandbox-setup.exe`, want: BackendWindowsRestrictedToken, wantTarget: BackendWindowsRestrictedToken},
 		{name: "unsupported", goos: "plan9", want: BackendUnavailable, wantTarget: BackendUnavailable},
 	}
 

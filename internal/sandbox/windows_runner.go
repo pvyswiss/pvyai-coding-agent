@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-const WindowsSandboxCommandRunnerName = "zero-windows-command-runner.exe"
+const WindowsSandboxCommandRunnerName = "pvyai-windows-command-runner.exe"
 
 const windowsCapabilitySIDSchemaVersion = 2
 

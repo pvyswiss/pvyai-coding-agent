@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 var sandboxBlockForTest = sandbox.Block{
@@ -71,7 +71,7 @@ func TestDisplayPathAbbreviatesHome(t *testing.T) {
 	userHomeDir = func() (string, error) { return home, nil }
 	defer func() { userHomeDir = restore }()
 
-	abs := filepath.Join(home, "projects", "zero", "main.go")
+	abs := filepath.Join(home, "projects", "pvyai", "main.go")
 	if got := displayPath(t.TempDir(), abs); got != "~/projects/zero/main.go" {
 		t.Fatalf("displayPath under home = %q, want ~/projects/zero/main.go", got)
 	}

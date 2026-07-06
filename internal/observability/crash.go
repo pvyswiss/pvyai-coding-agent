@@ -20,7 +20,7 @@ const crashExitCode = 1
 
 // FormatCrashReport renders a human-readable crash report.
 func FormatCrashReport(label string, recovered any, stack []byte, ts time.Time) string {
-	return fmt.Sprintf("zero crash report\ntime:  %s\nlabel: %s\npanic: %v\n\nstack:\n%s\n",
+	return fmt.Sprintf("pvyai crash report\ntime:  %s\nlabel: %s\npanic: %v\n\nstack:\n%s\n",
 		ts.UTC().Format(time.RFC3339), label, recovered, stack)
 }
 
@@ -41,7 +41,7 @@ func DefaultCrashDir() string {
 	if home, err := os.UserHomeDir(); err == nil && home != "" {
 		return filepath.Join(home, ".zero", "crashes")
 	}
-	return filepath.Join(os.TempDir(), "zero-crashes")
+	return filepath.Join(os.TempDir(), "pvyai-crashes")
 }
 
 // Recover is deferred at a top-level entrypoint. On a panic it captures the
@@ -55,9 +55,9 @@ func Recover(dir, label string, stderr io.Writer, code *int) {
 	}
 	stack := debug.Stack()
 	if path, err := WriteCrashReport(dir, label, recovered, stack, time.Now()); err == nil {
-		fmt.Fprintf(stderr, "zero crashed: %v\nA crash report was saved to %s\n", recovered, path)
+		fmt.Fprintf(stderr, "pvyai crashed: %v\nA crash report was saved to %s\n", recovered, path)
 	} else {
-		fmt.Fprintf(stderr, "zero crashed: %v\n%s\n", recovered, stack)
+		fmt.Fprintf(stderr, "pvyai crashed: %v\n%s\n", recovered, stack)
 	}
 	*code = crashExitCode
 }

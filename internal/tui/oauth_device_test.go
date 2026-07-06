@@ -6,15 +6,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/oauth"
-	"github.com/Gitlawb/zero/internal/providermodeldiscovery"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/oauth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providermodeldiscovery"
 )
 
 func seedOAuthToken(t *testing.T, providerID, access string) {
 	t.Helper()
 	path := filepath.Join(t.TempDir(), "tok.json")
-	t.Setenv("ZERO_OAUTH_TOKENS_PATH", path)
+	t.Setenv("PVYAI_OAUTH_TOKENS_PATH", path)
 	store, err := oauth.NewStore(oauth.StoreOptions{FilePath: path})
 	if err != nil {
 		t.Fatalf("NewStore: %v", err)

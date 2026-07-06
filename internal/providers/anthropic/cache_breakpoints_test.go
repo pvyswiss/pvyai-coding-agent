@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // The final two messages must carry a cache_control breakpoint on their last
@@ -29,15 +29,15 @@ func TestAnthropicRequestMarksLastTwoMessagesForCaching(t *testing.T) {
 	if err != nil {
 		t.Fatalf("New returned error: %v", err)
 	}
-	stream, err := provider.StreamCompletion(context.Background(), zeroruntime.CompletionRequest{
-		Messages: []zeroruntime.Message{
-			{Role: zeroruntime.MessageRoleUser, Content: "first"},
+	stream, err := provider.StreamCompletion(context.Background(), pvyruntime.CompletionRequest{
+		Messages: []pvyruntime.Message{
+			{Role: pvyruntime.MessageRoleUser, Content: "first"},
 			{
-				Role:      zeroruntime.MessageRoleAssistant,
+				Role:      pvyruntime.MessageRoleAssistant,
 				Content:   "calling a tool",
-				ToolCalls: []zeroruntime.ToolCall{{ID: "toolu_1", Name: "grep", Arguments: `{}`}},
+				ToolCalls: []pvyruntime.ToolCall{{ID: "toolu_1", Name: "grep", Arguments: `{}`}},
 			},
-			{Role: zeroruntime.MessageRoleTool, Content: "result", ToolCallID: "toolu_1"},
+			{Role: pvyruntime.MessageRoleTool, Content: "result", ToolCallID: "toolu_1"},
 		},
 	})
 	if err != nil {

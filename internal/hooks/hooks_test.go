@@ -22,13 +22,13 @@ func TestResolvePathsUsesXDGLocations(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ResolvePaths returned error: %v", err)
 	}
-	if paths.UserConfigPath != filepath.Join(dir, "config", "zero", "hooks.json") {
+	if paths.UserConfigPath != filepath.Join(dir, "config", "pvyai", "hooks.json") {
 		t.Fatalf("user path = %q", paths.UserConfigPath)
 	}
-	if paths.ProjectConfigPath != filepath.Join(dir, ".zero", "hooks.json") {
+	if paths.ProjectConfigPath != filepath.Join(dir, ".pvyai", "hooks.json") {
 		t.Fatalf("project path = %q", paths.ProjectConfigPath)
 	}
-	if paths.AuditPath != filepath.Join(dir, "data", "zero", "hooks", "audit.jsonl") {
+	if paths.AuditPath != filepath.Join(dir, "data", "pvyai", "hooks", "audit.jsonl") {
 		t.Fatalf("audit path = %q", paths.AuditPath)
 	}
 }

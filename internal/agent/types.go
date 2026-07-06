@@ -3,17 +3,17 @@ package agent
 import (
 	"context"
 
-	"github.com/Gitlawb/zero/internal/hooks"
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/streamjson"
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/hooks"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/streamjson"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
-type Message = zeroruntime.Message
-type Provider = zeroruntime.Provider
-type ToolCall = zeroruntime.ToolCall
-type Usage = zeroruntime.Usage
+type Message = pvyruntime.Message
+type Provider = pvyruntime.Provider
+type ToolCall = pvyruntime.ToolCall
+type Usage = pvyruntime.Usage
 
 type PermissionMode string
 type PermissionAction string
@@ -226,7 +226,7 @@ type Options struct {
 	// Images are optional image attachments to seed onto the initial user turn.
 	// nil for text-only runs (the seeded message then carries no images, exactly
 	// as before).
-	Images []zeroruntime.ImageBlock
+	Images []pvyruntime.ImageBlock
 	// ContextWindow is the model's maximum input token budget. When > 0 the agent
 	// loop compacts long conversations once the estimated size crosses a fraction
 	// of this window. 0 DISABLES compaction entirely (every existing caller/test
@@ -314,7 +314,7 @@ type Result struct {
 	Messages    []Message
 	StopReason  StopReason
 	// FinishReason is the provider's normalized terminal stop reason for the turn
-	// that produced FinalAnswer: zeroruntime.FinishReasonLength when the output
+	// that produced FinalAnswer: pvyruntime.FinishReasonLength when the output
 	// hit the token cap, FinishReasonContentFilter when it was filtered. Empty for
 	// a normal completion.
 	FinishReason string
@@ -343,10 +343,10 @@ func (result Result) Truncated() bool {
 // wording stays consistent.
 func (result Result) TruncationNotice() string {
 	switch result.FinishReason {
-	case zeroruntime.FinishReasonLength:
+	case pvyruntime.FinishReasonLength:
 		return "Response was cut off at the output token limit and may be incomplete. " +
 			"Raise the model's max output tokens or ask zero to continue."
-	case zeroruntime.FinishReasonContentFilter:
+	case pvyruntime.FinishReasonContentFilter:
 		return "Response was withheld or cut off by the provider's content filter and may be incomplete."
 	case "":
 		return ""

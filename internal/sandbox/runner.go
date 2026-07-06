@@ -532,7 +532,7 @@ var sandboxMachServices = []string{
 // log when Policy.MonitorDenials is set; nextSandboxDenialTag derives a unique
 // per-plan tag from it so the runtime monitor can find this run's denials via
 // `log stream`.
-const sandboxDenialLogTag = "zero-sandbox-denied-v1"
+const sandboxDenialLogTag = "pvyai-sandbox-denied-v1"
 
 // sandboxDenialTagSeq makes each monitored plan's denial tag unique.
 var sandboxDenialTagSeq atomic.Uint64

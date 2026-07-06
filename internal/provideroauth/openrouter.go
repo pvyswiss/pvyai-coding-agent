@@ -18,7 +18,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/oauth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/oauth"
 )
 
 const (

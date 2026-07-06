@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
 )
 
 // wizardModelAt builds a model whose provider wizard is at step with providerID
@@ -144,7 +144,7 @@ func TestProviderStepSurfacesOAuthError(t *testing.T) {
 	if !found {
 		t.Fatal("huggingface should be an OAuth-capable provider")
 	}
-	wizard.oauthErr = `oauth: provider "huggingface" is not configured; set ZERO_OAUTH_HUGGINGFACE_CLIENT_ID`
+	wizard.oauthErr = `oauth: provider "huggingface" is not configured; set PVYAI_OAUTH_HUGGINGFACE_CLIENT_ID`
 
 	view := strings.Join(wizard.renderProviderStep(72), "\n")
 	if !strings.Contains(view, "OAuth login failed") {

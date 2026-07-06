@@ -10,10 +10,10 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/config"
-	internalmcp "github.com/Gitlawb/zero/internal/mcp"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	internalmcp "github.com/pvyswiss/pvyai-coding-agent/internal/mcp"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 func applyCommandResult(t *testing.T, m model, cmd tea.Cmd) model {

@@ -6,7 +6,7 @@ import (
 
 	"charm.land/lipgloss/v2"
 
-	"github.com/Gitlawb/zero/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
 )
 
 func (m model) mcpAddWizardOverlay(width int) string {

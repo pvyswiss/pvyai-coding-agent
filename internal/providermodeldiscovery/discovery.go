@@ -11,11 +11,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/providercatalog"
-	"github.com/Gitlawb/zero/internal/providermodelcatalog"
-	"github.com/Gitlawb/zero/internal/providers/providerio"
-	"github.com/Gitlawb/zero/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providermodelcatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providers/providerio"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
 )
 
 const anthropicVersion = "2023-06-01"
@@ -69,7 +69,7 @@ func DiscoverCatalog(ctx context.Context, provider providercatalog.Descriptor, p
 // discoveryHasCredential reports whether the profile carries a usable credential
 // for an authenticated /models probe. A profile may authenticate via a raw
 // auth-header value instead of APIKey, so treat either as present — consistent
-// with config credential checks and zerocommands ProviderSnapshot.APIKeySet.
+// with config credential checks and pvycmd ProviderSnapshot.APIKeySet.
 func discoveryHasCredential(profile config.ProviderProfile) bool {
 	return strings.TrimSpace(profile.APIKey) != "" || strings.TrimSpace(profile.AuthHeaderValue) != ""
 }

@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/providerhealth"
-	"github.com/Gitlawb/zero/internal/tui"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providerhealth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tui"
 )
 
 func TestFormatSetupCompleteIncludesTryThisExample(t *testing.T) {

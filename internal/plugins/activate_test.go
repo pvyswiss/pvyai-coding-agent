@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/hooks"
-	"github.com/Gitlawb/zero/internal/skills"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/hooks"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/skills"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 // fakeToolRunner records the invocation and returns a canned result so tool

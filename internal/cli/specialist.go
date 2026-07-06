@@ -7,7 +7,7 @@ import (
 	osexec "os/exec"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/specialist"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/specialist"
 )
 
 type specialistOptions struct {
@@ -256,7 +256,7 @@ func runSpecialistShow(paths specialist.Paths, name string, options specialistOp
 	}
 	manifest, ok := specialist.Find(result, name)
 	if !ok {
-		return writeExecUsageError(stderr, "Zero specialist not found: "+name)
+		return writeExecUsageError(stderr, "PVYai specialist not found: "+name)
 	}
 	if options.json {
 		if err := writePrettyJSON(stdout, manifest); err != nil {
@@ -381,7 +381,7 @@ Commands:
 Flags:
   --json                      Print JSON output
   --user                      Use the user specialist directory (default)
-  --project                   Use the project .zero/specialists directory
+  --project                   Use the project .pvyai/specialists directory
   --description <text>        Description for create
   --prompt <text>             System prompt for create
   --tools <list>              Tool ids/categories for create

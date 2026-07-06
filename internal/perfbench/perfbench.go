@@ -18,7 +18,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/release"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/release"
 )
 
 const SchemaVersion = 3
@@ -228,7 +228,7 @@ func EvaluateWarnings(metrics Metrics, thresholds Thresholds) []Warning {
 
 func FormatSummary(result Result) string {
 	lines := []string{
-		fmt.Sprintf("Zero performance benchmark (%s/%s, Go %s)", result.Platform.OS, result.Platform.Arch, result.Platform.GoVersion),
+		fmt.Sprintf("PVYai performance benchmark (%s/%s, Go %s)", result.Platform.OS, result.Platform.Arch, result.Platform.GoVersion),
 		"command: " + FormatCommand(result.ColdStartCommand),
 		"first-output command: " + FormatCommand(result.FirstOutputCommand),
 		fmt.Sprintf("iterations: %d measured, %d warmup", result.Iterations, result.WarmupIterations),
@@ -381,7 +381,7 @@ func resolveZeroVersionCommand(rootDir string) ([]string, error) {
 	binaryPath := filepath.Join(rootDir, binaryName)
 	if _, err := os.Stat(binaryPath); err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			return nil, fmt.Errorf("no %s binary found; run `go run ./cmd/zero-release build` before running the performance benchmark", binaryName)
+			return nil, fmt.Errorf("no %s binary found; run `go run ./cmd/pvyai-release build` before running the performance benchmark", binaryName)
 		}
 		return nil, err
 	}

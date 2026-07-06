@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/Gitlawb/zero/internal/specialist"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/specialist"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 // NewSpecialistLauncher adapts internal/specialist.Executor into a

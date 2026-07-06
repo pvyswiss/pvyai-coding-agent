@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/zerogit"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvygit"
 )
 
 func seedUsageStore(t *testing.T) *sessions.Store {
@@ -30,9 +30,9 @@ func seedUsageStore(t *testing.T) *sessions.Store {
 	return store
 }
 
-func stubInspectChanges(stat string) func(context.Context, zerogit.InspectOptions) (zerogit.ChangeSummary, error) {
-	return func(context.Context, zerogit.InspectOptions) (zerogit.ChangeSummary, error) {
-		return zerogit.ChangeSummary{Root: "/repo", DiffStat: stat}, nil
+func stubInspectChanges(stat string) func(context.Context, pvygit.InspectOptions) (pvygit.ChangeSummary, error) {
+	return func(context.Context, pvygit.InspectOptions) (pvygit.ChangeSummary, error) {
+		return pvygit.ChangeSummary{Root: "/repo", DiffStat: stat}, nil
 	}
 }
 

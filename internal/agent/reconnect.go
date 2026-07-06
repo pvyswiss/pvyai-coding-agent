@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/errhint"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/errhint"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // Mid-stream reconnect: a long autonomous task (a big refactor, a swarm member,
@@ -73,7 +73,7 @@ func stallRetryNoticeFor(options Options) reconnectNotifier {
 // last error. A context-cancellation, a non-disconnect error, or a context
 // already past its deadline is returned immediately (no retry) — those have
 // their own handling (compaction for context-limit, image-rejection, etc.).
-func streamWithReconnect(ctx context.Context, provider Provider, request zeroruntime.CompletionRequest, notify reconnectNotifier) (<-chan zeroruntime.StreamEvent, error) {
+func streamWithReconnect(ctx context.Context, provider Provider, request pvyruntime.CompletionRequest, notify reconnectNotifier) (<-chan pvyruntime.StreamEvent, error) {
 	stream, err := provider.StreamCompletion(ctx, request)
 	if err == nil {
 		return stream, nil

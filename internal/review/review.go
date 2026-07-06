@@ -44,8 +44,8 @@ type checkSpec struct {
 var defaultCheckSpecs = []checkSpec{
 	{Env: "ZERO_REVIEW_DIFF_CHECK", Label: "Diff hygiene", Command: "git diff --check"},
 	{Env: "ZERO_REVIEW_TEST", Label: "Tests", Command: "go test ./..."},
-	{Env: "ZERO_REVIEW_BUILD", Label: "Build", Command: "go run ./cmd/zero-release build"},
-	{Env: "ZERO_REVIEW_SMOKE", Label: "Smoke build", Command: "go run ./cmd/zero-release smoke"},
+	{Env: "ZERO_REVIEW_BUILD", Label: "Build", Command: "go run ./cmd/pvyai-release build"},
+	{Env: "ZERO_REVIEW_SMOKE", Label: "Smoke build", Command: "go run ./cmd/pvyai-release smoke"},
 }
 
 func NormalizeOutcome(value string) Outcome {

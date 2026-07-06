@@ -6,8 +6,8 @@ import (
 	"io"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/mcp"
-	"github.com/Gitlawb/zero/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/mcp"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
 )
 
 func runMCPOAuth(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) int {
@@ -48,7 +48,7 @@ func runMCPOAuthLogin(args []string, stdout io.Writer, stderr io.Writer, deps ap
 		// login is an interactive flow (prints a URL, waits for the callback); a
 		// machine-readable mode would be misleading, so reject it rather than
 		// accepting the flag and ignoring it.
-		return writeExecUsageError(stderr, "zero mcp oauth login does not support --json")
+		return writeExecUsageError(stderr, "pvyai mcp oauth login does not support --json")
 	}
 	if len(positional) != 1 {
 		return writeExecUsageError(stderr, "usage: zero mcp oauth login <server>")

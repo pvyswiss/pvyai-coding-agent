@@ -9,13 +9,13 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/doctor"
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/providermodelcatalog"
-	"github.com/Gitlawb/zero/internal/providers"
-	"github.com/Gitlawb/zero/internal/redaction"
-	zsearch "github.com/Gitlawb/zero/internal/search"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/doctor"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providermodelcatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providers"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
+	zsearch "github.com/pvyswiss/pvyai-coding-agent/internal/search"
 )
 
 const doctorStatusRowID = "doctor/status"
@@ -172,7 +172,7 @@ func doctorFixLines(report doctor.Report) []string {
 			if remedy := doctorCheckDetailString(check, "remedy"); remedy != "" {
 				lines = append(lines, "native sandbox: "+remedy)
 			} else {
-				lines = append(lines, "native sandbox: run zero sandbox policy --effective to inspect backend status")
+				lines = append(lines, "native sandbox: run pvyai sandbox policy --effective to inspect backend status")
 			}
 		case "lsp.servers":
 			lines = append(lines, "language servers: install missing LSP binaries on PATH")
@@ -194,7 +194,7 @@ func doctorFixLines(report doctor.Report) []string {
 func (m model) doctorConnectivityRunningText() string {
 	return strings.Join([]string{
 		"Checking provider",
-		"Zero is probing the active endpoint. Keep typing; messages will queue until the check finishes.",
+		"PVYai is probing the active endpoint. Keep typing; messages will queue until the check finishes.",
 		m.doctorAnimationLine(),
 		"provider: " + displayValue(m.providerName, displayValue(m.providerProfile.Name, "unknown")),
 		"model: " + displayValue(m.modelName, displayValue(m.providerProfile.Model, "unknown")),
@@ -511,7 +511,7 @@ func (m model) switchProviderModel(providerName, modelID string) (model, string,
 	// was deleted/unreadable the marker can still be set, and building a keyless
 	// provider would only fail later with a 401. Local/no-auth providers need no key.
 	if strings.TrimSpace(target.APIKey) == "" && strings.TrimSpace(target.AuthHeaderValue) == "" && !(hasDescriptor && descriptor.Local) {
-		return m, "Model\nprovider " + strconv.Quote(providerName) + " has no usable credential — run setup or `zero auth login " + providerName + "`.", nil
+		return m, "Model\nprovider " + strconv.Quote(providerName) + " has no usable credential — run setup or `pvyai auth login " + providerName + "`.", nil
 	}
 	next, err := m.newProvider(target)
 	if err != nil {

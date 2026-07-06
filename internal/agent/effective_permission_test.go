@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 // argsPermTool implements tools.ArgsPermissioner; plainTool does not.

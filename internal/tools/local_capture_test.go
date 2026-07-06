@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/localcontrol"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/localcontrol"
 )
 
 type fakeArtifactRunner struct {

@@ -7,10 +7,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/usage"
-	"github.com/Gitlawb/zero/internal/zerogit"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/usage"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvygit"
 )
 
 type usageOptions struct {
@@ -120,13 +120,13 @@ func runUsage(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) i
 	// The net-LOC column is best-effort garnish on a token report: outside a
 	// git repository (or on any git failure) it degrades to zero instead of
 	// aborting the entire report.
-	diff := zerogit.DiffStat{}
+	diff := pvygit.DiffStat{}
 	if workspaceRoot, err := resolveWorkspaceRoot("", deps); err == nil {
-		if summary, err := deps.inspectChanges(context.Background(), zerogit.InspectOptions{Cwd: workspaceRoot}); err == nil {
+		if summary, err := deps.inspectChanges(context.Background(), pvygit.InspectOptions{Cwd: workspaceRoot}); err == nil {
 			// The --stat summary line ("N files changed, A insertions(+), B
 			// deletions(-)") carries no secret-bearing tokens, so parsing the
-			// already-redacted DiffStat returned by zerogit.Inspect is safe.
-			diff = zerogit.ParseDiffStat(summary.DiffStat)
+			// already-redacted DiffStat returned by pvygit.Inspect is safe.
+			diff = pvygit.ParseDiffStat(summary.DiffStat)
 		}
 	}
 

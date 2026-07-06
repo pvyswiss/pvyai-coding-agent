@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/minify"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/minify"
 )
 
 type readMinifiedFileTool struct {

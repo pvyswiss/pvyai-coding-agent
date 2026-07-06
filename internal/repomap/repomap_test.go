@@ -13,12 +13,12 @@ func TestScanBuildsDeterministicSnapshot(t *testing.T) {
 	writeFile(t, root, "go.mod", "module example.test/repo\n")
 	writeFile(t, root, "README.md", "# Example\n")
 	writeFile(t, root, "package.json", `{"name":"example"}`)
-	writeFile(t, root, "cmd/zero/main.go", "package main\n")
+	writeFile(t, root, "cmd/pvyai/main.go", "package main\n")
 	writeFile(t, root, "internal/app/app.go", "package app\n")
 	writeFile(t, root, "web/app.ts", "export const app = true\n")
-	writeFile(t, root, "zero.exe", "ignored binary")
+	writeFile(t, root, "pvyai.exe", "ignored binary")
 	writeFile(t, root, ".git/config", "[core]\n")
-	writeFile(t, root, ".zero/state.json", "{}")
+	writeFile(t, root, ".pvyai/state.json", "{}")
 	writeFile(t, root, "node_modules/pkg/index.js", "ignored")
 	writeFile(t, root, "vendor/lib/lib.go", "ignored")
 	writeFile(t, root, "dist/bundle.js", "ignored")
@@ -36,7 +36,7 @@ func TestScanBuildsDeterministicSnapshot(t *testing.T) {
 	}
 	wantFiles := []string{
 		"README.md",
-		"cmd/zero/main.go",
+		"cmd/pvyai/main.go",
 		"go.mod",
 		"internal/app/app.go",
 		"package.json",

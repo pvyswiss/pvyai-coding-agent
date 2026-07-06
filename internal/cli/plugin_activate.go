@@ -5,10 +5,10 @@ import (
 	"io"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/hooks"
-	"github.com/Gitlawb/zero/internal/plugins"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/hooks"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/plugins"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 // pluginActivation holds what plugin activation contributed to a bootstrap so the
@@ -103,5 +103,5 @@ func writePluginActivationWarning(stderr io.Writer, message string) {
 	if stderr == nil {
 		return
 	}
-	_, _ = fmt.Fprintf(stderr, "[zero] WARNING: plugin activation: %s\n", message)
+	_, _ = fmt.Fprintf(stderr, "[pvyai] WARNING: plugin activation: %s\n", message)
 }

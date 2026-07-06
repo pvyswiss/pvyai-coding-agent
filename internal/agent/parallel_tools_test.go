@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // probeTool records execution overlap and ordering so tests can assert what
@@ -80,11 +80,11 @@ func (tool *probeTool) Run(_ context.Context, args map[string]any) tools.Result 
 	return tools.Result{Status: tools.StatusOK, Output: "probe " + id}
 }
 
-func probeCallEvents(callID, toolName, id string) []zeroruntime.StreamEvent {
-	return []zeroruntime.StreamEvent{
-		{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: callID, ToolName: toolName},
-		{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: callID, ArgumentsFragment: fmt.Sprintf(`{"id":%q}`, id)},
-		{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: callID},
+func probeCallEvents(callID, toolName, id string) []pvyruntime.StreamEvent {
+	return []pvyruntime.StreamEvent{
+		{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: callID, ToolName: toolName},
+		{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: callID, ArgumentsFragment: fmt.Sprintf(`{"id":%q}`, id)},
+		{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: callID},
 	}
 }
 
@@ -118,11 +118,11 @@ func TestRunExecutesConsecutiveReadsConcurrently(t *testing.T) {
 
 	turnOne := append(probeCallEvents("call-1", "probe_read", "a"), probeCallEvents("call-2", "probe_read", "b")...)
 	turnOne = append(turnOne, probeCallEvents("call-3", "probe_read", "c")...)
-	turnOne = append(turnOne, zeroruntime.StreamEvent{Type: zeroruntime.StreamEventDone})
+	turnOne = append(turnOne, pvyruntime.StreamEvent{Type: pvyruntime.StreamEventDone})
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			turnOne,
-			{{Type: zeroruntime.StreamEventText, Content: "done"}, {Type: zeroruntime.StreamEventDone}},
+			{{Type: pvyruntime.StreamEventText, Content: "done"}, {Type: pvyruntime.StreamEventDone}},
 		},
 	}
 
@@ -144,7 +144,7 @@ func TestRunExecutesConsecutiveReadsConcurrently(t *testing.T) {
 	messages := provider.requests[1].Messages
 	var toolOrder []string
 	for _, message := range messages {
-		if message.Role == zeroruntime.MessageRoleTool {
+		if message.Role == pvyruntime.MessageRoleTool {
 			toolOrder = append(toolOrder, message.ToolCallID)
 		}
 	}
@@ -165,11 +165,11 @@ func TestRunParallelReadsNeverSpanMutatingCall(t *testing.T) {
 	turnOne = append(turnOne, probeCallEvents("call-3", "probe_write", "w")...)
 	turnOne = append(turnOne, probeCallEvents("call-4", "probe_read", "r3")...)
 	turnOne = append(turnOne, probeCallEvents("call-5", "probe_read", "r4")...)
-	turnOne = append(turnOne, zeroruntime.StreamEvent{Type: zeroruntime.StreamEventDone})
+	turnOne = append(turnOne, pvyruntime.StreamEvent{Type: pvyruntime.StreamEventDone})
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			turnOne,
-			{{Type: zeroruntime.StreamEventText, Content: "done"}, {Type: zeroruntime.StreamEventDone}},
+			{{Type: pvyruntime.StreamEventText, Content: "done"}, {Type: pvyruntime.StreamEventDone}},
 		},
 	}
 

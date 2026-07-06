@@ -9,7 +9,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 type globTool struct {

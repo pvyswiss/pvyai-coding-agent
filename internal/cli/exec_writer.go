@@ -7,10 +7,10 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/streamjson"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/streamjson"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 const streamJSONToolResultOutputLimit = 10 * 1024
@@ -64,7 +64,7 @@ func (writer *execEventWriter) warning(message string) {
 		writer.writeStreamJSON(streamjson.Event{Type: streamjson.EventWarning, RunID: writer.runID, Message: message})
 		return
 	}
-	writer.writeStderr("[zero] WARNING: " + message + "\n")
+	writer.writeStderr("[pvyai] WARNING: " + message + "\n")
 }
 
 func (writer *execEventWriter) text(delta string) {
@@ -317,7 +317,7 @@ func (writer *execEventWriter) errorEvent(code string, message string, recoverab
 		writer.writeJSON(map[string]any{"type": "error", "code": code, "message": message})
 		return
 	}
-	writer.writeStderr("[zero] " + message + "\n")
+	writer.writeStderr("[pvyai] " + message + "\n")
 }
 
 func (writer *execEventWriter) runEnd(status string, exitCode int) {

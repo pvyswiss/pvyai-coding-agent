@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 func TestServeListsAndCallsRegistryTools(t *testing.T) {
@@ -38,7 +38,7 @@ func TestServeListsAndCallsRegistryTools(t *testing.T) {
 		Method: "tools/call",
 		Params: mustRaw(map[string]any{
 			"name":      "lookup",
-			"arguments": map[string]any{"query": "zero"},
+			"arguments": map[string]any{"query": "pvyai"},
 		}),
 	})
 
@@ -139,7 +139,7 @@ func TestSchemaToMCPInputSchema(t *testing.T) {
 			"query": {
 				Type:        "string",
 				Description: "Search query",
-				Enum:        []string{"zero", "docs"},
+				Enum:        []string{"pvyai", "docs"},
 			},
 			"limit": {
 				Type:    "integer",

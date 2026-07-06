@@ -30,9 +30,9 @@ func TestWriteExecProviderErrorAppendsHint(t *testing.T) {
 		writeExecProviderError(&stdout, &stderr, execOutputText, "sandbox_error",
 			"sandbox setup failed: permission denied")
 		out := stderr.String()
-		// Exactly one "[zero]" line — no spurious hint attached to a local error.
-		if n := strings.Count(out, "[zero]"); n != 1 {
-			t.Fatalf("expected exactly one [zero] line for a non-provider error, got %d:\n%s", n, out)
+		// Exactly one "[pvyai]" line — no spurious hint attached to a local error.
+		if n := strings.Count(out, "[pvyai]"); n != 1 {
+			t.Fatalf("expected exactly one [pvyai] line for a non-provider error, got %d:\n%s", n, out)
 		}
 	})
 

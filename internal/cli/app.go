@@ -15,32 +15,32 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/hooks"
-	"github.com/Gitlawb/zero/internal/localcontrol"
-	"github.com/Gitlawb/zero/internal/mcp"
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/observability"
-	"github.com/Gitlawb/zero/internal/plugins"
-	"github.com/Gitlawb/zero/internal/providerhealth"
-	"github.com/Gitlawb/zero/internal/providermodeldiscovery"
-	"github.com/Gitlawb/zero/internal/provideronboarding"
-	"github.com/Gitlawb/zero/internal/providers"
-	"github.com/Gitlawb/zero/internal/redaction"
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/selfverify"
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/skills"
-	"github.com/Gitlawb/zero/internal/specialist"
-	"github.com/Gitlawb/zero/internal/swarm"
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/tui"
-	"github.com/Gitlawb/zero/internal/update"
-	"github.com/Gitlawb/zero/internal/verify"
-	"github.com/Gitlawb/zero/internal/worktrees"
-	"github.com/Gitlawb/zero/internal/zerogit"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/hooks"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/localcontrol"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/mcp"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/observability"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/plugins"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providerhealth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providermodeldiscovery"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/provideronboarding"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providers"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/selfverify"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/skills"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/specialist"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/swarm"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tui"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/update"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/verify"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/worktrees"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvygit"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 var version = "dev"
@@ -51,7 +51,7 @@ type appDeps struct {
 	userConfigPath   func() (string, error)
 	resolveConfig    func(workspaceRoot string, overrides config.Overrides) (config.ResolvedConfig, error)
 	resolveMCPConfig func(workspaceRoot string) (config.MCPConfig, error)
-	newProvider      func(config.ProviderProfile) (zeroruntime.Provider, error)
+	newProvider      func(config.ProviderProfile) (pvyruntime.Provider, error)
 	// exportActiveProvider pins spawned children to the run's provider (production:
 	// config.SetActiveProviderEnv, set in defaultAppDeps — deliberately NOT filled
 	// by fillAppDeps, so tests never mutate the process environment unless they
@@ -77,10 +77,10 @@ type appDeps struct {
 	runVerify              func(context.Context, verify.Plan, verify.RunOptions) verify.Report
 	runSelfVerify          func(context.Context, verify.Plan, selfverify.Options) selfverify.Report
 	runAgentEval           func(context.Context, agentEvalOptions) (agentEvalReport, error)
-	inspectChanges         func(context.Context, zerogit.InspectOptions) (zerogit.ChangeSummary, error)
-	commitChanges          func(context.Context, zerogit.CommitOptions) (zerogit.CommitResult, error)
-	pushChanges            func(context.Context, zerogit.PushOptions) (zerogit.PushResult, error)
-	createPR               func(context.Context, zerogit.PROptions) (zerogit.PRResult, error)
+	inspectChanges         func(context.Context, pvygit.InspectOptions) (pvygit.ChangeSummary, error)
+	commitChanges          func(context.Context, pvygit.CommitOptions) (pvygit.CommitResult, error)
+	pushChanges            func(context.Context, pvygit.PushOptions) (pvygit.PushResult, error)
+	createPR               func(context.Context, pvygit.PROptions) (pvygit.PRResult, error)
 	runTUI                 func(context.Context, tui.Options) int
 	runEditor              func(string) error
 	checkUpdate            func(context.Context, update.Options) (update.Result, error)
@@ -130,7 +130,7 @@ func defaultAppDeps() appDeps {
 			}
 			return config.ResolveMCP(options)
 		},
-		newProvider: func(profile config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(profile config.ProviderProfile) (pvyruntime.Provider, error) {
 			// Resolve the OAuth login ONCE: the bearer resolver and the login key it
 			// bound must describe the same login (the key is passed on to the Codex
 			// account-header resolver so it never re-selects independently).
@@ -180,10 +180,10 @@ func defaultAppDeps() appDeps {
 		runVerify:        verify.Run,
 		runSelfVerify:    selfverify.Run,
 		runAgentEval:     defaultRunAgentEval,
-		inspectChanges:   zerogit.Inspect,
-		commitChanges:    zerogit.Commit,
-		pushChanges:      zerogit.Push,
-		createPR:         zerogit.CreatePR,
+		inspectChanges:   pvygit.Inspect,
+		commitChanges:    pvygit.Commit,
+		pushChanges:      pvygit.Push,
+		createPR:         pvygit.CreatePR,
 		runTUI:           tui.Run,
 		runEditor:        openEditor,
 		checkUpdate:      update.Check,
@@ -193,11 +193,11 @@ func defaultAppDeps() appDeps {
 }
 
 func userAgent() string {
-	return "zero/" + version
+	return "pvyai/" + version
 }
 
 // defaultUserPluginsDir resolves the user-scoped plugins root
-// ($XDG_CONFIG_HOME/zero/plugins) used as the install target for `plugin add`
+// ($XDG_CONFIG_HOME/pvyai/plugins) used as the install target for `plugin add`
 // and the toolbox for `tools make`. It is the SourceUser root from
 // plugins.ResolveRoots; an empty string is returned only if it cannot be
 // resolved, which the command layer surfaces as an error.
@@ -216,7 +216,7 @@ func defaultUserPluginsDir() string {
 
 func runWithDeps(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) (exitCode int) {
 	// Self-dispatch as the Windows sandbox helper. When no standalone helper .exe
-	// is shipped (dev / plain `go build`), the sandbox launches the running zero
+	// is shipped (dev / plain `go build`), the sandbox launches the running pvyai
 	// binary with one of these hidden subcommands instead of a separate
 	// executable (see resolveWindowsSandboxHelper). Routed before crash-recover,
 	// dep-fill, and --add-dir splitting so it can never collide with a real
@@ -313,11 +313,11 @@ func runWithDeps(args []string, stdout io.Writer, stderr io.Writer, deps appDeps
 		}
 		// This path launches the interactive TUI, which takes no positional prompt or
 		// subcommand. Reject any remaining trailing arg loudly instead of silently
-		// dropping it, so `zero --skip-permissions-unsafe "fix bug"` doesn't appear to
+		// dropping it, so `pvyai --skip-permissions-unsafe "fix bug"` doesn't appear to
 		// hang in the TUI with the prompt discarded. (AUDIT-L3)
 		for _, arg := range rest {
 			if strings.TrimSpace(arg) != "" {
-				return writeAppError(stderr, "--skip-permissions-unsafe launches the interactive TUI and takes no prompt or subcommand; for a one-shot unsafe run use `zero exec --skip-permissions-unsafe -p \"...\"`", 1)
+				return writeAppError(stderr, "--skip-permissions-unsafe launches the interactive TUI and takes no prompt or subcommand; for a one-shot unsafe run use `pvyai exec --skip-permissions-unsafe -p \"...\"`", 1)
 			}
 		}
 		return runInteractiveTUI(stderr, deps, agent.PermissionModeUnsafe, append(append([]string{}, addDirs...), moreDirs...), skipTheme)
@@ -329,13 +329,13 @@ func runWithDeps(args []string, stdout io.Writer, stderr io.Writer, deps appDeps
 	case "-v", "--version", "version":
 		for _, a := range args[1:] {
 			if a == "-h" || a == "--help" {
-				if _, err := fmt.Fprintln(stdout, "Usage: zero version\n\nPrint the Zero CLI version. Takes no flags."); err != nil {
+				if _, err := fmt.Fprintln(stdout, "Usage: pvyai version\n\nPrint the PVYai CLI version. Takes no flags."); err != nil {
 					return 1
 				}
 				return 0
 			}
 		}
-		if _, err := fmt.Fprintf(stdout, "zero %s\n", version); err != nil {
+		if _, err := fmt.Fprintf(stdout, "pvyai %s\n", version); err != nil {
 			return 1
 		}
 		return 0
@@ -345,7 +345,7 @@ func runWithDeps(args []string, stdout io.Writer, stderr io.Writer, deps appDeps
 		}
 		// Forward leading --add-dir occurrences so exec's own parser collects them.
 		// Use the inline --prompt=<value> form so a prompt whose first character is a
-		// dash (e.g. `zero -p "-foo"`) is taken verbatim instead of being mistaken for
+		// dash (e.g. `pvyai -p "-foo"`) is taken verbatim instead of being mistaken for
 		// a flag and rejected with "--prompt requires a value" (matches the cron path).
 		execArgs := append(addDirFlagArgs(addDirs), "--prompt="+args[1])
 		execArgs = append(execArgs, args[2:]...)
@@ -421,15 +421,15 @@ func runWithDeps(args []string, stdout io.Writer, stderr io.Writer, deps appDeps
 		if _, err := fmt.Fprintf(stderr, "unknown command %q\n", args[0]); err != nil {
 			return 1
 		}
-		// First-run users reach for `zero login`/`zero logout` (reported in the
+		// First-run users reach for `pvyai login`/`pvyai logout` (reported in the
 		// wild); point them at the real command instead of a bare usage pointer.
 		switch strings.ToLower(args[0]) {
 		case "login", "logout":
-			if _, err := fmt.Fprintf(stderr, "did you mean %q?\n", "zero auth "+strings.ToLower(args[0])); err != nil {
+			if _, err := fmt.Fprintf(stderr, "did you mean %q?\n", "pvyai auth "+strings.ToLower(args[0])); err != nil {
 				return 1
 			}
 		}
-		if _, err := fmt.Fprintln(stderr, "Run zero --help for usage."); err != nil {
+		if _, err := fmt.Fprintln(stderr, "Run pvyai --help for usage."); err != nil {
 			return 1
 		}
 		return 2
@@ -551,7 +551,7 @@ func fillAppDeps(deps appDeps) appDeps {
 	// safe and idempotent for every profile kind and every injected newProvider.
 	baseNewProvider := deps.newProvider
 	userConfigPath := deps.userConfigPath
-	deps.newProvider = func(profile config.ProviderProfile) (zeroruntime.Provider, error) {
+	deps.newProvider = func(profile config.ProviderProfile) (pvyruntime.Provider, error) {
 		return baseNewProvider(applyStoredProviderKeyAt(profile, userConfigPath))
 	}
 	return deps
@@ -579,10 +579,10 @@ func runInteractiveTUIWithSetup(stderr io.Writer, deps appDeps, permissionMode a
 		// can onboard/repair, instead of exiting with an error they can only fix
 		// by hand-editing config.json. That covers a missing/unresolvable active
 		// provider and an active provider without a model (custom endpoints have
-		// no catalog default) — previously the second shape bricked bare `zero`
-		// and `zero setup`, the exact commands that could have fixed it. Any
+		// no catalog default) — previously the second shape bricked bare `pvyai`
+		// and `pvyai setup`, the exact commands that could have fixed it. Any
 		// other error (malformed JSON, directory conflict, etc.) is still fatal,
-		// and headless commands (zero config / zero exec) still fail with the
+		// and headless commands (pvyai config / pvyai exec) still fail with the
 		// actionable message.
 		if !errors.Is(err, config.ErrNoActiveProvider) && !errors.Is(err, config.ErrProviderRequiresModel) {
 			return writeAppError(stderr, err.Error(), 1)
@@ -624,7 +624,7 @@ func runInteractiveTUIWithSetup(stderr io.Writer, deps appDeps, permissionMode a
 		// The active provider lacks a usable credential, but if another saved
 		// provider already has one, fall back to it instead of forcing onboarding
 		// again. Saved logins persist across launches; switch the active provider
-		// any time with `zero provider use <name>`. Onboarding only runs when no
+		// any time with `pvyai provider use <name>`. Onboarding only runs when no
 		// configured provider is usable (a genuinely fresh setup).
 		if usable, ok := firstUsableProvider(resolved.Providers); ok {
 			resolved.Provider = usable
@@ -668,7 +668,7 @@ func runInteractiveTUIWithSetup(stderr io.Writer, deps appDeps, permissionMode a
 	}
 	mcpTokenStore, err := deps.newMCPTokenStore()
 	if err != nil {
-		_, _ = fmt.Fprintf(stderr, "[zero] warning: failed to initialize MCP OAuth tokens: %s\n", err)
+		_, _ = fmt.Fprintf(stderr, "[pvyai] warning: failed to initialize MCP OAuth tokens: %s\n", err)
 		mcpTokenStore = nil
 		err = nil
 	}
@@ -824,7 +824,7 @@ func tuiSandboxSetupCommand(backend sandbox.Backend, deps appDeps) func(context.
 // buildProvider constructs the run's provider at STARTUP — it is called only from
 // the two launch paths (interactive TUI and headless exec), never from mid-run
 // rebuilds (escalation, wizard, ACP go through deps.newProvider directly).
-func buildProvider(resolved config.ResolvedConfig, deps appDeps) (zeroruntime.Provider, error) {
+func buildProvider(resolved config.ResolvedConfig, deps appDeps) (pvyruntime.Provider, error) {
 	if !config.HasProviderProfile(resolved.Provider) {
 		return nil, nil
 	}
@@ -837,7 +837,7 @@ func buildProvider(resolved config.ResolvedConfig, deps appDeps) (zeroruntime.Pr
 	// Pin spawned children (sub-agents / swarm members inherit the environment) to
 	// THIS run's provider from launch, not only after an in-session switch. Without
 	// the launch-time export a child re-resolves config.json at spawn time, so a
-	// provider switch persisted by ANOTHER zero process mid-session would silently
+	// provider switch persisted by ANOTHER pvyai process mid-session would silently
 	// move new children onto a different provider (and different credentials) than
 	// the parent is running. Runtime switches (/model, /provider, wizard,
 	// onboarding) re-export on commit, keeping the pin current. Injected via deps
@@ -933,7 +933,7 @@ func localTerminalOptionsFromConfig(cfg config.LocalControlConfig) localcontrol.
 func localArtifactsDirFromConfig(workspaceRoot string, cfg config.LocalControlConfig) string {
 	dir := strings.TrimSpace(cfg.ArtifactsDir)
 	if dir == "" {
-		dir = filepath.Join(".zero", "artifacts")
+		dir = filepath.Join(".pvyai", "artifacts")
 	}
 	if filepath.IsAbs(dir) {
 		return dir
@@ -977,7 +977,7 @@ func registerSpecialistTools(registry *tools.Registry, workspaceRoot string, max
 	// lives under the workspace so its files fall within the sandbox write rules.
 	// MaxTeamSize (0 => the swarm's default of 8) caps concurrent members per team.
 	sw, err := swarm.New(swarm.Options{
-		BaseDir:     filepath.Join(workspaceRoot, ".zero", "swarm"),
+		BaseDir:     filepath.Join(workspaceRoot, ".pvyai", "swarm"),
 		Launcher:    swarm.NewSpecialistLauncher(executor),
 		MaxTeamSize: maxTeamSize,
 	})
@@ -1033,7 +1033,7 @@ func closeMCPRuntime(stderr io.Writer, runtime mcpToolRuntime) {
 		return
 	}
 	if err := runtime.Close(); err != nil {
-		_, _ = fmt.Fprintf(stderr, "[zero] mcp_close_error: %s\n", err)
+		_, _ = fmt.Fprintf(stderr, "[pvyai] mcp_close_error: %s\n", err)
 	}
 }
 
@@ -1046,13 +1046,13 @@ func closeSpecialistRuntime(stderr io.Writer, runtime *agentToolRuntime) {
 	}
 	if runtime.specialist != nil {
 		if err := runtime.specialist.Close(); err != nil {
-			_, _ = fmt.Fprintf(stderr, "[zero] specialist_cleanup_error: %s\n", err)
+			_, _ = fmt.Fprintf(stderr, "[pvyai] specialist_cleanup_error: %s\n", err)
 		}
 	}
 }
 
 func writeAppError(stderr io.Writer, message string, exitCode int) int {
-	if _, err := fmt.Fprintf(stderr, "[zero] %s\n", message); err != nil {
+	if _, err := fmt.Fprintf(stderr, "[pvyai] %s\n", message); err != nil {
 		return 1
 	}
 	return exitCode
@@ -1231,7 +1231,7 @@ func baseURLIsLoopback(baseURL string) bool {
 }
 
 func writePromptRequired(stderr io.Writer) int {
-	if _, err := fmt.Fprintln(stderr, "[zero] Prompt required. Use `zero exec \"prompt\"` or `zero exec --file prompt.txt`."); err != nil {
+	if _, err := fmt.Fprintln(stderr, "[pvyai] Prompt required. Use `zero exec \"prompt\"` or `zero exec --file prompt.txt`."); err != nil {
 		return 1
 	}
 	return 2

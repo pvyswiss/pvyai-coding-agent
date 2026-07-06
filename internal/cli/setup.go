@@ -9,12 +9,12 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/oauth"
-	"github.com/Gitlawb/zero/internal/providercatalog"
-	"github.com/Gitlawb/zero/internal/providerhealth"
-	"github.com/Gitlawb/zero/internal/provideronboarding"
-	"github.com/Gitlawb/zero/internal/tui"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/oauth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providerhealth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/provideronboarding"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tui"
 )
 
 type setupOptions struct {
@@ -124,7 +124,7 @@ func verifySetupProvider(deps appDeps, profile config.ProviderProfile) (setupVer
 			name = "this provider"
 		}
 		return setupVerification{Ran: true, OK: false, Summary: "no api key"},
-			fmt.Errorf("no API key found for %s — set its API key (export the provider's API key env var, or pass --api-key-env) or run `zero auth`, then re-run setup", name)
+			fmt.Errorf("no API key found for %s — set its API key (export the provider's API key env var, or pass --api-key-env) or run `pvyai auth`, then re-run setup", name)
 	}
 	ctx, stop := signalContext()
 	defer stop()
@@ -308,7 +308,7 @@ func setupRequired(resolved config.ResolvedConfig) bool {
 	if _, missing := setupMissingCredentialEnv(resolved.Provider); !missing {
 		return false
 	}
-	// A stored OAuth login (e.g. `zero auth login xai`) is a credential too, even
+	// A stored OAuth login (e.g. `pvyai auth login xai`) is a credential too, even
 	// though the profile has no inline key / env var — so a logged-in provider
 	// must not trigger onboarding.
 	return !providerHasOAuthLogin(resolved.Provider, oauthLoggedInProviders())
@@ -463,7 +463,7 @@ func providerProfileIsLocal(profile config.ProviderProfile) bool {
 }
 
 func formatSetupComplete(result tui.SetupResult) string {
-	lines := []string{"Zero setup complete"}
+	lines := []string{"PVYai setup complete"}
 	if result.Provider.Name != "" {
 		lines = append(lines, "provider: "+result.Provider.Name)
 	}
@@ -480,7 +480,7 @@ func formatSetupComplete(result tui.SetupResult) string {
 			lines = append(lines, "next: set provider credentials in your shell")
 		}
 	}
-	lines = append(lines, "next: "+setupCheckCommand(result.Provider.Name), "next: zero")
+	lines = append(lines, "next: "+setupCheckCommand(result.Provider.Name), "next: pvyai")
 	lines = append(lines, "try this: "+setupTryThisExample(result.Provider))
 	return strings.Join(lines, "\n")
 }
@@ -489,7 +489,7 @@ func formatSetupComplete(result tui.SetupResult) string {
 // to confirm a real completion, parameterized by the model just configured. This
 // is the "end the wizard in a working state" example from the first-run spec.
 func setupTryThisExample(profile config.ProviderProfile) string {
-	example := `zero exec "say hello in one short sentence"`
+	example := `pvyai exec "say hello in one short sentence"`
 	if model := strings.TrimSpace(profile.Model); model != "" {
 		example += " --model " + setupCommandArg(model)
 	}
@@ -536,9 +536,9 @@ func normalizedSetupProviderKind(profile config.ProviderProfile) config.Provider
 func setupCheckCommand(name string) string {
 	name = strings.TrimSpace(name)
 	if name == "" {
-		return "zero providers check --connectivity"
+		return "pvyai providers check --connectivity"
 	}
-	return "zero providers check " + setupCommandArg(name) + " --connectivity"
+	return "pvyai providers check " + setupCommandArg(name) + " --connectivity"
 }
 
 func setupCommandArg(value string) string {
@@ -561,16 +561,16 @@ func setupCommandArg(value string) string {
 
 func writeSetupHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero setup [provider] [flags]
+  pvyai setup [provider] [flags]
 
-Guides first-run Zero setup. Without a provider, opens the setup UI. With a
+Guides first-run PVYai setup. Without a provider, opens the setup UI. With a
 provider catalog id, writes that provider as the active provider.
 
 Examples:
-  zero setup
-  zero setup openai --api-key-env OPENAI_API_KEY
-  zero setup ollama
-  zero setup ollama-cloud
+  pvyai setup
+  pvyai setup openai --api-key-env OPENAI_API_KEY
+  pvyai setup ollama
+  pvyai setup ollama-cloud
 
 Flags:
       --name <name>             Provider profile name

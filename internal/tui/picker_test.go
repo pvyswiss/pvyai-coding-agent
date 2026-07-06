@@ -12,11 +12,11 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/providercatalog"
-	"github.com/Gitlawb/zero/internal/providermodeldiscovery"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providermodeldiscovery"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 func TestModelPickerDetectsOllamaCloudFromBaseURL(t *testing.T) {
@@ -273,7 +273,7 @@ func TestModelPickerAppliesLiveDiscoveredModelID(t *testing.T) {
 			APIKey:       "ollama-key",
 			Model:        "minimax-m3",
 		},
-		NewProvider: func(profile config.ProviderProfile) (zeroruntime.Provider, error) {
+		NewProvider: func(profile config.ProviderProfile) (pvyruntime.Provider, error) {
 			captured = profile
 			return &fakeProvider{}, nil
 		},
@@ -306,7 +306,7 @@ func TestModelSwitchNormalizesDetectedOllamaCloudProfile(t *testing.T) {
 			APIKeyEnv:    "OPENAI_API_KEY",
 			Model:        "minimax-m3",
 		},
-		NewProvider: func(profile config.ProviderProfile) (zeroruntime.Provider, error) {
+		NewProvider: func(profile config.ProviderProfile) (pvyruntime.Provider, error) {
 			captured = profile
 			return &fakeProvider{}, nil
 		},
@@ -358,7 +358,7 @@ func TestModelPickerSearchFiltersModels(t *testing.T) {
 }
 
 func TestModelPickerFavoriteShortcutTogglesSelectedModel(t *testing.T) {
-	configPath := filepath.Join(t.TempDir(), "zero", "config.json")
+	configPath := filepath.Join(t.TempDir(), "pvyai", "config.json")
 	m := newModel(context.Background(), Options{
 		UserConfigPath: configPath,
 		ProviderName:   "ollama-cloud",
@@ -477,7 +477,7 @@ func TestModelPickerAppliesActiveProviderCatalogModelID(t *testing.T) {
 			BaseURL:      "https://openrouter.ai/api/v1",
 			APIFormat:    "chat-completions",
 		},
-		NewProvider: func(profile config.ProviderProfile) (zeroruntime.Provider, error) {
+		NewProvider: func(profile config.ProviderProfile) (pvyruntime.Provider, error) {
 			captured = profile
 			return &fakeProvider{}, nil
 		},
@@ -514,7 +514,7 @@ func TestModelCommandAcceptsManualModelForCustomProvider(t *testing.T) {
 			APIKey:       "proxy-key",
 			Model:        "custom-model",
 		},
-		NewProvider: func(profile config.ProviderProfile) (zeroruntime.Provider, error) {
+		NewProvider: func(profile config.ProviderProfile) (pvyruntime.Provider, error) {
 			captured = profile
 			return &fakeProvider{}, nil
 		},
@@ -565,7 +565,7 @@ func TestModelPickerNavigatesAndChoosesAppliesHandler(t *testing.T) {
 		ModelName:       "claude-sonnet-4.5",
 		Provider:        &fakeProvider{},
 		ProviderProfile: anthropicTestProfile("claude-sonnet-4.5"),
-		NewProvider: func(profile config.ProviderProfile) (zeroruntime.Provider, error) {
+		NewProvider: func(profile config.ProviderProfile) (pvyruntime.Provider, error) {
 			return next, nil
 		},
 		DiscoverProviderModels: func(ctx context.Context, profile config.ProviderProfile) ([]providermodeldiscovery.Model, error) {
@@ -960,7 +960,7 @@ func TestSwitchProviderModelWarmsDiscoveryForTheNewProvider(t *testing.T) {
 			{Name: "openai", CatalogID: "openai", Model: "gpt-5.1"},
 			{Name: "ollama", CatalogID: "ollama", ProviderKind: config.ProviderKindOpenAICompatible, BaseURL: "http://localhost:11434/v1", Model: "kimi-k2.7-code:cloud"},
 		},
-		NewProvider: func(config.ProviderProfile) (zeroruntime.Provider, error) {
+		NewProvider: func(config.ProviderProfile) (pvyruntime.Provider, error) {
 			return &fakeProvider{}, nil
 		},
 	})

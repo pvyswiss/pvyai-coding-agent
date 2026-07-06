@@ -185,8 +185,8 @@ func ResolveRoots(options ResolveRootOptions) ([]Root, error) {
 	}
 
 	return []Root{
-		{Source: SourceUser, Path: filepath.Join(configHome, "zero", "plugins")},
-		{Source: SourceProject, Path: filepath.Join(cwd, ".zero", "plugins")},
+		{Source: SourceUser, Path: filepath.Join(configHome, "pvyai", "plugins")},
+		{Source: SourceProject, Path: filepath.Join(cwd, ".pvyai", "plugins")},
 	}, nil
 }
 
@@ -452,9 +452,9 @@ func firstNonNil(values ...any) any {
 func FormatList(plugins []LoadedPlugin, diagnostics []Diagnostic) string {
 	lines := []string{}
 	if len(plugins) == 0 {
-		lines = append(lines, "No local Zero plugins loaded.")
+		lines = append(lines, "No local PVYai plugins loaded.")
 	} else {
-		lines = append(lines, "Zero Plugins:")
+		lines = append(lines, "PVYai Plugins:")
 		for _, plugin := range plugins {
 			counts := fmt.Sprintf("%d tools, %d prompts, %d skills, %d hooks", len(plugin.Tools), len(plugin.Prompts), len(plugin.Skills), len(plugin.Hooks))
 			state := "enabled"

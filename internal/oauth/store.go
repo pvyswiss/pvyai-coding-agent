@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/keyring"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/keyring"
 )
 
 const (
@@ -100,7 +100,7 @@ type KeyringClient interface {
 
 // Keyring storage stores the whole token blob under one fixed entry.
 const (
-	keyringService = "zero"
+	keyringService = "pvyai"
 	keyringAccount = "oauth-tokens"
 )
 
@@ -147,7 +147,7 @@ func ResolveStorePath(env map[string]string) (string, error) {
 		}
 		configHome = resolved
 	}
-	return filepath.Join(configHome, "zero", "oauth-tokens.json"), nil
+	return filepath.Join(configHome, "pvyai", "oauth-tokens.json"), nil
 }
 
 // NewStore builds a token store with the configured backend (file by default,

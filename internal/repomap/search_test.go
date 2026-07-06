@@ -62,7 +62,7 @@ func TestSearchOrdersTiedScoresByPath(t *testing.T) {
 
 func TestSearchRanksCompleteMultiTermMatchesAheadOfPartialMatches(t *testing.T) {
 	snapshot := Snapshot{Files: []File{
-		{Path: "internal/zeroruntime/runtime.go"},
+		{Path: "internal/pvyruntime/runtime.go"},
 		{Path: "internal/agent/runtime.go"},
 		{Path: "internal/agent/loop.go"},
 	}}
@@ -82,7 +82,7 @@ func TestSearchRanksCompleteMultiTermMatchesAheadOfPartialMatches(t *testing.T) 
 
 func TestSearchAppliesLimitAndIgnoresBlankQueries(t *testing.T) {
 	snapshot := Snapshot{Files: []File{
-		{Path: "cmd/zero/main.go"},
+		{Path: "cmd/pvyai/main.go"},
 		{Path: "internal/agent/loop.go"},
 		{Path: "internal/cli/serve.go"},
 	}}

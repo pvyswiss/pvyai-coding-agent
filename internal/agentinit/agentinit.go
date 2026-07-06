@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/repoinfo"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/repoinfo"
 )
 
 // BuildPrompt returns the bootstrap prompt for `zero init` / `/init`. It runs

@@ -3,8 +3,8 @@ package providermodelcatalog
 import (
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
 )
 
 type Model struct {

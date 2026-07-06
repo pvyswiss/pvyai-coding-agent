@@ -66,7 +66,7 @@ func PrepareExec(options PrepareExecOptions) (PreparedExec, error) {
 			return PreparedExec{}, err
 		}
 		if parent == nil {
-			return PreparedExec{}, ExecError{"Zero session not found: " + forkID}
+			return PreparedExec{}, ExecError{"PVYai session not found: " + forkID}
 		}
 		contextEvents, err := readExecContextEvents(store, parent.SessionID)
 		if err != nil {
@@ -102,7 +102,7 @@ func PrepareExec(options PrepareExecOptions) (PreparedExec, error) {
 			return PreparedExec{}, err
 		}
 		if session == nil {
-			return PreparedExec{}, ExecError{"Zero session not found: " + sessionID}
+			return PreparedExec{}, ExecError{"PVYai session not found: " + sessionID}
 		}
 		contextEvents, err := readExecContextEvents(store, session.SessionID)
 		if err != nil {
@@ -127,7 +127,7 @@ func PrepareExec(options PrepareExecOptions) (PreparedExec, error) {
 			return PreparedExec{}, err
 		}
 		if parent == nil {
-			return PreparedExec{}, ExecError{"Zero parent session not found: " + parentSessionID}
+			return PreparedExec{}, ExecError{"PVYai parent session not found: " + parentSessionID}
 		}
 		createInput.SessionKind = SessionKindChild
 		createInput.ParentSessionID = parent.SessionID
@@ -152,7 +152,7 @@ func readExecContextEvents(store *Store, sessionID string) ([]Event, error) {
 	if rawErr != nil {
 		return nil, err
 	}
-	log.Printf("zero sessions: failed to rehydrate compaction events for %s; falling back to raw events: %v", sessionID, err)
+	log.Printf("pvyai sessions: failed to rehydrate compaction events for %s; falling back to raw events: %v", sessionID, err)
 	return rawEvents, nil
 }
 

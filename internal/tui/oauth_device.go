@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/browser"
-	"github.com/Gitlawb/zero/internal/oauth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/browser"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/oauth"
 )
 
 // oauthPreferDeviceFlow reports whether the device-code flow should be the

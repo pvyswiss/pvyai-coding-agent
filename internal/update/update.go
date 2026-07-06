@@ -201,7 +201,7 @@ func Check(ctx context.Context, options Options) (Result, error) {
 func Format(result Result) string {
 	if result.UpdateAvailable {
 		lines := []string{
-			fmt.Sprintf("[zero] Update available: %s -> %s", result.CurrentVersion, result.LatestVersion),
+			fmt.Sprintf("[pvyai] Update available: %s -> %s", result.CurrentVersion, result.LatestVersion),
 			"Release: " + result.ReleaseURL,
 		}
 		lines = appendAssetLines(lines, result.ReleaseAsset)
@@ -213,7 +213,7 @@ func Format(result Result) string {
 		return strings.Join(lines, "\n")
 	}
 	lines := []string{
-		fmt.Sprintf("[zero] up to date (%s)", result.CurrentVersion),
+		fmt.Sprintf("[pvyai] up to date (%s)", result.CurrentVersion),
 		"Latest release: " + result.ReleaseURL,
 	}
 	lines = appendAssetLines(lines, result.ReleaseAsset)
@@ -250,7 +250,7 @@ func fetchRelease(ctx context.Context, endpoint string) (release Release, err er
 		return Release{}, err
 	}
 	request.Header.Set("Accept", "application/vnd.github+json")
-	request.Header.Set("User-Agent", "zero/update")
+	request.Header.Set("User-Agent", "pvyai/update")
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
 		return Release{}, err
@@ -343,7 +343,7 @@ func expectedAssetCheck(version string, goos string, goarch string) (AssetCheck,
 	if platform == "windows" {
 		extension = "zip"
 	}
-	archiveName := fmt.Sprintf("zero-v%s-%s-%s.%s", version, platform, arch, extension)
+	archiveName := fmt.Sprintf("pvyai-v%s-%s-%s.%s", version, platform, arch, extension)
 	return AssetCheck{
 		Platform:     platform,
 		Arch:         arch,

@@ -3,7 +3,7 @@ package providermodelcatalog
 import (
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
 )
 
 func TestModelsAreProviderScoped(t *testing.T) {

@@ -77,7 +77,7 @@ func TestSelectBackendChoosesPlatformAdapterWithFallback(t *testing.T) {
 			GOOS: "windows",
 			LookupExecutable: func(name string) (string, error) {
 				if name == WindowsSandboxCommandRunnerName {
-					return `C:\zero\zero-windows-command-runner.exe`, nil
+					return `C:\zero\pvyai-windows-command-runner.exe`, nil
 				}
 				if name == WindowsSandboxSetupName {
 					return `C:\zero\zero-windows-sandbox-setup.exe`, nil
@@ -85,7 +85,7 @@ func TestSelectBackendChoosesPlatformAdapterWithFallback(t *testing.T) {
 				return "", errors.New("missing")
 			},
 		})
-		if backend.Name != BackendWindowsRestrictedToken || !backend.Available || backend.Executable != `C:\zero\zero-windows-command-runner.exe` {
+		if backend.Name != BackendWindowsRestrictedToken || !backend.Available || backend.Executable != `C:\zero\pvyai-windows-command-runner.exe` {
 			t.Fatalf("windows backend = %#v, want available restricted-token runner", backend)
 		}
 		if backend.Platform != "windows" || backend.Fallback || !backend.CommandWrapping || !backend.NativeIsolation {
@@ -108,7 +108,7 @@ func TestSelectBackendChoosesPlatformAdapterWithFallback(t *testing.T) {
 		// backend self-dispatches via the running zero binary, so it is AVAILABLE
 		// rather than failing every command. Pin os.Executable for determinism.
 		restore := osExecutable
-		osExecutable = func() (string, error) { return `C:\zero\zero.exe`, nil }
+		osExecutable = func() (string, error) { return `C:\zero\pvyai.exe`, nil }
 		defer func() { osExecutable = restore }()
 		backend := SelectBackend(BackendOptions{
 			GOOS:             "windows",
@@ -117,7 +117,7 @@ func TestSelectBackendChoosesPlatformAdapterWithFallback(t *testing.T) {
 		if backend.Name != BackendWindowsRestrictedToken || !backend.Available || backend.Platform != "windows" {
 			t.Fatalf("windows backend = %#v, want available via self-dispatch", backend)
 		}
-		if backend.Executable != `C:\zero\zero.exe` {
+		if backend.Executable != `C:\zero\pvyai.exe` {
 			t.Fatalf("self-dispatch executable = %q, want the running binary", backend.Executable)
 		}
 		if len(backend.ExecutableArgsPrefix) != 1 || backend.ExecutableArgsPrefix[0] != WindowsCommandRunnerSubcommand {

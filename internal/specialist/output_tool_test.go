@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/background"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/background"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 func TestOutputToolReadsCompletedTaskSummary(t *testing.T) {

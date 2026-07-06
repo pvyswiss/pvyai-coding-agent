@@ -123,7 +123,7 @@ func TestAllThemesContrastAndHierarchy(t *testing.T) {
 	}
 }
 
-// resolveThemeMode precedence: explicit flag > ZERO_THEME env > auto.
+// resolveThemeMode precedence: explicit flag > PVYAI_THEME env > auto.
 func TestResolveThemeModePrecedence(t *testing.T) {
 	cases := []struct {
 		flag, env string

@@ -9,11 +9,11 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/providercatalog"
-	"github.com/Gitlawb/zero/internal/providermodelcatalog"
-	"github.com/Gitlawb/zero/internal/providermodeldiscovery"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providermodelcatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providermodeldiscovery"
 )
 
 // pickerKind identifies which command a picker selection feeds back into.

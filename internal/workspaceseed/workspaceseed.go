@@ -9,7 +9,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/workspaceindex"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/workspaceindex"
 )
 
 const (

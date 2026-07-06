@@ -1,11 +1,11 @@
 package selfverify
 
 import (
-	"github.com/Gitlawb/zero/internal/redaction"
-	"github.com/Gitlawb/zero/internal/verify"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/verify"
 )
 
-const LoopContractVersion = "zero.selfverify.report.v1"
+const LoopContractVersion = "pvyai.selfverify.report.v1"
 
 type EventType string
 

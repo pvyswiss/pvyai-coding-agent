@@ -269,7 +269,7 @@ func ImportantPriority(file string) (int, bool) {
 	switch base {
 	case "agents.md":
 		return 10, true
-	case "zero.md":
+	case "pvyai.md":
 		return 20, true
 	case "readme.md":
 		return 30, true

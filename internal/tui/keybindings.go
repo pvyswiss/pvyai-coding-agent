@@ -6,7 +6,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/Gitlawb/zero/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
 )
 
 // parsedBinding is the parsed representation of a keybinding string such as

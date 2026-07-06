@@ -283,7 +283,7 @@ func fetchSource(ctx context.Context, source string, runner GitRunner) (string, 
 	if runner == nil {
 		runner = defaultGitRunner
 	}
-	temp, err := os.MkdirTemp("", "zero-skill-fetch-")
+	temp, err := os.MkdirTemp("", "pvyai-skill-fetch-")
 	if err != nil {
 		return "", func() {}, fmt.Errorf("create temp dir: %w", err)
 	}

@@ -8,13 +8,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
 )
 
 func TestRunProvidersUseSetsActiveProvider(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
-	configPath := filepath.Join(t.TempDir(), "zero", "config.json")
+	configPath := filepath.Join(t.TempDir(), "pvyai", "config.json")
 	writeProviderOnboardingConfig(t, configPath, config.FileConfig{
 		ActiveProvider: "work",
 		Providers: []config.ProviderProfile{
@@ -109,7 +109,7 @@ func TestRunProvidersUseRejectsUsageErrors(t *testing.T) {
 func TestRunProvidersSetupPrintsCommandPlan(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
-	configPath := filepath.Join(t.TempDir(), "zero", "config.json")
+	configPath := filepath.Join(t.TempDir(), "pvyai", "config.json")
 
 	exitCode := runWithDeps([]string{
 		"providers", "setup", "groq",

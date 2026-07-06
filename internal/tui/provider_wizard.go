@@ -14,13 +14,13 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 
-	"github.com/Gitlawb/zero/internal/browser"
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/oauth"
-	"github.com/Gitlawb/zero/internal/providercatalog"
-	"github.com/Gitlawb/zero/internal/provideroauth"
-	"github.com/Gitlawb/zero/internal/redaction"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/browser"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/oauth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/provideroauth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // providerWizardOAuthMsg carries the result of an in-wizard browser OAuth login.
@@ -983,7 +983,7 @@ func (m model) applyProviderWizard() (model, tea.Cmd) {
 	// chat running on the new provider while the status line, m.providerProfile,
 	// and the ZERO_PROVIDER export (which pins spawned children) still point at
 	// the old one — parent and children would silently run on different providers.
-	var nextProvider zeroruntime.Provider
+	var nextProvider pvyruntime.Provider
 	if m.newProvider != nil {
 		built, err := m.newProvider(runtimeProfile)
 		if err != nil {
@@ -1326,9 +1326,9 @@ func (wizard *providerWizardState) renderOAuthWaiting(width int) []string {
 // OAuth login (fallback when the browser doesn't open).
 func providerWizardOAuthCLIHint(provider providercatalog.Descriptor) string {
 	if provider.OAuthMintsKey {
-		return "zero auth openrouter"
+		return "pvyai auth openrouter"
 	}
-	return "zero auth login " + provider.ID
+	return "pvyai auth login " + provider.ID
 }
 
 func (wizard *providerWizardState) renderProviderStep(width int) []string {

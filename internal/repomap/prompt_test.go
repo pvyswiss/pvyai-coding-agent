@@ -18,7 +18,7 @@ func TestRenderPromptIncludesRepoSummaryAndRelativePaths(t *testing.T) {
 			{Path: filepath.Join(root, "internal", "repomap", "prompt.go")},
 			{Path: filepath.Join(root, "README.md")},
 			{Path: filepath.Join(root, "go.mod")},
-			{Path: filepath.Join(root, "cmd", "zero", "main.go")},
+			{Path: filepath.Join(root, "cmd", "pvyai", "main.go")},
 		},
 	}
 
@@ -31,7 +31,7 @@ func TestRenderPromptIncludesRepoSummaryAndRelativePaths(t *testing.T) {
 		"Languages: Go=2, Markdown=1, TypeScript=1",
 		"Extensions: .go=2, .md=1, .mod=1, .ts=1",
 		"Files:",
-		"  cmd/zero/main.go",
+		"  cmd/pvyai/main.go",
 		"  internal/repomap/prompt.go",
 		"  web/app.ts",
 	} {
@@ -83,7 +83,7 @@ func TestRenderPromptHonorsBudget(t *testing.T) {
 	repo := RepoMap{
 		Root: "Zero",
 		Files: []File{
-			{Path: "cmd/zero/main.go"},
+			{Path: "cmd/pvyai/main.go"},
 			{Path: "internal/agent/loop.go"},
 			{Path: "internal/agent/system_prompt.go"},
 			{Path: "internal/repomap/prompt.go"},

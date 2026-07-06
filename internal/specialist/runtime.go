@@ -4,7 +4,7 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/Gitlawb/zero/internal/background"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/background"
 )
 
 type RuntimeOptions struct {

@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/localcontrol"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/localcontrol"
 )
 
 func NewLocalTerminalTools(options localcontrol.TerminalOptions) []Tool {

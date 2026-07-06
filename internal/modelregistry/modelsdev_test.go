@@ -53,7 +53,7 @@ func TestParseModelsDev(t *testing.T) {
 func TestApplyModelsDevOverrides(t *testing.T) {
 	// Point the cache at a non-existent file so DefaultModelEntries returns the
 	// pure curated catalog, then apply the sample snapshot explicitly.
-	t.Setenv("ZERO_MODELS_CACHE_PATH", filepath.Join(t.TempDir(), "absent.json"))
+	t.Setenv("PVYAI_MODELS_CACHE_PATH", filepath.Join(t.TempDir(), "absent.json"))
 	resetModelsDevCacheForTest()
 	t.Cleanup(resetModelsDevCacheForTest)
 
@@ -110,9 +110,9 @@ func TestRefreshModelsDevCacheFetchesAndCaches(t *testing.T) {
 	defer server.Close()
 
 	cachePath := filepath.Join(t.TempDir(), "modelsdev.json")
-	t.Setenv("ZERO_MODELS_CACHE_PATH", cachePath)
-	t.Setenv("ZERO_MODELS_URL", server.URL)
-	t.Setenv("ZERO_DISABLE_MODELS_FETCH", "")
+	t.Setenv("PVYAI_MODELS_CACHE_PATH", cachePath)
+	t.Setenv("PVYAI_MODELS_URL", server.URL)
+	t.Setenv("PVYAI_DISABLE_MODELS_FETCH", "")
 
 	if err := RefreshModelsDevCache(t.Context()); err != nil {
 		t.Fatal(err)
@@ -146,8 +146,8 @@ func TestRefreshModelsDevCacheRejectsBadBodyWithoutClobbering(t *testing.T) {
 	if err := os.Chtimes(cachePath, stale, stale); err != nil {
 		t.Fatal(err)
 	}
-	t.Setenv("ZERO_MODELS_CACHE_PATH", cachePath)
-	t.Setenv("ZERO_MODELS_URL", server.URL)
+	t.Setenv("PVYAI_MODELS_CACHE_PATH", cachePath)
+	t.Setenv("PVYAI_MODELS_URL", server.URL)
 
 	if err := RefreshModelsDevCache(t.Context()); err == nil {
 		t.Fatal("bad body must return an error")
@@ -163,9 +163,9 @@ func TestRefreshModelsDevCacheDisabledByEnv(t *testing.T) {
 		t.Fatal("fetch must not happen when disabled")
 	}))
 	defer server.Close()
-	t.Setenv("ZERO_MODELS_CACHE_PATH", filepath.Join(t.TempDir(), "modelsdev.json"))
-	t.Setenv("ZERO_MODELS_URL", server.URL)
-	t.Setenv("ZERO_DISABLE_MODELS_FETCH", "1")
+	t.Setenv("PVYAI_MODELS_CACHE_PATH", filepath.Join(t.TempDir(), "modelsdev.json"))
+	t.Setenv("PVYAI_MODELS_URL", server.URL)
+	t.Setenv("PVYAI_DISABLE_MODELS_FETCH", "1")
 	if err := RefreshModelsDevCache(t.Context()); err != nil {
 		t.Fatal(err)
 	}
@@ -180,7 +180,7 @@ func TestCachedModelsDevProvidersIgnoresStaleCache(t *testing.T) {
 	if err := os.Chtimes(cachePath, stale, stale); err != nil {
 		t.Fatal(err)
 	}
-	t.Setenv("ZERO_MODELS_CACHE_PATH", cachePath)
+	t.Setenv("PVYAI_MODELS_CACHE_PATH", cachePath)
 	resetModelsDevCacheForTest()
 	t.Cleanup(resetModelsDevCacheForTest)
 	EnableModelsDevOverlay()
@@ -195,7 +195,7 @@ func TestCachedModelsDevProvidersRequiresOptIn(t *testing.T) {
 	if err := os.WriteFile(cachePath, []byte(sampleModelsDev), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	t.Setenv("ZERO_MODELS_CACHE_PATH", cachePath)
+	t.Setenv("PVYAI_MODELS_CACHE_PATH", cachePath)
 	resetModelsDevCacheForTest()
 	t.Cleanup(resetModelsDevCacheForTest)
 
@@ -211,7 +211,7 @@ func TestDefaultModelEntriesAppliesFreshCache(t *testing.T) {
 	if err := os.WriteFile(cachePath, []byte(sampleModelsDev), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	t.Setenv("ZERO_MODELS_CACHE_PATH", cachePath)
+	t.Setenv("PVYAI_MODELS_CACHE_PATH", cachePath)
 	resetModelsDevCacheForTest()
 	t.Cleanup(resetModelsDevCacheForTest)
 	EnableModelsDevOverlay()

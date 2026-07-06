@@ -3,7 +3,7 @@ package specmode
 import (
 	"time"
 
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 func RegisterDraftTools(registry *tools.Registry, workspaceRoot string, now func() time.Time) {

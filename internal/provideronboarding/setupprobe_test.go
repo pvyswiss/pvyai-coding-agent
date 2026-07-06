@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/providerhealth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providerhealth"
 )
 
 func TestClassifySetupProbeSuccess(t *testing.T) {

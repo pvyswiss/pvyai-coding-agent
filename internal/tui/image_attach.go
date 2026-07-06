@@ -7,9 +7,9 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/imageinput"
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/imageinput"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // droppableImageExts are the image extensions a dragged-and-dropped file may
@@ -136,7 +136,7 @@ func (m model) attachClipboardImage(data []byte, mediaType string) model {
 	if len(data) > imageinput.MaxImageBytes {
 		return m.appendImageNotice("Clipboard image is larger than the 10 MiB limit.")
 	}
-	m.pendingImages = append(m.pendingImages, zeroruntime.ImageBlock{
+	m.pendingImages = append(m.pendingImages, pvyruntime.ImageBlock{
 		MediaType: mediaType,
 		Data:      data,
 	})

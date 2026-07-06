@@ -10,10 +10,10 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/mcp"
-	"github.com/Gitlawb/zero/internal/redaction"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/mcp"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 type mcpAddOptions struct {
@@ -421,10 +421,10 @@ func parseMCPAddArgs(args []string) (mcpAddOptions, bool, error) {
 			return options, false, execUsageError{"env is only supported for stdio transport"}
 		}
 		if strings.TrimSpace(options.server.URL) == "" {
-			return options, false, execUsageError{fmt.Sprintf("zero mcp add --type %s requires --url", options.server.Type)}
+			return options, false, execUsageError{fmt.Sprintf("pvyai mcp add --type %s requires --url", options.server.Type)}
 		}
 		if len(command) > 0 {
-			return options, false, execUsageError{fmt.Sprintf("zero mcp add --type %s does not accept a command", options.server.Type)}
+			return options, false, execUsageError{fmt.Sprintf("pvyai mcp add --type %s does not accept a command", options.server.Type)}
 		}
 	default:
 		return options, false, execUsageError{fmt.Sprintf("unsupported MCP server type %q", options.server.Type)}

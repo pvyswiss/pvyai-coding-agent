@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // A tool_use content_block_start that arrives without a usable name/id can't be
@@ -29,9 +29,9 @@ func TestStreamCompletionEmitsDroppedOnNamelessToolUseBlock(t *testing.T) {
 	var dropped, started int
 	for _, e := range events {
 		switch e.Type {
-		case zeroruntime.StreamEventToolCallDropped:
+		case pvyruntime.StreamEventToolCallDropped:
 			dropped++
-		case zeroruntime.StreamEventToolCallStart:
+		case pvyruntime.StreamEventToolCallStart:
 			started++
 		}
 	}
@@ -59,7 +59,7 @@ func TestStreamCompletionDoesNotDropValidToolUseBlock(t *testing.T) {
 	events := collectProviderEvents(t, provider)
 
 	for _, e := range events {
-		if e.Type == zeroruntime.StreamEventToolCallDropped {
+		if e.Type == pvyruntime.StreamEventToolCallDropped {
 			t.Errorf("valid tool_use block must not be dropped; events: %+v", events)
 		}
 	}

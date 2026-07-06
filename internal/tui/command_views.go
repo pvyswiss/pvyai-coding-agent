@@ -8,11 +8,11 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/providercatalog"
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/zerocommands"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvycmd"
 )
 
 func (m model) toolsText() string {
@@ -194,7 +194,7 @@ func (m model) applyMCPCommandResult(args string, result MCPCommandResult) (mode
 	}
 	output := strings.TrimSpace(result.Output)
 	if output == "" {
-		output = "zero mcp " + args
+		output = "pvyai mcp " + args
 	}
 	return m, strings.Join([]string{
 		"MCP action complete",
@@ -331,7 +331,7 @@ func (m model) permissionsTextWithStore(store grantLister) string {
 		}
 	}
 
-	snapshots := zerocommands.SandboxGrantSnapshots(grants)
+	snapshots := pvycmd.SandboxGrantSnapshots(grants)
 	grantRows := []commandRow{}
 	if len(snapshots) == 0 && len(prefixes) == 0 {
 		grantRows = append(grantRows, commandRow{Text: "none"})
@@ -410,15 +410,15 @@ func (m model) providerText() string {
 			Sections: []commandSection{
 				{Title: "Active", Lines: profileLines},
 				{Title: "Next actions", Lines: []string{
-					"zero providers catalog",
-					"zero providers setup openai --set-active",
-					"zero providers add openai --api-key-env OPENAI_API_KEY --set-active",
+					"pvyai providers catalog",
+					"pvyai providers setup openai --set-active",
+					"pvyai providers add openai --api-key-env OPENAI_API_KEY --set-active",
 				}},
 			},
 		})
 	}
 
-	snapshot := zerocommands.ProviderSnapshotFromProfile(m.providerProfile, true)
+	snapshot := pvycmd.ProviderSnapshotFromProfile(m.providerProfile, true)
 	profileLines = append(profileLines,
 		"active: "+boolText(snapshot.Active),
 		"kind: "+displayValue(snapshot.ProviderKind, "unknown"),
@@ -445,7 +445,7 @@ func (m model) providerText() string {
 	})
 }
 
-func providerNextActionLines(profile config.ProviderProfile, snapshot zerocommands.ProviderSnapshot, activeName string) []string {
+func providerNextActionLines(profile config.ProviderProfile, snapshot pvycmd.ProviderSnapshot, activeName string) []string {
 	providerName := firstProviderDisplayValue(snapshot.Name, activeName, profile.Name, providerSetupCatalogID(profile, snapshot.ProviderKind), "openai")
 	setupID := providerSetupCatalogID(profile, snapshot.ProviderKind)
 	lines := []string{}
@@ -453,16 +453,16 @@ func providerNextActionLines(profile config.ProviderProfile, snapshot zerocomman
 		if envName := providerCredentialEnvName(profile, snapshot.ProviderKind); envName != "" {
 			lines = append(lines,
 				"set "+envName+" in your environment",
-				"zero providers add "+setupID+" --api-key-env "+envName+" --set-active",
+				"pvyai providers add "+setupID+" --api-key-env "+envName+" --set-active",
 			)
 		} else {
 			lines = append(lines, "set provider credentials in your environment")
 		}
 	}
 	return append(lines,
-		"zero providers check "+providerName+" --connectivity",
-		"zero providers catalog",
-		"zero providers setup "+setupID+" --set-active",
+		"pvyai providers check "+providerName+" --connectivity",
+		"pvyai providers catalog",
+		"pvyai providers setup "+setupID+" --set-active",
 	)
 }
 
@@ -710,7 +710,7 @@ func (m model) skillsText() string {
 			Lines: []string{"No skills installed."},
 		}},
 		Hints: []string{
-			"install one: create <skills-dir>/<name>/SKILL.md (see `zero skills`)",
+			"install one: create <skills-dir>/<name>/SKILL.md (see `pvyai skills`)",
 		},
 	})
 }

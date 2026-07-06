@@ -12,10 +12,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/providerhealth"
-	"github.com/Gitlawb/zero/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providerhealth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
 )
 
 type Status string
@@ -102,7 +102,7 @@ func (report Report) Check(id string) *Check {
 
 func Format(report Report) string {
 	lines := []string{
-		fmt.Sprintf("Zero doctor report (%s)", redaction.RedactString(report.GeneratedAt, redaction.Options{})),
+		fmt.Sprintf("PVYai doctor report (%s)", redaction.RedactString(report.GeneratedAt, redaction.Options{})),
 		fmt.Sprintf("Overall: %s", passFail(report.OK)),
 	}
 	for _, check := range report.Checks {
@@ -119,7 +119,7 @@ func runtimeCheck(runtime string) Check {
 	if runtime == "" {
 		runtime = "go"
 	}
-	return check("runtime.go", "Go runtime", StatusPass, fmt.Sprintf("Zero Go runtime is available (%s).", runtime), map[string]any{"runtime": runtime})
+	return check("runtime.go", "Go runtime", StatusPass, fmt.Sprintf("PVYai Go runtime is available (%s).", runtime), map[string]any{"runtime": runtime})
 }
 
 func configFilesCheck(userPath string, projectPath string) Check {
@@ -133,7 +133,7 @@ func configFilesCheck(userPath string, projectPath string) Check {
 	if len(details) == 0 {
 		return check("config.files", "Config files", StatusWarn, "No explicit Zero config files were inspected.", nil)
 	}
-	return check("config.files", "Config files", StatusPass, "Zero config file inputs are available for inspection.", details)
+	return check("config.files", "Config files", StatusPass, "PVYai config file inputs are available for inspection.", details)
 }
 
 func providerConfigCheck(profile config.ProviderProfile) Check {
@@ -399,9 +399,9 @@ func configValidationCheck(userPath string, projectPath string) Check {
 	}
 
 	if status == StatusPass {
-		return check("config.validation", "Config validation", StatusPass, "Zero config files parsed and validated successfully.", nil)
+		return check("config.validation", "Config validation", StatusPass, "PVYai config files parsed and validated successfully.", nil)
 	}
-	return check("config.validation", "Config validation", StatusFail, fmt.Sprintf("Zero config validation found %d issue(s).", issueCount), details)
+	return check("config.validation", "Config validation", StatusFail, fmt.Sprintf("PVYai config validation found %d issue(s).", issueCount), details)
 }
 
 // jsonParsePosition reports whether data fails to parse as JSON and, if so, the

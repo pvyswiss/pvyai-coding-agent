@@ -6,9 +6,9 @@ import (
 	"io"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/mcp"
-	"github.com/Gitlawb/zero/internal/redaction"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/mcp"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 type serveOptions struct {
@@ -38,13 +38,13 @@ func runServe(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) i
 	}
 	registry := newServeRegistry(workspaceRoot, options.allowUnsafeTools)
 	if options.allowUnsafeTools {
-		if _, err := fmt.Fprintln(stderr, "[zero] Unsafe MCP server tools enabled because --allow-unsafe-tools was passed."); err != nil {
+		if _, err := fmt.Fprintln(stderr, "[pvyai] Unsafe MCP server tools enabled because --allow-unsafe-tools was passed."); err != nil {
 			return exitCrash
 		}
 	}
 
 	err = mcp.Serve(context.Background(), deps.stdin, stdout, registry, mcp.ServeOptions{
-		Name:              "zero",
+		Name:              "pvyai",
 		Version:           version,
 		PermissionGranted: options.allowUnsafeTools,
 	})

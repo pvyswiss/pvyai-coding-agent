@@ -10,8 +10,8 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/background"
-	"github.com/Gitlawb/zero/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/background"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 // reentrancyMarkers are the env vars zero sets on a command it has ALREADY

@@ -9,24 +9,24 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // fakeProvider streams a canned assistant message and ends the turn — enough to
 // drive the real agent.Run loop without a live model.
 type fakeProvider struct{ text string }
 
-func (f fakeProvider) StreamCompletion(_ context.Context, _ zeroruntime.CompletionRequest) (<-chan zeroruntime.StreamEvent, error) {
-	ch := make(chan zeroruntime.StreamEvent, 4)
+func (f fakeProvider) StreamCompletion(_ context.Context, _ pvyruntime.CompletionRequest) (<-chan pvyruntime.StreamEvent, error) {
+	ch := make(chan pvyruntime.StreamEvent, 4)
 	go func() {
 		defer close(ch)
-		ch <- zeroruntime.StreamEvent{Type: zeroruntime.StreamEventText, Content: f.text}
-		ch <- zeroruntime.StreamEvent{Type: zeroruntime.StreamEventDone}
+		ch <- pvyruntime.StreamEvent{Type: pvyruntime.StreamEventText, Content: f.text}
+		ch <- pvyruntime.StreamEvent{Type: pvyruntime.StreamEventDone}
 	}()
 	return ch, nil
 }
@@ -45,8 +45,8 @@ func testDeps(t *testing.T) Deps {
 				MaxTurns: 4,
 			}, nil
 		},
-		NewProvider: func(config.ProviderProfile) (zeroruntime.Provider, error) {
-			return fakeProvider{text: "Hello from ZERO"}, nil
+		NewProvider: func(config.ProviderProfile) (pvyruntime.Provider, error) {
+			return fakeProvider{text: "Hello from PVYai"}, nil
 		},
 		RunAgent: agent.Run,
 		BuildWorkspace: func(string, config.ResolvedConfig) (*tools.Registry, *sandbox.Engine, error) {
@@ -56,7 +56,7 @@ func testDeps(t *testing.T) Deps {
 		},
 		ResolveWorkspaceRoot: func(cwd string) (string, error) { return cwd, nil },
 		Store:                store,
-		AgentInfo:            Implementation{Name: "zero", Version: "test"},
+		AgentInfo:            Implementation{Name: "pvyai", Version: "test"},
 	}
 }
 
@@ -149,7 +149,7 @@ func TestACPEndToEndPrompt(t *testing.T) {
 	}
 
 	// The streamed agent_message_chunk(s) should carry the assistant text.
-	if got := drainText(t, h.updates); !strings.Contains(got, "Hello from ZERO") {
+	if got := drainText(t, h.updates); !strings.Contains(got, "Hello from PVYai") {
 		t.Fatalf("streamed text = %q, want it to contain the assistant message", got)
 	}
 }
@@ -201,7 +201,7 @@ func TestACPRunTurnWiresSandboxAndScopedRegistry(t *testing.T) {
 		return reg, engine, nil
 	}
 	var captured agent.Options
-	deps.RunAgent = func(_ context.Context, _ string, _ zeroruntime.Provider, opts agent.Options) (agent.Result, error) {
+	deps.RunAgent = func(_ context.Context, _ string, _ pvyruntime.Provider, opts agent.Options) (agent.Result, error) {
 		captured = opts
 		return agent.Result{FinalAnswer: "ok"}, nil
 	}
@@ -251,7 +251,7 @@ func drainText(t *testing.T, ch <-chan string) string {
 		select {
 		case s := <-ch:
 			b.WriteString(s)
-			if strings.Contains(b.String(), "Hello from ZERO") {
+			if strings.Contains(b.String(), "Hello from PVYai") {
 				return b.String()
 			}
 		case <-deadline:

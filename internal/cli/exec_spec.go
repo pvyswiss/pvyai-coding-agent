@@ -7,17 +7,17 @@ import (
 	"io"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/notify"
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/specmode"
-	"github.com/Gitlawb/zero/internal/streamjson"
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/usage"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/notify"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/specmode"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/streamjson"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/usage"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 type execSpecDraftRun struct {
@@ -30,11 +30,11 @@ type execSpecDraftRun struct {
 	modelRegistry      modelregistry.Registry
 	resolved           config.ResolvedConfig
 	runMetadata        execRunMetadata
-	provider           zeroruntime.Provider
+	provider           pvyruntime.Provider
 	sandboxEngine      *sandbox.Engine
 	prompt             string
 	sessionTitle       string
-	images             []zeroruntime.ImageBlock
+	images             []pvyruntime.ImageBlock
 	reasoningEffort    string
 	specPermissionMode agent.PermissionMode
 	notifier           *notify.Notifier

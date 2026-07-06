@@ -10,10 +10,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/providerhealth"
-	"github.com/Gitlawb/zero/internal/zerocommands"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providerhealth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvycmd"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 func TestRunConfigPrintsRedactedSummary(t *testing.T) {
@@ -238,7 +238,7 @@ func TestRunProvidersCatalogJSONIncludesDescriptors(t *testing.T) {
 		t.Fatalf("expected exit code %d, got %d: %s", exitSuccess, exitCode, stderr.String())
 	}
 	var payload struct {
-		Providers []zerocommands.ProviderCatalogSnapshot `json:"providers"`
+		Providers []pvycmd.ProviderCatalogSnapshot `json:"providers"`
 	}
 	if err := json.Unmarshal(stdout.Bytes(), &payload); err != nil {
 		t.Fatalf("decode providers catalog JSON: %v\n%s", err, stdout.String())
@@ -315,7 +315,7 @@ func TestRunProvidersCatalogRejectsUnknownFlags(t *testing.T) {
 func TestRunProvidersAddWritesCatalogProfile(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
-	configPath := filepath.Join(t.TempDir(), "zero", "config.json")
+	configPath := filepath.Join(t.TempDir(), "pvyai", "config.json")
 
 	exitCode := runWithDeps([]string{"providers", "add", "groq", "--name", "fast", "--set-active"}, &stdout, &stderr, providerSetupDeps(configPath))
 
@@ -398,7 +398,7 @@ func TestRunProvidersCheckConstructsProvider(t *testing.T) {
 	var stderr bytes.Buffer
 	var checked config.ProviderProfile
 	deps := commandCenterDeps(t)
-	deps.newProvider = func(profile config.ProviderProfile) (zeroruntime.Provider, error) {
+	deps.newProvider = func(profile config.ProviderProfile) (pvyruntime.Provider, error) {
 		checked = profile
 		return commandCenterProvider{}, nil
 	}
@@ -442,7 +442,7 @@ func TestRunProvidersCheckConnectivityJSON(t *testing.T) {
 			},
 		}
 	}
-	deps.newProvider = func(config.ProviderProfile) (zeroruntime.Provider, error) {
+	deps.newProvider = func(config.ProviderProfile) (pvyruntime.Provider, error) {
 		t.Fatal("newProvider should not run during connectivity health check")
 		return nil, nil
 	}
@@ -530,7 +530,7 @@ func TestRunProvidersCheckConnectivityJSONReturnsHealthFailure(t *testing.T) {
 		}
 		return config.ResolvedConfig{ActiveProvider: "local", Provider: profile, Providers: []config.ProviderProfile{profile}, MaxTurns: 7}, nil
 	}
-	deps.newProvider = func(config.ProviderProfile) (zeroruntime.Provider, error) {
+	deps.newProvider = func(config.ProviderProfile) (pvyruntime.Provider, error) {
 		t.Fatal("newProvider should not run before emitting connectivity health")
 		return nil, nil
 	}
@@ -604,7 +604,7 @@ func TestRunProvidersCheckAcceptsAuthHeaderValueCredential(t *testing.T) {
 		}
 		return config.ResolvedConfig{ActiveProvider: "groq", Provider: profile, Providers: []config.ProviderProfile{profile}, MaxTurns: 7}, nil
 	}
-	deps.newProvider = func(profile config.ProviderProfile) (zeroruntime.Provider, error) {
+	deps.newProvider = func(profile config.ProviderProfile) (pvyruntime.Provider, error) {
 		checked = profile
 		return commandCenterProvider{}, nil
 	}
@@ -637,7 +637,7 @@ func TestRunProvidersCheckAcceptsOfficialAuthHeaderValueCredential(t *testing.T)
 		}
 		return config.ResolvedConfig{ActiveProvider: "manual-openai", Provider: profile, Providers: []config.ProviderProfile{profile}, MaxTurns: 7}, nil
 	}
-	deps.newProvider = func(profile config.ProviderProfile) (zeroruntime.Provider, error) {
+	deps.newProvider = func(profile config.ProviderProfile) (pvyruntime.Provider, error) {
 		checked = profile
 		return commandCenterProvider{}, nil
 	}
@@ -744,7 +744,7 @@ func commandCenterDeps(t *testing.T) appDeps {
 				MaxTurns:       7,
 			}, nil
 		},
-		newProvider: func(config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(config.ProviderProfile) (pvyruntime.Provider, error) {
 			return commandCenterProvider{}, nil
 		},
 	}
@@ -787,7 +787,7 @@ func providerCatalogDeps(t *testing.T) appDeps {
 			t.Fatalf("providers catalog should not resolve runtime config")
 			return config.ResolvedConfig{}, nil
 		},
-		newProvider: func(config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(config.ProviderProfile) (pvyruntime.Provider, error) {
 			t.Fatalf("providers catalog should not construct runtime providers")
 			return nil, nil
 		},
@@ -816,7 +816,7 @@ func readFileConfig(t *testing.T, path string) config.FileConfig {
 	return cfg
 }
 
-func findProviderCatalogSnapshot(t *testing.T, snapshots []zerocommands.ProviderCatalogSnapshot, id string) zerocommands.ProviderCatalogSnapshot {
+func findProviderCatalogSnapshot(t *testing.T, snapshots []pvycmd.ProviderCatalogSnapshot, id string) pvycmd.ProviderCatalogSnapshot {
 	t.Helper()
 
 	for _, snapshot := range snapshots {
@@ -825,13 +825,13 @@ func findProviderCatalogSnapshot(t *testing.T, snapshots []zerocommands.Provider
 		}
 	}
 	t.Fatalf("catalog descriptor %q not found in %#v", id, snapshots)
-	return zerocommands.ProviderCatalogSnapshot{}
+	return pvycmd.ProviderCatalogSnapshot{}
 }
 
 type commandCenterProvider struct{}
 
-func (commandCenterProvider) StreamCompletion(context.Context, zeroruntime.CompletionRequest) (<-chan zeroruntime.StreamEvent, error) {
-	ch := make(chan zeroruntime.StreamEvent)
+func (commandCenterProvider) StreamCompletion(context.Context, pvyruntime.CompletionRequest) (<-chan pvyruntime.StreamEvent, error) {
+	ch := make(chan pvyruntime.StreamEvent)
 	close(ch)
 	return ch, nil
 }

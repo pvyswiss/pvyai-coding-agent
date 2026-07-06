@@ -10,12 +10,12 @@ import (
 	"charm.land/lipgloss/v2"
 	"github.com/charmbracelet/colorprofile"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/streamjson"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/streamjson"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 // ansiPattern strips SGR styling and OSC sequences (hyperlinks) so
@@ -1093,10 +1093,10 @@ func TestExecCommandCardBodyShowsSessionAndExit(t *testing.T) {
 func TestLocalControlCardsUseFriendlyCompactLabels(t *testing.T) {
 	m := limeTestModel()
 
-	open := transcriptRow{kind: rowToolResult, id: "call_1", tool: "browser_open", status: tools.StatusOK, detail: "✓ ZERO - terminal agent\nhttp://localhost:8080/"}
+	open := transcriptRow{kind: rowToolResult, id: "call_1", tool: "browser_open", status: tools.StatusOK, detail: "✓ PVYai - terminal agent\nhttp://localhost:8080/"}
 	openRC := buildRowContext([]transcriptRow{{kind: rowToolCall, id: "call_1", tool: "browser_open", detail: "http://localhost:8080"}})
 	got := plainRender(t, m.renderRow(open, 100, openRC))
-	for _, want := range []string{"Opened", "http://localhost:8080", "ZERO - terminal agent"} {
+	for _, want := range []string{"Opened", "http://localhost:8080", "PVYai - terminal agent"} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("browser_open card missing %q:\n%s", want, got)
 		}
@@ -1208,11 +1208,11 @@ func TestBashCardBodyShowsShellIssueHint(t *testing.T) {
 		"stderr:",
 		"The syntax of the command is incorrect.",
 		"exit_code: 1",
-		"[zero] shell issue: Windows cmd.exe rejected the command syntax.",
+		"[pvyai] shell issue: Windows cmd.exe rejected the command syntax.",
 		"Suggestion: Use the cwd argument instead of cd.",
 	}, "\n")
 	row := transcriptRow{kind: rowToolResult, id: "call_1", tool: "bash", status: tools.StatusError, detail: detail}
-	rc := buildRowContext([]transcriptRow{{kind: rowToolCall, id: "call_1", tool: "bash", detail: "cd /d/tmp/zero-pr-158 && ls -la"}})
+	rc := buildRowContext([]transcriptRow{{kind: rowToolCall, id: "call_1", tool: "bash", detail: "cd /d/tmp/pvyai-pr-158 && ls -la"}})
 	got := plainRender(t, m.renderRow(row, 96, rc))
 	for _, want := range []string{"shell issue", "Windows cmd.exe", "Suggestion:", "cwd"} {
 		if !strings.Contains(got, want) {

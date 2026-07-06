@@ -7,11 +7,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/doctor"
-	"github.com/Gitlawb/zero/internal/providerhealth"
-	zsearch "github.com/Gitlawb/zero/internal/search"
-	"github.com/Gitlawb/zero/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/doctor"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providerhealth"
+	zsearch "github.com/pvyswiss/pvyai-coding-agent/internal/search"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 )
 
 type doctorOptions struct {

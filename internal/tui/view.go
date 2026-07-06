@@ -11,7 +11,7 @@ import (
 
 	"charm.land/lipgloss/v2"
 
-	"github.com/Gitlawb/zero/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
 )
 
 const (

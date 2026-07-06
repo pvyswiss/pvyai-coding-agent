@@ -3,7 +3,7 @@ package tui
 import (
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/Gitlawb/zero/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
 )
 
 // permissionOption is one selectable choice in the permission popup. The slice

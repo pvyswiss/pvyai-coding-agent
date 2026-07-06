@@ -5,7 +5,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/Gitlawb/zero/internal/skills"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/skills"
 )
 
 // Skill slash invocation: "/<skill-name> [args]" runs an installed skill

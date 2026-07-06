@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/Gitlawb/zero-fixture/internal/release"
+	"github.com/pvyswiss/pvyai-coding-agent-fixture/internal/release"
 )
 
 func smokeTarget(alreadyBuilt bool) string {

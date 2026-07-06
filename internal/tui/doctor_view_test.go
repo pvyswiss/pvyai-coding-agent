@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/doctor"
-	"github.com/Gitlawb/zero/internal/zerocommands"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/doctor"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvycmd"
 )
 
 func TestDoctorCommandOutputMapsOverallStatus(t *testing.T) {
@@ -192,10 +192,10 @@ func TestDoctorCommandOutputIsNilBackendSafe(t *testing.T) {
 }
 
 func TestDoctorCommandOutputIncludesBackendCountsAndHints(t *testing.T) {
-	backend := zerocommands.BackendLifecycleSnapshot{
-		MCPServers: []zerocommands.MCPServerSnapshot{{Name: "filesystem"}, {Name: "github"}},
-		Hooks:      []zerocommands.HookSnapshot{{ID: "lint", Enabled: true}},
-		Plugins:    []zerocommands.PluginSnapshot{{ID: "browser"}, {ID: "github"}, {ID: "linear"}},
+	backend := pvycmd.BackendLifecycleSnapshot{
+		MCPServers: []pvycmd.MCPServerSnapshot{{Name: "filesystem"}, {Name: "github"}},
+		Hooks:      []pvycmd.HookSnapshot{{ID: "lint", Enabled: true}},
+		Plugins:    []pvycmd.PluginSnapshot{{ID: "browser"}, {ID: "github"}, {ID: "linear"}},
 	}
 
 	output := doctorCommandOutput(doctor.Report{Checks: []doctor.Check{

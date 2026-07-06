@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	zeroSandbox "github.com/Gitlawb/zero/internal/sandbox"
+	pvySandbox "github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 type roundTripFunc func(*http.Request) (*http.Response, error)
@@ -73,7 +73,7 @@ func TestWebFetchToolFetchesHTTPText(t *testing.T) {
 		if request.Header.Get("User-Agent") == "" {
 			t.Fatal("expected User-Agent header")
 		}
-		return webFetchTestResponse(request, http.StatusOK, "text/plain; charset=utf-8", "hello zero"), nil
+		return webFetchTestResponse(request, http.StatusOK, "text/plain; charset=utf-8", "hello pvyai"), nil
 	}))
 
 	result := tool.Run(context.Background(), map[string]any{
@@ -83,7 +83,7 @@ func TestWebFetchToolFetchesHTTPText(t *testing.T) {
 	if result.Status != StatusOK {
 		t.Fatalf("expected ok status, got %s: %s", result.Status, result.Output)
 	}
-	for _, want := range []string{"URL: https://example.com/guide?token=[REDACTED]", "Status: 200 OK", "Content-Type: text/plain; charset=utf-8", "hello zero"} {
+	for _, want := range []string{"URL: https://example.com/guide?token=[REDACTED]", "Status: 200 OK", "Content-Type: text/plain; charset=utf-8", "hello pvyai"} {
 		if !strings.Contains(result.Output, want) {
 			t.Fatalf("expected output to contain %q, got %q", want, result.Output)
 		}
@@ -478,8 +478,8 @@ func TestWebFetchRunWithSandboxAllowsUnderShellNetworkDeny(t *testing.T) {
 		t.Fatalf("newWebFetchToolWithClientAndResolver returned %T", newWebFetchToolWithClientAndResolver(client, nil))
 	}
 
-	engine := zeroSandbox.NewEngine(zeroSandbox.EngineOptions{
-		Policy: zeroSandbox.Policy{Mode: zeroSandbox.ModeEnforce, Network: zeroSandbox.NetworkDeny},
+	engine := pvySandbox.NewEngine(pvySandbox.EngineOptions{
+		Policy: pvySandbox.Policy{Mode: pvySandbox.ModeEnforce, Network: pvySandbox.NetworkDeny},
 	})
 	result := tool.RunWithSandbox(context.Background(), map[string]any{"url": "https://example.com"}, engine)
 	if result.Status != StatusOK {
@@ -498,8 +498,8 @@ func TestWebFetchRunWithSandboxAllowsUnderShellNetworkAllow(t *testing.T) {
 	})
 	tool := newWebFetchToolWithClientAndResolver(client, publicWebFetchResolver(t, "evil.test")).(webFetchTool)
 
-	engine := zeroSandbox.NewEngine(zeroSandbox.EngineOptions{
-		Policy: zeroSandbox.Policy{Mode: zeroSandbox.ModeEnforce, Network: zeroSandbox.NetworkAllow},
+	engine := pvySandbox.NewEngine(pvySandbox.EngineOptions{
+		Policy: pvySandbox.Policy{Mode: pvySandbox.ModeEnforce, Network: pvySandbox.NetworkAllow},
 	})
 	result := tool.RunWithSandbox(context.Background(), map[string]any{"url": "https://evil.test"}, engine)
 	if result.Status != StatusOK {
@@ -519,8 +519,8 @@ func TestRegistryRoutesWebFetchThroughSandboxPath(t *testing.T) {
 	registry := NewRegistry()
 	registry.Register(newWebFetchToolWithClientAndResolver(client, publicWebFetchResolver(t, "evil.test")))
 
-	engine := zeroSandbox.NewEngine(zeroSandbox.EngineOptions{
-		Policy: zeroSandbox.Policy{Mode: zeroSandbox.ModeEnforce, Network: zeroSandbox.NetworkDeny},
+	engine := pvySandbox.NewEngine(pvySandbox.EngineOptions{
+		Policy: pvySandbox.Policy{Mode: pvySandbox.ModeEnforce, Network: pvySandbox.NetworkDeny},
 	})
 	res := registry.RunWithOptions(context.Background(), "web_fetch", map[string]any{"url": "https://evil.test"}, RunOptions{
 		Sandbox:           engine,

@@ -6,7 +6,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/Gitlawb/zero/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
 )
 
 func TestMouseHoverPredicate(t *testing.T) {

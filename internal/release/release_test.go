@@ -201,19 +201,19 @@ func TestBuildHelpersMatchScriptContracts(t *testing.T) {
 	if version != "0.1.0" {
 		t.Fatalf("PackageVersion = %q, want 0.1.0", version)
 	}
-	if got := DefaultBuildOutput(root, "windows"); got != filepath.Join(root, "zero.exe") {
+	if got := DefaultBuildOutput(root, "windows"); got != filepath.Join(root, "pvyai.exe") {
 		t.Fatalf("DefaultBuildOutput(windows) = %q", got)
 	}
-	if got := DefaultBuildOutput(root, "linux"); got != filepath.Join(root, "zero") {
+	if got := DefaultBuildOutput(root, "linux"); got != filepath.Join(root, "pvyai") {
 		t.Fatalf("DefaultBuildOutput(linux) = %q", got)
 	}
-	if got := WindowsSandboxCommandRunnerArtifactName("windows"); got != "zero-windows-command-runner.exe" {
+	if got := WindowsSandboxCommandRunnerArtifactName("windows"); got != "pvyai-windows-command-runner.exe" {
 		t.Fatalf("WindowsSandboxCommandRunnerArtifactName(windows) = %q", got)
 	}
 	if got := WindowsSandboxSetupArtifactName("windows"); got != "zero-windows-sandbox-setup.exe" {
 		t.Fatalf("WindowsSandboxSetupArtifactName(windows) = %q", got)
 	}
-	if got := BuildLdflags(version); !strings.Contains(got, "-X github.com/Gitlawb/zero/internal/cli.version=0.1.0") {
+	if got := BuildLdflags(version); !strings.Contains(got, "-X github.com/pvyswiss/pvyai-coding-agent/internal/cli.version=0.1.0") {
 		t.Fatalf("BuildLdflags = %q", got)
 	}
 }
@@ -329,13 +329,13 @@ func TestResolvePackageDirsAcceptsDistSubdirs(t *testing.T) {
 
 func TestCreateArchivesWithRootPackageFiles(t *testing.T) {
 	t.Run("tar gz", func(t *testing.T) {
-		stagingDir := packageStagingFixture(t, "zero")
+		stagingDir := packageStagingFixture(t, "pvyai")
 		archivePath := filepath.Join(t.TempDir(), "zero-v0.1.0-linux-x64.tar.gz")
 		if err := createArchive(stagingDir, archivePath, "linux"); err != nil {
 			t.Fatalf("createArchive returned error: %v", err)
 		}
 		names := tarArchiveNames(t, archivePath)
-		for _, want := range []string{"zero", "README.md", "bin/zero.js", "VERSION"} {
+		for _, want := range []string{"pvyai", "README.md", "bin/zero.js", "VERSION"} {
 			if !names[want] {
 				t.Fatalf("tar archive missing %s: %#v", want, names)
 			}
@@ -343,13 +343,13 @@ func TestCreateArchivesWithRootPackageFiles(t *testing.T) {
 	})
 
 	t.Run("zip", func(t *testing.T) {
-		stagingDir := packageStagingFixture(t, "zero.exe")
+		stagingDir := packageStagingFixture(t, "pvyai.exe")
 		archivePath := filepath.Join(t.TempDir(), "zero-v0.1.0-windows-x64.zip")
 		if err := createArchive(stagingDir, archivePath, "windows"); err != nil {
 			t.Fatalf("createArchive returned error: %v", err)
 		}
 		names := zipArchiveNames(t, archivePath)
-		for _, want := range []string{"zero.exe", "README.md", "bin/zero.js", "VERSION"} {
+		for _, want := range []string{"pvyai.exe", "README.md", "bin/zero.js", "VERSION"} {
 			if !names[want] {
 				t.Fatalf("zip archive missing %s: %#v", want, names)
 			}
@@ -361,7 +361,7 @@ func TestCreateTarArchivePreservesSymlinkTargets(t *testing.T) {
 	if runtime.GOOS == "windows" {
 		t.Skip("Unix symlink archive behavior")
 	}
-	stagingDir := packageStagingFixture(t, "zero")
+	stagingDir := packageStagingFixture(t, "pvyai")
 	linkPath := filepath.Join(stagingDir, "helpers", "node_modules", ".bin", "agent-browser")
 	if err := os.MkdirAll(filepath.Dir(linkPath), 0o755); err != nil {
 		t.Fatalf("MkdirAll: %v", err)
@@ -386,11 +386,11 @@ func TestCreateTarArchivePreservesSymlinkTargets(t *testing.T) {
 func TestCopyPackageFilesStagesLinuxSandboxHelper(t *testing.T) {
 	root := t.TempDir()
 	staging := t.TempDir()
-	artifact := filepath.Join(root, "zero")
+	artifact := filepath.Join(root, "pvyai")
 	helper := filepath.Join(root, "zero-linux-sandbox")
-	seccomp := filepath.Join(root, "zero-seccomp")
+	seccomp := filepath.Join(root, "pvyai-seccomp")
 	for path, content := range map[string]string{
-		artifact:                              "zero",
+		artifact:                              "pvyai",
 		helper:                                "helper",
 		seccomp:                               "seccomp",
 		filepath.Join(root, "README.md"):      "readme",
@@ -399,16 +399,16 @@ func TestCopyPackageFilesStagesLinuxSandboxHelper(t *testing.T) {
 	} {
 		mustWriteFile(t, path, content)
 	}
-	if err := copyPackageFiles(root, staging, artifact, filepath.Join(staging, "zero"), "linux", "0.1.0", map[string]string{
+	if err := copyPackageFiles(root, staging, artifact, filepath.Join(staging, "pvyai"), "linux", "0.1.0", map[string]string{
 		"zero-linux-sandbox": helper,
-		"zero-seccomp":       seccomp,
+		"pvyai-seccomp":       seccomp,
 	}); err != nil {
 		t.Fatalf("copyPackageFiles: %v", err)
 	}
 	if _, err := os.Stat(filepath.Join(staging, "zero-linux-sandbox")); err != nil {
 		t.Fatalf("staged helper missing: %v", err)
 	}
-	if _, err := os.Stat(filepath.Join(staging, "zero-seccomp")); err != nil {
+	if _, err := os.Stat(filepath.Join(staging, "pvyai-seccomp")); err != nil {
 		t.Fatalf("staged seccomp compatibility helper missing: %v", err)
 	}
 }
@@ -416,11 +416,11 @@ func TestCopyPackageFilesStagesLinuxSandboxHelper(t *testing.T) {
 func TestCopyPackageFilesStagesWindowsSandboxHelpers(t *testing.T) {
 	root := t.TempDir()
 	staging := t.TempDir()
-	artifact := filepath.Join(root, "zero.exe")
-	runner := filepath.Join(root, "zero-windows-command-runner.exe")
+	artifact := filepath.Join(root, "pvyai.exe")
+	runner := filepath.Join(root, "pvyai-windows-command-runner.exe")
 	setup := filepath.Join(root, "zero-windows-sandbox-setup.exe")
 	for path, content := range map[string]string{
-		artifact:                              "zero",
+		artifact:                              "pvyai",
 		runner:                                "runner",
 		setup:                                 "setup",
 		filepath.Join(root, "README.md"):      "readme",
@@ -429,13 +429,13 @@ func TestCopyPackageFilesStagesWindowsSandboxHelpers(t *testing.T) {
 	} {
 		mustWriteFile(t, path, content)
 	}
-	if err := copyPackageFiles(root, staging, artifact, filepath.Join(staging, "zero.exe"), "windows", "0.1.0", map[string]string{
-		"zero-windows-command-runner.exe": runner,
+	if err := copyPackageFiles(root, staging, artifact, filepath.Join(staging, "pvyai.exe"), "windows", "0.1.0", map[string]string{
+		"pvyai-windows-command-runner.exe": runner,
 		"zero-windows-sandbox-setup.exe":  setup,
 	}); err != nil {
 		t.Fatalf("copyPackageFiles: %v", err)
 	}
-	if _, err := os.Stat(filepath.Join(staging, "zero-windows-command-runner.exe")); err != nil {
+	if _, err := os.Stat(filepath.Join(staging, "pvyai-windows-command-runner.exe")); err != nil {
 		t.Fatalf("staged runner missing: %v", err)
 	}
 	if _, err := os.Stat(filepath.Join(staging, "zero-windows-sandbox-setup.exe")); err != nil {

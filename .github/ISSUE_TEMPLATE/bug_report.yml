@@ -12,7 +12,7 @@ body:
     attributes:
       label: Version / branch / commit
       description: Output of `zero version`, or the branch/commit you built from.
-      placeholder: "zero dev (commit abc1234) / main"
+      placeholder: "pvyai dev (commit abc1234) / main"
     validations:
       required: true
   - type: input

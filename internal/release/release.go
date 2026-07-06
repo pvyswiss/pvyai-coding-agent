@@ -266,37 +266,37 @@ func Package(ctx context.Context, options PackageOptions) (PackageResult, error)
 
 func ZeroArtifactName(goos string) string {
 	if goos == "windows" {
-		return "zero.exe"
+		return "pvyai.exe"
 	}
-	return "zero"
+	return "pvyai"
 }
 
 func LinuxSandboxHelperArtifactName(goos string) string {
 	if goos == "windows" {
-		return "zero-linux-sandbox.exe"
+		return "pvyai-linux-sandbox.exe"
 	}
-	return "zero-linux-sandbox"
+	return "pvyai-linux-sandbox"
 }
 
 func LinuxSeccompHelperArtifactName(goos string) string {
 	if goos == "windows" {
-		return "zero-seccomp.exe"
+		return "pvyai-seccomp.exe"
 	}
-	return "zero-seccomp"
+	return "pvyai-seccomp"
 }
 
 func WindowsSandboxCommandRunnerArtifactName(goos string) string {
 	if goos == "windows" {
-		return "zero-windows-command-runner.exe"
+		return "pvyai-windows-command-runner.exe"
 	}
-	return "zero-windows-command-runner"
+	return "pvyai-windows-command-runner"
 }
 
 func WindowsSandboxSetupArtifactName(goos string) string {
 	if goos == "windows" {
-		return "zero-windows-sandbox-setup.exe"
+		return "pvyai-windows-sandbox-setup.exe"
 	}
-	return "zero-windows-sandbox-setup"
+	return "pvyai-windows-sandbox-setup"
 }
 
 func DefaultBuildOutput(rootDir string, goos string) string {
@@ -304,7 +304,7 @@ func DefaultBuildOutput(rootDir string, goos string) string {
 }
 
 func BuildLdflags(version string) string {
-	return "-s -w -X github.com/Gitlawb/zero/internal/cli.version=" + version
+	return "-s -w -X github.com/pvyswiss/pvyai-coding-agent/internal/cli.version=" + version
 }
 
 func ReleasePlatform(goos string) (string, error) {
@@ -347,7 +347,7 @@ func ReleasePackageName(version string, goos string, goarch string) (string, err
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("zero-v%s-%s-%s", version, platform, arch), nil
+	return fmt.Sprintf("pvyai-v%s-%s-%s", version, platform, arch), nil
 }
 
 func ReleaseArchiveName(version string, goos string, goarch string) (string, error) {
@@ -606,28 +606,28 @@ func buildLinuxSandboxHelper(ctx context.Context, rootDir string, output string,
 	if goos != "linux" {
 		return nil
 	}
-	return buildGoPackage(ctx, rootDir, output, "", goos, goarch, "./cmd/zero-linux-sandbox")
+	return buildGoPackage(ctx, rootDir, output, "", goos, goarch, "./cmd/pvyai-sandbox")
 }
 
 func buildLinuxSeccompHelper(ctx context.Context, rootDir string, output string, goos string, goarch string) error {
 	if goos != "linux" {
 		return nil
 	}
-	return buildGoPackage(ctx, rootDir, output, "", goos, goarch, "./cmd/zero-seccomp")
+	return buildGoPackage(ctx, rootDir, output, "", goos, goarch, "./cmd/pvyai-seccomp")
 }
 
 func buildWindowsSandboxCommandRunner(ctx context.Context, rootDir string, output string, goos string, goarch string) error {
 	if goos != "windows" {
 		return nil
 	}
-	return buildGoPackage(ctx, rootDir, output, "", goos, goarch, "./cmd/zero-windows-command-runner")
+	return buildGoPackage(ctx, rootDir, output, "", goos, goarch, "./cmd/pvyai-windows-command-runner")
 }
 
 func buildWindowsSandboxSetup(ctx context.Context, rootDir string, output string, goos string, goarch string) error {
 	if goos != "windows" {
 		return nil
 	}
-	return buildGoPackage(ctx, rootDir, output, "", goos, goarch, "./cmd/zero-windows-sandbox-setup")
+	return buildGoPackage(ctx, rootDir, output, "", goos, goarch, "./cmd/pvyai-windows-sandbox-setup")
 }
 
 func buildReleaseHelper(ctx context.Context, rootDir string, output string, goos string, goarch string, name string) error {
@@ -675,7 +675,7 @@ func smokeVersion(ctx context.Context, binaryPath string, version string) error 
 		}
 		return fmt.Errorf("smoke release binary: %s", output)
 	}
-	expected := "zero " + version
+	expected := "pvyai " + version
 	if output != expected {
 		return fmt.Errorf("expected %s --version to print %s, got %s", filepath.Base(binaryPath), expected, output)
 	}
@@ -696,7 +696,7 @@ func copyPackageFiles(rootDir string, stagingDir string, artifactPath string, st
 			return err
 		}
 	}
-	if err := copyFile(filepath.Join(rootDir, "bin", "zero.js"), filepath.Join(stagingDir, "bin", "zero.js"), 0o755); err != nil {
+	if err := copyFile(filepath.Join(rootDir, "bin", "pvyai.js"), filepath.Join(stagingDir, "bin", "pvyai.js"), 0o755); err != nil {
 		return err
 	}
 	for name, source := range helperArtifacts {

@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/cron"
-	"github.com/Gitlawb/zero/internal/streamjson"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/cron"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/streamjson"
 )
 
 // execRunner runs a `zero exec ...` invocation and returns its exit code. The

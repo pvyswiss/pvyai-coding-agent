@@ -258,7 +258,7 @@ func TestEngineDoesNotAutoAllowProtectedMetadataWrites(t *testing.T) {
 		args map[string]any
 	}{
 		{name: "write_file git hook", args: map[string]any{"path": ".git/hooks/pre-commit"}},
-		{name: "edit_file zero config", args: map[string]any{"path": ".zero/config.json"}},
+		{name: "edit_file zero config", args: map[string]any{"path": ".pvyai/config.json"}},
 		{name: "apply_patch agents metadata", args: map[string]any{"patch": "--- /dev/null\n+++ b/.agents/config.json\n@@ -0,0 +1 @@\n+{}\n"}},
 	} {
 		t.Run(tc.name, func(t *testing.T) {

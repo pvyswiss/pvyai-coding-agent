@@ -8,12 +8,12 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // Deps are the ZERO capabilities the ACP Agent drives. The CLI fills these with
@@ -23,8 +23,8 @@ import (
 // operation.
 type Deps struct {
 	ResolveConfig func(workspaceRoot string, overrides config.Overrides) (config.ResolvedConfig, error)
-	NewProvider   func(profile config.ProviderProfile) (zeroruntime.Provider, error)
-	RunAgent      func(ctx context.Context, prompt string, provider zeroruntime.Provider, opts agent.Options) (agent.Result, error)
+	NewProvider   func(profile config.ProviderProfile) (pvyruntime.Provider, error)
+	RunAgent      func(ctx context.Context, prompt string, provider pvyruntime.Provider, opts agent.Options) (agent.Result, error)
 	// BuildWorkspace builds the SCOPED tool registry and the sandbox engine for a
 	// validated workspace root, so ACP shell tools (bash/exec_command) are confined
 	// exactly like the exec surface — never run unconfined on the host.
@@ -201,7 +201,7 @@ func (a *Agent) handleSessionPrompt(ctx context.Context, params json.RawMessage)
 	return PromptResult{StopReason: reason}, nil
 }
 
-func (a *Agent) runTurn(ctx context.Context, sess *acpSession, userText string, images []zeroruntime.ImageBlock) (string, error) {
+func (a *Agent) runTurn(ctx context.Context, sess *acpSession, userText string, images []pvyruntime.ImageBlock) (string, error) {
 	overrides := config.Overrides{}
 	if model := sess.currentModel(); model != "" {
 		overrides.Provider.Model = model
@@ -470,8 +470,8 @@ func buildPrompt(history []turnRecord, userText string) string {
 	return b.String()
 }
 
-func promptImages(blocks []ContentBlock) []zeroruntime.ImageBlock {
-	var images []zeroruntime.ImageBlock
+func promptImages(blocks []ContentBlock) []pvyruntime.ImageBlock {
+	var images []pvyruntime.ImageBlock
 	for _, blk := range blocks {
 		if blk.Type != "image" || blk.Data == "" {
 			continue
@@ -480,7 +480,7 @@ func promptImages(blocks []ContentBlock) []zeroruntime.ImageBlock {
 		if err != nil {
 			continue
 		}
-		images = append(images, zeroruntime.ImageBlock{MediaType: blk.MimeType, Data: data})
+		images = append(images, pvyruntime.ImageBlock{MediaType: blk.MimeType, Data: data})
 	}
 	return images
 }

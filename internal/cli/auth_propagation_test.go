@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // seedStoredProviderKey writes key into a credential store rooted beside the
@@ -16,7 +16,7 @@ import (
 // layout applyStoredProviderKey resolves through in production.
 func seedStoredProviderKey(t *testing.T, providerName, key string) (userConfigPath string) {
 	t.Helper()
-	t.Setenv("ZERO_CRED_STORAGE", "encrypted-file") // never touch the real OS keychain in tests
+	t.Setenv("PVYAI_CRED_STORAGE", "encrypted-file") // never touch the real OS keychain in tests
 	dir := t.TempDir()
 	store, err := config.ProviderKeyStoreAt(dir)
 	if err != nil {
@@ -58,7 +58,7 @@ func TestFillAppDepsWrapsNewProviderWithStoredKey(t *testing.T) {
 	var captured config.ProviderProfile
 	deps := fillAppDeps(appDeps{
 		userConfigPath: func() (string, error) { return configPath, nil },
-		newProvider: func(profile config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(profile config.ProviderProfile) (pvyruntime.Provider, error) {
 			captured = profile
 			return nil, nil // only the captured profile matters here
 		},
@@ -73,7 +73,7 @@ func TestFillAppDepsWrapsNewProviderWithStoredKey(t *testing.T) {
 }
 
 // buildProvider (the TUI/exec STARTUP construction site) must export
-// ZERO_PROVIDER so children spawned at any point in the run are pinned to the
+// PVYAI_PROVIDER so children spawned at any point in the run are pinned to the
 // parent's provider from launch — not only after an in-session switch. Without
 // this, a provider switch persisted by another zero process mid-session moves
 // new children onto a different provider (and credentials) than the parent.
@@ -84,7 +84,7 @@ func TestBuildProviderExportsActiveProviderEnv(t *testing.T) {
 	// process env). Inject the real one here to assert the actual env effect.
 	deps := appDeps{
 		exportActiveProvider: config.SetActiveProviderEnv,
-		newProvider: func(config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(config.ProviderProfile) (pvyruntime.Provider, error) {
 			return nil, nil
 		},
 	}
@@ -102,7 +102,7 @@ func TestBuildProviderExportsActiveProviderEnv(t *testing.T) {
 	t.Setenv(config.ActiveProviderEnv, "still-current")
 	failing := appDeps{
 		exportActiveProvider: config.SetActiveProviderEnv,
-		newProvider: func(config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(config.ProviderProfile) (pvyruntime.Provider, error) {
 			return nil, errors.New("boom")
 		},
 	}
@@ -161,7 +161,7 @@ func TestRunExecEscalationSwitchKeepsStoredKey(t *testing.T) {
 			cfg.MaxTurns = 3
 			return cfg, nil
 		},
-		newProvider: func(profile config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(profile config.ProviderProfile) (pvyruntime.Provider, error) {
 			builtProfiles = append(builtProfiles, profile)
 			return &usageEmittingEscalatingProvider{escalate: len(builtProfiles) == 1}, nil
 		},

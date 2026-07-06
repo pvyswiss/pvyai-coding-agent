@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/providerhealth"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providerhealth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 func TestRunProvidersCheckMissingKeyPrintsNextAction(t *testing.T) {
@@ -19,7 +19,7 @@ func TestRunProvidersCheckMissingKeyPrintsNextAction(t *testing.T) {
 		profile := providerCheckGuidanceProfile()
 		return config.ResolvedConfig{ActiveProvider: "groq", Provider: profile, Providers: []config.ProviderProfile{profile}, MaxTurns: 7}, nil
 	}
-	deps.newProvider = func(config.ProviderProfile) (zeroruntime.Provider, error) {
+	deps.newProvider = func(config.ProviderProfile) (pvyruntime.Provider, error) {
 		t.Fatal("newProvider should not run with a missing API key")
 		return nil, nil
 	}

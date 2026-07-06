@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/cron"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/cron"
 )
 
 func testCronStore(t *testing.T) *cron.Store {

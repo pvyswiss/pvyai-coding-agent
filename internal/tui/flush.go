@@ -5,7 +5,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/Gitlawb/zero/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
 )
 
 // This file implements the settled-row flush frontier that gives the chat

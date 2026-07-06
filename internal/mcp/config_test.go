@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
 )
 
 func TestNormalizeConfigValidatesTransportBoundaries(t *testing.T) {
@@ -13,7 +13,7 @@ func TestNormalizeConfigValidatesTransportBoundaries(t *testing.T) {
 			Type:    "stdio",
 			Command: "docs-mcp",
 			Args:    []string{"--workspace", "."},
-			Env:     map[string]string{"ZERO_DOCS_TOKEN": "test"},
+			Env:     map[string]string{"PVYAI_DOCS_TOKEN": "test"},
 		},
 		"web": {
 			Type:    "http",

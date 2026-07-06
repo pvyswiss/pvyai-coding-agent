@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
 )
 
 // LocalRuntime describes a local, OpenAI-compatible model server that ZERO can

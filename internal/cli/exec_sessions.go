@@ -6,9 +6,9 @@ import (
 	"io"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 type execSessionRecorder struct {
@@ -62,7 +62,7 @@ func preflightExecSession(options execOptions) error {
 			return err
 		}
 		if session == nil {
-			return execUsageError{"Zero session not found: " + options.fork}
+			return execUsageError{"PVYai session not found: " + options.fork}
 		}
 	case options.resume != "":
 		session, err := store.Get(options.resume)
@@ -70,7 +70,7 @@ func preflightExecSession(options execOptions) error {
 			return err
 		}
 		if session == nil {
-			return execUsageError{"Zero session not found: " + options.resume}
+			return execUsageError{"PVYai session not found: " + options.resume}
 		}
 	case options.resumeLatest:
 		latest, err := store.Latest()
@@ -92,7 +92,7 @@ func createSessionTitle(prompt string) string {
 		title = cutRuneBoundary(title, 80)
 	}
 	if title == "" {
-		return "Zero exec session"
+		return "PVYai exec session"
 	}
 	return title
 }
@@ -131,6 +131,6 @@ func (recorder *execSessionRecorder) append(eventType sessions.EventType, payloa
 // is reported once at run end. No-op when recording succeeded.
 func (recorder *execSessionRecorder) warnIfRecordingFailed(stderr io.Writer) {
 	if recorder.err != nil {
-		fmt.Fprintf(stderr, "[zero] WARNING: session not fully recorded: %v\n", recorder.err)
+		fmt.Fprintf(stderr, "[pvyai] WARNING: session not fully recorded: %v\n", recorder.err)
 	}
 }

@@ -10,24 +10,24 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/errhint"
-	"github.com/Gitlawb/zero/internal/imageinput"
-	"github.com/Gitlawb/zero/internal/lsp"
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/notify"
-	"github.com/Gitlawb/zero/internal/providercatalog"
-	"github.com/Gitlawb/zero/internal/providermodeldiscovery"
-	"github.com/Gitlawb/zero/internal/providers"
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/specmode"
-	"github.com/Gitlawb/zero/internal/streamjson"
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/usage"
-	"github.com/Gitlawb/zero/internal/worktrees"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/errhint"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/imageinput"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/lsp"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/notify"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providermodeldiscovery"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providers"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/specmode"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/streamjson"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/usage"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/worktrees"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 const (
@@ -833,7 +833,7 @@ func resolveWorkspaceRoot(cwd string, deps appDeps) (string, error) {
 // text input and for stream-json input that carries no images; it is merged with
 // any --image attachments by the caller before the shared vision gate, so both
 // sources flow through the same drop+warn and agent.Options.Images wiring.
-func resolveExecPrompt(options execOptions, workspaceRoot string, stdin io.Reader) (string, []zeroruntime.ImageBlock, error) {
+func resolveExecPrompt(options execOptions, workspaceRoot string, stdin io.Reader) (string, []pvyruntime.ImageBlock, error) {
 	if options.inputFormat == execInputStreamJSON {
 		input := ""
 		if options.file != "" {
@@ -912,11 +912,11 @@ func resolveExecPrompt(options execOptions, workspaceRoot string, stdin io.Reade
 // oversized) is wrapped into an execUsageError so the run reports it as a usage
 // problem rather than reaching a provider with an invalid image. Returns nil for
 // an empty path list (text-only behavior unchanged).
-func resolveExecImages(paths []string, workspaceRoot string) ([]zeroruntime.ImageBlock, error) {
+func resolveExecImages(paths []string, workspaceRoot string) ([]pvyruntime.ImageBlock, error) {
 	if len(paths) == 0 {
 		return nil, nil
 	}
-	images := make([]zeroruntime.ImageBlock, 0, len(paths))
+	images := make([]pvyruntime.ImageBlock, 0, len(paths))
 	for _, path := range paths {
 		image, err := imageinput.LoadFile(path, workspaceRoot)
 		if err != nil {
@@ -928,7 +928,7 @@ func resolveExecImages(paths []string, workspaceRoot string) ([]zeroruntime.Imag
 }
 
 func writeExecUsageError(stderr io.Writer, message string) int {
-	if _, err := fmt.Fprintf(stderr, "[zero] %s\n", message); err != nil {
+	if _, err := fmt.Fprintf(stderr, "[pvyai] %s\n", message); err != nil {
 		return exitCrash
 	}
 	return exitUsage
@@ -961,14 +961,14 @@ func writeExecProviderError(stdout io.Writer, stderr io.Writer, format execOutpu
 		}
 		return exitProvider
 	}
-	if _, err := fmt.Fprintf(stderr, "[zero] %s\n", message); err != nil {
+	if _, err := fmt.Fprintf(stderr, "[pvyai] %s\n", message); err != nil {
 		return exitCrash
 	}
 	// Append a one-line next step for recognized provider failures (auth /
 	// rate-limit / connectivity / …). The classifier gates on a provider-origin
 	// marker, so non-provider codes (sandbox_error, mcp_error) never draw a hint.
 	if hint := errhint.CLIHint(errors.New(message)); hint != "" {
-		if _, err := fmt.Fprintf(stderr, "[zero] %s\n", hint); err != nil {
+		if _, err := fmt.Fprintf(stderr, "[pvyai] %s\n", hint); err != nil {
 			return exitCrash
 		}
 	}

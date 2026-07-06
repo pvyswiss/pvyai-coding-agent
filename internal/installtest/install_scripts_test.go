@@ -22,17 +22,17 @@ func TestUnixInstallerScriptMatchesReleaseContracts(t *testing.T) {
 	}
 	containsAll(t, script, []string{
 		"set -euo pipefail",
-		`ZERO_REPO="${ZERO_REPO:-Gitlawb/zero}"`,
-		`ZERO_INSTALL_DIR="${ZERO_INSTALL_DIR:-$HOME/.local/bin}"`,
+		`PVYAI_REPO="${PVYAI_REPO:-Gitlawb/zero}"`,
+		`PVYAI_INSTALL_DIR="${PVYAI_INSTALL_DIR:-$HOME/.local/bin}"`,
 		`archive_name="zero-v${version}-${platform}-${arch}.tar.gz"`,
 		`checksum_name="${archive_name}.sha256"`,
 		"curl --fail --location --show-error --silent --header 'Accept: application/vnd.github+json'",
 		`verify_checksum "$checksum_name"`,
 		`tar -xzf "$archive_path" -C "$extract_dir"`,
 		`find_extracted_binary "$extract_dir"`,
-		`cp "$binary_path" "$ZERO_INSTALL_DIR/zero"`,
+		`cp "$binary_path" "$PVYAI_INSTALL_DIR/zero"`,
 		`copy_optional_file "zero-linux-sandbox"`,
-		`copy_optional_file "zero-seccomp"`,
+		`copy_optional_file "pvyai-seccomp"`,
 		`copy_optional_dir "helpers"`,
 	})
 }
@@ -41,14 +41,14 @@ func TestPowerShellInstallerScriptMatchesWindowsReleaseContracts(t *testing.T) {
 	script := readRepoText(t, "scripts/install.ps1")
 
 	containsAll(t, script, []string{
-		`[string]$Repository = $(if ($env:ZERO_REPO)`,
+		`[string]$Repository = $(if ($env:PVYAI_REPO)`,
 		`Join-Path $env:LOCALAPPDATA "zero\bin"`,
 		`$archiveName = "zero-v$releaseVersion-windows-$arch.zip"`,
 		`$checksumName = "$archiveName.sha256"`,
 		`Get-FileHash -Path $archivePath -Algorithm SHA256`,
 		`Expand-Archive -Path $archivePath -DestinationPath $extractDir -Force`,
 		`Find-ZeroExtractedFile -Root $extractDir -FileName $fileName`,
-		`"zero-windows-command-runner.exe"`,
+		`"pvyai-windows-command-runner.exe"`,
 		`"zero-windows-sandbox-setup.exe"`,
 		`Copy-Item -Path $sourcePath -Destination (Join-Path $InstallDir $fileName) -Force`,
 		`Find-ZeroOptionalExtractedDirectory -Root $extractDir -DirectoryName "helpers"`,
@@ -65,11 +65,11 @@ func TestUnixInstallerInstallsFromPrefixedReleaseArchiveWithoutNetwork(t *testin
 	if got := strings.TrimSpace(stderr); got != "" {
 		t.Fatalf("install.sh stderr = %q, want empty", got)
 	}
-	if !strings.Contains(stdout, "Installed "+filepath.Join(fixture.installDir, "zero")) {
+	if !strings.Contains(stdout, "Installed "+filepath.Join(fixture.installDir, "pvyai")) {
 		t.Fatalf("install.sh stdout missing install path:\n%s", stdout)
 	}
 
-	installed := readFile(t, filepath.Join(fixture.installDir, "zero"))
+	installed := readFile(t, filepath.Join(fixture.installDir, "pvyai"))
 	if !strings.Contains(string(installed), "mock-zero") {
 		t.Fatalf("installed binary = %q, want mock-zero script", string(installed))
 	}
@@ -96,7 +96,7 @@ func TestUnixInstallerRejectsChecksumMismatchWithoutNetwork(t *testing.T) {
 	if !strings.Contains(output, "FAILED") || !strings.Contains(strings.ToLower(output), "checksum") {
 		t.Fatalf("checksum failure output missing checksum mismatch detail:\n%s", output)
 	}
-	if _, err := os.Stat(filepath.Join(fixture.installDir, "zero")); !os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(fixture.installDir, "pvyai")); !os.IsNotExist(err) {
 		t.Fatalf("installed binary exists after checksum failure: %v", err)
 	}
 }
@@ -139,9 +139,9 @@ func newUnixInstallFixture(t *testing.T) unixInstallFixture {
 	mustMkdirAll(t, filepath.Dir(fixture.archivePath))
 	mustMkdirAll(t, fixture.installDir)
 	mustMkdirAll(t, filepath.Join(packageDir, "helpers", "node_modules", ".bin"))
-	writeFile(t, filepath.Join(packageDir, "zero"), []byte("#!/usr/bin/env sh\necho mock-zero\n"), 0o755)
+	writeFile(t, filepath.Join(packageDir, "pvyai"), []byte("#!/usr/bin/env sh\necho mock-zero\n"), 0o755)
 	writeFile(t, filepath.Join(packageDir, "zero-linux-sandbox"), []byte("#!/usr/bin/env sh\n"), 0o755)
-	writeFile(t, filepath.Join(packageDir, "zero-seccomp"), []byte("#!/usr/bin/env sh\n"), 0o755)
+	writeFile(t, filepath.Join(packageDir, "pvyai-seccomp"), []byte("#!/usr/bin/env sh\n"), 0o755)
 	mustMkdirAll(t, filepath.Join(packageDir, "helpers", "node_modules", "agent-browser", "bin"))
 	writeFile(t, filepath.Join(packageDir, "helpers", "node_modules", "agent-browser", "bin", "agent-browser.js"), []byte("#!/usr/bin/env node\n"), 0o755)
 	if err := os.Symlink("../agent-browser/bin/agent-browser.js", filepath.Join(packageDir, "helpers", "node_modules", ".bin", "agent-browser")); err != nil {
@@ -219,8 +219,8 @@ func runUnixInstaller(t *testing.T, fixture unixInstallFixture) (string, string,
 	command.Dir = repoRoot(t)
 	command.Env = append(os.Environ(),
 		"PATH="+fixture.mockBin+string(os.PathListSeparator)+os.Getenv("PATH"),
-		"ZERO_GITHUB_BASE_URL=https://example.test",
-		"ZERO_REPO=Gitlawb/zero",
+		"PVYAI_GITHUB_BASE_URL=https://example.test",
+		"PVYAI_REPO=Gitlawb/zero",
 	)
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer

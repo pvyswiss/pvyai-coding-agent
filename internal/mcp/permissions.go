@@ -122,7 +122,7 @@ func ResolvePermissionPath(env map[string]string) (string, error) {
 		}
 		configHome = resolved
 	}
-	return filepath.Join(configHome, "zero", "mcp-permissions.json"), nil
+	return filepath.Join(configHome, "pvyai", "mcp-permissions.json"), nil
 }
 
 func NewPermissionStore(options StoreOptions) (*PermissionStore, error) {

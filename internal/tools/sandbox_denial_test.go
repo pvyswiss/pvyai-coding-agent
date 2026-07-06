@@ -3,13 +3,13 @@ package tools
 import (
 	"testing"
 
-	zeroSandbox "github.com/Gitlawb/zero/internal/sandbox"
+	pvySandbox "github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 func TestLikelySandboxDeniedDetectsReferenceKeywords(t *testing.T) {
-	plan := zeroSandbox.CommandPlan{
+	plan := pvySandbox.CommandPlan{
 		Wrapped:       true,
-		TargetBackend: zeroSandbox.BackendLinuxBwrap,
+		TargetBackend: pvySandbox.BackendLinuxBwrap,
 	}
 	output := "touch: cannot touch '/home/user/.npm/cache': Read-only file system"
 	if !likelySandboxDenied(plan, 1, output) {
@@ -18,12 +18,12 @@ func TestLikelySandboxDeniedDetectsReferenceKeywords(t *testing.T) {
 }
 
 func TestLikelySandboxDeniedDetectsNetworkDenialEvenWithZeroExit(t *testing.T) {
-	plan := zeroSandbox.CommandPlan{
+	plan := pvySandbox.CommandPlan{
 		Wrapped:       true,
-		TargetBackend: zeroSandbox.BackendLinuxBwrap,
-		Policy:        zeroSandbox.Policy{Network: zeroSandbox.NetworkDeny},
-		PermissionProfile: zeroSandbox.PermissionProfile{
-			Network: zeroSandbox.NetworkPolicy{Mode: zeroSandbox.NetworkDeny},
+		TargetBackend: pvySandbox.BackendLinuxBwrap,
+		Policy:        pvySandbox.Policy{Network: pvySandbox.NetworkDeny},
+		PermissionProfile: pvySandbox.PermissionProfile{
+			Network: pvySandbox.NetworkPolicy{Mode: pvySandbox.NetworkDeny},
 		},
 	}
 	if !likelySandboxDenied(plan, 0, "Cannot open a network socket.") {
@@ -37,7 +37,7 @@ func TestLikelySandboxDeniedDetectsNetworkDenialEvenWithZeroExit(t *testing.T) {
 }
 
 func TestLikelySandboxDeniedIgnoresUnsandboxedFailure(t *testing.T) {
-	plan := zeroSandbox.CommandPlan{Wrapped: false}
+	plan := pvySandbox.CommandPlan{Wrapped: false}
 	if likelySandboxDenied(plan, 1, "permission denied") {
 		t.Fatal("unsandboxed command output must not be classified as a sandbox denial")
 	}

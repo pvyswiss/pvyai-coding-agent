@@ -5,8 +5,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/providermodeldiscovery"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providermodeldiscovery"
 )
 
 func (m model) modelListText() string {

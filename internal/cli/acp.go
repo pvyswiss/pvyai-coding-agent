@@ -6,11 +6,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Gitlawb/zero/internal/acp"
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/acp"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 const acpUsage = `zero acp — serve the Agent Client Protocol (ACP) over stdio
@@ -23,7 +23,7 @@ Usage:
   zero acp
 
 Not meant to be run interactively — point your editor's ACP / external-agent
-setting at "zero acp".`
+setting at "pvyai acp".`
 
 // runACP serves ACP over stdio so an editor can drive ZERO's agent core. It
 // speaks JSON-RPC 2.0 (newline-delimited JSON) on stdin/stdout; stderr stays free
@@ -65,7 +65,7 @@ func runACP(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) int
 		},
 		ResolveWorkspaceRoot: acpWorkspaceRootResolver(deps),
 		Store:                deps.newSessionStore(),
-		AgentInfo:            acp.Implementation{Name: "zero", Version: version},
+		AgentInfo:            acp.Implementation{Name: "pvyai", Version: version},
 	})
 
 	ctx, stop := signalContext()

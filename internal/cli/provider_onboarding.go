@@ -7,9 +7,9 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/providercatalog"
-	"github.com/Gitlawb/zero/internal/provideronboarding"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/provideronboarding"
 )
 
 type providerUseOptions struct {
@@ -225,7 +225,7 @@ func parseProviderSetupArgs(args []string) (providerSetupOptions, bool, error) {
 }
 
 func providerSetupAddCommand(options providerSetupOptions, profile config.ProviderProfile) string {
-	parts := []string{"zero", "providers", "add", profile.CatalogID}
+	parts := []string{"pvyai", "providers", "add", profile.CatalogID}
 	if strings.TrimSpace(options.name) != "" {
 		parts = append(parts, "--name", options.name)
 	}

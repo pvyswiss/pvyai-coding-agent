@@ -1,30 +1,30 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ZERO_REPO="${ZERO_REPO:-Gitlawb/zero}"
-ZERO_VERSION="${ZERO_VERSION:-latest}"
-ZERO_INSTALL_DIR="${ZERO_INSTALL_DIR:-$HOME/.local/bin}"
-ZERO_GITHUB_API="${ZERO_GITHUB_API:-https://api.github.com}"
-ZERO_GITHUB_BASE_URL="${ZERO_GITHUB_BASE_URL:-https://github.com}"
+PVYAI_REPO="${PVYAI_REPO:-pvyswiss/pvyai-coding-agent}"
+PVYAI_VERSION="${PVYAI_VERSION:-latest}"
+PVYAI_INSTALL_DIR="${PVYAI_INSTALL_DIR:-$HOME/.local/bin}"
+PVYAI_GITHUB_API="${PVYAI_GITHUB_API:-https://api.github.com}"
+PVYAI_GITHUB_BASE_URL="${PVYAI_GITHUB_BASE_URL:-https://github.com}"
 
 usage() {
   cat <<'EOF'
-Install Zero from GitHub Releases.
+Install PVYai from GitHub Releases.
 
 Usage:
   scripts/install.sh [--version <version>] [--repo <owner/repo>] [--install-dir <path>]
 
 Environment:
-  ZERO_VERSION          Release version or tag. Defaults to latest.
-  ZERO_REPO             GitHub repository. Defaults to Gitlawb/zero.
-  ZERO_INSTALL_DIR      Directory for the zero binary. Defaults to ~/.local/bin.
-  ZERO_GITHUB_API       GitHub API base URL. Defaults to https://api.github.com.
-  ZERO_GITHUB_BASE_URL  GitHub web base URL. Defaults to https://github.com.
+  PVYAI_VERSION          Release version or tag. Defaults to latest.
+  PVYAI_REPO             GitHub repository. Defaults to pvyswiss/pvyai-coding-agent.
+  PVYAI_INSTALL_DIR      Directory for the pvyai binary. Defaults to ~/.local/bin.
+  PVYAI_GITHUB_API       GitHub API base URL. Defaults to https://api.github.com.
+  PVYAI_GITHUB_BASE_URL  GitHub web base URL. Defaults to https://github.com.
 EOF
 }
 
 fail() {
-  echo "zero install: $*" >&2
+  echo "pvyai install: $*" >&2
   exit 1
 }
 
@@ -32,17 +32,17 @@ while [ "$#" -gt 0 ]; do
   case "$1" in
     --version)
       [ "$#" -ge 2 ] || fail "--version requires a value"
-      ZERO_VERSION="$2"
+      PVYAI_VERSION="$2"
       shift 2
       ;;
     --repo)
       [ "$#" -ge 2 ] || fail "--repo requires a value"
-      ZERO_REPO="$2"
+      PVYAI_REPO="$2"
       shift 2
       ;;
     --install-dir)
       [ "$#" -ge 2 ] || fail "--install-dir requires a value"
-      ZERO_INSTALL_DIR="$2"
+      PVYAI_INSTALL_DIR="$2"
       shift 2
       ;;
     -h|--help)
@@ -103,7 +103,7 @@ detect_arch() {
 
 latest_tag() {
   local metadata_file="$1"
-  local api_url="${ZERO_GITHUB_API%/}/repos/${ZERO_REPO}/releases/latest"
+  local api_url="${PVYAI_GITHUB_API%/}/repos/${PVYAI_REPO}/releases/latest"
   local tag
 
   download_json "$api_url" "$metadata_file"
@@ -154,7 +154,7 @@ find_extracted_entry() {
 }
 
 find_extracted_binary() {
-  find_extracted_entry "$1" "zero" "file"
+  find_extracted_entry "$1" "pvyai" "file"
 }
 
 copy_optional_file() {
@@ -162,8 +162,8 @@ copy_optional_file() {
   local source_path
 
   if source_path="$(find_extracted_entry "$extract_dir" "$name" "file")"; then
-    cp "$source_path" "$ZERO_INSTALL_DIR/$name"
-    chmod 755 "$ZERO_INSTALL_DIR/$name"
+    cp "$source_path" "$PVYAI_INSTALL_DIR/$name"
+    chmod 755 "$PVYAI_INSTALL_DIR/$name"
   fi
 }
 
@@ -172,8 +172,8 @@ copy_optional_dir() {
   local source_path
 
   if source_path="$(find_extracted_entry "$extract_dir" "$name" "dir")"; then
-    rm -rf "$ZERO_INSTALL_DIR/$name"
-    cp -R "$source_path" "$ZERO_INSTALL_DIR/$name"
+    rm -rf "$PVYAI_INSTALL_DIR/$name"
+    cp -R "$source_path" "$PVYAI_INSTALL_DIR/$name"
   fi
 }
 
@@ -188,21 +188,21 @@ cleanup() {
 }
 trap cleanup EXIT
 
-if [ "$ZERO_VERSION" = "latest" ]; then
+if [ "$PVYAI_VERSION" = "latest" ]; then
   tag="$(latest_tag "$tmp_dir/latest.json")"
 else
-  case "$ZERO_VERSION" in
-    v*) tag="$ZERO_VERSION" ;;
-    *) tag="v$ZERO_VERSION" ;;
+  case "$PVYAI_VERSION" in
+    v*) tag="$PVYAI_VERSION" ;;
+    *) tag="v$PVYAI_VERSION" ;;
   esac
 fi
 
 version="${tag#v}"
 platform="$(detect_platform)"
 arch="$(detect_arch)"
-archive_name="zero-v${version}-${platform}-${arch}.tar.gz"
+archive_name="pvyai-v${version}-${platform}-${arch}.tar.gz"
 checksum_name="${archive_name}.sha256"
-release_url="${ZERO_GITHUB_BASE_URL%/}/${ZERO_REPO}/releases/download/${tag}"
+release_url="${PVYAI_GITHUB_BASE_URL%/}/${PVYAI_REPO}/releases/download/${tag}"
 archive_path="$tmp_dir/$archive_name"
 checksum_path="$tmp_dir/$checksum_name"
 extract_dir="$tmp_dir/extract"
@@ -219,18 +219,18 @@ download "${release_url}/${checksum_name}" "$checksum_path"
 mkdir -p "$extract_dir"
 tar -xzf "$archive_path" -C "$extract_dir"
 
-binary_path="$(find_extracted_binary "$extract_dir")" || fail "release archive did not contain zero"
+binary_path="$(find_extracted_binary "$extract_dir")" || fail "release archive did not contain pvyai"
 
-mkdir -p "$ZERO_INSTALL_DIR"
-cp "$binary_path" "$ZERO_INSTALL_DIR/zero"
-chmod 755 "$ZERO_INSTALL_DIR/zero"
-copy_optional_file "zero-linux-sandbox"
-copy_optional_file "zero-seccomp"
+mkdir -p "$PVYAI_INSTALL_DIR"
+cp "$binary_path" "$PVYAI_INSTALL_DIR/pvyai"
+chmod 755 "$PVYAI_INSTALL_DIR/pvyai"
+copy_optional_file "pvyai-sandbox"
+copy_optional_file "pvyai-seccomp"
 copy_optional_dir "helpers"
 
-echo "Installed $ZERO_INSTALL_DIR/zero"
+echo "Installed $PVYAI_INSTALL_DIR/pvyai"
 
 case ":$PATH:" in
-  *":$ZERO_INSTALL_DIR:"*) ;;
-  *) echo "Add $ZERO_INSTALL_DIR to PATH to run zero from any directory." ;;
+  *":$PVYAI_INSTALL_DIR:"*) ;;
+  *) echo "Add $PVYAI_INSTALL_DIR to PATH to run zero from any directory." ;;
 esac

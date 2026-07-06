@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/credstore"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/credstore"
 )
 
 // ProviderKeyStoreAt opens the encrypted credential store whose file backend lives

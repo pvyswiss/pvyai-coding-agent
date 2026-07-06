@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // emitDone must mark the shared state done so callers observe it through the
@@ -15,7 +15,7 @@ func TestEmitDoneMarksStateDoneThroughPointer(t *testing.T) {
 		t.Fatalf("New returned error: %v", err)
 	}
 
-	events := make(chan zeroruntime.StreamEvent, 4)
+	events := make(chan pvyruntime.StreamEvent, 4)
 	state := &streamState{}
 	provider.emitDone(context.Background(), state, events)
 	close(events)
@@ -25,7 +25,7 @@ func TestEmitDoneMarksStateDoneThroughPointer(t *testing.T) {
 	}
 	var sawDone bool
 	for event := range events {
-		if event.Type == zeroruntime.StreamEventDone {
+		if event.Type == pvyruntime.StreamEventDone {
 			sawDone = true
 		}
 	}

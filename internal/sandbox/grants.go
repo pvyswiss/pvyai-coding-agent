@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
 )
 
 const grantSchemaVersion = 2
@@ -89,7 +89,7 @@ func ResolveGrantPath(env map[string]string) (string, error) {
 		}
 		configHome = resolved
 	}
-	return filepath.Join(configHome, "zero", "sandbox-grants.json"), nil
+	return filepath.Join(configHome, "pvyai", "sandbox-grants.json"), nil
 }
 
 func NewGrantStore(options StoreOptions) (*GrantStore, error) {

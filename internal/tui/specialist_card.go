@@ -15,7 +15,7 @@ import (
 
 	"charm.land/lipgloss/v2"
 
-	"github.com/Gitlawb/zero/internal/streamjson"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/streamjson"
 )
 
 // specialistStatus is the lifecycle state of a single specialist invocation.

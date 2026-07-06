@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/testrunner"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/testrunner"
 )
 
 func TestDetectPlanFindsBunAndGoChecks(t *testing.T) {
@@ -20,7 +20,7 @@ func TestDetectPlanFindsBunAndGoChecks(t *testing.T) {
 		"scripts": {
 			"test": "bun test ./tests",
 			"typecheck": "tsc --noEmit",
-			"build": "go run ./cmd/zero-release build",
+			"build": "go run ./cmd/pvyai-release build",
 			"lint": "eslint ."
 		}
 	}`)

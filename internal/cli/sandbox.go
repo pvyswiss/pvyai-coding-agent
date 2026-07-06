@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/config"
-	zeroSandbox "github.com/Gitlawb/zero/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	pvySandbox "github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 type sandboxCommandOptions struct {
@@ -66,8 +66,8 @@ func runSandboxPolicy(args []string, stdout io.Writer, stderr io.Writer, deps ap
 	if err != nil {
 		return writeAppError(stderr, err.Error(), exitProvider)
 	}
-	policy := applyConfiguredSandboxPolicy(zeroSandbox.DefaultPolicy(), resolved.Sandbox)
-	backend := deps.selectSandboxBackend(zeroSandbox.BackendOptions{})
+	policy := applyConfiguredSandboxPolicy(pvySandbox.DefaultPolicy(), resolved.Sandbox)
+	backend := deps.selectSandboxBackend(pvySandbox.BackendOptions{})
 	plan := backend.BuildPlan(workspaceRoot, policy)
 	if options.effective {
 		// Compute the effective write roots exactly the way the engine does:
@@ -77,12 +77,12 @@ func runSandboxPolicy(args []string, stdout io.Writer, stderr io.Writer, deps ap
 		// back to the workspace root and surface the error visibly instead.
 		writeRoots := []string{workspaceRoot}
 		var writeRootsErr error
-		if scope, scopeErr := zeroSandbox.NewScope(workspaceRoot, resolved.Sandbox.AdditionalWriteRoots); scopeErr != nil {
+		if scope, scopeErr := pvySandbox.NewScope(workspaceRoot, resolved.Sandbox.AdditionalWriteRoots); scopeErr != nil {
 			writeRootsErr = scopeErr
 			// NewScope only fails on extras, so a workspace-only scope cannot
 			// fail; use it so the fallback renders the same symlink-resolved
 			// workspace root as the success path.
-			if fallback, fallbackErr := zeroSandbox.NewScope(workspaceRoot, nil); fallbackErr == nil {
+			if fallback, fallbackErr := pvySandbox.NewScope(workspaceRoot, nil); fallbackErr == nil {
 				writeRoots = fallback.Roots()
 			}
 		} else {
@@ -92,9 +92,9 @@ func runSandboxPolicy(args []string, stdout io.Writer, stderr io.Writer, deps ap
 	}
 	if options.json {
 		payload := struct {
-			Policy     zeroSandbox.Policy      `json:"policy"`
-			Backend    zeroSandbox.Backend     `json:"backend"`
-			Plan       zeroSandbox.BackendPlan `json:"plan"`
+			Policy     pvySandbox.Policy      `json:"policy"`
+			Backend    pvySandbox.Backend     `json:"backend"`
+			Plan       pvySandbox.BackendPlan `json:"plan"`
 			GrantsPath string                  `json:"grantsPath"`
 		}{
 			Policy:     policy,
@@ -132,8 +132,8 @@ func runSandboxSetup(args []string, stdout io.Writer, stderr io.Writer, deps app
 	if err != nil {
 		return writeAppError(stderr, err.Error(), exitProvider)
 	}
-	policy := applyConfiguredSandboxPolicy(zeroSandbox.DefaultPolicy(), resolved.Sandbox)
-	backend := deps.selectSandboxBackend(zeroSandbox.BackendOptions{})
+	policy := applyConfiguredSandboxPolicy(pvySandbox.DefaultPolicy(), resolved.Sandbox)
+	backend := deps.selectSandboxBackend(pvySandbox.BackendOptions{})
 	if backend.Platform != "windows" {
 		message := "No native sandbox setup is required for " + displayPlatform(backend.Platform)
 		return writeSandboxSetupResult(stdout, options.json, sandboxSetupResult{
@@ -143,27 +143,27 @@ func runSandboxSetup(args []string, stdout io.Writer, stderr io.Writer, deps app
 			Message:  message,
 		})
 	}
-	if backend.Name != zeroSandbox.BackendWindowsRestrictedToken || !backend.Available || backend.Executable == "" {
+	if backend.Name != pvySandbox.BackendWindowsRestrictedToken || !backend.Available || backend.Executable == "" {
 		message := "Windows sandbox setup helper is not available"
 		if strings.TrimSpace(backend.Message) != "" {
 			message += ": " + backend.Message
 		}
 		return writeAppError(stderr, message, exitProvider)
 	}
-	scope, err := zeroSandbox.NewScope(workspaceRoot, resolved.Sandbox.AdditionalWriteRoots)
+	scope, err := pvySandbox.NewScope(workspaceRoot, resolved.Sandbox.AdditionalWriteRoots)
 	if err != nil {
 		return writeExecUsageError(stderr, err.Error())
 	}
-	profile := zeroSandbox.PermissionProfileFromPolicy(workspaceRoot, policy, scope)
+	profile := pvySandbox.PermissionProfileFromPolicy(workspaceRoot, policy, scope)
 	// Resolve the setup helper the same way the runner is resolved: a standalone
 	// .exe when shipped (release), else self-dispatch via the running zero binary
 	// (dev / plain build). This mirrors the backend's command-runner resolution
 	// so `zero sandbox setup` works in every layout, not just release.
-	setupHelper := zeroSandbox.ResolveWindowsSandboxSetupHelper(nil)
+	setupHelper := pvySandbox.ResolveWindowsSandboxSetupHelper(nil)
 	if !setupHelper.Available() {
 		return writeAppError(stderr, "Windows sandbox setup helper is not available", exitProvider)
 	}
-	setupArgs, err := zeroSandbox.BuildWindowsSandboxSetupArgs(zeroSandbox.WindowsSandboxSetupArgsOptions{
+	setupArgs, err := pvySandbox.BuildWindowsSandboxSetupArgs(pvySandbox.WindowsSandboxSetupArgsOptions{
 		CommandCWD:        workspaceRoot,
 		WorkspaceRoots:    []string{workspaceRoot},
 		PermissionProfile: profile,
@@ -186,7 +186,7 @@ func runSandboxSetup(args []string, stdout io.Writer, stderr io.Writer, deps app
 
 type sandboxSetupResult struct {
 	Platform string                  `json:"platform"`
-	Backend  zeroSandbox.BackendName `json:"backend"`
+	Backend  pvySandbox.BackendName `json:"backend"`
 	Helper   string                  `json:"helper,omitempty"`
 	Ran      bool                    `json:"ran"`
 	Message  string                  `json:"message"`
@@ -227,17 +227,17 @@ type sandboxGuards struct {
 	Workspace          bool `json:"workspace"`
 }
 
-func resolveSandboxGuards(policy zeroSandbox.Policy) sandboxGuards {
+func resolveSandboxGuards(policy pvySandbox.Policy) sandboxGuards {
 	return sandboxGuards{
 		// Interactive-command detection is a static pre-exec guard that always
 		// runs in the bash tool regardless of policy toggles.
 		InteractiveCommand: true,
-		Network:            policy.Network == zeroSandbox.NetworkDeny,
+		Network:            policy.Network == pvySandbox.NetworkDeny,
 		Workspace:          policy.EnforceWorkspace,
 	}
 }
 
-func runSandboxPolicyEffective(options sandboxCommandOptions, workspaceRoot string, policy zeroSandbox.Policy, backend zeroSandbox.Backend, plan zeroSandbox.BackendPlan, grantsPath string, writeRoots []string, writeRootsErr error, stdout io.Writer) int {
+func runSandboxPolicyEffective(options sandboxCommandOptions, workspaceRoot string, policy pvySandbox.Policy, backend pvySandbox.Backend, plan pvySandbox.BackendPlan, grantsPath string, writeRoots []string, writeRootsErr error, stdout io.Writer) int {
 	guards := resolveSandboxGuards(policy)
 	if options.json {
 		payload := struct {
@@ -248,9 +248,9 @@ func runSandboxPolicyEffective(options sandboxCommandOptions, workspaceRoot stri
 			// line: a stale sandbox.additionalWriteRoots entry means the real
 			// entrypoints would refuse to launch, not run workspace-only.
 			WriteRootsError string                  `json:"writeRootsError,omitempty"`
-			Policy          zeroSandbox.Policy      `json:"policy"`
-			Backend         zeroSandbox.Backend     `json:"backend"`
-			Plan            zeroSandbox.BackendPlan `json:"plan"`
+			Policy          pvySandbox.Policy      `json:"policy"`
+			Backend         pvySandbox.Backend     `json:"backend"`
+			Plan            pvySandbox.BackendPlan `json:"plan"`
 			Guards          sandboxGuards           `json:"guards"`
 			GrantsPath      string                  `json:"grantsPath"`
 		}{
@@ -276,9 +276,9 @@ func runSandboxPolicyEffective(options sandboxCommandOptions, workspaceRoot stri
 	return exitSuccess
 }
 
-func formatEffectiveSandboxPolicy(workspaceRoot string, policy zeroSandbox.Policy, backend zeroSandbox.Backend, plan zeroSandbox.BackendPlan, guards sandboxGuards, grantsPath string, writeRoots []string, writeRootsErr error) string {
+func formatEffectiveSandboxPolicy(workspaceRoot string, policy pvySandbox.Policy, backend pvySandbox.Backend, plan pvySandbox.BackendPlan, guards sandboxGuards, grantsPath string, writeRoots []string, writeRootsErr error) string {
 	lines := []string{
-		"Zero effective sandbox policy",
+		"PVYai effective sandbox policy",
 		"root: " + workspaceRoot,
 		"mode: " + string(policy.Mode),
 		"network: " + string(policy.Network),
@@ -359,14 +359,14 @@ func runSandboxGrants(args []string, stdout io.Writer, stderr io.Writer, deps ap
 		}
 		if options.json {
 			if err := writePrettyJSON(stdout, struct {
-				Grants          []zeroSandbox.Grant              `json:"grants"`
-				CommandPrefixes []zeroSandbox.CommandPrefixGrant `json:"commandPrefixes,omitempty"`
+				Grants          []pvySandbox.Grant              `json:"grants"`
+				CommandPrefixes []pvySandbox.CommandPrefixGrant `json:"commandPrefixes,omitempty"`
 			}{Grants: grants, CommandPrefixes: prefixes}); err != nil {
 				return exitCrash
 			}
 			return exitSuccess
 		}
-		if _, err := fmt.Fprintln(stdout, zeroSandbox.FormatGrantListWithCommandPrefixes(grants, prefixes)); err != nil {
+		if _, err := fmt.Fprintln(stdout, pvySandbox.FormatGrantListWithCommandPrefixes(grants, prefixes)); err != nil {
 			return exitCrash
 		}
 		return exitSuccess
@@ -395,15 +395,15 @@ func runSandboxGrantSet(command string, args []string, stdout io.Writer, stderr 
 	if len(positional) != 1 {
 		return writeExecUsageError(stderr, "usage: zero sandbox grants "+command+" <tool> [--path file] [--reason text] [--json]")
 	}
-	decision := zeroSandbox.GrantAllow
+	decision := pvySandbox.GrantAllow
 	if command == "deny" {
-		decision = zeroSandbox.GrantDeny
+		decision = pvySandbox.GrantDeny
 	}
 	store, err := deps.newSandboxStore()
 	if err != nil {
 		return writeAppError(stderr, err.Error(), exitCrash)
 	}
-	input := zeroSandbox.GrantInput{
+	input := pvySandbox.GrantInput{
 		ToolName: positional[0],
 		Decision: decision,
 		Reason:   options.reason,
@@ -416,7 +416,7 @@ func runSandboxGrantSet(command string, args []string, stdout io.Writer, stderr 
 			return writeExecUsageError(stderr, absErr.Error())
 		}
 		input.Scope = abs
-		input.ScopeKind = zeroSandbox.ScopeFile
+		input.ScopeKind = pvySandbox.ScopeFile
 	}
 	grant, err := store.Grant(input)
 	if err != nil {
@@ -424,7 +424,7 @@ func runSandboxGrantSet(command string, args []string, stdout io.Writer, stderr 
 	}
 	if options.json {
 		if err := writePrettyJSON(stdout, struct {
-			Grant zeroSandbox.Grant `json:"grant"`
+			Grant pvySandbox.Grant `json:"grant"`
 		}{Grant: grant}); err != nil {
 			return exitCrash
 		}
@@ -491,7 +491,7 @@ func runSandboxGrantClear(args []string, stdout io.Writer, stderr io.Writer, dep
 		return exitSuccess
 	}
 	if !options.confirm {
-		return writeExecUsageError(stderr, "zero sandbox grants clear requires --confirm")
+		return writeExecUsageError(stderr, "pvyai sandbox grants clear requires --confirm")
 	}
 	store, err := deps.newSandboxStore()
 	if err != nil {
@@ -589,9 +589,9 @@ func parseSandboxPositionalOptions(args []string) (sandboxCommandOptions, []stri
 	return options, positional, false, nil
 }
 
-func formatSandboxPolicy(workspaceRoot string, policy zeroSandbox.Policy, backend zeroSandbox.Backend, plan zeroSandbox.BackendPlan, grantsPath string) string {
+func formatSandboxPolicy(workspaceRoot string, policy pvySandbox.Policy, backend pvySandbox.Backend, plan pvySandbox.BackendPlan, grantsPath string) string {
 	lines := []string{
-		"Zero sandbox policy",
+		"PVYai sandbox policy",
 		"root: " + workspaceRoot,
 		"mode: " + string(policy.Mode),
 		"network: " + string(policy.Network),

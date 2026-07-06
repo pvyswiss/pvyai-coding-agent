@@ -5,40 +5,40 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // stateConversation is a long enough conversation that Compact elides a middle
 // containing an update_plan call and a loaded skill (call + result).
-func stateConversation() []zeroruntime.Message {
-	return []zeroruntime.Message{
-		{Role: zeroruntime.MessageRoleSystem, Content: "system"},
-		{Role: zeroruntime.MessageRoleUser, Content: "build the thing"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "planning", ToolCalls: []zeroruntime.ToolCall{
+func stateConversation() []pvyruntime.Message {
+	return []pvyruntime.Message{
+		{Role: pvyruntime.MessageRoleSystem, Content: "system"},
+		{Role: pvyruntime.MessageRoleUser, Content: "build the thing"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "planning", ToolCalls: []pvyruntime.ToolCall{
 			{ID: "p1", Name: "update_plan", Arguments: `{"plan":[{"content":"write code","status":"in_progress"},{"content":"add tests","status":"pending"}]}`},
 		}},
-		{Role: zeroruntime.MessageRoleTool, Content: "plan updated", ToolCallID: "p1"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "loading skill", ToolCalls: []zeroruntime.ToolCall{
+		{Role: pvyruntime.MessageRoleTool, Content: "plan updated", ToolCallID: "p1"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "loading skill", ToolCalls: []pvyruntime.ToolCall{
 			{ID: "s1", Name: "skill", Arguments: `{"name":"deploy"}`},
 		}},
-		{Role: zeroruntime.MessageRoleTool, Content: "Deploy skill: run `make deploy` then tag the release.", ToolCallID: "s1"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "done step 1"},
-		{Role: zeroruntime.MessageRoleUser, Content: "continue"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "continuing"},
+		{Role: pvyruntime.MessageRoleTool, Content: "Deploy skill: run `make deploy` then tag the release.", ToolCallID: "s1"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "done step 1"},
+		{Role: pvyruntime.MessageRoleUser, Content: "continue"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "continuing"},
 	}
 }
 
-func compactStateConversation(t *testing.T, messages []zeroruntime.Message) string {
+func compactStateConversation(t *testing.T, messages []pvyruntime.Message) string {
 	t.Helper()
 	compacted, err := Compact(messages, CompactionOptions{
 		PreserveLast: 2,
-		Summarize:    func([]zeroruntime.Message) (string, error) { return "SUMMARY", nil },
+		Summarize:    func([]pvyruntime.Message) (string, error) { return "SUMMARY", nil },
 	})
 	if err != nil {
 		t.Fatalf("Compact returned error: %v", err)
 	}
 	// [system, summaryUserMsg, ...suffix] — the summary is the message after system.
-	if len(compacted) < 2 || compacted[1].Role != zeroruntime.MessageRoleUser {
+	if len(compacted) < 2 || compacted[1].Role != pvyruntime.MessageRoleUser {
 		t.Fatalf("unexpected compacted shape: %#v", compacted)
 	}
 	if !strings.Contains(compacted[1].Content, summaryLabel) {
@@ -70,16 +70,16 @@ func TestCompactPreservesLoadedSkills(t *testing.T) {
 }
 
 func TestCompactPreservesLoadedToolSearchSchemas(t *testing.T) {
-	messages := []zeroruntime.Message{
-		{Role: zeroruntime.MessageRoleSystem, Content: "system"},
-		{Role: zeroruntime.MessageRoleUser, Content: "load weather tool"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "loading", ToolCalls: []zeroruntime.ToolCall{
+	messages := []pvyruntime.Message{
+		{Role: pvyruntime.MessageRoleSystem, Content: "system"},
+		{Role: pvyruntime.MessageRoleUser, Content: "load weather tool"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "loading", ToolCalls: []pvyruntime.ToolCall{
 			{ID: "t1", Name: "tool_search", Arguments: `{"query":"select:weather_lookup"}`},
 		}},
-		{Role: zeroruntime.MessageRoleTool, ToolCallID: "t1", Content: "Loaded 1 tool. Full schemas follow; call them on the next turn.\n\n## weather_lookup\nLook up weather.\ninput schema:\n{\n  \"type\": \"object\"\n}"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "ready"},
-		{Role: zeroruntime.MessageRoleUser, Content: "continue"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "continuing"},
+		{Role: pvyruntime.MessageRoleTool, ToolCallID: "t1", Content: "Loaded 1 tool. Full schemas follow; call them on the next turn.\n\n## weather_lookup\nLook up weather.\ninput schema:\n{\n  \"type\": \"object\"\n}"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "ready"},
+		{Role: pvyruntime.MessageRoleUser, Content: "continue"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "continuing"},
 	}
 	summary := compactStateConversation(t, messages)
 	if !strings.Contains(summary, `"name":"weather_lookup"`) || !strings.Contains(summary, "input schema") {
@@ -89,14 +89,14 @@ func TestCompactPreservesLoadedToolSearchSchemas(t *testing.T) {
 
 func TestCompactPreservesProjectInstructions(t *testing.T) {
 	projectInstructions := "# AGENTS.md instructions for D:\\repo\n\n<INSTRUCTIONS>\nUse `go test ./internal/agent` for agent changes.\nDo not touch TUI code.\n</INSTRUCTIONS>\n\n<environment_context>\nignored runtime context\n</environment_context>"
-	messages := []zeroruntime.Message{
-		{Role: zeroruntime.MessageRoleSystem, Content: "system"},
-		{Role: zeroruntime.MessageRoleUser, Content: projectInstructions},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "ack"},
-		{Role: zeroruntime.MessageRoleUser, Content: "work on compaction"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "working"},
-		{Role: zeroruntime.MessageRoleUser, Content: "continue"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "continuing"},
+	messages := []pvyruntime.Message{
+		{Role: pvyruntime.MessageRoleSystem, Content: "system"},
+		{Role: pvyruntime.MessageRoleUser, Content: projectInstructions},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "ack"},
+		{Role: pvyruntime.MessageRoleUser, Content: "work on compaction"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "working"},
+		{Role: pvyruntime.MessageRoleUser, Content: "continue"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "continuing"},
 	}
 	summary := compactStateConversation(t, messages)
 	state := parsePreservedStateBlock(summary)
@@ -113,21 +113,21 @@ func TestCompactPreservesProjectInstructions(t *testing.T) {
 }
 
 func TestProjectInstructionBlockAcceptsProjectGuidelineFilename(t *testing.T) {
-	source, body := projectInstructionBlock("# ZERO.md instructions for /repo\n\n<INSTRUCTIONS>\nPrefer Go commands.\n</INSTRUCTIONS>")
-	if source != "ZERO.md instructions for /repo" || !strings.Contains(body, "Prefer Go commands.") {
-		t.Fatalf("expected ZERO.md instruction block to parse, got source=%q body=%q", source, body)
+	source, body := projectInstructionBlock("# PVYAI.md instructions for /repo\n\n<INSTRUCTIONS>\nPrefer Go commands.\n</INSTRUCTIONS>")
+	if source != "PVYAI.md instructions for /repo" || !strings.Contains(body, "Prefer Go commands.") {
+		t.Fatalf("expected PVYAI.md instruction block to parse, got source=%q body=%q", source, body)
 	}
 }
 
 func TestCompactWithoutStateHasNoPreserveSections(t *testing.T) {
-	messages := []zeroruntime.Message{
-		{Role: zeroruntime.MessageRoleSystem, Content: "system"},
-		{Role: zeroruntime.MessageRoleUser, Content: "hello"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "hi there"},
-		{Role: zeroruntime.MessageRoleUser, Content: "tell me more"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "sure"},
-		{Role: zeroruntime.MessageRoleUser, Content: "and more"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "ok"},
+	messages := []pvyruntime.Message{
+		{Role: pvyruntime.MessageRoleSystem, Content: "system"},
+		{Role: pvyruntime.MessageRoleUser, Content: "hello"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "hi there"},
+		{Role: pvyruntime.MessageRoleUser, Content: "tell me more"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "sure"},
+		{Role: pvyruntime.MessageRoleUser, Content: "and more"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "ok"},
 	}
 	summary := compactStateConversation(t, messages)
 	if strings.Contains(summary, preservedStateLabel) {
@@ -139,7 +139,7 @@ func TestCompactCarriesPreservedStateAcrossRepeatedCompaction(t *testing.T) {
 	// First compaction: real update_plan + skill load in the elided middle.
 	first, err := Compact(stateConversation(), CompactionOptions{
 		PreserveLast: 2,
-		Summarize:    func([]zeroruntime.Message) (string, error) { return "FIRST SUMMARY", nil },
+		Summarize:    func([]pvyruntime.Message) (string, error) { return "FIRST SUMMARY", nil },
 	})
 	if err != nil {
 		t.Fatalf("first Compact: %v", err)
@@ -147,23 +147,23 @@ func TestCompactCarriesPreservedStateAcrossRepeatedCompaction(t *testing.T) {
 
 	// Grow the history so the first summary (which holds the preserved sections,
 	// but no real tool calls) falls into the SECOND compaction's middle.
-	second := append([]zeroruntime.Message{}, first...)
+	second := append([]pvyruntime.Message{}, first...)
 	second = append(second,
-		zeroruntime.Message{Role: zeroruntime.MessageRoleUser, Content: "what next"},
-		zeroruntime.Message{Role: zeroruntime.MessageRoleAssistant, Content: "continuing"},
-		zeroruntime.Message{Role: zeroruntime.MessageRoleUser, Content: "keep going"},
-		zeroruntime.Message{Role: zeroruntime.MessageRoleAssistant, Content: "done"},
+		pvyruntime.Message{Role: pvyruntime.MessageRoleUser, Content: "what next"},
+		pvyruntime.Message{Role: pvyruntime.MessageRoleAssistant, Content: "continuing"},
+		pvyruntime.Message{Role: pvyruntime.MessageRoleUser, Content: "keep going"},
+		pvyruntime.Message{Role: pvyruntime.MessageRoleAssistant, Content: "done"},
 	)
 
 	// The second summarizer deliberately DROPS the preserved sections.
 	out, err := Compact(second, CompactionOptions{
 		PreserveLast: 2,
-		Summarize:    func([]zeroruntime.Message) (string, error) { return "SECOND SUMMARY with no preserved sections", nil },
+		Summarize:    func([]pvyruntime.Message) (string, error) { return "SECOND SUMMARY with no preserved sections", nil },
 	})
 	if err != nil {
 		t.Fatalf("second Compact: %v", err)
 	}
-	if len(out) < 2 || out[1].Role != zeroruntime.MessageRoleUser {
+	if len(out) < 2 || out[1].Role != pvyruntime.MessageRoleUser {
 		t.Fatalf("unexpected compacted shape: %#v", out)
 	}
 	newSummary := out[1].Content
@@ -177,35 +177,35 @@ func TestCompactCarriesPreservedStateAcrossRepeatedCompaction(t *testing.T) {
 }
 
 func TestCompactCarriesLoadedToolsAndProjectInstructionsAcrossRepeatedCompaction(t *testing.T) {
-	messages := []zeroruntime.Message{
-		{Role: zeroruntime.MessageRoleSystem, Content: "system"},
-		{Role: zeroruntime.MessageRoleUser, Content: "# AGENTS.md instructions for /repo\n\n<INSTRUCTIONS>\nStay in internal/agent.\n</INSTRUCTIONS>"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "loading", ToolCalls: []zeroruntime.ToolCall{
+	messages := []pvyruntime.Message{
+		{Role: pvyruntime.MessageRoleSystem, Content: "system"},
+		{Role: pvyruntime.MessageRoleUser, Content: "# AGENTS.md instructions for /repo\n\n<INSTRUCTIONS>\nStay in internal/agent.\n</INSTRUCTIONS>"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "loading", ToolCalls: []pvyruntime.ToolCall{
 			{ID: "t1", Name: "tool_search", Arguments: `{"query":"select:weather_lookup"}`},
 		}},
-		{Role: zeroruntime.MessageRoleTool, ToolCallID: "t1", Content: "Loaded 1 tool. Full schemas follow; call them on the next turn.\n\n## weather_lookup\nLook up weather.\ninput schema:\n{\n  \"type\": \"object\"\n}"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "ready"},
-		{Role: zeroruntime.MessageRoleUser, Content: "continue"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "continuing"},
+		{Role: pvyruntime.MessageRoleTool, ToolCallID: "t1", Content: "Loaded 1 tool. Full schemas follow; call them on the next turn.\n\n## weather_lookup\nLook up weather.\ninput schema:\n{\n  \"type\": \"object\"\n}"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "ready"},
+		{Role: pvyruntime.MessageRoleUser, Content: "continue"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "continuing"},
 	}
 
 	first, err := Compact(messages, CompactionOptions{
 		PreserveLast: 2,
-		Summarize:    func([]zeroruntime.Message) (string, error) { return "FIRST SUMMARY", nil },
+		Summarize:    func([]pvyruntime.Message) (string, error) { return "FIRST SUMMARY", nil },
 	})
 	if err != nil {
 		t.Fatalf("first Compact: %v", err)
 	}
-	second := append(append([]zeroruntime.Message{}, first...),
-		zeroruntime.Message{Role: zeroruntime.MessageRoleUser, Content: "more"},
-		zeroruntime.Message{Role: zeroruntime.MessageRoleAssistant, Content: "ok"},
-		zeroruntime.Message{Role: zeroruntime.MessageRoleUser, Content: "again"},
-		zeroruntime.Message{Role: zeroruntime.MessageRoleAssistant, Content: "fine"},
+	second := append(append([]pvyruntime.Message{}, first...),
+		pvyruntime.Message{Role: pvyruntime.MessageRoleUser, Content: "more"},
+		pvyruntime.Message{Role: pvyruntime.MessageRoleAssistant, Content: "ok"},
+		pvyruntime.Message{Role: pvyruntime.MessageRoleUser, Content: "again"},
+		pvyruntime.Message{Role: pvyruntime.MessageRoleAssistant, Content: "fine"},
 	)
 
 	out, err := Compact(second, CompactionOptions{
 		PreserveLast: 2,
-		Summarize:    func([]zeroruntime.Message) (string, error) { return "SECOND SUMMARY", nil },
+		Summarize:    func([]pvyruntime.Message) (string, error) { return "SECOND SUMMARY", nil },
 	})
 	if err != nil {
 		t.Fatalf("second Compact: %v", err)
@@ -227,27 +227,27 @@ func TestCompactCarriesLoadedToolsAndProjectInstructionsAcrossRepeatedCompaction
 // which the old markdown-delimited format could not guarantee.
 func TestCompactPreservesSkillBodyWithMarkdownHeadings(t *testing.T) {
 	body := "## Usage\nrun it\n### Examples\n```\nzero do\n```\n## Notes\ndone"
-	conv := []zeroruntime.Message{
-		{Role: zeroruntime.MessageRoleSystem, Content: "system"},
-		{Role: zeroruntime.MessageRoleUser, Content: "load a skill"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "loading", ToolCalls: []zeroruntime.ToolCall{
+	conv := []pvyruntime.Message{
+		{Role: pvyruntime.MessageRoleSystem, Content: "system"},
+		{Role: pvyruntime.MessageRoleUser, Content: "load a skill"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "loading", ToolCalls: []pvyruntime.ToolCall{
 			{ID: "s1", Name: "skill", Arguments: `{"name":"guide"}`},
 		}},
-		{Role: zeroruntime.MessageRoleTool, Content: body, ToolCallID: "s1"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "done step 1"},
-		{Role: zeroruntime.MessageRoleUser, Content: "continue"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "continuing"},
+		{Role: pvyruntime.MessageRoleTool, Content: body, ToolCallID: "s1"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "done step 1"},
+		{Role: pvyruntime.MessageRoleUser, Content: "continue"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "continuing"},
 	}
 
-	mustContainBody := func(label string, messages []zeroruntime.Message) []zeroruntime.Message {
+	mustContainBody := func(label string, messages []pvyruntime.Message) []pvyruntime.Message {
 		out, err := Compact(messages, CompactionOptions{
 			PreserveLast: 2,
-			Summarize:    func([]zeroruntime.Message) (string, error) { return "SUMMARY", nil },
+			Summarize:    func([]pvyruntime.Message) (string, error) { return "SUMMARY", nil },
 		})
 		if err != nil {
 			t.Fatalf("%s Compact: %v", label, err)
 		}
-		if len(out) < 2 || out[1].Role != zeroruntime.MessageRoleUser {
+		if len(out) < 2 || out[1].Role != pvyruntime.MessageRoleUser {
 			t.Fatalf("%s: unexpected compacted shape: %#v", label, out)
 		}
 		_, skills := parsePreservedState(out[1].Content)
@@ -259,21 +259,21 @@ func TestCompactPreservesSkillBodyWithMarkdownHeadings(t *testing.T) {
 
 	first := mustContainBody("first", conv)
 	// Second compaction with NO fresh tool calls and a summarizer that drops it.
-	second := append(append([]zeroruntime.Message{}, first...),
-		zeroruntime.Message{Role: zeroruntime.MessageRoleUser, Content: "more"},
-		zeroruntime.Message{Role: zeroruntime.MessageRoleAssistant, Content: "ok"},
-		zeroruntime.Message{Role: zeroruntime.MessageRoleUser, Content: "again"},
-		zeroruntime.Message{Role: zeroruntime.MessageRoleAssistant, Content: "fine"},
+	second := append(append([]pvyruntime.Message{}, first...),
+		pvyruntime.Message{Role: pvyruntime.MessageRoleUser, Content: "more"},
+		pvyruntime.Message{Role: pvyruntime.MessageRoleAssistant, Content: "ok"},
+		pvyruntime.Message{Role: pvyruntime.MessageRoleUser, Content: "again"},
+		pvyruntime.Message{Role: pvyruntime.MessageRoleAssistant, Content: "fine"},
 	)
 	mustContainBody("second", second)
 }
 
 func TestExtractLatestPlanReturnsMostRecent(t *testing.T) {
-	messages := []zeroruntime.Message{
-		{Role: zeroruntime.MessageRoleAssistant, ToolCalls: []zeroruntime.ToolCall{
+	messages := []pvyruntime.Message{
+		{Role: pvyruntime.MessageRoleAssistant, ToolCalls: []pvyruntime.ToolCall{
 			{ID: "a", Name: "update_plan", Arguments: `{"plan":[{"content":"old step","status":"completed"}]}`},
 		}},
-		{Role: zeroruntime.MessageRoleAssistant, ToolCalls: []zeroruntime.ToolCall{
+		{Role: pvyruntime.MessageRoleAssistant, ToolCalls: []pvyruntime.ToolCall{
 			{ID: "b", Name: "update_plan", Arguments: `{"plan":[{"content":"new step","status":"in_progress"}]}`},
 		}},
 	}
@@ -341,8 +341,8 @@ func TestCapBodyNoteOnlyWhenTruncated(t *testing.T) {
 }
 
 func TestLoadedSkillsSkipsCallsWithoutResult(t *testing.T) {
-	messages := []zeroruntime.Message{
-		{Role: zeroruntime.MessageRoleAssistant, ToolCalls: []zeroruntime.ToolCall{
+	messages := []pvyruntime.Message{
+		{Role: pvyruntime.MessageRoleAssistant, ToolCalls: []pvyruntime.ToolCall{
 			{ID: "s1", Name: "skill", Arguments: `{"name":"ghost"}`}, // no matching tool result
 		}},
 	}
@@ -352,11 +352,11 @@ func TestLoadedSkillsSkipsCallsWithoutResult(t *testing.T) {
 }
 
 func TestLoadedSkillsAcceptsSkillArgumentAlias(t *testing.T) {
-	messages := []zeroruntime.Message{
-		{Role: zeroruntime.MessageRoleAssistant, ToolCalls: []zeroruntime.ToolCall{
+	messages := []pvyruntime.Message{
+		{Role: pvyruntime.MessageRoleAssistant, ToolCalls: []pvyruntime.ToolCall{
 			{ID: "s1", Name: "skill", Arguments: `{"skill":"deploy"}`},
 		}},
-		{Role: zeroruntime.MessageRoleTool, ToolCallID: "s1", Content: "deploy instructions"},
+		{Role: pvyruntime.MessageRoleTool, ToolCallID: "s1", Content: "deploy instructions"},
 	}
 	got := loadedSkills(messages)
 	if len(got) != 1 || got[0].name != "deploy" || got[0].body != "deploy instructions" {

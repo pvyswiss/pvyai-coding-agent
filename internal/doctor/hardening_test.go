@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 // validProvider is a fully-formed provider profile so the report's overall OK
@@ -119,7 +119,7 @@ func TestSandboxCheckReportsWindowsNativeSetupStates(t *testing.T) {
 		t.Fatalf("expected native Windows backend in message, got %q", native.Message)
 	}
 
-	t.Setenv("ZERO_WINDOWS_SANDBOX_HOME", t.TempDir())
+	t.Setenv("PVYAI_WINDOWS_SANDBOX_HOME", t.TempDir())
 	needsSetup := Run(Options{
 		Now:           fixedDoctorClock("2026-06-12T10:08:30Z"),
 		Runtime:       "go",

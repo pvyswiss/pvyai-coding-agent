@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // TestOptionsModelSwitcherFieldExists asserts the escalation hook is an
@@ -42,7 +42,7 @@ func TestToolResultRequestedModelFieldExists(t *testing.T) {
 		t.Fatalf("expected RequestedModel to round-trip, got %q", result.RequestedModel)
 	}
 	// Keep the zeroruntime import load-bearing so the file compiles standalone.
-	_ = zeroruntime.MessageRoleAssistant
+	_ = pvyruntime.MessageRoleAssistant
 }
 
 // escalatingTool is a registered fake tool that returns the escalation signal
@@ -112,16 +112,16 @@ func TestExecuteToolCallNoEscalationMetaLeavesRequestedModelEmpty(t *testing.T) 
 
 // escalateThenAnswerTurns builds a two-turn provider script: turn 1 calls the
 // escalate tool, turn 2 returns a final answer. Reused by the switch tests.
-func escalateThenAnswerTurns(answer string) [][]zeroruntime.StreamEvent {
-	return [][]zeroruntime.StreamEvent{
+func escalateThenAnswerTurns(answer string) [][]pvyruntime.StreamEvent {
+	return [][]pvyruntime.StreamEvent{
 		{
-			{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "c1", ToolName: "escalate"},
-			{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "c1"},
-			{Type: zeroruntime.StreamEventDone},
+			{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "c1", ToolName: "escalate"},
+			{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "c1"},
+			{Type: pvyruntime.StreamEventDone},
 		},
 		{
-			{Type: zeroruntime.StreamEventText, Content: answer},
-			{Type: zeroruntime.StreamEventDone},
+			{Type: pvyruntime.StreamEventText, Content: answer},
+			{Type: pvyruntime.StreamEventDone},
 		},
 	}
 }
@@ -134,10 +134,10 @@ func TestRunSwitchesProviderOnEscalationRequest(t *testing.T) {
 	registry.Register(escalatingTool{target: "claude-opus-4.1"})
 
 	firstProvider := &mockProvider{turns: escalateThenAnswerTurns("done")}
-	secondProvider := &mockProvider{turns: [][]zeroruntime.StreamEvent{
+	secondProvider := &mockProvider{turns: [][]pvyruntime.StreamEvent{
 		{
-			{Type: zeroruntime.StreamEventText, Content: "answered on the upgraded model"},
-			{Type: zeroruntime.StreamEventDone},
+			{Type: pvyruntime.StreamEventText, Content: "answered on the upgraded model"},
+			{Type: pvyruntime.StreamEventDone},
 		},
 	}}
 
@@ -231,7 +231,7 @@ func TestRunEscalationSwitcherErrorIsNonFatal(t *testing.T) {
 	// A brief note about the failed switch must reach the model on the next turn.
 	var sawNote bool
 	for _, m := range provider.requests[1].Messages {
-		if m.Role == zeroruntime.MessageRoleUser && strings.Contains(strings.ToLower(m.Content), "could not switch") {
+		if m.Role == pvyruntime.MessageRoleUser && strings.Contains(strings.ToLower(m.Content), "could not switch") {
 			sawNote = true
 		}
 	}
@@ -284,19 +284,19 @@ func TestRunSwitchesAtMostOncePerTurn(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(escalatingTool{target: "claude-opus-4.1"})
 
-	firstProvider := &mockProvider{turns: [][]zeroruntime.StreamEvent{
+	firstProvider := &mockProvider{turns: [][]pvyruntime.StreamEvent{
 		{
-			{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "c1", ToolName: "escalate"},
-			{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "c1"},
-			{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "c2", ToolName: "escalate"},
-			{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "c2"},
-			{Type: zeroruntime.StreamEventDone},
+			{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "c1", ToolName: "escalate"},
+			{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "c1"},
+			{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "c2", ToolName: "escalate"},
+			{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "c2"},
+			{Type: pvyruntime.StreamEventDone},
 		},
 	}}
-	secondProvider := &mockProvider{turns: [][]zeroruntime.StreamEvent{
+	secondProvider := &mockProvider{turns: [][]pvyruntime.StreamEvent{
 		{
-			{Type: zeroruntime.StreamEventText, Content: "done"},
-			{Type: zeroruntime.StreamEventDone},
+			{Type: pvyruntime.StreamEventText, Content: "done"},
+			{Type: pvyruntime.StreamEventDone},
 		},
 	}}
 

@@ -11,13 +11,13 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 
-	"github.com/Gitlawb/zero/internal/browser"
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/oauth"
-	"github.com/Gitlawb/zero/internal/providercatalog"
-	"github.com/Gitlawb/zero/internal/providermodeldiscovery"
-	"github.com/Gitlawb/zero/internal/provideroauth"
-	"github.com/Gitlawb/zero/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/browser"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/oauth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providermodeldiscovery"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/provideroauth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
 )
 
 type setupStage int
@@ -1225,7 +1225,7 @@ func (m model) setupStageLines(width int, height int) []string {
 		return []string{
 			zeroTheme.ink.Bold(true).Render("Safety"),
 			"",
-			"Zero asks before running shell commands or changing files.",
+			"PVYai asks before running shell commands or changing files.",
 			"Unsafe mode stays off unless you explicitly enable it.",
 			"",
 			zeroTheme.faint.Render("Default: ask before risky work."),
@@ -1268,7 +1268,7 @@ func (m model) setupReadyLines(width int) []string {
 	lines := []string{
 		zeroTheme.ink.Bold(true).Render("Ready"),
 		"",
-		"Zero will save this setup and open chat.",
+		"PVYai will save this setup and open chat.",
 		"",
 	}
 

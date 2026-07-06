@@ -10,14 +10,14 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/redaction"
-	"github.com/Gitlawb/zero/internal/selfverify"
-	"github.com/Gitlawb/zero/internal/testrunner"
-	"github.com/Gitlawb/zero/internal/verify"
-	"github.com/Gitlawb/zero/internal/worktrees"
-	"github.com/Gitlawb/zero/internal/zerogit"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/selfverify"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/testrunner"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/verify"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/worktrees"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvygit"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 func TestRunWorktreesPrepareTextAndJSON(t *testing.T) {
@@ -428,13 +428,13 @@ func TestRunVerifyAttemptsFormatsSelfVerifyText(t *testing.T) {
 
 func TestRunChangesInspectAndCommit(t *testing.T) {
 	cwd := t.TempDir()
-	summary := zerogit.ChangeSummary{
+	summary := pvygit.ChangeSummary{
 		Root:   cwd,
 		Branch: "main",
 		Commit: "abc1234",
-		Files:  []zerogit.FileChange{{Path: "README.md", Status: "modified", Unstaged: true}},
+		Files:  []pvygit.FileChange{{Path: "README.md", Status: "modified", Unstaged: true}},
 	}
-	commit := zerogit.CommitResult{
+	commit := pvygit.CommitResult{
 		Root:       cwd,
 		Message:    "Update README",
 		DryRun:     true,
@@ -448,7 +448,7 @@ func TestRunChangesInspectAndCommit(t *testing.T) {
 		var stderr bytes.Buffer
 		exitCode := runWithDeps([]string{"changes", "inspect", "--json"}, &stdout, &stderr, appDeps{
 			getwd: func() (string, error) { return cwd, nil },
-			inspectChanges: func(ctx context.Context, options zerogit.InspectOptions) (zerogit.ChangeSummary, error) {
+			inspectChanges: func(ctx context.Context, options pvygit.InspectOptions) (pvygit.ChangeSummary, error) {
 				if options.Cwd != cwd {
 					t.Fatalf("inspect cwd = %q, want %q", options.Cwd, cwd)
 				}
@@ -459,18 +459,18 @@ func TestRunChangesInspectAndCommit(t *testing.T) {
 		if exitCode != exitSuccess {
 			t.Fatalf("expected exit code %d, got %d: %s", exitSuccess, exitCode, stderr.String())
 		}
-		var decoded zerogit.ChangeSummary
+		var decoded pvygit.ChangeSummary
 		if err := json.Unmarshal(stdout.Bytes(), &decoded); err != nil {
 			t.Fatalf("decode changes JSON: %v\n%s", err, stdout.String())
 		}
 		if len(decoded.Files) != 1 || decoded.Files[0].Path != "README.md" {
 			t.Fatalf("unexpected changes JSON: %#v", decoded)
 		}
-		var snapshot zerogit.ChangeSnapshot
+		var snapshot pvygit.ChangeSnapshot
 		if err := json.Unmarshal(stdout.Bytes(), &snapshot); err != nil {
 			t.Fatalf("decode changes snapshot JSON: %v\n%s", err, stdout.String())
 		}
-		if snapshot.Contract != zerogit.ChangeContractVersion || len(snapshot.Events) == 0 {
+		if snapshot.Contract != pvygit.ChangeContractVersion || len(snapshot.Events) == 0 {
 			t.Fatalf("changes JSON did not expose runtime contract: %#v", snapshot)
 		}
 	})
@@ -480,7 +480,7 @@ func TestRunChangesInspectAndCommit(t *testing.T) {
 		var stderr bytes.Buffer
 		exitCode := runWithDeps([]string{"changes", "commit", "--message", "Update README", "--dry-run"}, &stdout, &stderr, appDeps{
 			getwd: func() (string, error) { return cwd, nil },
-			commitChanges: func(ctx context.Context, options zerogit.CommitOptions) (zerogit.CommitResult, error) {
+			commitChanges: func(ctx context.Context, options pvygit.CommitOptions) (pvygit.CommitResult, error) {
 				if options.Cwd != cwd || options.Message != "Update README" || !options.DryRun {
 					t.Fatalf("unexpected commit options: %#v", options)
 				}
@@ -499,18 +499,18 @@ func TestRunChangesInspectAndCommit(t *testing.T) {
 
 func TestRunChangesInspectThreadsBaseRef(t *testing.T) {
 	cwd := t.TempDir()
-	summary := zerogit.ChangeSummary{
+	summary := pvygit.ChangeSummary{
 		Root:   cwd,
 		Branch: "feature",
 		Base:   "main",
-		Files:  []zerogit.FileChange{{Path: "feature.md", Status: "added"}},
+		Files:  []pvygit.FileChange{{Path: "feature.md", Status: "added"}},
 	}
 
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 	exitCode := runWithDeps([]string{"changes", "inspect", "--base", "main"}, &stdout, &stderr, appDeps{
 		getwd: func() (string, error) { return cwd, nil },
-		inspectChanges: func(ctx context.Context, options zerogit.InspectOptions) (zerogit.ChangeSummary, error) {
+		inspectChanges: func(ctx context.Context, options pvygit.InspectOptions) (pvygit.ChangeSummary, error) {
 			if options.BaseRef != "main" {
 				t.Fatalf("InspectOptions.BaseRef = %q, want main", options.BaseRef)
 			}
@@ -531,9 +531,9 @@ func TestRunChangesCommitRejectsBaseRef(t *testing.T) {
 	var stderr bytes.Buffer
 	exitCode := runWithDeps([]string{"changes", "commit", "--base", "main"}, &stdout, &stderr, appDeps{
 		getwd: func() (string, error) { return t.TempDir(), nil },
-		commitChanges: func(context.Context, zerogit.CommitOptions) (zerogit.CommitResult, error) {
+		commitChanges: func(context.Context, pvygit.CommitOptions) (pvygit.CommitResult, error) {
 			t.Fatal("commitChanges should not be called when --base is rejected")
-			return zerogit.CommitResult{}, nil
+			return pvygit.CommitResult{}, nil
 		},
 	})
 
@@ -605,7 +605,7 @@ func TestRunExecWorktreeUsesPreparedWorkspace(t *testing.T) {
 			resolvedWorkspace = workspaceRoot
 			return execResolvedConfig(), nil
 		},
-		newProvider: func(config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(config.ProviderProfile) (pvyruntime.Provider, error) {
 			return echoExecProvider{}, nil
 		},
 	})
@@ -702,24 +702,24 @@ func TestParseChangesArgsAuto(t *testing.T) {
 
 type mockCommitMsgProvider struct {
 	response string
-	req      zeroruntime.CompletionRequest
+	req      pvyruntime.CompletionRequest
 }
 
-func (p *mockCommitMsgProvider) StreamCompletion(ctx context.Context, request zeroruntime.CompletionRequest) (<-chan zeroruntime.StreamEvent, error) {
+func (p *mockCommitMsgProvider) StreamCompletion(ctx context.Context, request pvyruntime.CompletionRequest) (<-chan pvyruntime.StreamEvent, error) {
 	p.req = request
-	events := make(chan zeroruntime.StreamEvent, 2)
-	events <- zeroruntime.StreamEvent{Type: zeroruntime.StreamEventText, Content: p.response}
-	events <- zeroruntime.StreamEvent{Type: zeroruntime.StreamEventDone}
+	events := make(chan pvyruntime.StreamEvent, 2)
+	events <- pvyruntime.StreamEvent{Type: pvyruntime.StreamEventText, Content: p.response}
+	events <- pvyruntime.StreamEvent{Type: pvyruntime.StreamEventDone}
 	close(events)
 	return events, nil
 }
 
 func TestRunChangesCommitAuto(t *testing.T) {
 	cwd := t.TempDir()
-	summary := zerogit.ChangeSummary{
+	summary := pvygit.ChangeSummary{
 		Root:   cwd,
 		Branch: "main",
-		Files:  []zerogit.FileChange{{Path: "README.md", Status: "modified"}},
+		Files:  []pvygit.FileChange{{Path: "README.md", Status: "modified"}},
 		Diff:   "some diff content with ghp_SECRETKEYHERE",
 	}
 
@@ -733,7 +733,7 @@ func TestRunChangesCommitAuto(t *testing.T) {
 
 	exitCode := runWithDeps([]string{"changes", "commit", "--auto"}, &stdout, &stderr, appDeps{
 		getwd: func() (string, error) { return cwd, nil },
-		inspectChanges: func(ctx context.Context, options zerogit.InspectOptions) (zerogit.ChangeSummary, error) {
+		inspectChanges: func(ctx context.Context, options pvygit.InspectOptions) (pvygit.ChangeSummary, error) {
 			return summary, nil
 		},
 		resolveConfig: func(workspaceRoot string, overrides config.Overrides) (config.ResolvedConfig, error) {
@@ -742,15 +742,15 @@ func TestRunChangesCommitAuto(t *testing.T) {
 			cfg.Provider.Model = "gpt-4o"
 			return cfg, nil
 		},
-		newProvider: func(profile config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(profile config.ProviderProfile) (pvyruntime.Provider, error) {
 			return mockProv, nil
 		},
-		commitChanges: func(ctx context.Context, options zerogit.CommitOptions) (zerogit.CommitResult, error) {
+		commitChanges: func(ctx context.Context, options pvygit.CommitOptions) (pvygit.CommitResult, error) {
 			commitCalled = true
 			if options.Message != "feat: auto commit message" {
 				t.Fatalf("expected commit message 'feat: auto commit message', got %q", options.Message)
 			}
-			return zerogit.CommitResult{
+			return pvygit.CommitResult{
 				Root:       cwd,
 				Message:    options.Message,
 				Committed:  true,
@@ -785,13 +785,13 @@ func TestRunChangesCommitAuto(t *testing.T) {
 		var stdout, stderr bytes.Buffer
 		code := runWithDeps([]string{"changes", "commit", "--auto"}, &stdout, &stderr, appDeps{
 			getwd: func() (string, error) { return cwd, nil },
-			inspectChanges: func(ctx context.Context, options zerogit.InspectOptions) (zerogit.ChangeSummary, error) {
+			inspectChanges: func(ctx context.Context, options pvygit.InspectOptions) (pvygit.ChangeSummary, error) {
 				return summary, nil
 			},
 			resolveConfig: func(workspaceRoot string, overrides config.Overrides) (config.ResolvedConfig, error) {
 				return execResolvedConfig(), nil
 			},
-			newProvider: func(profile config.ProviderProfile) (zeroruntime.Provider, error) {
+			newProvider: func(profile config.ProviderProfile) (pvyruntime.Provider, error) {
 				return mockProvEmpty, nil
 			},
 		})

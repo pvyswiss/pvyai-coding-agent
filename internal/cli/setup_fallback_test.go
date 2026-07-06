@@ -3,7 +3,7 @@ package cli
 import (
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
 )
 
 func TestFirstUsableProviderPrefersRemoteKeyed(t *testing.T) {

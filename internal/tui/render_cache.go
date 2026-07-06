@@ -8,7 +8,7 @@ import (
 	"sync"
 	"unicode/utf8"
 
-	"github.com/Gitlawb/zero/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
 )
 
 const (

@@ -3,7 +3,7 @@ package tui
 import (
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
 )
 
 // themeMode is the operator's palette preference.

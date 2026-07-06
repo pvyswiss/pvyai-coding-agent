@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	zeroSandbox "github.com/Gitlawb/zero/internal/sandbox"
+	pvySandbox "github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 type fakeSearchBackend struct {
@@ -104,7 +104,7 @@ func TestWebSearchRedactsBackendError(t *testing.T) {
 
 func TestWebSearchRegisteredInCoreNetworkTools(t *testing.T) {
 	// web_search is registered only when a backend is configured.
-	t.Setenv("ZERO_WEBSEARCH_BASE_URL", "https://search.example/api")
+	t.Setenv("PVYAI_WEBSEARCH_BASE_URL", "https://search.example/api")
 	found := false
 	for _, tool := range CoreNetworkTools() {
 		if tool.Name() == "web_search" {
@@ -184,7 +184,7 @@ func TestHTTPSearchBackendSendsProviderAndParsesResults(t *testing.T) {
 	}
 	// The configured provider and query must reach the backend.
 	if gotBody["provider"] != "exa" {
-		t.Fatalf("ZERO_WEBSEARCH_PROVIDER not forwarded: %#v", gotBody)
+		t.Fatalf("PVYAI_WEBSEARCH_PROVIDER not forwarded: %#v", gotBody)
 	}
 	if gotBody["query"] != "q" {
 		t.Fatalf("query not forwarded: %#v", gotBody)
@@ -204,8 +204,8 @@ func (b *fakeHostedBackend) Search(context.Context, string, int) ([]searchResult
 func TestWebSearchRunWithSandboxAllowsUnderShellNetworkDeny(t *testing.T) {
 	backend := &fakeHostedBackend{results: []searchResult{{Title: "T", URL: "https://x.test"}}}
 	tool := newWebSearchToolWithBackend(backend).(webSearchTool)
-	engine := zeroSandbox.NewEngine(zeroSandbox.EngineOptions{
-		Policy: zeroSandbox.Policy{Mode: zeroSandbox.ModeEnforce, Network: zeroSandbox.NetworkDeny},
+	engine := pvySandbox.NewEngine(pvySandbox.EngineOptions{
+		Policy: pvySandbox.Policy{Mode: pvySandbox.ModeEnforce, Network: pvySandbox.NetworkDeny},
 	})
 	res := tool.RunWithSandbox(context.Background(), map[string]any{"query": "hi"}, engine)
 	if res.Status != StatusOK {
@@ -219,8 +219,8 @@ func TestWebSearchRunWithSandboxAllowsUnderShellNetworkDeny(t *testing.T) {
 func TestWebSearchRunWithSandboxAllowsUnderShellNetworkAllow(t *testing.T) {
 	backend := &fakeHostedBackend{results: []searchResult{{Title: "T", URL: "https://x.test"}}}
 	tool := newWebSearchToolWithBackend(backend).(webSearchTool)
-	engine := zeroSandbox.NewEngine(zeroSandbox.EngineOptions{
-		Policy: zeroSandbox.Policy{Mode: zeroSandbox.ModeEnforce, Network: zeroSandbox.NetworkAllow},
+	engine := pvySandbox.NewEngine(pvySandbox.EngineOptions{
+		Policy: pvySandbox.Policy{Mode: pvySandbox.ModeEnforce, Network: pvySandbox.NetworkAllow},
 	})
 	res := tool.RunWithSandbox(context.Background(), map[string]any{"query": "hi"}, engine)
 	if res.Status != StatusOK {

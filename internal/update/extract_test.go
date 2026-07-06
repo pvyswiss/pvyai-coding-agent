@@ -61,8 +61,8 @@ func TestExtractTarGzRoundTrip(t *testing.T) {
 	dir := t.TempDir()
 	archivePath := filepath.Join(dir, "archive.tar.gz")
 	writeTestTarGz(t, archivePath, map[string]string{
-		"zero":                 "main-binary",
-		"helpers/zero-seccomp": "helper-binary",
+		"pvyai":                 "main-binary",
+		"helpers/pvyai-seccomp": "helper-binary",
 	})
 
 	destDir := filepath.Join(dir, "extracted")
@@ -73,19 +73,19 @@ func TestExtractTarGzRoundTrip(t *testing.T) {
 		t.Fatalf("extractArchive: %v", err)
 	}
 
-	data, err := os.ReadFile(filepath.Join(destDir, "zero"))
+	data, err := os.ReadFile(filepath.Join(destDir, "pvyai"))
 	if err != nil {
 		t.Fatalf("ReadFile zero: %v", err)
 	}
 	if string(data) != "main-binary" {
 		t.Fatalf("zero content = %q", data)
 	}
-	data, err = os.ReadFile(filepath.Join(destDir, "helpers", "zero-seccomp"))
+	data, err = os.ReadFile(filepath.Join(destDir, "helpers", "pvyai-seccomp"))
 	if err != nil {
-		t.Fatalf("ReadFile helpers/zero-seccomp: %v", err)
+		t.Fatalf("ReadFile helpers/pvyai-seccomp: %v", err)
 	}
 	if string(data) != "helper-binary" {
-		t.Fatalf("helpers/zero-seccomp content = %q", data)
+		t.Fatalf("helpers/pvyai-seccomp content = %q", data)
 	}
 }
 
@@ -93,7 +93,7 @@ func TestExtractZipRoundTrip(t *testing.T) {
 	dir := t.TempDir()
 	archivePath := filepath.Join(dir, "archive.zip")
 	writeTestZip(t, archivePath, map[string]string{
-		"zero.exe": "main-binary",
+		"pvyai.exe": "main-binary",
 	})
 
 	destDir := filepath.Join(dir, "extracted")
@@ -104,12 +104,12 @@ func TestExtractZipRoundTrip(t *testing.T) {
 		t.Fatalf("extractArchive: %v", err)
 	}
 
-	data, err := os.ReadFile(filepath.Join(destDir, "zero.exe"))
+	data, err := os.ReadFile(filepath.Join(destDir, "pvyai.exe"))
 	if err != nil {
-		t.Fatalf("ReadFile zero.exe: %v", err)
+		t.Fatalf("ReadFile pvyai.exe: %v", err)
 	}
 	if string(data) != "main-binary" {
-		t.Fatalf("zero.exe content = %q", data)
+		t.Fatalf("pvyai.exe content = %q", data)
 	}
 }
 
@@ -154,12 +154,12 @@ func TestFindByBasenameSearchesRecursively(t *testing.T) {
 	if err := os.MkdirAll(nested, 0o755); err != nil {
 		t.Fatalf("MkdirAll: %v", err)
 	}
-	wantPath := filepath.Join(nested, "zero-seccomp")
+	wantPath := filepath.Join(nested, "pvyai-seccomp")
 	if err := os.WriteFile(wantPath, []byte("helper"), 0o755); err != nil {
 		t.Fatalf("WriteFile: %v", err)
 	}
 
-	found, err := findByBasename(dir, "zero-seccomp")
+	found, err := findByBasename(dir, "pvyai-seccomp")
 	if err != nil {
 		t.Fatalf("findByBasename: %v", err)
 	}

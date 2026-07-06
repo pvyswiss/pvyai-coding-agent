@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 // defaultConnectTimeout bounds how long startup waits for ONE MCP server to

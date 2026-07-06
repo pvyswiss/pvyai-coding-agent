@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 func TestRegisterToolsAddsPromptGatedMCPTools(t *testing.T) {
@@ -49,11 +49,11 @@ func TestRegisterToolsAddsPromptGatedMCPTools(t *testing.T) {
 		t.Fatalf("Safety.SideEffect = %q, want network", tool.Safety().SideEffect)
 	}
 
-	denied := registry.Run(context.Background(), "mcp_docs_lookup", map[string]any{"query": "zero"})
+	denied := registry.Run(context.Background(), "mcp_docs_lookup", map[string]any{"query": "pvyai"})
 	if denied.Status != tools.StatusError {
 		t.Fatalf("Run without approval = %#v, want permission error", denied)
 	}
-	approved := registry.RunWithOptions(context.Background(), "mcp_docs_lookup", map[string]any{"query": "zero"}, tools.RunOptions{PermissionGranted: true})
+	approved := registry.RunWithOptions(context.Background(), "mcp_docs_lookup", map[string]any{"query": "pvyai"}, tools.RunOptions{PermissionGranted: true})
 	if approved.Status != tools.StatusOK || approved.Output != "lookup: zero" {
 		t.Fatalf("approved run = %#v, want lookup output", approved)
 	}

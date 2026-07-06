@@ -16,10 +16,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/background"
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/streamjson"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/background"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/streamjson"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 const (
@@ -750,7 +750,7 @@ func (executor Executor) writePromptFile(prompt string) (string, error) {
 }
 
 func writePromptFile(prompt string) (string, error) {
-	tmpDir, err := os.MkdirTemp("", "zero-specialist-")
+	tmpDir, err := os.MkdirTemp("", "pvyai-specialist-")
 	if err != nil {
 		return "", fmt.Errorf("create specialist prompt temp dir: %w", err)
 	}
@@ -769,7 +769,7 @@ func cleanupPromptFile(promptFile string) {
 		return
 	}
 	dir := filepath.Dir(promptFile)
-	if strings.HasPrefix(filepath.Base(dir), "zero-specialist-") {
+	if strings.HasPrefix(filepath.Base(dir), "pvyai-specialist-") {
 		_ = os.RemoveAll(dir)
 		return
 	}

@@ -344,7 +344,7 @@ func TestRecapsPreferenceRoundTrips(t *testing.T) {
 }
 
 func TestSetFavoriteModelsCreatesMissingConfig(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "zero", "config.json")
+	path := filepath.Join(t.TempDir(), "pvyai", "config.json")
 
 	cfg, err := SetFavoriteModels(path, []string{"glm-5.1"})
 	if err != nil {

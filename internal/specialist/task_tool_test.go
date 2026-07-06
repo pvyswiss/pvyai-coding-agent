@@ -8,11 +8,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/background"
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/streamjson"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/background"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/streamjson"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 func TestTaskToolRunsForegroundSpecialist(t *testing.T) {
@@ -20,7 +20,7 @@ func TestTaskToolRunsForegroundSpecialist(t *testing.T) {
 	var gotBinary string
 	var gotArgs []string
 	executor := Executor{
-		BinaryPath:   "/usr/local/bin/zero",
+		BinaryPath:   "/usr/local/bin/pvyai",
 		NewSessionID: func() (string, error) { return "child_task", nil },
 		Load: func(LoadOptions) (LoadResult, error) {
 			return LoadResult{Specialists: []Manifest{{
@@ -68,7 +68,7 @@ func TestTaskToolRunsForegroundSpecialist(t *testing.T) {
 	if result.Meta["session_id"] != "child_task" {
 		t.Fatalf("session meta = %#v", result.Meta)
 	}
-	if gotBinary != "/usr/local/bin/zero" {
+	if gotBinary != "/usr/local/bin/pvyai" {
 		t.Fatalf("binary = %q", gotBinary)
 	}
 	for _, want := range [][]string{
@@ -189,7 +189,7 @@ func TestTaskToolRunsBackgroundSpecialist(t *testing.T) {
 	var gotOutputFile string
 	var gotArgs []string
 	executor := Executor{
-		BinaryPath:        "/usr/local/bin/zero",
+		BinaryPath:        "/usr/local/bin/pvyai",
 		BackgroundManager: manager,
 		NewSessionID:      func() (string, error) { return "child_task", nil },
 		Load: func(LoadOptions) (LoadResult, error) {
@@ -200,7 +200,7 @@ func TestTaskToolRunsBackgroundSpecialist(t *testing.T) {
 			}}}, nil
 		},
 		LaunchBackground: func(binaryPath string, args []string, outputFile string, onExit func(exitCode int)) (int, error) {
-			if binaryPath != "/usr/local/bin/zero" {
+			if binaryPath != "/usr/local/bin/pvyai" {
 				t.Fatalf("binaryPath = %q", binaryPath)
 			}
 			gotArgs = append([]string(nil), args...)

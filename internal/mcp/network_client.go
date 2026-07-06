@@ -93,7 +93,7 @@ func (client *networkClient) initialize(ctx context.Context) error {
 		"protocolVersion": "2024-11-05",
 		"capabilities":    map[string]any{},
 		"clientInfo": map[string]any{
-			"name":    "zero",
+			"name":    "pvyai",
 			"version": "dev",
 		},
 	}, &result); err != nil {
@@ -110,7 +110,7 @@ func (client *remoteSSEClient) initialize(ctx context.Context) error {
 		"protocolVersion": "2024-11-05",
 		"capabilities":    map[string]any{},
 		"clientInfo": map[string]any{
-			"name":    "zero",
+			"name":    "pvyai",
 			"version": "dev",
 		},
 	}, &result); err != nil {

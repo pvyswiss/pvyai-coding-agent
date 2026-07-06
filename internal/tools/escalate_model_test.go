@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
 )
 
 func TestEscalateModelToolMetadata(t *testing.T) {

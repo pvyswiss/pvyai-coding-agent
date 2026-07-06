@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/cron"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/cron"
 )
 
 // runCron is the dispatch entry for `zero cron`.

@@ -16,25 +16,25 @@ import (
 	"charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/doctor"
-	"github.com/Gitlawb/zero/internal/errhint"
-	"github.com/Gitlawb/zero/internal/lsp"
-	internalmcp "github.com/Gitlawb/zero/internal/mcp"
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/notify"
-	"github.com/Gitlawb/zero/internal/providerhealth"
-	"github.com/Gitlawb/zero/internal/providermodeldiscovery"
-	"github.com/Gitlawb/zero/internal/providers/providerio"
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/skills"
-	"github.com/Gitlawb/zero/internal/streamjson"
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/usage"
-	"github.com/Gitlawb/zero/internal/usercommands"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/doctor"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/errhint"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/lsp"
+	internalmcp "github.com/pvyswiss/pvyai-coding-agent/internal/mcp"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/notify"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providerhealth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providermodeldiscovery"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providers/providerio"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/skills"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/streamjson"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/usage"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/usercommands"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 const tuiToolOutputLimit = 240
@@ -73,8 +73,8 @@ type model struct {
 	modelCatalog                modelregistry.Registry
 	providerProfile             config.ProviderProfile
 	savedProviders              []config.ProviderProfile
-	provider                    zeroruntime.Provider
-	newProvider                 func(config.ProviderProfile) (zeroruntime.Provider, error)
+	provider                    pvyruntime.Provider
+	newProvider                 func(config.ProviderProfile) (pvyruntime.Provider, error)
 	probeProviderHealth         func(context.Context, providerhealth.Options) providerhealth.Result
 	discoverProviderModels      func(context.Context, config.ProviderProfile) ([]providermodeldiscovery.Model, error)
 	discoverOllamaContextWindow func(ctx context.Context, baseURL string, model string) (int, error)
@@ -278,7 +278,7 @@ type model struct {
 	// request — otherwise a vision/PDF-backed prompt would silently retry as
 	// text-only and answer a different task. They share the underlying image bytes
 	// with the sent turn (never mutated in place), so no deep copy is needed.
-	lastImages      []zeroruntime.ImageBlock
+	lastImages      []pvyruntime.ImageBlock
 	lastImageLabels []string
 	lastDocuments   []pendingDocument
 	// historyIdx == len(inputHistory) means "not navigating"; historyDraft
@@ -410,7 +410,7 @@ type model struct {
 	// turn; pendingImageLabels are their display names (base(path)) for the chip
 	// row. Both are cleared after a prompt is submitted (or /image clear). nil =
 	// no attachments = today's text-only behavior exactly.
-	pendingImages      []zeroruntime.ImageBlock
+	pendingImages      []pvyruntime.ImageBlock
 	pendingImageLabels []string
 
 	// pendingDocuments holds PDF text layers staged by /image for the next user
@@ -421,7 +421,7 @@ type model struct {
 	// captureRunImages, when set, is invoked with the images a run is launched
 	// with. Nil in production; used by tests to assert image threading without a
 	// real provider round-trip.
-	captureRunImages func([]zeroruntime.ImageBlock)
+	captureRunImages func([]pvyruntime.ImageBlock)
 }
 
 type agentTextMsg struct {
@@ -471,13 +471,13 @@ type agentReasoningMsg struct {
 type agentUsageMsg struct {
 	runID   int
 	modelID string
-	usage   zeroruntime.Usage
+	usage   pvyruntime.Usage
 }
 
 type agentResponseMsg struct {
 	runID         int
 	rows          []transcriptRow
-	usageEvents   []zeroruntime.Usage
+	usageEvents   []pvyruntime.Usage
 	usageModelID  string
 	sessionEvents []pendingSessionEvent
 	specReview    *pendingSpecReviewPrompt
@@ -4169,7 +4169,7 @@ func (m model) launchPrompt(prompt string) (model, tea.Cmd) {
 	if m.provider == nil {
 		m.transcript = reduceTranscript(m.transcript, transcriptAction{
 			kind: actionAppendAssistant,
-			text: "No provider configured. Run `zero setup` (guided) or `zero auth` (OAuth) from a shell, or set a provider API key env var, then relaunch.",
+			text: "No provider configured. Run `zero setup` (guided) or `pvyai auth` (OAuth) from a shell, or set a provider API key env var, then relaunch.",
 		})
 		return m, nil
 	}
@@ -4382,7 +4382,7 @@ func (m *model) cancelRun() {
 	m.resetStreamingFade()
 }
 
-func (m model) runAgent(runID int, runCtx context.Context, prompt string, images []zeroruntime.ImageBlock) tea.Cmd {
+func (m model) runAgent(runID int, runCtx context.Context, prompt string, images []pvyruntime.ImageBlock) tea.Cmd {
 	return m.runAgentWithOptions(runID, runCtx, prompt, images, tuiAgentRunOptions{})
 }
 
@@ -4400,7 +4400,7 @@ func selfCorrectAutonomyForMode(mode agent.PermissionMode) string {
 	}
 }
 
-func (m model) runAgentWithOptions(runID int, runCtx context.Context, prompt string, images []zeroruntime.ImageBlock, runOptions tuiAgentRunOptions) tea.Cmd {
+func (m model) runAgentWithOptions(runID int, runCtx context.Context, prompt string, images []pvyruntime.ImageBlock, runOptions tuiAgentRunOptions) tea.Cmd {
 	return func() tea.Msg {
 		started := m.now()
 		// firstTokenAt is stamped when the first token (reasoning or text) streams,
@@ -4408,7 +4408,7 @@ func (m model) runAgentWithOptions(runID int, runCtx context.Context, prompt str
 		var firstTokenAt time.Time
 		toolCalls := 0
 		rows := []transcriptRow{}
-		usageEvents := []zeroruntime.Usage{}
+		usageEvents := []pvyruntime.Usage{}
 		sessionEvents := []pendingSessionEvent{}
 		usageModelID := m.modelName
 		var specReview *pendingSpecReviewPrompt
@@ -4809,7 +4809,7 @@ func (m model) runAgentWithOptions(runID int, runCtx context.Context, prompt str
 		}
 
 		onUsage := options.OnUsage
-		options.OnUsage = func(event zeroruntime.Usage) {
+		options.OnUsage = func(event pvyruntime.Usage) {
 			usageEvents = append(usageEvents, event)
 			sessionEvents = append(sessionEvents, pendingSessionEvent{
 				Type:    sessions.EventUsage,
@@ -4961,7 +4961,7 @@ func (m model) sendAgentReasoning(runID int, delta string) {
 	m.runtimeMessageSink(agentReasoningMsg{runID: runID, delta: delta})
 }
 
-func (m model) sendAgentUsage(runID int, modelID string, event zeroruntime.Usage) {
+func (m model) sendAgentUsage(runID int, modelID string, event pvyruntime.Usage) {
 	if m.runtimeMessageSink == nil {
 		return
 	}

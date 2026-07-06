@@ -3,12 +3,12 @@ package verify
 import (
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/redaction"
-	"github.com/Gitlawb/zero/internal/testrunner"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/testrunner"
 )
 
 const RuntimeGo = "go"
-const ReportContractVersion = "zero.verify.report.v1"
+const ReportContractVersion = "pvyai.verify.report.v1"
 
 type EventType string
 

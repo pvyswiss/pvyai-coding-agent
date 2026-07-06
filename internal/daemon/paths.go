@@ -11,7 +11,7 @@ import (
 // ~/.zero. Mirrors supervisor.js / config.js choosing a per-user runtime dir.
 func DefaultDir() (string, error) {
 	if rt := strings.TrimSpace(os.Getenv("XDG_RUNTIME_DIR")); rt != "" {
-		return filepath.Join(rt, "zero"), nil
+		return filepath.Join(rt, "pvyai"), nil
 	}
 	home, err := os.UserHomeDir()
 	if err != nil {

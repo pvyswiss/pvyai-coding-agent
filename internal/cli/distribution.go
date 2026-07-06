@@ -1,7 +1,7 @@
 package cli
 
-// Distribution command handlers: `zero skill {add,info,remove}`,
-// `zero plugin {add,remove}`, and `zero tools {make,list}`. These wire the
+// Distribution command handlers: `pvyai skill {add,info,remove}`,
+// `pvyai plugin {add,remove}`, and `pvyai tools {make,list}`. These wire the
 // install/scaffold logic in internal/skills, internal/plugins, and
 // internal/tools into the CLI. List for skills/plugins reuses the existing
 // listing handlers (runSkillsList / runPlugins list).
@@ -14,10 +14,10 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/plugins"
-	"github.com/Gitlawb/zero/internal/redaction"
-	"github.com/Gitlawb/zero/internal/skills"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/plugins"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/skills"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 // distributionAddOptions are the flags shared by `skill add` / `plugin add`.
@@ -65,7 +65,7 @@ func runSkillAdd(args []string, dir string, stdout io.Writer, stderr io.Writer) 
 		return exitSuccess
 	}
 	if source == "" {
-		return writeExecUsageError(stderr, "usage: zero skill add <git-url|path> [--force] [--json]")
+		return writeExecUsageError(stderr, "usage: pvyai skill add <git-url|path> [--force] [--json]")
 	}
 	if dir == "" {
 		return writeAppError(stderr, "could not resolve the skills directory", exitCrash)
@@ -116,7 +116,7 @@ func runSkillInfo(args []string, dir string, stdout io.Writer, stderr io.Writer)
 		return exitSuccess
 	}
 	if name == "" {
-		return writeExecUsageError(stderr, "usage: zero skill info <name> [--json]")
+		return writeExecUsageError(stderr, "usage: pvyai skill info <name> [--json]")
 	}
 	info, ok := skills.Info(dir, name)
 	if !ok {
@@ -160,7 +160,7 @@ func runSkillRemove(args []string, dir string, stdout io.Writer, stderr io.Write
 		return writeExecUsageError(stderr, "skill remove does not support --json")
 	}
 	if name == "" {
-		return writeExecUsageError(stderr, "usage: zero skill remove <name>")
+		return writeExecUsageError(stderr, "usage: pvyai skill remove <name>")
 	}
 	if err := skills.Remove(dir, name); err != nil {
 		return writeAppError(stderr, redaction.ErrorMessage(err, redaction.Options{}), exitUsage)
@@ -185,7 +185,7 @@ func runPluginAdd(args []string, dir string, stdout io.Writer, stderr io.Writer)
 		return exitSuccess
 	}
 	if source == "" {
-		return writeExecUsageError(stderr, "usage: zero plugin add <git-url|path> [--force] [--json]")
+		return writeExecUsageError(stderr, "usage: pvyai plugin add <git-url|path> [--force] [--json]")
 	}
 	if dir == "" {
 		return writeAppError(stderr, "could not resolve the plugins directory", exitCrash)
@@ -240,7 +240,7 @@ func runPluginRemove(args []string, dir string, stdout io.Writer, stderr io.Writ
 		return writeExecUsageError(stderr, "plugin remove does not support --json")
 	}
 	if id == "" {
-		return writeExecUsageError(stderr, "usage: zero plugin remove <id>")
+		return writeExecUsageError(stderr, "usage: pvyai plugin remove <id>")
 	}
 	if err := plugins.Remove(dir, id); err != nil {
 		return writeAppError(stderr, redaction.ErrorMessage(err, redaction.Options{}), exitUsage)
@@ -255,7 +255,7 @@ func runPluginRemove(args []string, dir string, stdout io.Writer, stderr io.Writ
 
 func runTools(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) int {
 	if len(args) == 0 {
-		return writeExecUsageError(stderr, "tools subcommand required. Use `zero tools make <name>` or `zero tools list`.")
+		return writeExecUsageError(stderr, "tools subcommand required. Use `pvyai tools make <name>` or `pvyai tools list`.")
 	}
 	switch args[0] {
 	case "-h", "--help", "help":
@@ -317,7 +317,7 @@ func runToolsMake(args []string, dir string, stdout io.Writer, stderr io.Writer)
 		}
 	}
 	if name == "" {
-		return writeExecUsageError(stderr, "usage: zero tools make <name> [--runtime shell|node|python] [--description text]")
+		return writeExecUsageError(stderr, "usage: pvyai tools make <name> [--runtime shell|node|python] [--description text]")
 	}
 	if dir == "" {
 		return writeAppError(stderr, "could not resolve the toolbox directory", exitCrash)
@@ -345,7 +345,7 @@ func runToolsMake(args []string, dir string, stdout io.Writer, stderr io.Writer)
 		"",
 		"Next steps:",
 		"  1. Implement the TODO in the entry script.",
-		"  2. Run `zero tools list` to confirm it loads.",
+		"  2. Run `pvyai tools list` to confirm it loads.",
 		"  3. The tool activates through the normal permission flow.",
 	}
 	if _, err := fmt.Fprintln(stdout, redaction.RedactString(strings.Join(lines, "\n"), redaction.Options{})); err != nil {
@@ -434,9 +434,9 @@ func toolboxItems(loaded []plugins.LoadedPlugin) []toolboxItem {
 func formatToolboxList(items []toolboxItem, diagnostics []plugins.Diagnostic, dir string) string {
 	lines := []string{}
 	if len(items) == 0 {
-		lines = append(lines, fmt.Sprintf("No Zero plugin-tools found in %s.", dir))
+		lines = append(lines, fmt.Sprintf("No PVYai plugin-tools found in %s.", dir))
 	} else {
-		lines = append(lines, "Zero Tools:")
+		lines = append(lines, "PVYai Tools:")
 		for _, item := range items {
 			line := "  " + item.Name + " (" + item.Plugin + ")"
 			if item.Description != "" {
@@ -510,7 +510,7 @@ func shortHash(hash string) string {
 
 func writeSkillAddHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero skill add <git-url|path> [flags]
+  pvyai skill add <git-url|path> [flags]
 
 Installs a skill from a git URL or local path into the skills directory and
 records a content hash in skills.lock. Fetched content is never executed.
@@ -525,7 +525,7 @@ Flags:
 
 func writeSkillInfoHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero skill info <name> [--json]
+  pvyai skill info <name> [--json]
 
 Shows a skill's frontmatter plus its recorded source and pinned hash.
 `)
@@ -534,7 +534,7 @@ Shows a skill's frontmatter plus its recorded source and pinned hash.
 
 func writeSkillRemoveHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero skill remove <name>
+  pvyai skill remove <name>
 
 Removes an installed skill directory and its skills.lock entry.
 `)
@@ -543,7 +543,7 @@ Removes an installed skill directory and its skills.lock entry.
 
 func writePluginAddHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero plugin add <git-url|path> [flags]
+  pvyai plugin add <git-url|path> [flags]
 
 Installs a plugin from a git URL or local path. The manifest is validated and a
 content hash is recorded in plugins.lock. No install script is run; the plugin
@@ -559,7 +559,7 @@ Flags:
 
 func writePluginRemoveHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero plugin remove <id>
+  pvyai plugin remove <id>
 
 Removes an installed plugin directory and its plugins.lock entry.
 `)
@@ -568,7 +568,7 @@ Removes an installed plugin directory and its plugins.lock entry.
 
 func writeToolsHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero tools <command>
+  pvyai tools <command>
 
 Commands:
   make <name>    Scaffold a new plugin-tool skeleton in the toolbox dir
@@ -579,7 +579,7 @@ Commands:
 
 func writeToolsMakeHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero tools make <name> [flags]
+  pvyai tools make <name> [flags]
 
 Scaffolds a plugin-tool skeleton (a plugin manifest plus a runnable entry stub)
 in the toolbox directory. After plugin activation the tool is loadable.
@@ -595,7 +595,7 @@ Flags:
 
 func writeToolsListHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero tools list [flags]
+  pvyai tools list [flags]
 
 Flags:
       --json    Print plugin-tools as JSON

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/lsp"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/lsp"
 )
 
 // fileDiagnosticsTimeout bounds one inline post-edit diagnostics check so a

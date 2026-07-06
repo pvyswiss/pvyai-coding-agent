@@ -1,4 +1,4 @@
-module github.com/Gitlawb/zero
+module github.com/pvyswiss/pvyai-coding-agent
 
 go 1.25.0
 

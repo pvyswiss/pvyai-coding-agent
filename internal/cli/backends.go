@@ -5,11 +5,11 @@ import (
 	"io"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/hooks"
-	"github.com/Gitlawb/zero/internal/mcp"
-	"github.com/Gitlawb/zero/internal/plugins"
-	"github.com/Gitlawb/zero/internal/redaction"
-	"github.com/Gitlawb/zero/internal/zerocommands"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/hooks"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/mcp"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/plugins"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvycmd"
 )
 
 type backendStatusOptions struct {
@@ -119,61 +119,61 @@ func parseBackendsDoctorArgs(args []string) (backendDoctorOptions, bool, error) 
 	return options, false, nil
 }
 
-func backendLifecycleSnapshot(deps appDeps) (zerocommands.BackendLifecycleSnapshot, error) {
+func backendLifecycleSnapshot(deps appDeps) (pvycmd.BackendLifecycleSnapshot, error) {
 	cwd, err := deps.getwd()
 	if err != nil {
-		return zerocommands.BackendLifecycleSnapshot{}, fmt.Errorf("failed to resolve workspace: %w", err)
+		return pvycmd.BackendLifecycleSnapshot{}, fmt.Errorf("failed to resolve workspace: %w", err)
 	}
 
 	cfg, err := deps.resolveMCPConfig(cwd)
 	if err != nil {
-		return zerocommands.BackendLifecycleSnapshot{}, err
+		return pvycmd.BackendLifecycleSnapshot{}, err
 	}
 	servers, err := mcp.NormalizeConfig(cfg)
 	if err != nil {
-		return zerocommands.BackendLifecycleSnapshot{}, err
+		return pvycmd.BackendLifecycleSnapshot{}, err
 	}
 
 	hookResult, err := deps.loadHooks(hooks.LoadOptions{Cwd: cwd})
 	if err != nil {
-		return zerocommands.BackendLifecycleSnapshot{}, err
+		return pvycmd.BackendLifecycleSnapshot{}, err
 	}
 	pluginResult, err := deps.loadPlugins(plugins.LoadOptions{Cwd: cwd})
 	if err != nil {
-		return zerocommands.BackendLifecycleSnapshot{}, err
+		return pvycmd.BackendLifecycleSnapshot{}, err
 	}
 
-	return zerocommands.NewBackendLifecycleSnapshot(servers, hookResult.Config.Hooks, pluginResult.Plugins), nil
+	return pvycmd.NewBackendLifecycleSnapshot(servers, hookResult.Config.Hooks, pluginResult.Plugins), nil
 }
 
-func backendDoctorReport(deps appDeps) (zerocommands.BackendDoctorReport, error) {
+func backendDoctorReport(deps appDeps) (pvycmd.BackendDoctorReport, error) {
 	cwd, err := deps.getwd()
 	if err != nil {
-		return zerocommands.BackendDoctorReport{}, fmt.Errorf("failed to resolve workspace: %w", err)
+		return pvycmd.BackendDoctorReport{}, fmt.Errorf("failed to resolve workspace: %w", err)
 	}
 
 	cfg, err := deps.resolveMCPConfig(cwd)
 	if err != nil {
-		return zerocommands.BackendDoctorReport{}, err
+		return pvycmd.BackendDoctorReport{}, err
 	}
 	hookResult, err := deps.loadHooks(hooks.LoadOptions{Cwd: cwd})
 	if err != nil {
-		return zerocommands.BackendDoctorReport{}, err
+		return pvycmd.BackendDoctorReport{}, err
 	}
 	pluginResult, err := deps.loadPlugins(plugins.LoadOptions{Cwd: cwd})
 	if err != nil {
-		return zerocommands.BackendDoctorReport{}, err
+		return pvycmd.BackendDoctorReport{}, err
 	}
 
-	return zerocommands.NewBackendDoctorReport(zerocommands.BackendDoctorInput{
+	return pvycmd.NewBackendDoctorReport(pvycmd.BackendDoctorInput{
 		MCP:     cfg,
 		Hooks:   hookResult,
 		Plugins: pluginResult,
 	}), nil
 }
 
-func formatBackendLifecycleSnapshot(snapshot zerocommands.BackendLifecycleSnapshot) string {
-	lines := []string{"Zero Backends:"}
+func formatBackendLifecycleSnapshot(snapshot pvycmd.BackendLifecycleSnapshot) string {
+	lines := []string{"PVYai Backends:"}
 	lines = append(lines, fmt.Sprintf("  MCP servers: %d", len(snapshot.MCPServers)))
 	for _, server := range snapshot.MCPServers {
 		detail := server.Command
@@ -221,9 +221,9 @@ func formatBackendLifecycleSnapshot(snapshot zerocommands.BackendLifecycleSnapsh
 	return strings.Join(lines, "\n")
 }
 
-func formatBackendDoctorReport(report zerocommands.BackendDoctorReport) string {
+func formatBackendDoctorReport(report pvycmd.BackendDoctorReport) string {
 	lines := []string{
-		"Zero backend doctor",
+		"PVYai backend doctor",
 		"Overall: " + string(report.Status),
 	}
 	for _, check := range report.Checks {

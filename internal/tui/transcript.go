@@ -6,9 +6,9 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 type rowKind int
@@ -332,7 +332,7 @@ func permissionTranscriptRow(event agent.PermissionEvent) transcriptRow {
 // noise — the reference agents only surface approval when the user is actually
 // prompted or makes an explicit durable choice. The underlying audit event is
 // still recorded regardless (see the OnPermission handler and resume rebuild);
-// this only gates the rendered row, so the session log / `zero sessions` stay
+// this only gates the rendered row, so the session log / `pvyai sessions` stay
 // complete.
 //
 // Used in BOTH the live path (model.go OnPermission) and the resume rebuild

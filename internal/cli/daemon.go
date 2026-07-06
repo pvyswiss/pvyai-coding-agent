@@ -11,13 +11,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/background"
-	"github.com/Gitlawb/zero/internal/daemon"
-	"github.com/Gitlawb/zero/internal/daemon/remote"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/background"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/daemon"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/daemon/remote"
 )
 
 // runDaemon dispatches the `zero daemon ...` subcommands. The daemon supervises a
-// pool of headless `zero exec` workers and routes sessions to them over an
+// pool of headless `pvyai exec` workers and routes sessions to them over an
 // owner-only local control socket. It is an ADDITIVE surface — interactive and
 // one-shot exec are unchanged.
 func runDaemon(args []string, stdout io.Writer, stderr io.Writer, _ appDeps) int {
@@ -101,7 +101,7 @@ func runDaemonStart(args []string, stdout io.Writer, stderr io.Writer) int {
 }
 
 // runDaemonForeground runs the daemon in this process until SIGINT/SIGTERM. Each
-// worker is a headless `zero exec` child with the sandbox re-entrancy markers
+// worker is a headless `pvyai exec` child with the sandbox re-entrancy markers
 // scrubbed (NewExecLauncher) so it establishes its own sandbox.
 func runDaemonForeground(paths daemon.Paths, stdout io.Writer, stderr io.Writer) int {
 	launcher, err := daemon.NewExecLauncher(daemon.ExecLauncherConfig{})
@@ -139,7 +139,7 @@ func runDaemonForeground(paths daemon.Paths, stdout io.Writer, stderr io.Writer)
 // process (its own process group, output to a log file) and waits for it to bind.
 func runDaemonStartDetached(paths daemon.Paths, stdout io.Writer, stderr io.Writer) int {
 	if daemonReachable(paths) {
-		fmt.Fprintln(stdout, "zero daemon is already running")
+		fmt.Fprintln(stdout, "pvyai daemon is already running")
 		return exitSuccess
 	}
 	exe, err := os.Executable()
@@ -168,7 +168,7 @@ func runDaemonStartDetached(paths daemon.Paths, stdout io.Writer, stderr io.Writ
 	deadline := time.Now().Add(5 * time.Second)
 	for time.Now().Before(deadline) {
 		if daemonReachable(paths) {
-			fmt.Fprintf(stdout, "zero daemon started (socket %s)\n", paths.Socket)
+			fmt.Fprintf(stdout, "pvyai daemon started (socket %s)\n", paths.Socket)
 			return exitSuccess
 		}
 		time.Sleep(25 * time.Millisecond)
@@ -189,14 +189,14 @@ func runDaemonStop(args []string, stdout io.Writer, stderr io.Writer) int {
 	}
 	client, err := daemon.Dial(paths.Socket)
 	if err != nil {
-		fmt.Fprintln(stdout, "zero daemon is not running")
+		fmt.Fprintln(stdout, "pvyai daemon is not running")
 		return exitSuccess
 	}
 	defer client.Close()
 	if err := client.Shutdown(); err != nil {
 		return writeAppError(stderr, err.Error(), exitCrash)
 	}
-	fmt.Fprintln(stdout, "zero daemon stopped")
+	fmt.Fprintln(stdout, "pvyai daemon stopped")
 	return exitSuccess
 }
 
@@ -213,7 +213,7 @@ func runDaemonStatus(args []string, stdout io.Writer, stderr io.Writer) int {
 	}
 	client, err := daemon.Dial(paths.Socket)
 	if err != nil {
-		fmt.Fprintln(stdout, "zero daemon is not running")
+		fmt.Fprintln(stdout, "pvyai daemon is not running")
 		return exitSuccess
 	}
 	defer client.Close()
@@ -302,7 +302,7 @@ func runDaemonRun(args []string, stdout io.Writer, stderr io.Writer) int {
 		case strings.HasPrefix(a, "--prompt="):
 			prompt = strings.TrimPrefix(a, "--prompt=")
 		default:
-			// Forwarded verbatim to the worker `zero exec` (reuses exec's own flag
+			// Forwarded verbatim to the worker `pvyai exec` (reuses exec's own flag
 			// parsing for per-session run options).
 			forward = append(forward, a)
 		}
@@ -400,7 +400,7 @@ func daemonDialError(flags remoteDialFlags, err error) string {
 	if strings.TrimSpace(flags.Addr) != "" {
 		return "failed to reach remote daemon at " + flags.Addr + ": " + err.Error()
 	}
-	return "zero daemon is not running (start it with `zero daemon start`)"
+	return "pvyai daemon is not running (start it with `zero daemon start`)"
 }
 
 // runDaemonServeRemote starts the local daemon plus an opt-in, TLS-only network
@@ -526,7 +526,7 @@ func runDaemonServeRemote(args []string, stdout io.Writer, stderr io.Writer) int
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 
-	fmt.Fprintf(stdout, "zero daemon remote bridge listening on %s (TLS)\n", addr)
+	fmt.Fprintf(stdout, "pvyai daemon remote bridge listening on %s (TLS)\n", addr)
 	select {
 	case <-sigCh:
 		srv.Shutdown()

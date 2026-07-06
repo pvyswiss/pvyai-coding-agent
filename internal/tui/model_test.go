@@ -15,13 +15,13 @@ import (
 	"charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/notify"
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/notify"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // execCmd runs a possibly-batched command synchronously and returns the first
@@ -47,16 +47,16 @@ func execCmd(cmd tea.Cmd) tea.Msg {
 }
 
 type fakeProvider struct {
-	events   []zeroruntime.StreamEvent
-	requests []zeroruntime.CompletionRequest
+	events   []pvyruntime.StreamEvent
+	requests []pvyruntime.CompletionRequest
 }
 
 func (provider *fakeProvider) StreamCompletion(
 	ctx context.Context,
-	request zeroruntime.CompletionRequest,
-) (<-chan zeroruntime.StreamEvent, error) {
+	request pvyruntime.CompletionRequest,
+) (<-chan pvyruntime.StreamEvent, error) {
 	provider.requests = append(provider.requests, request)
-	ch := make(chan zeroruntime.StreamEvent, len(provider.events))
+	ch := make(chan pvyruntime.StreamEvent, len(provider.events))
 	for _, event := range provider.events {
 		ch <- event
 	}
@@ -66,9 +66,9 @@ func (provider *fakeProvider) StreamCompletion(
 
 func TestPromptSubmitInjectsLiveSessionModelContext(t *testing.T) {
 	t.Setenv("XDG_DATA_HOME", t.TempDir())
-	provider := &fakeProvider{events: []zeroruntime.StreamEvent{
-		{Type: zeroruntime.StreamEventText, Content: "I am using the active session model."},
-		{Type: zeroruntime.StreamEventDone},
+	provider := &fakeProvider{events: []pvyruntime.StreamEvent{
+		{Type: pvyruntime.StreamEventText, Content: "I am using the active session model."},
+		{Type: pvyruntime.StreamEventDone},
 	}}
 	m := newModel(context.Background(), Options{
 		Cwd:          t.TempDir(),
@@ -108,11 +108,11 @@ func TestPromptSubmitInjectsLiveSessionModelContext(t *testing.T) {
 
 func TestPromptSubmitStoresReasoningSeparatelyFromAnswer(t *testing.T) {
 	t.Setenv("XDG_DATA_HOME", t.TempDir())
-	provider := &fakeProvider{events: []zeroruntime.StreamEvent{
-		{Type: zeroruntime.StreamEventReasoning, Content: "private "},
-		{Type: zeroruntime.StreamEventReasoning, Content: "thought"},
-		{Type: zeroruntime.StreamEventText, Content: "public answer"},
-		{Type: zeroruntime.StreamEventDone},
+	provider := &fakeProvider{events: []pvyruntime.StreamEvent{
+		{Type: pvyruntime.StreamEventReasoning, Content: "private "},
+		{Type: pvyruntime.StreamEventReasoning, Content: "thought"},
+		{Type: pvyruntime.StreamEventText, Content: "public answer"},
+		{Type: pvyruntime.StreamEventDone},
 	}}
 	m := newModel(context.Background(), Options{
 		Cwd:          t.TempDir(),
@@ -195,7 +195,7 @@ func TestParseCommand(t *testing.T) {
 		{input: "/effort high", kind: commandEffort, text: "high"},
 		{input: "/style concise", kind: commandStyle, text: "concise"},
 		{input: "/debug-mode", kind: commandDebug},
-		{input: "hello zero", kind: commandPrompt, text: "hello zero"},
+		{input: "hello pvyai", kind: commandPrompt, text: "hello pvyai"},
 	}
 
 	for _, tc := range cases {
@@ -533,7 +533,7 @@ func TestModelCommandSwitchesSessionModel(t *testing.T) {
 			Model:        "gpt-4.1",
 		},
 		Provider: &fakeProvider{},
-		NewProvider: func(profile config.ProviderProfile) (zeroruntime.Provider, error) {
+		NewProvider: func(profile config.ProviderProfile) (pvyruntime.Provider, error) {
 			rebuilt = profile
 			return nextProvider, nil
 		},
@@ -583,7 +583,7 @@ func TestModelCommandPersistsSelectedModelToUserConfig(t *testing.T) {
 			Model:        "gpt-4.1",
 		},
 		Provider: &fakeProvider{},
-		NewProvider: func(config.ProviderProfile) (zeroruntime.Provider, error) {
+		NewProvider: func(config.ProviderProfile) (pvyruntime.Provider, error) {
 			return &fakeProvider{}, nil
 		},
 	})
@@ -662,7 +662,7 @@ func TestModelCommandRequestsCompactionBeforeDirtyContextSwitch(t *testing.T) {
 			Model:        "gpt-4.1",
 		},
 		Provider: originalProvider,
-		NewProvider: func(config.ProviderProfile) (zeroruntime.Provider, error) {
+		NewProvider: func(config.ProviderProfile) (pvyruntime.Provider, error) {
 			rebuilds++
 			return &fakeProvider{}, nil
 		},
@@ -767,7 +767,7 @@ func TestModelCommandReportsProviderRebuildErrors(t *testing.T) {
 			BaseURL:      config.OpenAIBaseURL,
 			Model:        "gpt-4.1",
 		},
-		NewProvider: func(config.ProviderProfile) (zeroruntime.Provider, error) {
+		NewProvider: func(config.ProviderProfile) (pvyruntime.Provider, error) {
 			return nil, errors.New("rebuild failed")
 		},
 	})
@@ -1060,10 +1060,10 @@ func TestResumeCommandWithUnknownIDReportsMissingSession(t *testing.T) {
 }
 
 func TestPromptSubmitAppendsUserAndAssistantRows(t *testing.T) {
-	provider := &fakeProvider{events: []zeroruntime.StreamEvent{
-		{Type: zeroruntime.StreamEventText, Content: "hello"},
-		{Type: zeroruntime.StreamEventText, Content: " back"},
-		{Type: zeroruntime.StreamEventDone},
+	provider := &fakeProvider{events: []pvyruntime.StreamEvent{
+		{Type: pvyruntime.StreamEventText, Content: "hello"},
+		{Type: pvyruntime.StreamEventText, Content: " back"},
+		{Type: pvyruntime.StreamEventDone},
 	}}
 	m := newModel(context.Background(), Options{
 		Provider:     provider,
@@ -1712,40 +1712,40 @@ func TestAppendTranscriptRowDedupesRuntimeRowsByID(t *testing.T) {
 }
 
 func TestAgentEventRenderingMappingCoversRuntimeContract(t *testing.T) {
-	surfaces := map[zeroruntime.AgentEventType]string{
-		zeroruntime.AgentEventText:       "assistant transcript row",
-		zeroruntime.AgentEventToolCall:   "tool call transcript row",
-		zeroruntime.AgentEventToolResult: "tool result transcript row",
-		zeroruntime.AgentEventThinking:   "deferred: no transcript row until runtime emits thinking deltas",
-		zeroruntime.AgentEventUsage:      "usage tracker footer segment",
-		zeroruntime.AgentEventPlanUpdate: "system transcript row from /plan",
-		zeroruntime.AgentEventError:      "error transcript row",
-		zeroruntime.AgentEventTurnEnd:    "control boundary, no transcript row",
+	surfaces := map[pvyruntime.AgentEventType]string{
+		pvyruntime.AgentEventText:       "assistant transcript row",
+		pvyruntime.AgentEventToolCall:   "tool call transcript row",
+		pvyruntime.AgentEventToolResult: "tool result transcript row",
+		pvyruntime.AgentEventThinking:   "deferred: no transcript row until runtime emits thinking deltas",
+		pvyruntime.AgentEventUsage:      "usage tracker footer segment",
+		pvyruntime.AgentEventPlanUpdate: "system transcript row from /plan",
+		pvyruntime.AgentEventError:      "error transcript row",
+		pvyruntime.AgentEventTurnEnd:    "control boundary, no transcript row",
 	}
-	for _, eventType := range []zeroruntime.AgentEventType{
-		zeroruntime.AgentEventText,
-		zeroruntime.AgentEventToolCall,
-		zeroruntime.AgentEventToolResult,
-		zeroruntime.AgentEventThinking,
-		zeroruntime.AgentEventUsage,
-		zeroruntime.AgentEventPlanUpdate,
-		zeroruntime.AgentEventError,
-		zeroruntime.AgentEventTurnEnd,
+	for _, eventType := range []pvyruntime.AgentEventType{
+		pvyruntime.AgentEventText,
+		pvyruntime.AgentEventToolCall,
+		pvyruntime.AgentEventToolResult,
+		pvyruntime.AgentEventThinking,
+		pvyruntime.AgentEventUsage,
+		pvyruntime.AgentEventPlanUpdate,
+		pvyruntime.AgentEventError,
+		pvyruntime.AgentEventTurnEnd,
 	} {
 		if strings.TrimSpace(surfaces[eventType]) == "" {
 			t.Fatalf("missing TUI rendering surface note for %s", eventType)
 		}
 	}
 
-	renderedRows := map[zeroruntime.AgentEventType]struct {
+	renderedRows := map[pvyruntime.AgentEventType]struct {
 		row   transcriptRow
 		wants []string
 	}{
-		zeroruntime.AgentEventText: {
+		pvyruntime.AgentEventText: {
 			row:   transcriptRow{kind: rowAssistant, text: "assistant text"},
 			wants: []string{"assistant text"},
 		},
-		zeroruntime.AgentEventToolCall: {
+		pvyruntime.AgentEventToolCall: {
 			row: transcriptRow{
 				kind:   rowToolCall,
 				text:   "tool call: read_file",
@@ -1754,7 +1754,7 @@ func TestAgentEventRenderingMappingCoversRuntimeContract(t *testing.T) {
 			},
 			wants: []string{"Read", "README.md"},
 		},
-		zeroruntime.AgentEventToolResult: {
+		pvyruntime.AgentEventToolResult: {
 			row: transcriptRow{
 				kind:   rowToolResult,
 				text:   "tool result: apply_patch error",
@@ -1770,11 +1770,11 @@ func TestAgentEventRenderingMappingCoversRuntimeContract(t *testing.T) {
 			},
 			wants: []string{"Patched", "file.txt", "old", "new"},
 		},
-		zeroruntime.AgentEventPlanUpdate: {
+		pvyruntime.AgentEventPlanUpdate: {
 			row:   transcriptRow{kind: rowSystem, text: "Plan updated\n- inspect: completed"},
 			wants: []string{"Plan updated", "inspect"},
 		},
-		zeroruntime.AgentEventError: {
+		pvyruntime.AgentEventError: {
 			row:   transcriptRow{kind: rowError, text: "provider failed"},
 			wants: []string{"provider failed"},
 		},
@@ -1793,7 +1793,7 @@ func TestAgentEventRenderingMappingCoversRuntimeContract(t *testing.T) {
 		PermissionMode: agent.PermissionModeAsk,
 	})
 	m.width = 96
-	m, usageRows := m.recordUsageEvent("gpt-4.1", zeroruntime.Usage{InputTokens: 100, OutputTokens: 20})
+	m, usageRows := m.recordUsageEvent("gpt-4.1", pvyruntime.Usage{InputTokens: 100, OutputTokens: 20})
 	if len(usageRows) != 0 {
 		t.Fatalf("valid usage should update footer without transcript rows, got %#v", usageRows)
 	}

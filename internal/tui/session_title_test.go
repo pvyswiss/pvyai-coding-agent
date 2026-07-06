@@ -8,16 +8,16 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // titleProvider is a fakeProvider that streams a single line of text as the
 // model's title response.
 func titleProvider(title string) *fakeProvider {
-	return &fakeProvider{events: []zeroruntime.StreamEvent{
-		{Type: zeroruntime.StreamEventText, Content: title},
-		{Type: zeroruntime.StreamEventDone},
+	return &fakeProvider{events: []pvyruntime.StreamEvent{
+		{Type: pvyruntime.StreamEventText, Content: title},
+		{Type: pvyruntime.StreamEventDone},
 	}}
 }
 

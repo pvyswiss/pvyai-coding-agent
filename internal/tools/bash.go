@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	zeroSandbox "github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/secrets"
+	pvySandbox "github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/secrets"
 )
 
 const defaultBashTimeoutMS = 120000
@@ -62,11 +62,11 @@ func (tool bashTool) Run(ctx context.Context, args map[string]any) Result {
 	return tool.run(ctx, args, nil)
 }
 
-func (tool bashTool) RunWithSandbox(ctx context.Context, args map[string]any, engine *zeroSandbox.Engine) Result {
+func (tool bashTool) RunWithSandbox(ctx context.Context, args map[string]any, engine *pvySandbox.Engine) Result {
 	return tool.run(ctx, args, engine)
 }
 
-func (tool bashTool) run(ctx context.Context, args map[string]any, engine *zeroSandbox.Engine) Result {
+func (tool bashTool) run(ctx context.Context, args map[string]any, engine *pvySandbox.Engine) Result {
 	commandText, err := aliasedStringArg(args, []string{"command", "cmd", "script", "shell"}, "", true, false)
 	if err != nil {
 		return errorResult("Error: Invalid arguments for bash: " + err.Error())
@@ -90,7 +90,7 @@ func (tool bashTool) run(ctx context.Context, args map[string]any, engine *zeroS
 	// Pre-execution safety: refuse interactive commands (editors, pagers, REPLs,
 	// remote shells, etc.) that would hang the non-interactive agent until the
 	// timeout fires. This runs before the command is built or launched.
-	if interactive := zeroSandbox.DetectInteractiveCommand(commandText, runtime.GOOS); interactive.Interactive {
+	if interactive := pvySandbox.DetectInteractiveCommand(commandText, runtime.GOOS); interactive.Interactive {
 		return interactiveBlockResult(interactive)
 	}
 
@@ -137,7 +137,7 @@ func (tool bashTool) run(ctx context.Context, args map[string]any, engine *zeroS
 
 	// Capture sandbox denials when the plan opted in (macOS + Policy.MonitorDenials).
 	// A no-op when MonitorTag is empty, so the default path is unchanged.
-	monitor := zeroSandbox.StartDenialMonitor(context.Background(), plan.MonitorTag)
+	monitor := pvySandbox.StartDenialMonitor(context.Background(), plan.MonitorTag)
 	err = command.Run()
 	exitCode := commandExitCode(err)
 	meta["exit_code"] = strconv.Itoa(exitCode)
@@ -191,7 +191,7 @@ func (tool bashTool) run(ctx context.Context, args map[string]any, engine *zeroS
 	}
 }
 
-func commandEngineForSandboxPermissions(engine *zeroSandbox.Engine, sandboxPermissions SandboxPermissionOverride) *zeroSandbox.Engine {
+func commandEngineForSandboxPermissions(engine *pvySandbox.Engine, sandboxPermissions SandboxPermissionOverride) *pvySandbox.Engine {
 	if sandboxPermissions == SandboxPermissionsRequireEscalated && (engine == nil || engine.UnsandboxedExecutionAllowed()) {
 		return nil
 	}
@@ -237,12 +237,12 @@ func shellIssueBlockResult(issue shellIssue) Result {
 // commandText. On Windows, when the command is not wrapped by the sandbox
 // engine (plan.Wrapped == false), it also overrides the child's raw command
 // line so commandText reaches cmd.exe unescaped; see
-// zeroSandbox.WindowsShellCommandLine for why that matters. The wrapped case
+// pvySandbox.WindowsShellCommandLine for why that matters. The wrapped case
 // gets the same treatment inside the sandboxed runner process itself
 // (internal/sandbox/windows_process_windows.go), since that command line is
 // built there, not here.
-func buildBashCommand(ctx context.Context, commandText string, absoluteCwd string, engine *zeroSandbox.Engine) (*exec.Cmd, zeroSandbox.CommandPlan, error) {
-	spec := zeroSandbox.CommandSpec{
+func buildBashCommand(ctx context.Context, commandText string, absoluteCwd string, engine *pvySandbox.Engine) (*exec.Cmd, pvySandbox.CommandPlan, error) {
+	spec := pvySandbox.CommandSpec{
 		Name: shellExecutable(),
 		Args: shellArguments(commandText),
 		Dir:  absoluteCwd,
@@ -254,9 +254,9 @@ func buildBashCommand(ctx context.Context, commandText string, absoluteCwd strin
 		}
 		return command, plan, err
 	}
-	plan := zeroSandbox.CommandPlan{
-		Backend: zeroSandbox.Backend{
-			Name:    zeroSandbox.BackendUnavailable,
+	plan := pvySandbox.CommandPlan{
+		Backend: pvySandbox.Backend{
+			Name:    pvySandbox.BackendUnavailable,
 			Message: "sandbox engine not provided",
 		},
 		Wrapped: false,
@@ -270,7 +270,7 @@ func buildBashCommand(ctx context.Context, commandText string, absoluteCwd strin
 	return command, plan, nil
 }
 
-func addSandboxMeta(meta map[string]string, plan zeroSandbox.CommandPlan) {
+func addSandboxMeta(meta map[string]string, plan pvySandbox.CommandPlan) {
 	if plan.Backend.Name == "" {
 		return
 	}
@@ -298,7 +298,7 @@ func addSandboxMeta(meta map[string]string, plan zeroSandbox.CommandPlan) {
 // command is refused before execution because it would hang the agent. The
 // block is surfaced both in Output (clearly delimited) and in Meta/Display
 // so downstream consumers and the TUI can render it consistently.
-func interactiveBlockResult(detection zeroSandbox.InteractiveCommandResult) Result {
+func interactiveBlockResult(detection pvySandbox.InteractiveCommandResult) Result {
 	message := fmt.Sprintf(
 		"Error: Blocked interactive command %q before execution: %s. This would hang the non-interactive agent.\nSuggestion: %s",
 		detection.Command, detection.Reason, detection.Suggestion,
@@ -327,7 +327,7 @@ func shellExecutable() string {
 
 func shellArguments(command string) []string {
 	if runtime.GOOS == "windows" {
-		return zeroSandbox.WindowsShellArgs(command)
+		return pvySandbox.WindowsShellArgs(command)
 	}
 	return []string{"-c", command}
 }
@@ -362,7 +362,7 @@ func formatBashOutput(stdout string, stderr string, exitCode int) string {
 		parts = append(parts, fmt.Sprintf("exit_code: %d", exitCode))
 	}
 	if n := len(outFindings) + len(errFindings); n > 0 {
-		parts = append(parts, fmt.Sprintf("[zero] redacted %d likely secret(s) from this output before showing it.", n))
+		parts = append(parts, fmt.Sprintf("[pvyai] redacted %d likely secret(s) from this output before showing it.", n))
 	}
 	if len(parts) == 0 {
 		return "Command completed with no output."
@@ -406,7 +406,7 @@ func budgetBashCapture(out string, outTotal int, errStr string, errTotal int, me
 	truncated := outTrunc || errTrunc
 	if truncated {
 		if spillPath := spillBashStreams(out, outTotal, errStr, errTotal); spillPath != "" {
-			hint := "\n[zero] captured output saved to " + spillPath + " (grep or read_file it instead of re-running)"
+			hint := "\n[pvyai] captured output saved to " + spillPath + " (grep or read_file it instead of re-running)"
 			if errTrunc {
 				errText += hint
 			} else {
@@ -462,7 +462,7 @@ func sectionWithCaptureGap(text string, total int) string {
 		return text
 	}
 	head := utf8Prefix(text, bashCaptureBudgetBytes)
-	marker := fmt.Sprintf("\n[zero] capture gap: %d bytes omitted from the middle of this stream\n", total-len(text))
+	marker := fmt.Sprintf("\n[pvyai] capture gap: %d bytes omitted from the middle of this stream\n", total-len(text))
 	return head + marker + text[len(head):]
 }
 
@@ -537,7 +537,7 @@ func truncateHeadTailWithTotal(value string, total, maxBytes int) (string, int, 
 	if maxBytes <= 0 || total <= maxBytes {
 		return value, total, false
 	}
-	marker := fmt.Sprintf("\n[zero] output truncated: %d bytes omitted from the middle — redirect to a file and read_file a range for the full text\n", total-maxBytes)
+	marker := fmt.Sprintf("\n[pvyai] output truncated: %d bytes omitted from the middle — redirect to a file and read_file a range for the full text\n", total-maxBytes)
 	budget := maxBytes - len(marker)
 	if budget < 0 {
 		budget = 0

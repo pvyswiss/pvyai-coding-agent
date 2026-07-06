@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 func (m model) execSessionController() (tools.ExecSessionController, bool) {

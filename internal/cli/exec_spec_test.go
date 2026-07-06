@@ -8,12 +8,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/specmode"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/specmode"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 func TestRunExecUseSpecCreatesDraftSession(t *testing.T) {
@@ -54,7 +54,7 @@ func TestRunExecUseSpecCreatesDraftSession(t *testing.T) {
 		resolveMCPConfig: func(string) (config.MCPConfig, error) {
 			return config.MCPConfig{}, nil
 		},
-		newProvider: func(config.ProviderProfile) (zeroruntime.Provider, error) {
+		newProvider: func(config.ProviderProfile) (pvyruntime.Provider, error) {
 			return provider, nil
 		},
 		newSessionStore: func() *sessions.Store {
@@ -84,7 +84,7 @@ func TestRunExecUseSpecCreatesDraftSession(t *testing.T) {
 	if draft.SessionKind != sessions.SessionKindSpecDraft || draft.SpecStatus != sessions.SpecStatusDraft {
 		t.Fatalf("unexpected draft session: %#v", draft)
 	}
-	if draft.SpecID == "" || !strings.Contains(filepath.ToSlash(draft.SpecFilePath), ".zero/specs/") {
+	if draft.SpecID == "" || !strings.Contains(filepath.ToSlash(draft.SpecFilePath), ".pvyai/specs/") {
 		t.Fatalf("draft spec metadata missing: %#v", draft)
 	}
 	if draft.SpecDraftModelID != "draft-model" || draft.ModelID != "draft-model" || draft.SpecDraftReasoning != "high" {
@@ -159,25 +159,25 @@ func TestRunExecUseSpecRejectsFiltersThatHideSubmitSpec(t *testing.T) {
 }
 
 type submitSpecExecProvider struct {
-	requests []zeroruntime.CompletionRequest
+	requests []pvyruntime.CompletionRequest
 }
 
-func (provider *submitSpecExecProvider) StreamCompletion(ctx context.Context, request zeroruntime.CompletionRequest) (<-chan zeroruntime.StreamEvent, error) {
+func (provider *submitSpecExecProvider) StreamCompletion(ctx context.Context, request pvyruntime.CompletionRequest) (<-chan pvyruntime.StreamEvent, error) {
 	provider.requests = append(provider.requests, request)
 	arguments, _ := json.Marshal(map[string]string{
 		"title": "Review Flow",
 		"plan":  "# Goal\n\nAdd the review flow.",
 	})
-	ch := make(chan zeroruntime.StreamEvent, 4)
+	ch := make(chan pvyruntime.StreamEvent, 4)
 	select {
 	case <-ctx.Done():
 		close(ch)
 		return ch, ctx.Err()
-	case ch <- zeroruntime.StreamEvent{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: specmode.SubmitToolName}:
+	case ch <- pvyruntime.StreamEvent{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call-1", ToolName: specmode.SubmitToolName}:
 	}
-	ch <- zeroruntime.StreamEvent{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: string(arguments)}
-	ch <- zeroruntime.StreamEvent{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "call-1"}
-	ch <- zeroruntime.StreamEvent{Type: zeroruntime.StreamEventDone}
+	ch <- pvyruntime.StreamEvent{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call-1", ArgumentsFragment: string(arguments)}
+	ch <- pvyruntime.StreamEvent{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call-1"}
+	ch <- pvyruntime.StreamEvent{Type: pvyruntime.StreamEventDone}
 	close(ch)
 	return ch, nil
 }

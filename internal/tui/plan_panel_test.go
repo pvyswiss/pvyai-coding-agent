@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 func TestPlanPanelUpdateFromItems(t *testing.T) {

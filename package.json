@@ -1,17 +1,17 @@
 {
-  "name": "@gitlawb/zero",
+  "name": "@pvyswiss/pvyai-agent",
   "version": "0.1.0",
-  "description": "Zero — a fast, multi-provider terminal coding agent.",
+  "description": "PVYai — a fast, multi-provider terminal coding agent.",
   "type": "module",
-  "module": "bin/zero.js",
+  "module": "bin/pvyai.js",
   "bin": {
-    "zero": "bin/zero.js"
+    "pvyai": "bin/pvyai.js"
   },
   "scripts": {
     "postinstall": "node scripts/postinstall.mjs"
   },
   "files": [
-    "bin/zero.js",
+    "bin/pvyai.js",
     "scripts/postinstall.mjs"
   ],
   "engines": {
@@ -33,11 +33,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Gitlawb/zero.git"
+    "url": "git+https://github.com/pvyswiss/pvyai-coding-agent.git"
   },
-  "homepage": "https://github.com/Gitlawb/zero#readme",
+  "homepage": "https://github.com/pvyswiss/pvyai-coding-agent#readme",
   "bugs": {
-    "url": "https://github.com/Gitlawb/zero/issues"
+    "url": "https://github.com/pvyswiss/pvyai-coding-agent/issues"
   },
   "license": "MIT"
 }

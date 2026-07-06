@@ -194,7 +194,7 @@ func TestDefaultBaseDirUsesStateHome(t *testing.T) {
 	if err != nil {
 		t.Fatalf("DefaultBaseDir returned error: %v", err)
 	}
-	if got != filepath.Join(stateHome, "zero", "worktrees") {
+	if got != filepath.Join(stateHome, "pvyai", "worktrees") {
 		t.Fatalf("DefaultBaseDir = %q", got)
 	}
 }
@@ -208,7 +208,7 @@ func TestDefaultBaseDirFallsBackForWindowsUserProfile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("DefaultBaseDir returned error: %v", err)
 	}
-	expected := filepath.Join(profile, "AppData", "Local", "zero", "worktrees")
+	expected := filepath.Join(profile, "AppData", "Local", "pvyai", "worktrees")
 	if filepath.Clean(got) != filepath.Clean(expected) {
 		t.Fatalf("DefaultBaseDir = %q, want %q", got, expected)
 	}

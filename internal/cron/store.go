@@ -84,7 +84,7 @@ func DefaultRoot(env map[string]string) string {
 	if base == "" {
 		base = filepath.Join(home, ".local", "share")
 	}
-	return filepath.Join(base, "zero", "cron")
+	return filepath.Join(base, "pvyai", "cron")
 }
 
 func envMap() map[string]string {

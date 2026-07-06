@@ -13,12 +13,12 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/hooks"
-	"github.com/Gitlawb/zero/internal/mcp"
-	"github.com/Gitlawb/zero/internal/plugins"
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/zerocommands"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/hooks"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/mcp"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/plugins"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvycmd"
 )
 
 func TestRunBackendsJSONUsesLifecycleSnapshotWithoutConnectingMCP(t *testing.T) {
@@ -99,7 +99,7 @@ func TestRunBackendsJSONUsesLifecycleSnapshotWithoutConnectingMCP(t *testing.T) 
 		t.Fatalf("backend JSON leaked secret material:\n%s", stdout.String())
 	}
 
-	var snapshot zerocommands.BackendLifecycleSnapshot
+	var snapshot pvycmd.BackendLifecycleSnapshot
 	if err := json.Unmarshal(stdout.Bytes(), &snapshot); err != nil {
 		t.Fatalf("backend JSON failed to decode: %v\n%s", err, stdout.String())
 	}
@@ -213,15 +213,15 @@ func TestRunBackendsDoctorJSONAndTextWithoutConnectingMCP(t *testing.T) {
 	if strings.Contains(stdout.String(), secret) || strings.Contains(stdout.String(), "sk-proj-") {
 		t.Fatalf("backend doctor JSON leaked secret material:\n%s", stdout.String())
 	}
-	var payload zerocommands.BackendDoctorReport
+	var payload pvycmd.BackendDoctorReport
 	if err := json.Unmarshal(stdout.Bytes(), &payload); err != nil {
 		t.Fatalf("backend doctor JSON failed to decode: %v\n%s", err, stdout.String())
 	}
 	if payload.OK {
 		t.Fatalf("payload.OK = true, want false for invalid MCP/hook diagnostic: %#v", payload.Checks)
 	}
-	if payload.Status != zerocommands.BackendDoctorStatusFail {
-		t.Fatalf("payload.Status = %q, want %q", payload.Status, zerocommands.BackendDoctorStatusFail)
+	if payload.Status != pvycmd.BackendDoctorStatusFail {
+		t.Fatalf("payload.Status = %q, want %q", payload.Status, pvycmd.BackendDoctorStatusFail)
 	}
 	assertBackendDoctorPayloadCheck(t, payload, "backend.mcp.invalid", "broken")
 	assertBackendDoctorPayloadCheck(t, payload, "backend.hooks.diagnostic", "zero.bad")
@@ -270,7 +270,7 @@ func TestRunBackendsDoctorDoesNotConnectOrExecuteConfiguredBackends(t *testing.T
 	}))
 	defer server.Close()
 
-	hookConfigPath := filepath.Join(cwd, ".zero", "hooks.json")
+	hookConfigPath := filepath.Join(cwd, ".pvyai", "hooks.json")
 	writeBackendDoctorJSON(t, hookConfigPath, map[string]any{
 		"enabled": true,
 		"hooks": []any{map[string]any{
@@ -280,7 +280,7 @@ func TestRunBackendsDoctorDoesNotConnectOrExecuteConfiguredBackends(t *testing.T
 			"args":    helperArgs(hookSentinel),
 		}},
 	})
-	pluginDir := filepath.Join(cwd, ".zero", "plugins", "sentinel")
+	pluginDir := filepath.Join(cwd, ".pvyai", "plugins", "sentinel")
 	writeBackendDoctorJSON(t, filepath.Join(pluginDir, "plugin.json"), map[string]any{
 		"schemaVersion": 1,
 		"id":            "zero.sentinel",
@@ -315,7 +315,7 @@ func TestRunBackendsDoctorDoesNotConnectOrExecuteConfiguredBackends(t *testing.T
 		},
 		loadPlugins: func(options plugins.LoadOptions) (plugins.LoadResult, error) {
 			return plugins.Load(plugins.LoadOptions{
-				Roots: []plugins.Root{{Source: plugins.SourceProject, Path: filepath.Join(cwd, ".zero", "plugins")}},
+				Roots: []plugins.Root{{Source: plugins.SourceProject, Path: filepath.Join(cwd, ".pvyai", "plugins")}},
 				Cwd:   options.Cwd,
 			})
 		},
@@ -340,7 +340,7 @@ func TestRunBackendsDoctorDoesNotConnectOrExecuteConfiguredBackends(t *testing.T
 	}
 }
 
-func assertBackendDoctorPayloadCheck(t *testing.T, report zerocommands.BackendDoctorReport, id string, target string) {
+func assertBackendDoctorPayloadCheck(t *testing.T, report pvycmd.BackendDoctorReport, id string, target string) {
 	t.Helper()
 	for _, check := range report.Checks {
 		if check.ID == id && check.Target == target {

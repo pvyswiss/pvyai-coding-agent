@@ -14,11 +14,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/hooks"
-	"github.com/Gitlawb/zero/internal/mcp"
-	"github.com/Gitlawb/zero/internal/secrets"
-	"github.com/Gitlawb/zero/internal/skills"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/hooks"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/mcp"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/secrets"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/skills"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 // pluginRootPlaceholder is the manifest path placeholder a plugin may use in a
@@ -665,7 +665,7 @@ func formatPluginToolOutput(output commandOutput) string {
 		parts = append(parts, fmt.Sprintf("exit_code: %d", output.ExitCode))
 	}
 	if n := len(outFindings) + len(errFindings); n > 0 {
-		parts = append(parts, fmt.Sprintf("[zero] redacted %d likely secret(s) from this plugin tool output before showing it.", n))
+		parts = append(parts, fmt.Sprintf("[pvyai] redacted %d likely secret(s) from this plugin tool output before showing it.", n))
 	}
 	if len(parts) == 0 {
 		return "Plugin tool completed with no output."

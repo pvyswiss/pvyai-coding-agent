@@ -5,8 +5,8 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
 )
 
 type Action struct {
@@ -25,7 +25,7 @@ func (state ProviderState) Actions() []Action {
 }
 
 func SetupCommand(descriptor providercatalog.Descriptor, name string, setActive bool) string {
-	parts := []string{"zero", "providers", "add", strings.TrimSpace(descriptor.ID)}
+	parts := []string{"pvyai", "providers", "add", strings.TrimSpace(descriptor.ID)}
 	if name = strings.TrimSpace(name); name != "" {
 		parts = append(parts, "--name", name)
 	}
@@ -41,7 +41,7 @@ func SetupCommand(descriptor providercatalog.Descriptor, name string, setActive 
 }
 
 func UseCommand(name string) string {
-	parts := []string{"zero", "providers", "use"}
+	parts := []string{"pvyai", "providers", "use"}
 	if name = strings.TrimSpace(name); name != "" {
 		parts = append(parts, name)
 	}
@@ -49,7 +49,7 @@ func UseCommand(name string) string {
 }
 
 func CheckCommand(name string, connectivity bool) string {
-	parts := []string{"zero", "providers", "check"}
+	parts := []string{"pvyai", "providers", "check"}
 	if name = strings.TrimSpace(name); name != "" {
 		parts = append(parts, name)
 	}

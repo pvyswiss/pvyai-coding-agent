@@ -148,7 +148,7 @@ func modelsDevCachePath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(base, "zero", "modelsdev.json"), nil
+	return filepath.Join(base, "pvyai", "modelsdev.json"), nil
 }
 
 var (
@@ -232,7 +232,7 @@ func RefreshModelsDevCache(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	request.Header.Set("User-Agent", "zero-models-refresh/0.1")
+	request.Header.Set("User-Agent", "pvyai-models-refresh/0.1")
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
 		return err

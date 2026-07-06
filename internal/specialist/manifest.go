@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
 )
 
 type Location string
@@ -126,7 +126,7 @@ func DefaultPaths(workspaceRoot string) (Paths, error) {
 		return Paths{}, fmt.Errorf("resolve user config directory: %w", err)
 	}
 	paths := Paths{
-		UserDir: filepath.Join(userConfigDir, "zero", "specialists"),
+		UserDir: filepath.Join(userConfigDir, "pvyai", "specialists"),
 	}
 	if strings.TrimSpace(workspaceRoot) != "" {
 		paths.ProjectDir = filepath.Join(filepath.Clean(workspaceRoot), ".zero", "specialists")

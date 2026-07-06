@@ -8,12 +8,12 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/Gitlawb/zero/internal/agent"
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/sessions"
-	"github.com/Gitlawb/zero/internal/usage"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/usage"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 var responseStyles = []string{"balanced", "concise", "explanatory", "review"}
@@ -644,16 +644,16 @@ func (m model) summarizeCompactionPlan(plan sessions.CompactionPlan) (string, er
 	if m.provider == nil {
 		return deterministicCompactionSummary(plan), nil
 	}
-	stream, err := m.provider.StreamCompletion(m.ctx, zeroruntime.CompletionRequest{
-		Messages: []zeroruntime.Message{
-			{Role: zeroruntime.MessageRoleSystem, Content: "Summarize compacted Zero session events for future coding context. Preserve user goals, decisions, files, tool outcomes, blockers, and exact next steps. Omit secrets and do not invent details."},
-			{Role: zeroruntime.MessageRoleUser, Content: plan.SummaryPrompt},
+	stream, err := m.provider.StreamCompletion(m.ctx, pvyruntime.CompletionRequest{
+		Messages: []pvyruntime.Message{
+			{Role: pvyruntime.MessageRoleSystem, Content: "Summarize compacted Zero session events for future coding context. Preserve user goals, decisions, files, tool outcomes, blockers, and exact next steps. Omit secrets and do not invent details."},
+			{Role: pvyruntime.MessageRoleUser, Content: plan.SummaryPrompt},
 		},
 	})
 	if err != nil {
 		return "", fmt.Errorf("summarize compacted session: %w", err)
 	}
-	collected := zeroruntime.CollectStream(m.ctx, stream)
+	collected := pvyruntime.CollectStream(m.ctx, stream)
 	if collected.Error != "" {
 		return "", fmt.Errorf("summarize compacted session: %s", collected.Error)
 	}
@@ -734,7 +734,7 @@ func (m model) setCompactStatusRow(text string) model {
 	return m
 }
 
-func (m model) recordUsageEvent(modelID string, event zeroruntime.Usage) (model, []transcriptRow) {
+func (m model) recordUsageEvent(modelID string, event pvyruntime.Usage) (model, []transcriptRow) {
 	if m.usageTracker == nil || strings.TrimSpace(modelID) == "" {
 		return m, nil
 	}

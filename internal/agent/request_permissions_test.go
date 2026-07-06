@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/sandbox"
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 func TestRequestPermissionsTurnGrantAllowsLaterToolAndCleansUp(t *testing.T) {
@@ -30,19 +30,19 @@ func TestRequestPermissionsTurnGrantAllowsLaterToolAndCleansUp(t *testing.T) {
 	registry.Register(tools.NewRequestPermissionsTool())
 	registry.Register(tools.NewScopedWriteFileTool(workspace, scope))
 	provider := &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "grant-1", ToolName: tools.RequestPermissionsToolName},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "grant-1", ArgumentsFragment: `{"reason":"Need to write outside the workspace.","permissions":{"file_system":{"write":[` + quoteJSONString(target) + `]}}}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "grant-1"},
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "write-1", ToolName: "write_file"},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "write-1", ArgumentsFragment: `{"path":` + quoteJSONString(target) + `,"content":"carrot\n","overwrite":true}`},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "write-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "grant-1", ToolName: tools.RequestPermissionsToolName},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "grant-1", ArgumentsFragment: `{"reason":"Need to write outside the workspace.","permissions":{"file_system":{"write":[` + quoteJSONString(target) + `]}}}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "grant-1"},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "write-1", ToolName: "write_file"},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "write-1", ArgumentsFragment: `{"path":` + quoteJSONString(target) + `,"content":"carrot\n","overwrite":true}`},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "write-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: "done"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: "done"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}
@@ -122,7 +122,7 @@ func TestRequestPermissionsTurnGrantAllowsLaterToolAndCleansUp(t *testing.T) {
 
 func tempDirOutsideDefaultTemp(t *testing.T) string {
 	t.Helper()
-	dir, err := os.MkdirTemp(".", ".zero-sandbox-outside-")
+	dir, err := os.MkdirTemp(".", ".pvyai-sandbox-outside-")
 	if err != nil {
 		t.Fatalf("MkdirTemp outside default temp: %v", err)
 	}
@@ -259,16 +259,16 @@ func requestPermissionsOnlyProvider(arguments string, finalAnswer string) *mockP
 		arguments = "{}"
 	}
 	return &mockProvider{
-		turns: [][]zeroruntime.StreamEvent{
+		turns: [][]pvyruntime.StreamEvent{
 			{
-				{Type: zeroruntime.StreamEventToolCallStart, ToolCallID: "grant-1", ToolName: tools.RequestPermissionsToolName},
-				{Type: zeroruntime.StreamEventToolCallDelta, ToolCallID: "grant-1", ArgumentsFragment: arguments},
-				{Type: zeroruntime.StreamEventToolCallEnd, ToolCallID: "grant-1"},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "grant-1", ToolName: tools.RequestPermissionsToolName},
+				{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "grant-1", ArgumentsFragment: arguments},
+				{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "grant-1"},
+				{Type: pvyruntime.StreamEventDone},
 			},
 			{
-				{Type: zeroruntime.StreamEventText, Content: finalAnswer},
-				{Type: zeroruntime.StreamEventDone},
+				{Type: pvyruntime.StreamEventText, Content: finalAnswer},
+				{Type: pvyruntime.StreamEventDone},
 			},
 		},
 	}

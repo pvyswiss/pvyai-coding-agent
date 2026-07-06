@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/lsp"
-	"github.com/Gitlawb/zero/internal/verify"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/lsp"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/verify"
 )
 
 type fakeVerifier struct {

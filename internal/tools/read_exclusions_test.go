@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 // denyReadFixture builds a workspace with an ordinary file and a secret subtree,

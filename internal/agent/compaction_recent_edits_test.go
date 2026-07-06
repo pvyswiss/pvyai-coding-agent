@@ -5,21 +5,21 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // recentEdits extracts each mutated file's path and a one-line note from the
 // matching tool result, latest note per path in last-seen order.
 func TestRecentEditsExtractsPathsAndNotes(t *testing.T) {
-	messages := []zeroruntime.Message{
-		{Role: zeroruntime.MessageRoleAssistant, ToolCalls: []zeroruntime.ToolCall{
+	messages := []pvyruntime.Message{
+		{Role: pvyruntime.MessageRoleAssistant, ToolCalls: []pvyruntime.ToolCall{
 			{ID: "e1", Name: "write_file", Arguments: `{"path":"internal/foo.go","content":"package foo"}`},
 		}},
-		{Role: zeroruntime.MessageRoleTool, ToolCallID: "e1", Content: "Wrote internal/foo.go (12 lines)"},
-		{Role: zeroruntime.MessageRoleAssistant, ToolCalls: []zeroruntime.ToolCall{
+		{Role: pvyruntime.MessageRoleTool, ToolCallID: "e1", Content: "Wrote internal/foo.go (12 lines)"},
+		{Role: pvyruntime.MessageRoleAssistant, ToolCalls: []pvyruntime.ToolCall{
 			{ID: "e2", Name: "edit_file", Arguments: `{"path":"internal/bar.go","old_string":"a","new_string":"b"}`},
 		}},
-		{Role: zeroruntime.MessageRoleTool, ToolCallID: "e2", Content: "Applied edit to internal/bar.go"},
+		{Role: pvyruntime.MessageRoleTool, ToolCallID: "e2", Content: "Applied edit to internal/bar.go"},
 	}
 
 	edits := recentEdits(messages)
@@ -37,16 +37,16 @@ func TestRecentEditsExtractsPathsAndNotes(t *testing.T) {
 // After compaction elides the editing turns, the preserved-state block still
 // names the edited files and what changed, so the model needn't re-read them.
 func TestCompactionPreservesRecentEdits(t *testing.T) {
-	messages := []zeroruntime.Message{
-		{Role: zeroruntime.MessageRoleSystem, Content: "system"},
-		{Role: zeroruntime.MessageRoleUser, Content: "add a flag"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "editing", ToolCalls: []zeroruntime.ToolCall{
+	messages := []pvyruntime.Message{
+		{Role: pvyruntime.MessageRoleSystem, Content: "system"},
+		{Role: pvyruntime.MessageRoleUser, Content: "add a flag"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "editing", ToolCalls: []pvyruntime.ToolCall{
 			{ID: "e1", Name: "write_file", Arguments: `{"path":"cmd/main.go","content":"..."}`},
 		}},
-		{Role: zeroruntime.MessageRoleTool, ToolCallID: "e1", Content: "Wrote cmd/main.go (adds --version flag)"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "done"},
-		{Role: zeroruntime.MessageRoleUser, Content: "continue"},
-		{Role: zeroruntime.MessageRoleAssistant, Content: "continuing"},
+		{Role: pvyruntime.MessageRoleTool, ToolCallID: "e1", Content: "Wrote cmd/main.go (adds --version flag)"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "done"},
+		{Role: pvyruntime.MessageRoleUser, Content: "continue"},
+		{Role: pvyruntime.MessageRoleAssistant, Content: "continuing"},
 	}
 	summary := compactStateConversation(t, messages)
 

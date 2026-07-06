@@ -135,9 +135,9 @@ func emitToSink(sink Sink, event Event, message string) {
 // DefaultMessage is the generic OSC-9 body for an event (no prompt content).
 func DefaultMessage(event Event) string {
 	if event == AwaitingInput {
-		return "Zero: needs input"
+		return "PVYai: needs input"
 	}
-	return "Zero: ready"
+	return "PVYai: ready"
 }
 
 func shouldEmit(cfg Config, _ Event, focused bool) bool {

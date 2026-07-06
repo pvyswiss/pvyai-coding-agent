@@ -197,9 +197,9 @@ func ResolvePaths(options ResolvePathOptions) (Paths, error) {
 	configHome := resolveEnvDir(options.Env, "XDG_CONFIG_HOME", filepath.Join(home, ".config"), cwd)
 	dataHome := resolveEnvDir(options.Env, "XDG_DATA_HOME", filepath.Join(home, ".local", "share"), cwd)
 	return Paths{
-		UserConfigPath:    filepath.Join(configHome, "zero", "hooks.json"),
+		UserConfigPath:    filepath.Join(configHome, "pvyai", "hooks.json"),
 		ProjectConfigPath: filepath.Join(cwd, ".zero", "hooks.json"),
-		AuditPath:         filepath.Join(dataHome, "zero", "hooks", "audit.jsonl"),
+		AuditPath:         filepath.Join(dataHome, "pvyai", "hooks", "audit.jsonl"),
 	}, nil
 }
 
@@ -395,7 +395,7 @@ func FormatList(config Config, diagnostics []Diagnostic) string {
 	if config.Enabled {
 		state = "enabled"
 	}
-	lines := []string{"Zero Hooks: " + state}
+	lines := []string{"PVYai Hooks: " + state}
 	if len(config.Hooks) == 0 {
 		lines = append(lines, "  No hooks configured.")
 	} else {

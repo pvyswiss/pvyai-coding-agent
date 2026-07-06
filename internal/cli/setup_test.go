@@ -7,10 +7,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/providercatalog"
-	"github.com/Gitlawb/zero/internal/providerhealth"
-	"github.com/Gitlawb/zero/internal/tui"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providerhealth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tui"
 )
 
 func TestSetupMissingCredentialEnv(t *testing.T) {
@@ -105,8 +105,8 @@ func TestSetupProviderOptionsUseRuntimeSupportedCatalog(t *testing.T) {
 func TestSaveSetupProviderStoresPastedAPIKey(t *testing.T) {
 	// Use the encrypted-file backend in the temp config dir so the test never
 	// touches the real OS keychain.
-	t.Setenv("ZERO_CRED_STORAGE", "encrypted-file")
-	configPath := filepath.Join(t.TempDir(), "zero", "config.json")
+	t.Setenv("PVYAI_CRED_STORAGE", "encrypted-file")
+	configPath := filepath.Join(t.TempDir(), "pvyai", "config.json")
 
 	result, err := saveSetupProvider(appDeps{
 		userConfigPath: func() (string, error) {
@@ -153,7 +153,7 @@ func TestSaveSetupProviderStoresPastedAPIKey(t *testing.T) {
 }
 
 func TestSaveSetupProviderStoresCustomEndpointSelection(t *testing.T) {
-	configPath := filepath.Join(t.TempDir(), "zero", "config.json")
+	configPath := filepath.Join(t.TempDir(), "pvyai", "config.json")
 
 	result, err := saveSetupProvider(appDeps{
 		userConfigPath: func() (string, error) {
@@ -196,7 +196,7 @@ func TestSaveSetupProviderStoresCustomEndpointSelection(t *testing.T) {
 }
 
 func TestSaveSetupProviderCLIOptionsOverrideCustomEndpointSelection(t *testing.T) {
-	configPath := filepath.Join(t.TempDir(), "zero", "config.json")
+	configPath := filepath.Join(t.TempDir(), "pvyai", "config.json")
 
 	result, err := saveSetupProvider(appDeps{
 		userConfigPath: func() (string, error) {

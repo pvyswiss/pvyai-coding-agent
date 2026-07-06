@@ -8,8 +8,8 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/Gitlawb/zero/internal/tools"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 func TestEnterWhilePendingQueuesPromptWithoutStartingRun(t *testing.T) {
@@ -88,9 +88,9 @@ func TestQueuedPromptPreviewSitsAboveComposer(t *testing.T) {
 }
 
 func TestAgentResponseLaunchesQueuedPrompt(t *testing.T) {
-	provider := &scriptedProvider{scripts: [][]zeroruntime.StreamEvent{{
-		{Type: zeroruntime.StreamEventText, Content: "queued answer"},
-		{Type: zeroruntime.StreamEventDone},
+	provider := &scriptedProvider{scripts: [][]pvyruntime.StreamEvent{{
+		{Type: pvyruntime.StreamEventText, Content: "queued answer"},
+		{Type: pvyruntime.StreamEventDone},
 	}}}
 	m := newQueuedMessageTestModel(t)
 	m.provider = provider
@@ -178,9 +178,9 @@ func TestEnterWhileExitingDoesNotQueuePrompt(t *testing.T) {
 }
 
 func TestAgentResponseLaunchesQueuedPromptAfterError(t *testing.T) {
-	provider := &scriptedProvider{scripts: [][]zeroruntime.StreamEvent{{
-		{Type: zeroruntime.StreamEventText, Content: "queued answer"},
-		{Type: zeroruntime.StreamEventDone},
+	provider := &scriptedProvider{scripts: [][]pvyruntime.StreamEvent{{
+		{Type: pvyruntime.StreamEventText, Content: "queued answer"},
+		{Type: pvyruntime.StreamEventDone},
 	}}}
 	m := newQueuedMessageTestModel(t)
 	m.provider = provider
@@ -209,8 +209,8 @@ func newQueuedMessageTestModel(t *testing.T) model {
 	return newModel(context.Background(), Options{
 		ProviderName: "openai",
 		ModelName:    "gpt-4.1",
-		Provider: &fakeProvider{events: []zeroruntime.StreamEvent{
-			{Type: zeroruntime.StreamEventDone},
+		Provider: &fakeProvider{events: []pvyruntime.StreamEvent{
+			{Type: pvyruntime.StreamEventDone},
 		}},
 		Registry:     tools.NewRegistry(),
 		SessionStore: testSessionStore(t),

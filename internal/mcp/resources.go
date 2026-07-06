@@ -15,7 +15,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/Gitlawb/zero/internal/workspaceindex"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/workspaceindex"
 )
 
 // jsonRPCResourceNotFound is the MCP convention for a resource the server knows

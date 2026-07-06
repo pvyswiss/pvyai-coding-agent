@@ -6,15 +6,15 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/modelregistry"
-	"github.com/Gitlawb/zero/internal/oauth"
-	"github.com/Gitlawb/zero/internal/providercatalog"
-	"github.com/Gitlawb/zero/internal/providers/anthropic"
-	"github.com/Gitlawb/zero/internal/providers/gemini"
-	"github.com/Gitlawb/zero/internal/providers/openai"
-	"github.com/Gitlawb/zero/internal/providers/providerio"
-	"github.com/Gitlawb/zero/internal/zeroruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/oauth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providers/anthropic"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providers/gemini"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providers/openai"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/providers/providerio"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // Options configures provider construction.
@@ -36,7 +36,7 @@ type Options struct {
 }
 
 // New creates a runtime provider for a resolved provider profile.
-func New(profile config.ProviderProfile, options Options) (zeroruntime.Provider, error) {
+func New(profile config.ProviderProfile, options Options) (pvyruntime.Provider, error) {
 	resolved, err := resolveProfile(profile, options)
 	if err != nil {
 		return nil, err
@@ -196,14 +196,14 @@ func resolveProfile(profile config.ProviderProfile, options Options) (resolvedPr
 		}
 		if providerKind == config.ProviderKindOpenAICompatible {
 			if !entry.AllowsProvider(modelregistry.ProviderOpenAICompatible) {
-				return resolvedProfile{}, fmt.Errorf("zero model %s belongs to %s, not %s", entry.ID, entry.Provider, modelregistry.ProviderOpenAICompatible)
+				return resolvedProfile{}, fmt.Errorf("pvyai model %s belongs to %s, not %s", entry.ID, entry.Provider, modelregistry.ProviderOpenAICompatible)
 			}
 		} else if providerKind == config.ProviderKindAnthropicCompat {
 			if !entry.AllowsProvider(modelregistry.ProviderAnthropic) {
-				return resolvedProfile{}, fmt.Errorf("zero model %s belongs to %s, not %s", entry.ID, entry.Provider, providerKind)
+				return resolvedProfile{}, fmt.Errorf("pvyai model %s belongs to %s, not %s", entry.ID, entry.Provider, providerKind)
 			}
 		} else if providerKind != modelProvider {
-			return resolvedProfile{}, fmt.Errorf("zero model %s belongs to %s, not %s", entry.ID, entry.Provider, providerKind)
+			return resolvedProfile{}, fmt.Errorf("pvyai model %s belongs to %s, not %s", entry.ID, entry.Provider, providerKind)
 		}
 		return resolvedProfile{
 			providerKind:    providerKind,
@@ -271,7 +271,7 @@ func isCodexCatalog(profile config.ProviderProfile, _ resolvedProfile) bool {
 // key independently here (a second oauth.FirstStored) could, after a transient
 // per-candidate load error or a mid-session `zero auth login`, pick a different
 // login than the bearer — a mismatch the backend rejects.
-func newCodexProvider(profile config.ProviderProfile, resolved resolvedProfile, options Options) (zeroruntime.Provider, error) {
+func newCodexProvider(profile config.ProviderProfile, resolved resolvedProfile, options Options) (pvyruntime.Provider, error) {
 	accountKey := options.OAuthLoginKey
 	resolver := openai.CodexAccountResolver(func(ctx context.Context) (string, bool, error) {
 		account := codexAccountForKey(accountKey)

@@ -6,9 +6,9 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/lsp"
-	"github.com/Gitlawb/zero/internal/sandbox"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/lsp"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 // sandboxBackendCheck reports whether the selected platform has a native

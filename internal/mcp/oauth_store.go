@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/oauth"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/oauth"
 )
 
 // tokenStoreSchemaVersion is the schema of the legacy mcp-oauth-tokens.json file,
@@ -98,7 +98,7 @@ func ResolveTokenStorePath(env map[string]string) (string, error) {
 		}
 		configHome = resolved
 	}
-	return filepath.Join(configHome, "zero", "mcp-oauth-tokens.json"), nil
+	return filepath.Join(configHome, "pvyai", "mcp-oauth-tokens.json"), nil
 }
 
 // NewTokenStore builds the unified-store-backed token store and runs a one-time

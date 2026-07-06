@@ -5,9 +5,9 @@ import (
 	"io"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/config"
-	"github.com/Gitlawb/zero/internal/contextreport"
-	"github.com/Gitlawb/zero/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/contextreport"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
 )
 
 type contextOptions struct {

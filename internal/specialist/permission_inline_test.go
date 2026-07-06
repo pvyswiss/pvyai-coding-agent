@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/Gitlawb/zero/internal/streamjson"
-	"github.com/Gitlawb/zero/internal/tools"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/streamjson"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 // TestTaskToolForwardsPermissionMode guards the fix for the Task tool dropping the
@@ -25,7 +25,7 @@ func TestTaskToolForwardsPermissionMode(t *testing.T) {
 			zero := 0
 			var gotArgs []string
 			executor := Executor{
-				BinaryPath:   "/usr/local/bin/zero",
+				BinaryPath:   "/usr/local/bin/pvyai",
 				NewSessionID: func() (string, error) { return "child_task", nil },
 				Load: func(LoadOptions) (LoadResult, error) {
 					return LoadResult{Specialists: []Manifest{{
@@ -66,7 +66,7 @@ func TestRunFreshUsesInlineManifestWithoutRegistryLookup(t *testing.T) {
 	var ran bool
 	var gotArgs []string
 	executor := Executor{
-		BinaryPath:   "/usr/local/bin/zero",
+		BinaryPath:   "/usr/local/bin/pvyai",
 		NewSessionID: func() (string, error) { return "child_task", nil },
 		// Registry has NO "subagent" specialist: a name lookup would fail.
 		Load: func(LoadOptions) (LoadResult, error) {

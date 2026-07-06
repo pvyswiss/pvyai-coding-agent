@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Gitlawb/zero/internal/localcontrol"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/localcontrol"
 )
 
 const localBrowserOutputBudgetBytes = 128 * 1024

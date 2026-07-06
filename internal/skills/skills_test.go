@@ -271,7 +271,7 @@ func TestListReturnsNamesAndDescriptions(t *testing.T) {
 }
 
 func TestDefaultDirHonorsEnvOverride(t *testing.T) {
-	got := DefaultDir(map[string]string{"ZERO_SKILLS_DIR": "/custom/skills"})
+	got := DefaultDir(map[string]string{"PVYAI_SKILLS_DIR": "/custom/skills"})
 	if got != "/custom/skills" {
 		t.Fatalf("DefaultDir override = %q, want /custom/skills", got)
 	}
@@ -279,7 +279,7 @@ func TestDefaultDirHonorsEnvOverride(t *testing.T) {
 
 func TestDefaultDirHonorsXDGDataHome(t *testing.T) {
 	got := DefaultDir(map[string]string{"XDG_DATA_HOME": "/xdg/data"})
-	want := filepath.Join("/xdg/data", "zero", "skills")
+	want := filepath.Join("/xdg/data", "pvyai", "skills")
 	if got != want {
 		t.Fatalf("DefaultDir = %q, want %q", got, want)
 	}
@@ -287,7 +287,7 @@ func TestDefaultDirHonorsXDGDataHome(t *testing.T) {
 
 func TestDefaultDirFallsBackToHome(t *testing.T) {
 	got := DefaultDir(map[string]string{"HOME": "/home/zero"})
-	want := filepath.Join("/home/zero", ".local", "share", "zero", "skills")
+	want := filepath.Join("/home/zero", ".local", "share", "pvyai", "skills")
 	if got != want {
 		t.Fatalf("DefaultDir = %q, want %q", got, want)
 	}

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Gitlawb/zero/internal/agentinit"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/agentinit"
 )
 
 // runInit implements `zero init`: investigate the repo and generate an
