@@ -27,9 +27,9 @@ func TestProviderCommandShowsConfiguredOnboardingActions(t *testing.T) {
 		"model: gpt-4.1",
 		"active: yes",
 		"api key: set",
-		"zero providers check openai --connectivity",
-		"zero providers catalog",
-		"zero providers setup openai --set-active",
+		"pvyai providers check openai --connectivity",
+		"pvyai providers catalog",
+		"pvyai providers setup openai --set-active",
 	} {
 		assertContains(t, text, want)
 	}
@@ -43,9 +43,9 @@ func TestProviderOnboardingCommandsWhenProfileMissing(t *testing.T) {
 		"status: warning",
 		"provider: none",
 		"profile: not configured",
-		"zero providers catalog",
-		"zero providers setup openai --set-active",
-		"zero providers add openai --api-key-env OPENAI_API_KEY --set-active",
+		"pvyai providers catalog",
+		"pvyai providers setup openai --set-active",
+		"pvyai providers add openai --api-key-env OPENAI_API_KEY --set-active",
 	} {
 		assertContains(t, text, want)
 	}
@@ -67,8 +67,8 @@ func TestProviderCommandShowsMissingCredentialAction(t *testing.T) {
 		"provider: anthropic",
 		"api key: not set",
 		"set ANTHROPIC_API_KEY in your environment",
-		"zero providers add anthropic --api-key-env ANTHROPIC_API_KEY --set-active",
-		"zero providers check anthropic --connectivity",
+		"pvyai providers add anthropic --api-key-env ANTHROPIC_API_KEY --set-active",
+		"pvyai providers check anthropic --connectivity",
 	} {
 		assertContains(t, text, want)
 	}
@@ -90,7 +90,7 @@ func TestProviderCommandShowsMissingCredentialActionForCompatibleProvider(t *tes
 		"provider: manual-openai-compatible",
 		"api key: not set",
 		"set OPENAI_API_KEY in your environment",
-		"zero providers add custom-openai-compatible --api-key-env OPENAI_API_KEY --set-active",
+		"pvyai providers add custom-openai-compatible --api-key-env OPENAI_API_KEY --set-active",
 	} {
 		assertContains(t, text, want)
 	}

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/zero-logo.png" alt="Zero" width="385">
+  <img src="docs/assets/pvai-logo.png" alt="PVYai" width="385">
 </p>
 
 <p align="center"><strong>一个独属于你的终端编码智能体。</strong></p>

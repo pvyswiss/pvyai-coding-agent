@@ -72,8 +72,8 @@ func TestDisplayPathAbbreviatesHome(t *testing.T) {
 	defer func() { userHomeDir = restore }()
 
 	abs := filepath.Join(home, "projects", "pvyai", "main.go")
-	if got := displayPath(t.TempDir(), abs); got != "~/projects/zero/main.go" {
-		t.Fatalf("displayPath under home = %q, want ~/projects/zero/main.go", got)
+	if got := displayPath(t.TempDir(), abs); got != "~/projects/pvyai/main.go" {
+		t.Fatalf("displayPath under home = %q, want ~/projects/pvyai/main.go", got)
 	}
 }
 

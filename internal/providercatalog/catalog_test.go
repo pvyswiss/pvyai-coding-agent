@@ -8,7 +8,7 @@ import (
 )
 
 var expectedCatalogIDs = []string{
-	"gitlawb-opengateway",
+	"pvyai",
 	"openai",
 	"anthropic",
 	"google",
@@ -75,8 +75,8 @@ func TestRecommendedProviderIsFirstAndUnique(t *testing.T) {
 	if !descriptors[0].Recommended {
 		t.Fatalf("All()[0] = %q, want it to be the recommended provider", descriptors[0].ID)
 	}
-	if descriptors[0].ID != "gitlawb-opengateway" {
-		t.Fatalf("recommended provider = %q, want %q", descriptors[0].ID, "gitlawb-opengateway")
+	if descriptors[0].ID != "pvyai" {
+		t.Fatalf("recommended provider = %q, want %q", descriptors[0].ID, "pvyai")
 	}
 	recommended := 0
 	for _, descriptor := range descriptors {
@@ -90,15 +90,21 @@ func TestRecommendedProviderIsFirstAndUnique(t *testing.T) {
 }
 
 func TestRecommendedProviderEndpoint(t *testing.T) {
-	descriptor, ok := Get("gitlawb-opengateway")
+	descriptor, ok := Get("pvyai")
 	if !ok {
-		t.Fatal("gitlawb-opengateway not found in catalog")
+		t.Fatal("pvyai not found in catalog")
 	}
-	if descriptor.DefaultBaseURL != "https://opengateway.gitlawb.com/v1" {
-		t.Fatalf("OpenGateway base URL = %q, want %q", descriptor.DefaultBaseURL, "https://opengateway.gitlawb.com/v1")
+	if descriptor.DefaultBaseURL != "https://ai-api.pvy.swiss/api" {
+		t.Fatalf("PVY.ai Platform base URL = %q, want %q", descriptor.DefaultBaseURL, "https://ai-api.pvy.swiss/api")
 	}
 	if descriptor.Transport != TransportOpenAICompatible {
-		t.Fatalf("OpenGateway transport = %q, want %q", descriptor.Transport, TransportOpenAICompatible)
+		t.Fatalf("PVY.ai Platform transport = %q, want %q", descriptor.Transport, TransportOpenAICompatible)
+	}
+	if descriptor.DefaultModel != "qwen3.6:35b" {
+		t.Fatalf("PVY.ai Platform default model = %q, want %q", descriptor.DefaultModel, "qwen3.6:35b")
+	}
+	if !reflect.DeepEqual(descriptor.AuthEnvVars, []string{"PVYAI_API_KEY"}) {
+		t.Fatalf("PVY.ai Platform AuthEnvVars = %#v, want %#v", descriptor.AuthEnvVars, []string{"PVYAI_API_KEY"})
 	}
 }
 
@@ -246,7 +252,10 @@ func TestLookupNormalizesIDsAndAliases(t *testing.T) {
 		"xiaomi mimo":                  "xiaomi-mimo",
 		"custom_openai_compatible":     "custom-openai-compatible",
 		"custom--anthropic compatible": "custom-anthropic-compatible",
-		"GitLawb OpenGateway":          "gitlawb-opengateway",
+		"pvyai":                        "pvyai",
+		"PVY.ai Platform":              "pvyai",
+		"pvy ai platform":              "pvyai",
+		"pvy-ai":                       "pvyai",
 	}
 	for input, want := range cases {
 		descriptor, ok := Get(input)
@@ -292,7 +301,7 @@ func TestListByTransportPreservesCatalogOrder(t *testing.T) {
 		TransportBedrock:         {"bedrock"},
 		TransportVertex:          {"vertex"},
 		TransportAnthropicCompat: {"minimax", "minimaxi-cn", "custom-anthropic-compatible"},
-		TransportOpenAICompat:    {"gitlawb-opengateway", "ollama-cloud", "ollama", "lmstudio", "openrouter", "huggingface", "chatgpt", "groq", "deepseek", "together", "dashscope", "moonshot", "longcat", "nvidia-nim", "mistral", "github", "xai", "venice", "xiaomi-mimo", "bankr", "zai", "zai-cn", "kilocode", "opencode", "opencode-go", "atomic-chat", "chatgpt-proxy", "custom-openai-compatible"},
+		TransportOpenAICompat:    {"pvyai", "ollama-cloud", "ollama", "lmstudio", "openrouter", "huggingface", "chatgpt", "groq", "deepseek", "together", "dashscope", "moonshot", "longcat", "nvidia-nim", "mistral", "github", "xai", "venice", "xiaomi-mimo", "bankr", "zai", "zai-cn", "kilocode", "opencode", "opencode-go", "atomic-chat", "chatgpt-proxy", "custom-openai-compatible"},
 	}
 
 	for transport, wantIDs := range cases {
@@ -353,6 +362,12 @@ func TestOAuthProviderClassification(t *testing.T) {
 	oauthIDs := descriptorIDs(OAuthProviders())
 	if want := []string{"openrouter", "huggingface", "chatgpt", "xai"}; !reflect.DeepEqual(oauthIDs, want) {
 		t.Fatalf("OAuthProviders() = %#v, want %#v", oauthIDs, want)
+	}
+	if d, _ := Get("pvyai"); d.ID != "pvyai" {
+		t.Fatalf("pvyai provider missing from catalog")
+	}
+	if d, _ := Get("pvyai"); !d.Recommended {
+		t.Fatalf("pvyai should be the recommended provider")
 	}
 	if d, _ := Get("openrouter"); !d.OAuthMintsKey {
 		t.Fatal("openrouter should mint a key")

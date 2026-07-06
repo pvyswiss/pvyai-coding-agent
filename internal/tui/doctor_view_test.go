@@ -157,7 +157,7 @@ func TestDoctorCommandOutputAddsActionableHints(t *testing.T) {
 			Status:  doctor.StatusWarn,
 			Message: "Native sandbox backend unavailable on windows: Windows sandbox setup helper is not available.",
 			Details: map[string]any{
-				"remedy": "install the Windows sandbox command runner and setup helper together, then run `zero sandbox setup`",
+				"remedy": "install the Windows sandbox command runner and setup helper together, then run `pvyai sandbox setup`",
 			},
 		},
 		doctorCheck("lsp.servers", doctor.StatusWarn, "2 language server(s) missing from PATH; affected files degrade to text-only edits."),
@@ -167,7 +167,7 @@ func TestDoctorCommandOutputAddsActionableHints(t *testing.T) {
 	for _, want := range []string{
 		"/provider",
 		"/doctor --connectivity",
-		"zero sandbox setup",
+		"pvyai sandbox setup",
 		"install missing language servers",
 	} {
 		if !strings.Contains(text, want) {

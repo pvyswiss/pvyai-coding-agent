@@ -13,25 +13,10 @@ const (
 	minStartupWidth      = 58
 )
 
-// zeroWordmarkPrefixLines is the white `ZER` part of the empty-state ANSI
-// Shadow-style wordmark. zeroWordmarkOLines keeps the old lime `O` glyph.
-var zeroWordmarkPrefixLines = []string{
-	`███████╗███████╗██████╗ `,
-	`╚══███╔╝██╔════╝██╔══██╗`,
-	`  ███╔╝ █████╗  ██████╔╝`,
-	` ███╔╝  ██╔══╝  ██╔══██╗`,
-	`███████╗███████╗██║  ██║`,
-	`╚══════╝╚══════╝╚═╝  ╚═╝`,
-}
-
-var zeroWordmarkOLines = []string{
-	` ██████╗ `,
-	`██╔═══██╗`,
-	`██║   ██║`,
-	`██║   ██║`,
-	`╚██████╔╝`,
-	` ╚═════╝ `,
-}
+// pvyaiWordmark is the empty-state brand wordmark: "PVY" in brand blue, "ai" in
+// brand red, rendered as simple bold text (no ASCII art).
+const pvyaiWordmarkPVY = "PVY"
+const pvyaiWordmarkAI = "ai"
 
 const emptyStateTagline = "Any model. Every tool. No Limits - own everything."
 
@@ -112,11 +97,9 @@ func (m model) emptyStateOrientation() string {
 }
 
 func zeroWordmarkLines() []string {
-	lines := make([]string, 0, minInt(len(zeroWordmarkPrefixLines), len(zeroWordmarkOLines)))
-	for index := 0; index < len(zeroWordmarkPrefixLines) && index < len(zeroWordmarkOLines); index++ {
-		lines = append(lines, zeroTheme.ink.Render(zeroWordmarkPrefixLines[index])+zeroTheme.accent.Render(zeroWordmarkOLines[index]))
-	}
-	return lines
+	pvy := zeroTheme.brandBlue.Render(pvyaiWordmarkPVY)
+	ai := zeroTheme.brandRed.Render(pvyaiWordmarkAI)
+	return []string{pvy + ai}
 }
 
 func borderedBlock(width int, lines []string) string {

@@ -217,8 +217,8 @@ func TestMCPCommandRendersConfiguredStateWithoutAgentRun(t *testing.T) {
 		"persistent grants:",
 		"server grants:",
 		"OAuth",
-		"add: zero mcp add",
-		"disconnect: zero mcp disable",
+		"add: pvyai mcp add",
+		"disconnect: pvyai mcp disable",
 	} {
 		if strings.Contains(text, unwanted) {
 			t.Fatalf("MCP manager overlay should not include old status report text %q:\n%s", unwanted, text)
@@ -812,7 +812,7 @@ func TestMCPCommandRunsManagerActionAndRefreshesState(t *testing.T) {
 		"MCP action complete",
 		"MCP server docs is now disabled.",
 		"docs · disabled · stdio",
-		"zero mcp enable docs",
+		"pvyai mcp enable docs",
 	} {
 		if !strings.Contains(text, want) {
 			t.Fatalf("/mcp action text missing %q:\n%s", want, text)

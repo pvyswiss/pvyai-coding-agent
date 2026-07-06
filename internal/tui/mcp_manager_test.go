@@ -17,11 +17,11 @@ func TestMCPManagerViewRendersServerActionHints(t *testing.T) {
 	}, 140))
 
 	for _, want := range []string{
-		"zero mcp check docs",
-		"zero mcp disable docs",
-		"zero mcp remove docs",
-		"zero mcp enable linear",
-		"zero mcp oauth login linear",
+		"pvyai mcp check docs",
+		"pvyai mcp disable docs",
+		"pvyai mcp remove docs",
+		"pvyai mcp enable linear",
+		"pvyai mcp oauth login linear",
 	} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("MCP manager server actions = %q, missing %q", got, want)
@@ -68,10 +68,10 @@ func TestMCPManagerViewRendersOAuthActionHints(t *testing.T) {
 	}, 140))
 
 	for _, want := range []string{
-		"zero mcp oauth refresh linear",
-		"zero mcp oauth logout linear",
-		"zero mcp oauth login notion",
-		"zero mcp oauth refresh expired",
+		"pvyai mcp oauth refresh linear",
+		"pvyai mcp oauth logout linear",
+		"pvyai mcp oauth login notion",
+		"pvyai mcp oauth refresh expired",
 	} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("MCP manager OAuth actions = %q, missing %q", got, want)

@@ -90,6 +90,10 @@ type tuiTheme struct {
 	bgPrompt    color.Color
 	bgSel       color.Color
 	bgPerm      color.Color
+
+	// Brand wordmark colors.
+	brandBlue lipgloss.Style // PVY
+	brandRed  lipgloss.Style // ai
 }
 
 // palette is the raw color-token table for one theme. buildTheme turns it into a
@@ -125,6 +129,9 @@ type palette struct {
 	cardRun   string // running card border (accent mixed into line)
 	cardErr   string // errored card border (red mixed into line)
 	cardPerm  string // permission card border (amber mixed into line)
+
+	brandBlue string // PVY brand color
+	brandRed  string // .ai brand color
 }
 
 // buildTheme resolves a palette into the styles every renderer uses.
@@ -199,6 +206,9 @@ func buildTheme(p palette) tuiTheme {
 		bgPrompt:    col(p.promptBg),
 		bgSel:       col(p.selBg),
 		bgPerm:      col(p.permBg),
+
+		brandBlue: fg(p.brandBlue).Bold(true),
+		brandRed:  fg(p.brandRed).Bold(true),
 	}
 }
 

@@ -53,7 +53,7 @@ func TestProviderCommandOpensOnboardingWizard(t *testing.T) {
 	updated, _ = next.Update(testKey(tea.KeyEnter))
 	next = updated.(model)
 	listView := plainRender(t, next.View())
-	for _, want := range []string{"Choose provider", "GitLawb OpenGateway", "OpenAI", "Anthropic", "Google", "OpenRouter", "Ollama"} {
+	for _, want := range []string{"Choose provider", "PVY.ai Platform", "OpenAI", "Anthropic", "Google", "OpenRouter", "Ollama"} {
 		assertContains(t, listView, want)
 	}
 }
@@ -195,7 +195,7 @@ func TestProviderWizardAdvancesProviderAPIKeyAndModelSteps(t *testing.T) {
 	} {
 		assertContains(t, view, want)
 	}
-	assertNotContains(t, view, "zero providers add anthropic")
+	assertNotContains(t, view, "pvyai providers add anthropic")
 
 	updated, cmd := next.Update(testKey(tea.KeyEnter))
 	next = updated.(model)
@@ -241,7 +241,7 @@ func TestProviderWizardAdvancesProviderAPIKeyAndModelSteps(t *testing.T) {
 	} {
 		assertContains(t, view, want)
 	}
-	assertNotContains(t, view, "zero providers check")
+	assertNotContains(t, view, "pvyai providers check")
 }
 
 func TestProviderWizardSupportsLeftAndGuardedRightNavigation(t *testing.T) {

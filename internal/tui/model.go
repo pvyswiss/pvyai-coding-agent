@@ -836,7 +836,7 @@ func (m model) doctorOptions(connectivity bool) doctor.Options {
 }
 
 const (
-	composerPlaceholder     = "describe a task for zero…"
+	composerPlaceholder     = "describe a task for pvyai…"
 	composerMaxVisibleLines = 4
 )
 
@@ -4169,7 +4169,7 @@ func (m model) launchPrompt(prompt string) (model, tea.Cmd) {
 	if m.provider == nil {
 		m.transcript = reduceTranscript(m.transcript, transcriptAction{
 			kind: actionAppendAssistant,
-			text: "No provider configured. Run `zero setup` (guided) or `pvyai auth` (OAuth) from a shell, or set a provider API key env var, then relaunch.",
+			text: "No provider configured. Run `pvyai setup` (guided) or `pvyai auth` (OAuth) from a shell, or set a provider API key env var, then relaunch.",
 		})
 		return m, nil
 	}

@@ -1007,7 +1007,7 @@ func noteBox(text string, width int, borderStyle lipgloss.Style, textStyle lipgl
 }
 
 func renderAskUserRow(row transcriptRow, width int) string {
-	line := fitStyledLine(zeroTheme.accent.Render("ask zero")+"  "+zeroTheme.ink.Render(strings.TrimPrefix(row.text, "ask_user: ")), width)
+	line := fitStyledLine(zeroTheme.accent.Render("ask pvyai")+"  "+zeroTheme.ink.Render(strings.TrimPrefix(row.text, "ask_user: ")), width)
 	if detail := strings.TrimSpace(row.detail); detail != "" {
 		line += "\n" + wrapDetailBlock(detail, width)
 	}

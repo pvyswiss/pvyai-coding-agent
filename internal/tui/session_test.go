@@ -626,7 +626,7 @@ func TestResumeCommandHydratesSessionTranscript(t *testing.T) {
 	if !ok || toolResult.tool != "grep" || toolResult.status != tools.StatusError || toolResult.detail != "matches" {
 		t.Fatalf("expected hydrated tool result metadata, got ok=%v row=%#v", ok, toolResult)
 	}
-	if transcriptContains(next.transcript, "zero exec --resume") {
+	if transcriptContains(next.transcript, "pvyai exec --resume") {
 		t.Fatalf("resume should not show headless-only guidance after hydration, got %#v", next.transcript)
 	}
 }
@@ -1023,7 +1023,7 @@ func TestResumeCommandReportsMissingSession(t *testing.T) {
 	updated, _ := m.Update(testKey(tea.KeyEnter))
 	next := updated.(model)
 
-	if !transcriptContains(next.transcript, "zero session not found: missing_session") {
+	if !transcriptContains(next.transcript, "pvyai session not found: missing_session") {
 		t.Fatalf("expected missing session error, got %#v", next.transcript)
 	}
 }

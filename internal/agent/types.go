@@ -345,7 +345,7 @@ func (result Result) TruncationNotice() string {
 	switch result.FinishReason {
 	case pvyruntime.FinishReasonLength:
 		return "Response was cut off at the output token limit and may be incomplete. " +
-			"Raise the model's max output tokens or ask zero to continue."
+			"Raise the model's max output tokens or ask pvyai to continue."
 	case pvyruntime.FinishReasonContentFilter:
 		return "Response was withheld or cut off by the provider's content filter and may be incomplete."
 	case "":

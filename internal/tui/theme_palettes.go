@@ -44,6 +44,9 @@ var darkPalette = palette{
 	cardRun:   "#5a6b2e",
 	cardErr:   "#6b3434",
 	cardPerm:  "#6b5a2e",
+
+	brandBlue: "#DCECFF",
+	brandRed:  "#E62E27",
 }
 
 // draculaPalette — the Dracula scheme (dracula.com): muted-violet surface, purple
@@ -76,6 +79,9 @@ var draculaPalette = palette{
 	cardRun:   "#7c6aa6",
 	cardErr:   "#98505a",
 	cardPerm:  "#9a7c62",
+
+	brandBlue: "#DCECFF",
+	brandRed:  "#E62E27",
 }
 
 // nordPalette — the Nord scheme (nordtheme.com): cool polar-night slate with a
@@ -108,6 +114,9 @@ var nordPalette = palette{
 	cardRun:   "#4c6672",
 	cardErr:   "#6b4a51",
 	cardPerm:  "#6a564d",
+
+	brandBlue: "#DCECFF",
+	brandRed:  "#E62E27",
 }
 
 // gruvboxPalette — Gruvbox dark (medium): warm retro browns with an olive-green
@@ -140,6 +149,9 @@ var gruvboxPalette = palette{
 	cardRun:   "#6f8460",
 	cardErr:   "#a5493d",
 	cardPerm:  "#a5833a",
+
+	brandBlue: "#DCECFF",
+	brandRed:  "#E62E27",
 }
 
 // tokyoNightPalette — Tokyo Night (storm): deep indigo surface, soft blue accent,
@@ -172,6 +184,9 @@ var tokyoNightPalette = palette{
 	cardRun:   "#4b5d8b",
 	cardErr:   "#7d4857",
 	cardPerm:  "#7d6954",
+
+	brandBlue: "#DCECFF",
+	brandRed:  "#E62E27",
 }
 
 // catppuccinPalette — Catppuccin Mocha: soft lavender surface with a mauve accent
@@ -204,6 +219,9 @@ var catppuccinPalette = palette{
 	cardRun:   "#7a6a99",
 	cardErr:   "#8a5b72",
 	cardPerm:  "#8d8274",
+
+	brandBlue: "#DCECFF",
+	brandRed:  "#E62E27",
 }
 
 // oneDarkPalette — Atom One Dark: slate-gray surface with a blue accent.
@@ -235,6 +253,9 @@ var oneDarkPalette = palette{
 	cardRun:   "#496c8c",
 	cardErr:   "#7c515b",
 	cardPerm:  "#7e735e",
+
+	brandBlue: "#DCECFF",
+	brandRed:  "#E62E27",
 }
 
 // solarizedDarkPalette — Solarized Dark (Ethan Schoonover): the signature teal
@@ -267,6 +288,9 @@ var solarizedDarkPalette = palette{
 	cardRun:   "#1d6b6c",
 	cardErr:   "#6d393d",
 	cardPerm:  "#5b6028",
+
+	brandBlue: "#DCECFF",
+	brandRed:  "#E62E27",
 }
 
 // rosePinePalette — Rosé Pine (main): muted rose-quartz base with a soft-rose
@@ -299,6 +323,9 @@ var rosePinePalette = palette{
 	cardRun:   "#7c6673",
 	cardErr:   "#7c4662",
 	cardPerm:  "#806857",
+
+	brandBlue: "#DCECFF",
+	brandRed:  "#E62E27",
 }
 
 // everforestPalette — Everforest dark (medium): warm forest-gray surface with a
@@ -331,6 +358,9 @@ var everforestPalette = palette{
 	cardRun:   "#798b6b",
 	cardErr:   "#9c676b",
 	cardPerm:  "#96896b",
+
+	brandBlue: "#DCECFF",
+	brandRed:  "#E62E27",
 }
 
 // lightPalette is dark-on-light: a warm cream surface (so cards lift off the
@@ -367,6 +397,9 @@ var lightPalette = palette{
 	cardRun:   "#b0be7e",
 	cardErr:   "#d8b0a8",
 	cardPerm:  "#d6c496",
+
+	brandBlue: "#1a4d7a",
+	brandRed:  "#E62E27",
 }
 
 // solarizedLightPalette — Solarized Light: the base3/base2 cream surface with the
@@ -399,6 +432,9 @@ var solarizedLightPalette = palette{
 	cardRun:   "#7fbaaf",
 	cardErr:   "#d8837a",
 	cardPerm:  "#c4ae63",
+
+	brandBlue: "#1a4d7a",
+	brandRed:  "#E62E27",
 }
 
 // themeEntry is one registered theme: Name is the /theme value + ZERO_THEME/--theme

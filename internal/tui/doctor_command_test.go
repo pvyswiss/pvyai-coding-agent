@@ -281,12 +281,12 @@ func TestDoctorFixLinesUseSandboxRemedy(t *testing.T) {
 		Status:  doctor.StatusWarn,
 		Message: "Native sandbox backend unavailable on windows: Windows sandbox setup helper is not available.",
 		Details: map[string]any{
-			"remedy": "install the Windows sandbox command runner and setup helper together, then run `zero sandbox setup`",
+			"remedy": "install the Windows sandbox command runner and setup helper together, then run `pvyai sandbox setup`",
 		},
 	}}})
 
 	text := strings.Join(lines, "\n")
-	if !strings.Contains(text, "zero sandbox setup") {
+	if !strings.Contains(text, "pvyai sandbox setup") {
 		t.Fatalf("doctorFixLines missing sandbox setup remedy:\n%s", text)
 	}
 	if strings.Contains(text, "WSL2") || strings.Contains(text, "Linux container") {
