@@ -86,11 +86,11 @@ func ContentStallTimeout(idleTimeout time.Duration) time.Duration {
 // accepts a Go duration ("5m", "300s", "90s") or a bare number of seconds
 // ("300"). A value of "0", "off", "none", or "disabled" turns the watchdog off
 // entirely (streams may then hang until the HTTP/transport layer gives up).
-const streamIdleTimeoutEnv = "ZERO_STREAM_IDLE_TIMEOUT"
+const streamIdleTimeoutEnv = "PVYAI_STREAM_IDLE_TIMEOUT"
 
 // ResolveStreamIdleTimeout selects the effective stream idle timeout. Precedence:
 // an explicit positive option (e.g. set by a test) wins; otherwise the
-// ZERO_STREAM_IDLE_TIMEOUT env override if set and valid; otherwise
+// PVYAI_STREAM_IDLE_TIMEOUT env override if set and valid; otherwise
 // DefaultStreamIdleTimeout. A returned value <= 0 disables the idle watchdog.
 func ResolveStreamIdleTimeout(option time.Duration) time.Duration {
 	if option > 0 {

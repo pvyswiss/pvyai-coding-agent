@@ -53,7 +53,7 @@ func (tool SubmitTool) Safety() tools.Safety {
 	return tools.Safety{
 		SideEffect: tools.SideEffectWrite,
 		Permission: tools.PermissionAllow,
-		Reason:     "Writes a spec markdown file under the workspace .zero/specs directory and stops for review.",
+		Reason:     "Writes a spec markdown file under the workspace .pvyai/specs directory and stops for review.",
 	}
 }
 

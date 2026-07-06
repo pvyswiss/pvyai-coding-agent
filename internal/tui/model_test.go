@@ -952,7 +952,7 @@ func TestResumePickerSelectionHydratesSession(t *testing.T) {
 	if next.activeSession.SessionID != target.SessionID {
 		t.Fatalf("active session = %q, want %q", next.activeSession.SessionID, target.SessionID)
 	}
-	if !transcriptContains(next.transcript, "Resumed Zero session") || !transcriptContains(next.transcript, target.SessionID) {
+	if !transcriptContains(next.transcript, "Resumed PVYai session") || !transcriptContains(next.transcript, target.SessionID) {
 		t.Fatalf("expected the resume summary in the transcript, got %#v", next.transcript)
 	}
 }

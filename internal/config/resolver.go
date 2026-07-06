@@ -518,7 +518,7 @@ func SetActiveProviderEnv(name string) {
 }
 
 // MaxTurnsEnv overrides the per-run tool-turn budget by name (read in applyEnv).
-const MaxTurnsEnv = "ZERO_MAX_TURNS"
+const MaxTurnsEnv = "PVYAI_MAX_TURNS"
 
 // SetMaxTurnsEnv exports the per-run tool-turn budget to the process environment so
 // a spawned child (sub-agent / swarm member, which inherits the environment) runs

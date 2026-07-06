@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	SpecDirName = ".zero/specs"
+	SpecDirName = ".pvyai/specs"
 )
 
 type SaveOptions struct {

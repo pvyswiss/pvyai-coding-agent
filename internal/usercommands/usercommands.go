@@ -45,7 +45,7 @@ type Paths struct {
 func DefaultPaths(workspaceRoot, userConfigDir string) Paths {
 	p := Paths{}
 	if strings.TrimSpace(workspaceRoot) != "" {
-		p.ProjectDir = filepath.Join(workspaceRoot, ".zero", "commands")
+		p.ProjectDir = filepath.Join(workspaceRoot, ".pvyai", "commands")
 	}
 	if strings.TrimSpace(userConfigDir) != "" {
 		p.UserDir = filepath.Join(userConfigDir, "pvyai", "commands")

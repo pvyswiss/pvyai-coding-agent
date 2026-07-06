@@ -314,8 +314,8 @@ type model struct {
 	lineAges           []time.Time
 	lastStreamActivity time.Time
 	fadeActive         bool
-	fadeDisabled       bool // streaming fade off (ZERO_NO_FADE / SSH / tmux / low-color / reduced motion)
-	reducedMotion      bool // ZERO_REDUCED_MOTION / no-TTY: static spinner glyph, no fade
+	fadeDisabled       bool // streaming fade off (PVYAI_NO_FADE / SSH / tmux / low-color / reduced motion)
+	reducedMotion      bool // PVYAI_REDUCED_MOTION / no-TTY: static spinner glyph, no fade
 	// In-progress tool call whose arguments are streaming (a file being written),
 	// shown live by streamingToolCallView so a long write/edit isn't a frozen
 	// spinner. Cleared when the call completes (next text/turn) — see updateModel.
@@ -1737,7 +1737,7 @@ func (m model) updateModel(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// case schedules the next one). Schedule the FIRST tick only on
 		// the inactive→active transition; subsequent deltas just refresh
 		// state and rely on the existing tick chain.
-		// When the fade is disabled (ZERO_NO_FADE / SSH / tmux / low-color),
+		// When the fade is disabled (PVYAI_NO_FADE / SSH / tmux / low-color),
 		// fadeActive stays false so styleStreamingLine renders streaming text
 		// statically at base ink, and no self-perpetuating tick is scheduled.
 		if !m.fadeDisabled {
