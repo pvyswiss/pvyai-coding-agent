@@ -927,7 +927,7 @@ func TestModelSwitchUnknownModelReportsError(t *testing.T) {
 	if next.modelName != "gpt-4.1" {
 		t.Fatalf("expected active model to stay gpt-4.1, got %q", next.modelName)
 	}
-	if !transcriptContains(next.transcript, "unknown Zero model") {
+	if !transcriptContains(next.transcript, "unknown PVYai model") {
 		t.Fatalf("expected unknown model error, got %#v", next.transcript)
 	}
 }

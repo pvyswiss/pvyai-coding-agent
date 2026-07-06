@@ -143,7 +143,7 @@ var curatedModels = map[string][]Model{
 	// (see /health: xiaomi-mimo, minimax, qwen, google, nvidia, z-ai). These are
 	// the curated coding defaults; the gateway accepts any model its upstreams
 	// expose, so users can also type an id the picker doesn't list.
-	"gitlawb-opengateway": {
+	"pvyai-opengateway": {
 		{ID: "mimo-v2.5-pro", Description: "catalog default (Xiaomi MiMo)"},
 		{ID: "mimo-v2.5-pro-ultraspeed", Description: "fast model (Xiaomi MiMo)"},
 		{ID: "MiniMax-M3", Description: "MiniMax model"},

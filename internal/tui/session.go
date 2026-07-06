@@ -283,7 +283,7 @@ func (m model) formatResumeSummary(session sessions.Metadata, eventCount int) st
 		providerLine += "  (recorded: " + recorded + ")"
 	}
 	return renderCommandOutput(commandOutput{
-		Title:  "Resumed Zero session",
+		Title:  "Resumed PVYai session",
 		Status: commandStatusOK,
 		Sections: []commandSection{{
 			Title: "Session",

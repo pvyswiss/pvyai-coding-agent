@@ -606,7 +606,7 @@ func TestResumeCommandHydratesSessionTranscript(t *testing.T) {
 	if cmd != nil {
 		t.Fatal("expected /resume to hydrate synchronously")
 	}
-	for _, want := range []string{"Resumed Zero session", session.SessionID, "previous request", "tool call: grep", "permission: grep allow", "tool result: grep error matches", "previous answer", "old error"} {
+	for _, want := range []string{"Resumed PVYai session", session.SessionID, "previous request", "tool call: grep", "permission: grep allow", "tool result: grep error matches", "previous answer", "old error"} {
 		if !transcriptContains(next.transcript, want) {
 			t.Fatalf("expected resumed transcript to contain %q, got %#v", want, next.transcript)
 		}

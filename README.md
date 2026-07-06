@@ -75,7 +75,7 @@ bun pm -g trust @pvyswiss/pvyai-agent
 Alternatives: allow the postinstall up front by adding
 `"trustedDependencies": ["@pvyswiss/pvyai-agent"]` to your project's package.json
 before `bun add`, or run the installer manually
-(`node node_modules/@gitlawb/pvyai/scripts/postinstall.mjs`) on Bun versions
+(`node node_modules/@pvyswiss/pvyai/scripts/postinstall.mjs`) on Bun versions
 that do not have `bun pm trust`.
 
 ### Install scripts

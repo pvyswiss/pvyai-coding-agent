@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	DefaultRepository = "Gitlawb/zero"
+	DefaultRepository = "pvyswiss/pvyai-coding-agent"
 	DefaultTimeout    = 5 * time.Second
 )
 

@@ -402,7 +402,7 @@ func (m model) handleModelCommand(args string) (model, string) {
 	}
 	target, ok := m.resolveModelSwitchTarget(registry, args)
 	if !ok {
-		return m, "Model\nunknown Zero model " + strconv.Quote(args)
+		return m, "Model\nunknown PVYai model " + strconv.Quote(args)
 	}
 	if !config.HasProviderProfile(m.providerProfile) {
 		return m, "Model\nNo provider profile is available for TUI model switching."

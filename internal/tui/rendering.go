@@ -1221,7 +1221,7 @@ func permissionOptionLabel(option permissionOption, request agent.PermissionRequ
 	case permissionDecisionDeny:
 		return "No, continue without running it"
 	case permissionDecisionCancel:
-		return "No, and tell Zero what to do differently"
+		return "No, and tell PVYai what to do differently"
 	default:
 		return option.label
 	}

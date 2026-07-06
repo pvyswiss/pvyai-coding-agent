@@ -35,7 +35,7 @@ func TestHelpCommandRendersGroupedSections(t *testing.T) {
 		"Meta",
 		"  /model [list|id]",
 		"  /permissions",
-		"hint: submit plain text to ask Zero",
+		"hint: submit plain text to ask PVYai",
 	} {
 		assertContains(t, text, want)
 	}

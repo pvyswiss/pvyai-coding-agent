@@ -33,7 +33,7 @@ var zeroWordmarkOLines = []string{
 	` ╚═════╝ `,
 }
 
-const emptyStateTagline = "Any model. Every tool. Zero limits."
+const emptyStateTagline = "Any model. Every tool. No Limits - own everything."
 
 // emptyState renders the centered stream-area block shown while the
 // transcript has no real content: the brand glyph and tagline.

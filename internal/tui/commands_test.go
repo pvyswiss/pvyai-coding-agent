@@ -57,7 +57,7 @@ func TestFormatCommandHelpLinesGroupsCommandsByStableOrder(t *testing.T) {
 		"  /mcp (/mcp-status) - Show MCP server status.",
 		"  /search <query> (/find) - Search local session events. Requires a query argument.",
 		"meta:",
-		"  /exit (/quit) - Exit Zero.",
+		"  /exit (/quit) - Exit PVYai.",
 	} {
 		if !strings.Contains(help, want) {
 			t.Fatalf("expected grouped help to contain %q, got:\n%s", want, help)

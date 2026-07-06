@@ -27,7 +27,7 @@ type FetchOptions struct {
 }
 
 func FetchRemote(ctx context.Context, provider providercatalog.Descriptor, options FetchOptions) ([]Model, error) {
-	if provider.ID == "gitlawb-opengateway" {
+	if provider.ID == "pvyai-opengateway" {
 		models, err := FetchOpenGateway(ctx, defaultedOpenGatewayURL(provider, options.OpenGatewayURL), options)
 		if err != nil {
 			return nil, err
@@ -227,7 +227,7 @@ func defaultedOpenGatewayURL(provider providercatalog.Descriptor, override strin
 	}
 	parsed, err := url.Parse(provider.DefaultBaseURL)
 	if err != nil || parsed.Scheme == "" || parsed.Host == "" {
-		return "https://opengateway.gitlawb.com/pvyai/models.json"
+		return "https://opengateway.pvyswiss.com/pvyai/models.json"
 	}
 	return parsed.Scheme + "://" + parsed.Host + "/pvyai/models.json"
 }

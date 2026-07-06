@@ -532,7 +532,7 @@ func TestModelCommandAcceptsManualModelForCustomProvider(t *testing.T) {
 	if next.modelName != "qwen-custom-latest" {
 		t.Fatalf("active model = %q, want manual custom model", next.modelName)
 	}
-	if transcriptContains(next.transcript, "unknown Zero model") {
+	if transcriptContains(next.transcript, "unknown PVYai model") {
 		t.Fatalf("manual custom model should not be rejected, got %#v", next.transcript)
 	}
 }

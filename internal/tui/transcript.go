@@ -79,7 +79,7 @@ type transcriptAction struct {
 func initialTranscript() []transcriptRow {
 	return []transcriptRow{{
 		kind: rowWelcome,
-		text: "Welcome to Zero. Type /help for commands.",
+		text: "Welcome to PVYai. Type /help for commands.",
 	}}
 }
 

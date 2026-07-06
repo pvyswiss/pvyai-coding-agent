@@ -646,7 +646,7 @@ func (m model) summarizeCompactionPlan(plan sessions.CompactionPlan) (string, er
 	}
 	stream, err := m.provider.StreamCompletion(m.ctx, pvyruntime.CompletionRequest{
 		Messages: []pvyruntime.Message{
-			{Role: pvyruntime.MessageRoleSystem, Content: "Summarize compacted Zero session events for future coding context. Preserve user goals, decisions, files, tool outcomes, blockers, and exact next steps. Omit secrets and do not invent details."},
+			{Role: pvyruntime.MessageRoleSystem, Content: "Summarize compacted PVYai session events for future coding context. Preserve user goals, decisions, files, tool outcomes, blockers, and exact next steps. Omit secrets and do not invent details."},
 			{Role: pvyruntime.MessageRoleUser, Content: plan.SummaryPrompt},
 		},
 	})

@@ -1234,7 +1234,7 @@ func (m model) setupStageLines(width int, height int) []string {
 		return m.setupReadyLines(width)
 	default:
 		return []string{
-			zeroTheme.accent.Render("Welcome to Zero"),
+			zeroTheme.accent.Render("Welcome to PVYai"),
 			"",
 			zeroTheme.ink.Render("A terminal agent for changing real code."),
 			zeroTheme.faint.Render("Plan changes, edit with approval, run checks, and resume sessions."),
@@ -1574,7 +1574,7 @@ func (m model) setupNameLines(width int) []string {
 	return []string{
 		padSetupLine("  "+zeroTheme.ink.Bold(true).Render("Provider name"), rowWidth),
 		blankSetupBlockLine(rowWidth),
-		padSetupLine("  "+zeroTheme.ink.Render("Choose the short label shown in Zero."), rowWidth),
+		padSetupLine("  "+zeroTheme.ink.Render("Choose the short label shown in PVYai."), rowWidth),
 		padSetupLine("  "+zeroTheme.faint.Render("Leave blank to use "+name+"."), rowWidth),
 		blankSetupBlockLine(rowWidth),
 		padSetupLine("  "+providerWizardInputLine("name > ", strings.TrimSpace(m.setup.name), name, rowWidth-2), rowWidth),
@@ -1698,7 +1698,7 @@ func (m model) setupFooter() string {
 		}
 		return zeroTheme.faint.Render("↑/↓ choose   type search   ") + zeroTheme.accent.Render("Enter") + zeroTheme.faint.Render(" continue")
 	case setupStageWelcome:
-		return zeroTheme.accent.Render("Space") + zeroTheme.faint.Render(" to set up Zero")
+		return zeroTheme.accent.Render("Space") + zeroTheme.faint.Render(" to set up PVYai")
 	default:
 		return zeroTheme.accent.Render("Space") + zeroTheme.faint.Render(" to continue")
 	}
