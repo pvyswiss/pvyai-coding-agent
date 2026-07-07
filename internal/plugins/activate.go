@@ -62,7 +62,7 @@ type commandOutput struct {
 type toolRunner func(ctx context.Context, command pluginCommand) commandOutput
 
 // ToolProvenance records which plugin a registered tool originated from, for
-// `zero plugin list` and debugging.
+// `pvyai plugin list` and debugging.
 type ToolProvenance struct {
 	ToolName string `json:"toolName"`
 	PluginID string `json:"pluginId"`

@@ -18,7 +18,7 @@ func TestRunContextHelp(t *testing.T) {
 	if exitCode != exitSuccess {
 		t.Fatalf("expected exit code %d, got %d: %s", exitSuccess, exitCode, stderr.String())
 	}
-	for _, want := range []string{"Usage:", "zero context [flags]", "--json", "-h, --help"} {
+	for _, want := range []string{"Usage:", "pvyai context [flags]", "--json", "-h, --help"} {
 		if !strings.Contains(stdout.String(), want) {
 			t.Fatalf("expected context help to contain %q, got %q", want, stdout.String())
 		}
@@ -54,7 +54,7 @@ func TestRunContextTextReport(t *testing.T) {
 	if exitCode != exitSuccess {
 		t.Fatalf("expected exit code %d, got %d: %s", exitSuccess, exitCode, stderr.String())
 	}
-	for _, want := range []string{"Zero context report", "root: " + cwd, "model: gpt-4.1"} {
+	for _, want := range []string{"PVYai context report", "root: " + cwd, "model: gpt-4.1"} {
 		if !strings.Contains(stdout.String(), want) {
 			t.Fatalf("expected context output to contain %q, got %q", want, stdout.String())
 		}

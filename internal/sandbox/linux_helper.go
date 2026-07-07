@@ -333,7 +333,7 @@ func linuxHelperSandboxEnvironment(profile PermissionProfile, base []string) []s
 func linuxHelperSandboxEnvironmentOverrides(profile PermissionProfile) []string {
 	return []string{
 		EnvSandboxBackend + "=" + string(linuxSandboxBackendEnv),
-		"ZERO_SANDBOX_NETWORK=" + string(profile.Network.Mode),
+		"PVYAI_SANDBOX_NETWORK=" + string(profile.Network.Mode),
 		EnvSandboxed + "=1",
 	}
 }

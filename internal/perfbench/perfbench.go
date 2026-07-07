@@ -466,8 +466,8 @@ func appendNoColor(env []string) []string {
 
 func offlineBenchmarkEnv(env []string) []string {
 	remove := map[string]bool{
-		"ZERO_PROVIDER_COMMAND": true,
-		"ZERO_PROVIDER":         true,
+		"PVYAI_PROVIDER_COMMAND": true,
+		"PVYAI_PROVIDER":         true,
 		"OPENAI_API_KEY":        true,
 		"OPENAI_BASE_URL":       true,
 		"OPENAI_MODEL":          true,

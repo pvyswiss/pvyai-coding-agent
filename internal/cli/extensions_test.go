@@ -70,7 +70,7 @@ func TestRunPluginsListsJSONAndText(t *testing.T) {
 	if exitCode != exitSuccess {
 		t.Fatalf("exitCode = %d stderr=%s", exitCode, stderr.String())
 	}
-	for _, want := range []string{"Zero Plugins:", "zero.docs", "Docs", "1.0.0", "1 prompts"} {
+	for _, want := range []string{"PVYai Plugins:", "zero.docs", "Docs", "1.0.0", "1 prompts"} {
 		if !strings.Contains(stdout.String(), want) {
 			t.Fatalf("plugin text missing %q: %s", want, stdout.String())
 		}
@@ -128,7 +128,7 @@ func TestRunHooksListsRedactedJSONAndText(t *testing.T) {
 	if exitCode != exitSuccess {
 		t.Fatalf("exitCode = %d stderr=%s", exitCode, stderr.String())
 	}
-	if !strings.Contains(stdout.String(), "Zero Hooks") || !strings.Contains(stdout.String(), "zero.preflight") {
+	if !strings.Contains(stdout.String(), "PVYai Hooks") || !strings.Contains(stdout.String(), "zero.preflight") {
 		t.Fatalf("unexpected hook text: %s", stdout.String())
 	}
 	if strings.Contains(stdout.String(), secret) || !strings.Contains(stdout.String(), "[REDACTED]") {
@@ -327,7 +327,7 @@ func TestRunMCPPermissionsHelpDoesNotOpenStore(t *testing.T) {
 			if stderr.Len() != 0 {
 				t.Fatalf("expected empty stderr, got %q", stderr.String())
 			}
-			if !strings.Contains(stdout.String(), "zero mcp permissions") {
+			if !strings.Contains(stdout.String(), "pvyai mcp permissions") {
 				t.Fatalf("expected help output, got %q", stdout.String())
 			}
 		})

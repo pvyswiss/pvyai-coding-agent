@@ -249,7 +249,7 @@ func mergeProjectConfig(dst *FileConfig, src FileConfig) error {
 	}
 	mergeMCPConfig(&dst.MCP, src.MCP)
 	// Sandbox.AdditionalWriteRoots is intentionally NOT merged from project
-	// config: a cloned repo's .zero/config.json must not be able to grant
+	// config: a cloned repo's .pvyai/config.json must not be able to grant
 	// itself write access outside the workspace. Global config and CLI flags
 	// are the only config sources for write roots.
 	//
@@ -498,7 +498,7 @@ func mergeProfile(base ProviderProfile, next ProviderProfile) ProviderProfile {
 }
 
 // ActiveProviderEnv selects the active provider profile by name (read in applyEnv).
-const ActiveProviderEnv = "ZERO_PROVIDER"
+const ActiveProviderEnv = "PVYAI_PROVIDER"
 
 // SetActiveProviderEnv exports the active provider name to the process environment
 // so a spawned child process (which inherits the environment) resolves the SAME

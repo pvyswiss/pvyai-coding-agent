@@ -150,14 +150,14 @@ func TestRunAuthHelp(t *testing.T) {
 	if code := runWithDeps([]string{"auth", "--help"}, &stdout, &stderr, appDeps{}); code != exitSuccess {
 		t.Fatalf("exit = %d", code)
 	}
-	for _, want := range []string{"zero auth", "login", "logout", "status", "refresh", "--device"} {
+	for _, want := range []string{"pvyai auth", "login", "logout", "status", "refresh", "--device"} {
 		if !strings.Contains(stdout.String(), want) {
 			t.Fatalf("help missing %q:\n%s", want, stdout.String())
 		}
 	}
 }
 
-// TestRunAuthLoginChatGPTRoutesToDedicatedFlow verifies `zero auth login
+// TestRunAuthLoginChatGPTRoutesToDedicatedFlow verifies `pvyai auth login
 // chatgpt` reaches the dedicated ChatGPT login (fixed-port loopback + mandatory
 // authorize params), not the generic manager path. The generic login accepts
 // --device, so a ChatGPT-specific rejection proves the routing took effect.

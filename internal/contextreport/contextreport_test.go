@@ -77,7 +77,7 @@ func TestBuildCountsProjectGuidelinesAndFreeBudget(t *testing.T) {
 
 func TestBuildHasStableJSONContractAndCategoryMath(t *testing.T) {
 	root := t.TempDir()
-	writeTestFile(t, root, "PVYAI.md", strings.Repeat("zero rules\n", 16))
+	writeTestFile(t, root, "PVYAI.md", strings.Repeat("pvyai rules\n", 16))
 
 	registry := tools.NewRegistry()
 	for _, tool := range tools.CoreTools(root) {
@@ -276,7 +276,7 @@ func TestFormatIncludesRootModelAndCategories(t *testing.T) {
 
 	formatted := Format(report)
 
-	for _, want := range []string{"Zero context report", "root: D:/repo", "model: gpt-4.1", "api_model: gpt-4.1", "System prompt", "Free"} {
+	for _, want := range []string{"PVYai context report", "root: D:/repo", "model: gpt-4.1", "api_model: gpt-4.1", "System prompt", "Free"} {
 		if !strings.Contains(formatted, want) {
 			t.Fatalf("Format missing %q:\n%s", want, formatted)
 		}
@@ -299,7 +299,7 @@ func TestFormatHandlesUnknownContextWindow(t *testing.T) {
 	formatted := Format(report)
 
 	for _, want := range []string{
-		"Zero context report",
+		"PVYai context report",
 		"root: D:/repo",
 		"model: gpt-4.1",
 		"api_model: gpt-4.1",

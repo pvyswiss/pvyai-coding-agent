@@ -60,7 +60,7 @@ func runSpec(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) in
 func parseSpecArgs(args []string) (string, string, specCommandOptions, bool, error) {
 	options := specCommandOptions{}
 	if len(args) == 0 {
-		return "", "", options, false, execUsageError{"spec command required. Use `zero spec show <spec>`."}
+		return "", "", options, false, execUsageError{"spec command required. Use `pvyai spec show <spec>`."}
 	}
 	command := ""
 	target := ""
@@ -125,10 +125,10 @@ func parseSpecArgs(args []string) (string, string, specCommandOptions, bool, err
 		return command, target, options, false, execUsageError{fmt.Sprintf("pvyai spec %s requires a spec id or draft session id", command)}
 	}
 	if options.commentProvided && command != "approve" {
-		return command, target, options, false, execUsageError{"--comment is only valid for zero spec approve"}
+		return command, target, options, false, execUsageError{"--comment is only valid for pvyai spec approve"}
 	}
 	if options.reasonProvided && command != "reject" {
-		return command, target, options, false, execUsageError{"--reason is only valid for zero spec reject"}
+		return command, target, options, false, execUsageError{"--reason is only valid for pvyai spec reject"}
 	}
 	return command, strings.TrimSpace(target), options, false, nil
 }
@@ -347,9 +347,9 @@ func firstNonEmptyString(values ...string) string {
 
 func writeSpecHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero spec show <spec-id|draft-session-id> [--json]
-  zero spec approve <spec-id|draft-session-id> [--comment <text>] [--json]
-  zero spec reject <spec-id|draft-session-id> [--reason <text>] [--json]
+  pvyai spec show <spec-id|draft-session-id> [--json]
+  pvyai spec approve <spec-id|draft-session-id> [--comment <text>] [--json]
+  pvyai spec reject <spec-id|draft-session-id> [--reason <text>] [--json]
 
 Commands:
   show      Print the saved draft spec

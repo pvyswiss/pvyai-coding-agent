@@ -62,7 +62,7 @@ const dragEdgeScrollStep = 1
 type model struct {
 	ctx                         context.Context
 	cwd                         string
-	userCommands                []usercommands.Command // file-sourced /commands (.zero/commands)
+	userCommands                []usercommands.Command // file-sourced /commands (.pvyai/commands)
 	loadSkills                  func() []skills.Skill  // lazy installed-skills loader for /skills + /<skill-name>
 	userConfigPath              string
 	doctorUserConfigPath        string
@@ -726,7 +726,7 @@ func newModel(ctx context.Context, options Options) model {
 		Mode:      notify.Mode(strings.TrimSpace(options.Notify.Mode)),
 		FocusMode: notify.FocusMode(strings.TrimSpace(options.Notify.FocusMode)),
 	})
-	// Opt-in webhook fan-out (ZERO_NOTIFY_WEBHOOK_URL). Delivery failures stay
+	// Opt-in webhook fan-out (PVYAI_NOTIFY_WEBHOOK_URL). Delivery failures stay
 	// silent here: the TUI owns the alt-screen, so writing to stderr would
 	// corrupt the display.
 	notify.MaybeAddWebhookSink(notifier, os.Getenv, nil)
@@ -770,7 +770,7 @@ func newModel(ctx context.Context, options Options) model {
 		reasoningEffort:             options.ReasoningEffort,
 		responseStyle:               defaultedResponseStyle(options.ResponseStyle),
 		keyBindings:                 resolveKeyBindings(options.KeyBindings),
-		themeMode:                   resolveThemeMode(options.Theme, os.Getenv("ZERO_THEME"), options.SavedTheme),
+		themeMode:                   resolveThemeMode(options.Theme, os.Getenv("PVYAI_THEME"), options.SavedTheme),
 		hasDarkBg:                   true,
 		userAgent:                   options.UserAgent,
 		usageTracker:                usageTracker,
@@ -4015,7 +4015,7 @@ func (m model) handleSubmit() (tea.Model, tea.Cmd) {
 		m.transcript = reduceTranscript(m.transcript, transcriptAction{kind: actionAppendSystem, text: text})
 		return m, nil
 	case commandTurns:
-		// Changing the budget mid-run would mutate the inherited ZERO_MAX_TURNS env
+		// Changing the budget mid-run would mutate the inherited PVYAI_MAX_TURNS env
 		// that sub-agents spawned later in THIS run read, making the run's budget
 		// inconsistent. Require an idle session (the new budget applies next run).
 		if m.pending && strings.TrimSpace(command.text) != "" {
@@ -4052,7 +4052,7 @@ func (m model) handleSubmit() (tea.Model, tea.Cmd) {
 		return m, nil
 	case commandUnknown:
 		// A "/name" not in the builtin registry may be a user-defined command
-		// from .zero/commands/<name>.md — expand its template and run it as a
+		// from .pvyai/commands/<name>.md — expand its template and run it as a
 		// normal prompt before reporting "unknown".
 		if next, cmd, handled := m.handleUserCommand(command.text); handled {
 			return next, cmd

@@ -17,8 +17,8 @@ import (
 
 func TestSHA256FileHashesArchiveBytes(t *testing.T) {
 	dir := t.TempDir()
-	archivePath := filepath.Join(dir, "zero-v0.1.0-linux-x64.tar.gz")
-	archiveBytes := []byte("zero archive bytes")
+	archivePath := filepath.Join(dir, "pvyai-v0.1.0-linux-x64.tar.gz")
+	archiveBytes := []byte("pvyai archive bytes")
 	if err := os.WriteFile(archivePath, archiveBytes, 0o644); err != nil {
 		t.Fatalf("WriteFile: %v", err)
 	}
@@ -36,9 +36,9 @@ func TestSHA256FileHashesArchiveBytes(t *testing.T) {
 
 func TestWriteAndVerifyReleaseChecksums(t *testing.T) {
 	dir := t.TempDir()
-	archiveName := "zero-v0.1.0-linux-x64.tar.gz"
+	archiveName := "pvyai-v0.1.0-linux-x64.tar.gz"
 	archivePath := filepath.Join(dir, archiveName)
-	if err := os.WriteFile(archivePath, []byte("zero archive bytes"), 0o644); err != nil {
+	if err := os.WriteFile(archivePath, []byte("pvyai archive bytes"), 0o644); err != nil {
 		t.Fatalf("WriteFile: %v", err)
 	}
 
@@ -88,7 +88,7 @@ func TestChecksumParsingRejectsMalformedAndUnsafeNames(t *testing.T) {
 
 func TestVerifyChecksumDetectsArchiveChanges(t *testing.T) {
 	dir := t.TempDir()
-	archivePath := filepath.Join(dir, "zero-v0.1.0-linux-x64.tar.gz")
+	archivePath := filepath.Join(dir, "pvyai-v0.1.0-linux-x64.tar.gz")
 	if err := os.WriteFile(archivePath, []byte("original bytes"), 0o644); err != nil {
 		t.Fatalf("WriteFile: %v", err)
 	}
@@ -108,7 +108,7 @@ func TestVerifyChecksumDetectsArchiveChanges(t *testing.T) {
 
 func TestVerifyReleaseChecksumsRequiresMatchingFiles(t *testing.T) {
 	dir := t.TempDir()
-	archivePath := filepath.Join(dir, "zero-v0.1.0-linux-x64.tar.gz")
+	archivePath := filepath.Join(dir, "pvyai-v0.1.0-linux-x64.tar.gz")
 	if err := os.WriteFile(archivePath, []byte("archive bytes"), 0o644); err != nil {
 		t.Fatalf("WriteFile: %v", err)
 	}
@@ -121,8 +121,8 @@ func TestVerifyReleaseChecksumsRequiresMatchingFiles(t *testing.T) {
 	if _, err := WriteSHA256Checksum(archivePath); err != nil {
 		t.Fatalf("WriteSHA256Checksum returned error: %v", err)
 	}
-	strayChecksum := filepath.Join(dir, "zero-v0.1.0-macos-arm64.tar.gz.sha256")
-	if err := os.WriteFile(strayChecksum, []byte(strings.Repeat("a", 64)+"  zero-v0.1.0-macos-arm64.tar.gz\n"), 0o644); err != nil {
+	strayChecksum := filepath.Join(dir, "pvyai-v0.1.0-macos-arm64.tar.gz.sha256")
+	if err := os.WriteFile(strayChecksum, []byte(strings.Repeat("a", 64)+"  pvyai-v0.1.0-macos-arm64.tar.gz\n"), 0o644); err != nil {
 		t.Fatalf("WriteFile stray checksum: %v", err)
 	}
 
@@ -153,24 +153,24 @@ func TestReleaseArchiveNamesMatchInstallerContracts(t *testing.T) {
 			version:     "0.1.0",
 			goos:        "linux",
 			goarch:      "amd64",
-			packageName: "zero-v0.1.0-linux-x64",
-			archiveName: "zero-v0.1.0-linux-x64.tar.gz",
+			packageName: "pvyai-v0.1.0-linux-x64",
+			archiveName: "pvyai-v0.1.0-linux-x64.tar.gz",
 		},
 		{
 			name:        "macos arm64",
 			version:     "0.1.0",
 			goos:        "darwin",
 			goarch:      "arm64",
-			packageName: "zero-v0.1.0-macos-arm64",
-			archiveName: "zero-v0.1.0-macos-arm64.tar.gz",
+			packageName: "pvyai-v0.1.0-macos-arm64",
+			archiveName: "pvyai-v0.1.0-macos-arm64.tar.gz",
 		},
 		{
 			name:        "windows amd64",
 			version:     "0.1.0",
 			goos:        "windows",
 			goarch:      "amd64",
-			packageName: "zero-v0.1.0-windows-x64",
-			archiveName: "zero-v0.1.0-windows-x64.zip",
+			packageName: "pvyai-v0.1.0-windows-x64",
+			archiveName: "pvyai-v0.1.0-windows-x64.zip",
 		},
 	}
 	for _, tt := range tests {
@@ -330,7 +330,7 @@ func TestResolvePackageDirsAcceptsDistSubdirs(t *testing.T) {
 func TestCreateArchivesWithRootPackageFiles(t *testing.T) {
 	t.Run("tar gz", func(t *testing.T) {
 		stagingDir := packageStagingFixture(t, "pvyai")
-		archivePath := filepath.Join(t.TempDir(), "zero-v0.1.0-linux-x64.tar.gz")
+		archivePath := filepath.Join(t.TempDir(), "pvyai-v0.1.0-linux-x64.tar.gz")
 		if err := createArchive(stagingDir, archivePath, "linux"); err != nil {
 			t.Fatalf("createArchive returned error: %v", err)
 		}
@@ -344,7 +344,7 @@ func TestCreateArchivesWithRootPackageFiles(t *testing.T) {
 
 	t.Run("zip", func(t *testing.T) {
 		stagingDir := packageStagingFixture(t, "pvyai.exe")
-		archivePath := filepath.Join(t.TempDir(), "zero-v0.1.0-windows-x64.zip")
+		archivePath := filepath.Join(t.TempDir(), "pvyai-v0.1.0-windows-x64.zip")
 		if err := createArchive(stagingDir, archivePath, "windows"); err != nil {
 			t.Fatalf("createArchive returned error: %v", err)
 		}
@@ -370,7 +370,7 @@ func TestCreateTarArchivePreservesSymlinkTargets(t *testing.T) {
 	if err := os.Symlink(linkTarget, linkPath); err != nil {
 		t.Fatalf("Symlink: %v", err)
 	}
-	archivePath := filepath.Join(t.TempDir(), "zero-v0.1.0-linux-x64.tar.gz")
+	archivePath := filepath.Join(t.TempDir(), "pvyai-v0.1.0-linux-x64.tar.gz")
 	if err := createArchive(stagingDir, archivePath, "linux"); err != nil {
 		t.Fatalf("createArchive returned error: %v", err)
 	}

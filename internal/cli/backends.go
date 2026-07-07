@@ -241,8 +241,8 @@ func formatBackendDoctorReport(report pvycmd.BackendDoctorReport) string {
 
 func writeBackendsHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero backends [flags]
-  zero backends doctor [flags]
+  pvyai backends [flags]
+  pvyai backends doctor [flags]
 
 Inspect MCP, hook, and plugin backend lifecycle state without connecting to
 external MCP servers.
@@ -259,7 +259,7 @@ Flags:
 
 func writeBackendsDoctorHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero backends doctor [flags]
+  pvyai backends doctor [flags]
 
 Diagnose MCP, hook, and plugin backend setup without connecting to external MCP
 servers or executing hooks/plugins.

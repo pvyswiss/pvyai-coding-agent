@@ -398,9 +398,9 @@ func formatAgentEvalReport(report agentEvalReport) string {
 
 func writeAgentEvalHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero eval --suite <path> [flags]
-  zero eval run --suite <path> [flags]
-  zero eval bench --suite <path> [flags] [--model <id>] [--agent-command <argv...>]
+  pvyai eval --suite <path> [flags]
+  pvyai eval run --suite <path> [flags]
+  pvyai eval bench --suite <path> [flags] [--model <id>] [--agent-command <argv...>]
 
 Validates offline agent eval suites, scores an existing workspace, or benchmarks an agent command against fixture workspaces.
 

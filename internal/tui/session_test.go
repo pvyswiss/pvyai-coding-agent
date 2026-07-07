@@ -1009,7 +1009,7 @@ func TestResumedPromptIncludesSessionContext(t *testing.T) {
 		t.Fatal("expected provider request to include messages")
 	}
 	prompt := messages[len(messages)-1].Content
-	for _, want := range []string{"Continuing Zero session", session.SessionID, "previous request", "previous answer", "Current user request:", "continue"} {
+	for _, want := range []string{"Continuing PVYai session", session.SessionID, "previous request", "previous answer", "Current user request:", "continue"} {
 		if !strings.Contains(prompt, want) {
 			t.Fatalf("expected resumed prompt to contain %q, got %q", want, prompt)
 		}

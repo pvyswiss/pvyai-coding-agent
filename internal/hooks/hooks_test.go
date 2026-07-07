@@ -190,10 +190,10 @@ func TestConfigStorePersistsUpdates(t *testing.T) {
 		Enabled: false,
 	})
 	if err != nil {
-		t.Fatalf("Upsert with zero-value Enabled returned error: %v", err)
+		t.Fatalf("Upsert with pvyai-value Enabled returned error: %v", err)
 	}
 	if !upserted.Enabled {
-		t.Fatalf("Upsert should default zero-value Enabled to true; use SetEnabled to disable: %#v", upserted)
+		t.Fatalf("Upsert should default pvyai-value Enabled to true; use SetEnabled to disable: %#v", upserted)
 	}
 	changed, err := store.SetEnabled("zero.preflight", false)
 	if err != nil || !changed {

@@ -72,7 +72,7 @@ type Totals struct {
 	TotalCost    float64 `json:"totalCost"`
 }
 
-// Report is the aggregated usage view rendered by `zero usage report`. Cost is a
+// Report is the aggregated usage view rendered by `pvyai usage report`. Cost is a
 // reconstructed estimate (see usageEventPayload) and NetLOC is a working-tree
 // estimate; both are surfaced as estimates in the rendered output.
 type Report struct {

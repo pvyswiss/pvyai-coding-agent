@@ -891,7 +891,7 @@ func TestRunEvalFailingSuiteReturnsProviderExit(t *testing.T) {
 	if stderr.Len() != 0 {
 		t.Fatalf("expected empty stderr, got %q", stderr.String())
 	}
-	if !strings.Contains(stdout.String(), "Zero agent eval") || !strings.Contains(stdout.String(), "context.recall") {
+	if !strings.Contains(stdout.String(), "PVYai agent eval") || !strings.Contains(stdout.String(), "context.recall") {
 		t.Fatalf("unexpected eval text output: %q", stdout.String())
 	}
 }

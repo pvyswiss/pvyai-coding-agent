@@ -34,7 +34,7 @@ type mcpLegacyListOptions struct {
 
 func runPlugins(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) int {
 	if len(args) == 0 {
-		return writeExecUsageError(stderr, "plugins subcommand required. Use `zero plugins list`.")
+		return writeExecUsageError(stderr, "plugins subcommand required. Use `pvyai plugins list`.")
 	}
 	switch args[0] {
 	case "-h", "--help", "help":
@@ -87,7 +87,7 @@ func runPlugins(args []string, stdout io.Writer, stderr io.Writer, deps appDeps)
 
 func runHooks(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) int {
 	if len(args) == 0 {
-		return writeExecUsageError(stderr, "hooks subcommand required. Use `zero hooks list`.")
+		return writeExecUsageError(stderr, "hooks subcommand required. Use `pvyai hooks list`.")
 	}
 	switch args[0] {
 	case "-h", "--help", "help":
@@ -151,7 +151,7 @@ func runMCPWithContext(ctx context.Context, args []string, stdout io.Writer, std
 		ctx = context.Background()
 	}
 	if len(args) == 0 {
-		return writeExecUsageError(stderr, "mcp subcommand required. Use `zero mcp permissions list`.")
+		return writeExecUsageError(stderr, "mcp subcommand required. Use `pvyai mcp permissions list`.")
 	}
 	switch args[0] {
 	case "-h", "--help", "help":
@@ -260,7 +260,7 @@ func runMCPTools(ctx context.Context, args []string, stdout io.Writer, stderr io
 		ctx = context.Background()
 	}
 	if len(args) == 0 {
-		return writeExecUsageError(stderr, "mcp tools subcommand required. Use `zero mcp tools list`.")
+		return writeExecUsageError(stderr, "mcp tools subcommand required. Use `pvyai mcp tools list`.")
 	}
 	if args[0] == "-h" || args[0] == "--help" || args[0] == "help" {
 		if err := writeMCPToolsHelp(stdout); err != nil {
@@ -312,7 +312,7 @@ func runMCPTools(ctx context.Context, args []string, stdout io.Writer, stderr io
 
 func runMCPPermissions(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) int {
 	if len(args) == 0 {
-		return writeExecUsageError(stderr, "mcp permissions subcommand required. Use `zero mcp permissions list`.")
+		return writeExecUsageError(stderr, "mcp permissions subcommand required. Use `pvyai mcp permissions list`.")
 	}
 	if args[0] == "-h" || args[0] == "--help" || args[0] == "help" {
 		if err := writeMCPPermissionsHelp(stdout); err != nil {
@@ -375,7 +375,7 @@ func runMCPPermissionsRevoke(args []string, stdout io.Writer, stderr io.Writer, 
 		return exitSuccess
 	}
 	if len(positional) == 0 || len(positional) > 2 {
-		return writeExecUsageError(stderr, "usage: zero mcp permissions revoke <server> [<tool>] [--json]")
+		return writeExecUsageError(stderr, "usage: pvyai mcp permissions revoke <server> [<tool>] [--json]")
 	}
 
 	store, err := deps.newMCPStore()
@@ -545,7 +545,7 @@ func parseMCPPositionalCommand(args []string) (mcpCommandOptions, []string, bool
 
 func writePluginsHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero plugins <command>
+  pvyai plugins <command>
 
 Commands:
   list                 List local Zero plugins
@@ -557,7 +557,7 @@ Commands:
 
 func writePluginsListHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero plugins list [flags]
+  pvyai plugins list [flags]
 
 Flags:
       --json    Print local plugin data as JSON
@@ -568,7 +568,7 @@ Flags:
 
 func writeHooksHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero hooks <command>
+  pvyai hooks <command>
 
 Commands:
   list      List configured Zero hooks
@@ -582,7 +582,7 @@ Commands:
 
 func writeHooksListHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero hooks list [flags]
+  pvyai hooks list [flags]
 
 Flags:
       --json    Print hook config as JSON
@@ -593,7 +593,7 @@ Flags:
 
 func writeMCPHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero mcp <command>
+  pvyai mcp <command>
 
 Commands:
   add <server>      Add or update an MCP server in user config
@@ -611,7 +611,7 @@ Commands:
 
 func writeMCPLegacyListHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero mcp list [flags]
+  pvyai mcp list [flags]
 
 Flags:
       --json     Print MCP servers or tools as JSON
@@ -623,7 +623,7 @@ Flags:
 
 func writeMCPToolsHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero mcp tools <command>
+  pvyai mcp tools <command>
 
 Commands:
   list    List configured MCP tools
@@ -637,7 +637,7 @@ Flags:
 
 func writeMCPPermissionsHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero mcp permissions <command>
+  pvyai mcp permissions <command>
 
 Commands:
   list                  List all persistent MCP permissions

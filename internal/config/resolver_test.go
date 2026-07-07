@@ -946,7 +946,7 @@ func TestResolveRejectsActiveProviderWithoutConfiguredProfiles(t *testing.T) {
 }
 
 func TestResolveKeepsNormalizedProvidersWhenNoneMarkedActive(t *testing.T) {
-	// Multiple providers configured (e.g. via `zero provider add`) but
+	// Multiple providers configured (e.g. via `pvyai provider add`) but
 	// activeProvider is blank/stale — a caller like the interactive TUI still
 	// needs the normalized list to fall back to an already-usable provider
 	// instead of forcing a full re-onboarding wizard.
@@ -1269,7 +1269,7 @@ func TestResolveProviderProfileExtendedJSONAliases(t *testing.T) {
 			"auth_header": "X-API-Key",
 			"auth_scheme": "raw",
 			"auth_header_value": "header-secret",
-			"custom_headers": {"X-Zero": "1"},
+			"custom_headers": {"X-PVYai": "1"},
 			"model_id": "custom-model",
 			"parse_think_tags": true
 		}]
@@ -1293,8 +1293,8 @@ func TestResolveProviderProfileExtendedJSONAliases(t *testing.T) {
 	if profile.APIFormat != "responses" || profile.AuthHeader != "X-API-Key" || profile.AuthScheme != "raw" || profile.AuthHeaderValue != "header-secret" {
 		t.Fatalf("extended provider fields not loaded: %#v", profile)
 	}
-	if profile.CustomHeaders["X-Zero"] != "1" {
-		t.Fatalf("CustomHeaders = %#v, want X-Zero header", profile.CustomHeaders)
+	if profile.CustomHeaders["X-PVYai"] != "1" {
+		t.Fatalf("CustomHeaders = %#v, want X-PVYai header", profile.CustomHeaders)
 	}
 	if profile.ParseThinkTags == nil || !*profile.ParseThinkTags {
 		t.Fatalf("ParseThinkTags = %#v, want true", profile.ParseThinkTags)

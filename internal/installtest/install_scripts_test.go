@@ -22,9 +22,9 @@ func TestUnixInstallerScriptMatchesReleaseContracts(t *testing.T) {
 	}
 	containsAll(t, script, []string{
 		"set -euo pipefail",
-		`PVYAI_REPO="${PVYAI_REPO:-Gitlawb/zero}"`,
+		`PVYAI_REPO="${PVYAI_REPO:-pvyswiss/pvyai}"`,
 		`PVYAI_INSTALL_DIR="${PVYAI_INSTALL_DIR:-$HOME/.local/bin}"`,
-		`archive_name="zero-v${version}-${platform}-${arch}.tar.gz"`,
+		`archive_name="pvyai-v${version}-${platform}-${arch}.tar.gz"`,
 		`checksum_name="${archive_name}.sha256"`,
 		"curl --fail --location --show-error --silent --header 'Accept: application/vnd.github+json'",
 		`verify_checksum "$checksum_name"`,
@@ -43,7 +43,7 @@ func TestPowerShellInstallerScriptMatchesWindowsReleaseContracts(t *testing.T) {
 	containsAll(t, script, []string{
 		`[string]$Repository = $(if ($env:PVYAI_REPO)`,
 		`Join-Path $env:LOCALAPPDATA "zero\bin"`,
-		`$archiveName = "zero-v$releaseVersion-windows-$arch.zip"`,
+		`$archiveName = "pvyai-v$releaseVersion-windows-$arch.zip"`,
 		`$checksumName = "$archiveName.sha256"`,
 		`Get-FileHash -Path $archivePath -Algorithm SHA256`,
 		`Expand-Archive -Path $archivePath -DestinationPath $extractDir -Force`,
@@ -120,7 +120,7 @@ func newUnixInstallFixture(t *testing.T) unixInstallFixture {
 
 	releasePlatform := unixReleasePlatform(t)
 	releaseArch := unixReleaseArch(t)
-	packageName := fmt.Sprintf("zero-v0.1.0-%s-%s", releasePlatform, releaseArch)
+	packageName := fmt.Sprintf("pvyai-v0.1.0-%s-%s", releasePlatform, releaseArch)
 	archiveName := packageName + ".tar.gz"
 	checksumName := archiveName + ".sha256"
 	root := t.TempDir()
@@ -220,7 +220,7 @@ func runUnixInstaller(t *testing.T, fixture unixInstallFixture) (string, string,
 	command.Env = append(os.Environ(),
 		"PATH="+fixture.mockBin+string(os.PathListSeparator)+os.Getenv("PATH"),
 		"PVYAI_GITHUB_BASE_URL=https://example.test",
-		"PVYAI_REPO=Gitlawb/zero",
+		"PVYAI_REPO=pvyswiss/pvyai",
 	)
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer

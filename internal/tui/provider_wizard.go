@@ -142,8 +142,8 @@ func runProviderChatGPTLogin() error {
 }
 
 // buildOAuthPresetEnv layers the process env with the preset opt-in so a
-// `zero` launch from a TUI session can use the baked-in ChatGPT client_id
-// without requiring the user to export ZERO_OAUTH_ALLOW_PRESETS themselves.
+// `pvyai` launch from a TUI session can use the baked-in ChatGPT client_id
+// without requiring the user to export PVYAI_OAUTH_ALLOW_PRESETS themselves.
 func buildOAuthPresetEnv() map[string]string {
 	env := map[string]string{}
 	for _, kv := range os.Environ() {
@@ -151,7 +151,7 @@ func buildOAuthPresetEnv() map[string]string {
 			env[kv[:eq]] = kv[eq+1:]
 		}
 	}
-	env["ZERO_OAUTH_ALLOW_PRESETS"] = "1"
+	env["PVYAI_OAUTH_ALLOW_PRESETS"] = "1"
 	return env
 }
 
@@ -981,7 +981,7 @@ func (m model) applyProviderWizard() (model, tea.Cmd) {
 	// Build and persist into LOCALS first, committing live state only once BOTH
 	// succeed. A persist failure (read-only config, disk full) must not leave the
 	// chat running on the new provider while the status line, m.providerProfile,
-	// and the ZERO_PROVIDER export (which pins spawned children) still point at
+	// and the PVYAI_PROVIDER export (which pins spawned children) still point at
 	// the old one — parent and children would silently run on different providers.
 	var nextProvider pvyruntime.Provider
 	if m.newProvider != nil {
@@ -1014,7 +1014,7 @@ func (m model) applyProviderWizard() (model, tea.Cmd) {
 	m.modelName = profile.Model
 	// Keep sub-agent child processes on the same provider we just switched to —
 	// same as the /model and /provider switch paths (command_center.go). Without
-	// this, a ZERO_PROVIDER exported by an earlier switch stays pointing at the
+	// this, a PVYAI_PROVIDER exported by an earlier switch stays pointing at the
 	// OLD provider and wins over config in every spawned child (applyEnv), so
 	// specialists/swarm members run on the wrong provider's credentials.
 	config.SetActiveProviderEnv(profile.Name)
@@ -1371,7 +1371,7 @@ func (wizard *providerWizardState) renderProviderSearch(width int) string {
 func providerWizardOAuthErrHint(provider providercatalog.Descriptor) string {
 	if strings.EqualFold(provider.ID, "huggingface") {
 		return "Hugging Face needs your own app: create one at " +
-			"https://huggingface.co/settings/applications/new, then set ZERO_OAUTH_HUGGINGFACE_CLIENT_ID."
+			"https://huggingface.co/settings/applications/new, then set PVYAI_OAUTH_HUGGINGFACE_CLIENT_ID."
 	}
 	return ""
 }

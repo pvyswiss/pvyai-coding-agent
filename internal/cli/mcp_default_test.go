@@ -9,7 +9,7 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
 )
 
-// `zero mcp disable firecrawl` must work even though firecrawl is a built-in
+// `pvyai mcp disable firecrawl` must work even though firecrawl is a built-in
 // default that is not written to the user's config file until overridden.
 func TestRunMCPDisableSeededFirecrawlDefault(t *testing.T) {
 	configPath := filepath.Join(t.TempDir(), "pvyai", "config.json")

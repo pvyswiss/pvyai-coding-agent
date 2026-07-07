@@ -61,7 +61,7 @@ func TestRunReportFailsInvalidModelAndMissingProvider(t *testing.T) {
 	if invalid.OK {
 		t.Fatalf("invalid model should fail: %#v", invalid)
 	}
-	if check := invalid.Check("provider.model"); check == nil || check.Status != StatusFail || !strings.Contains(check.Message, "unknown Zero model") {
+	if check := invalid.Check("provider.model"); check == nil || check.Status != StatusFail || !strings.Contains(check.Message, "unknown PVYai model") {
 		t.Fatalf("expected model failure: %#v", invalid.Checks)
 	}
 }
@@ -151,7 +151,7 @@ func TestProviderModelBuiltInUnknownModelFails(t *testing.T) {
 		t.Fatalf("built-in provider unknown model should fail: %#v", report)
 	}
 	check := report.Check("provider.model")
-	if check == nil || check.Status != StatusFail || !strings.Contains(check.Message, "unknown Zero model") {
+	if check == nil || check.Status != StatusFail || !strings.Contains(check.Message, "unknown PVYai model") {
 		t.Fatalf("expected built-in unknown model failure: %#v", report.Checks)
 	}
 }

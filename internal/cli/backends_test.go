@@ -85,7 +85,7 @@ func TestRunBackendsJSONUsesLifecycleSnapshotWithoutConnectingMCP(t *testing.T) 
 			}}}, nil
 		},
 		registerMCPTools: func(context.Context, *tools.Registry, config.MCPConfig, mcp.RegisterOptions) (mcpToolRuntime, error) {
-			return nil, errors.New("zero backends must not connect to MCP servers")
+			return nil, errors.New("pvyai backends must not connect to MCP servers")
 		},
 	}
 
@@ -140,7 +140,7 @@ func TestRunBackendsTextAndHelp(t *testing.T) {
 	if exitCode != exitSuccess {
 		t.Fatalf("exitCode = %d stderr=%s", exitCode, stderr.String())
 	}
-	for _, want := range []string{"Zero Backends:", "MCP servers: 0", "Hooks: 0", "Plugins: 0"} {
+	for _, want := range []string{"PVYai Backends:", "MCP servers: 0", "Hooks: 0", "Plugins: 0"} {
 		if !strings.Contains(stdout.String(), want) {
 			t.Fatalf("backend text missing %q:\n%s", want, stdout.String())
 		}
@@ -152,7 +152,7 @@ func TestRunBackendsTextAndHelp(t *testing.T) {
 	if exitCode != exitSuccess {
 		t.Fatalf("help exitCode = %d stderr=%s", exitCode, stderr.String())
 	}
-	for _, want := range []string{"Usage:", "zero backends", "--json"} {
+	for _, want := range []string{"Usage:", "pvyai backends", "--json"} {
 		if !strings.Contains(stdout.String(), want) {
 			t.Fatalf("backend help missing %q:\n%s", want, stdout.String())
 		}
@@ -200,7 +200,7 @@ func TestRunBackendsDoctorJSONAndTextWithoutConnectingMCP(t *testing.T) {
 			}}}, nil
 		},
 		registerMCPTools: func(context.Context, *tools.Registry, config.MCPConfig, mcp.RegisterOptions) (mcpToolRuntime, error) {
-			return nil, errors.New("zero backends doctor must not connect to MCP servers")
+			return nil, errors.New("pvyai backends doctor must not connect to MCP servers")
 		},
 	}
 
@@ -232,7 +232,7 @@ func TestRunBackendsDoctorJSONAndTextWithoutConnectingMCP(t *testing.T) {
 	if exitCode != exitProvider {
 		t.Fatalf("text exitCode = %d, want %d stderr=%s", exitCode, exitProvider, stderr.String())
 	}
-	for _, want := range []string{"Zero backend doctor", "[fail] backend.mcp.invalid", "zero mcp add broken", "[fail] backend.hooks.diagnostic"} {
+	for _, want := range []string{"PVYai backend doctor", "[fail] backend.mcp.invalid", "pvyai mcp add broken", "[fail] backend.hooks.diagnostic"} {
 		if !strings.Contains(stdout.String(), want) {
 			t.Fatalf("backend doctor text missing %q:\n%s", want, stdout.String())
 		}
@@ -246,7 +246,7 @@ func TestRunBackendsDoctorHelp(t *testing.T) {
 	if exitCode != exitSuccess {
 		t.Fatalf("exitCode = %d stderr=%s", exitCode, stderr.String())
 	}
-	for _, want := range []string{"Usage:", "zero backends doctor", "--json"} {
+	for _, want := range []string{"Usage:", "pvyai backends doctor", "--json"} {
 		if !strings.Contains(stdout.String(), want) {
 			t.Fatalf("backend doctor help missing %q:\n%s", want, stdout.String())
 		}
@@ -320,7 +320,7 @@ func TestRunBackendsDoctorDoesNotConnectOrExecuteConfiguredBackends(t *testing.T
 			})
 		},
 		registerMCPTools: func(context.Context, *tools.Registry, config.MCPConfig, mcp.RegisterOptions) (mcpToolRuntime, error) {
-			return nil, errors.New("zero backends doctor must not register MCP tools")
+			return nil, errors.New("pvyai backends doctor must not register MCP tools")
 		},
 	}
 

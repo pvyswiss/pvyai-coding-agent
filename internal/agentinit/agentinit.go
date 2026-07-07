@@ -13,7 +13,7 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/repoinfo"
 )
 
-// BuildPrompt returns the bootstrap prompt for `zero init` / `/init`. It runs
+// BuildPrompt returns the bootstrap prompt for `pvyai init` / `/init`. It runs
 // repoinfo.Collect(cwd) and embeds the result as a fact block; collection
 // failures are non-fatal (the agent investigates from scratch). now is
 // injectable for tests; zero falls back to time.Now.

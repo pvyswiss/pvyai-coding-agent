@@ -32,7 +32,7 @@ type ApplyResult struct {
 
 // windowsOptionalBinaries/linuxOptionalBinaries mirror the helper binary
 // names scripts/postinstall.mjs copies alongside the main binary when
-// present, so `zero upgrade` refreshes them too instead of leaving them stale.
+// present, so `pvyai upgrade` refreshes them too instead of leaving them stale.
 var (
 	windowsOptionalBinaries = []string{"pvyai-windows-command-runner.exe", "pvyai-windows-sandbox-setup.exe"}
 	linuxOptionalBinaries   = []string{"pvyai-linux-sandbox", "pvyai-seccomp"}

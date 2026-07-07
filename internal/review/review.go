@@ -42,10 +42,10 @@ type checkSpec struct {
 }
 
 var defaultCheckSpecs = []checkSpec{
-	{Env: "ZERO_REVIEW_DIFF_CHECK", Label: "Diff hygiene", Command: "git diff --check"},
-	{Env: "ZERO_REVIEW_TEST", Label: "Tests", Command: "go test ./..."},
-	{Env: "ZERO_REVIEW_BUILD", Label: "Build", Command: "go run ./cmd/pvyai-release build"},
-	{Env: "ZERO_REVIEW_SMOKE", Label: "Smoke build", Command: "go run ./cmd/pvyai-release smoke"},
+	{Env: "PVYAI_REVIEW_DIFF_CHECK", Label: "Diff hygiene", Command: "git diff --check"},
+	{Env: "PVYAI_REVIEW_TEST", Label: "Tests", Command: "go test ./..."},
+	{Env: "PVYAI_REVIEW_BUILD", Label: "Build", Command: "go run ./cmd/pvyai-release build"},
+	{Env: "PVYAI_REVIEW_SMOKE", Label: "Smoke build", Command: "go run ./cmd/pvyai-release smoke"},
 }
 
 func NormalizeOutcome(value string) Outcome {
@@ -97,9 +97,9 @@ func IsBlocking(outcome Outcome) bool {
 func BuildSummaryInputFromEnv(env map[string]string) SummaryInput {
 	return SummaryInput{
 		Number:       parsePRNumber(env),
-		HeadSHA:      firstNonEmpty(env["ZERO_REVIEW_HEAD_SHA"], env["GITHUB_SHA"]),
+		HeadSHA:      firstNonEmpty(env["PVYAI_REVIEW_HEAD_SHA"], env["GITHUB_SHA"]),
 		Checks:       BuildChecksFromEnv(env),
-		ChangedFiles: ParseChangedFiles(env["ZERO_CHANGED_FILES"]),
+		ChangedFiles: ParseChangedFiles(env["PVYAI_CHANGED_FILES"]),
 	}
 }
 
@@ -220,7 +220,7 @@ func truncateSHA(value string) string {
 }
 
 func parsePRNumber(env map[string]string) int {
-	value := firstNonEmpty(env["ZERO_PR_NUMBER"], strings.Split(env["GITHUB_REF_NAME"], "/")[0])
+	value := firstNonEmpty(env["PVYAI_PR_NUMBER"], strings.Split(env["GITHUB_REF_NAME"], "/")[0])
 	number, err := strconv.Atoi(value)
 	if err != nil {
 		return 0

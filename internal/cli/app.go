@@ -247,7 +247,7 @@ func runWithDeps(args []string, stdout io.Writer, stderr io.Writer, deps appDeps
 	}
 	// --theme <name> selects the TUI palette non-interactively (auto or any registered
 	// theme; populates tui.Options.Theme, which resolveThemeMode prefers over
-	// ZERO_THEME). Re-split --add-dir afterward so it may appear on either side of --theme.
+	// PVYAI_THEME). Re-split --add-dir afterward so it may appear on either side of --theme.
 	theme, args, err := splitLeadingThemeFlag(args)
 	if err != nil {
 		return writeAppError(stderr, err.Error(), 1)
@@ -1063,35 +1063,35 @@ func writeUsageError(stderr io.Writer, message string) int {
 }
 
 func writeHelp(w io.Writer) error {
-	_, err := fmt.Fprint(w, `ZERO terminal coding agent
+	_, err := fmt.Fprint(w, `PVYai terminal coding agent
 
 Usage:
-  zero [command]
+  pvyai [command]
 
 Commands:
   exec       Run a one-shot prompt through the Go agent runtime
   daemon     Manage the local background worker daemon (start/stop/status/run/attach)
   setup      Guide first-run provider setup
   config     Inspect resolved Go configuration without leaking secrets
-  models     List Zero model registry entries
+  models     List PVYai model registry entries
   providers  Inspect resolved provider profiles
   doctor     Run backend health checks for config and provider setup
   context    Report workspace context budget usage
   repo-map   Build a deterministic repository map for agent context
-  search     Search persisted local Zero session events
+  search     Search persisted local PVYai session events
   find       Alias for search
-  sessions   Inspect local Zero session lineage
+  sessions   Inspect local PVYai session lineage
   spec       Review and approve saved spec-mode drafts
-  specialist Manage local Zero specialist profiles
-  plugins    Inspect, install, and remove local Zero plugins
+  specialist Manage local PVYai specialist profiles
+  plugins    Inspect, install, and remove local PVYai plugins
   backends   Inspect MCP, hook, and plugin backend lifecycle state
-  skills     Inspect, install, and remove local Zero skills
-  tools      Scaffold and list local Zero plugin-tools
-  hooks      Inspect Zero hook configuration
+  skills     Inspect, install, and remove local PVYai skills
+  tools      Scaffold and list local PVYai plugin-tools
+  hooks      Inspect PVYai hook configuration
   mcp        Manage MCP backend settings
   auth       Log in to model providers via OAuth
   sandbox    Inspect sandbox policy and persistent grants
-  update     Check for Zero CLI updates
+  update     Check for PVYai CLI updates
   worktrees  Prepare isolated git worktrees
   verify     Detect and run local verification checks
   eval       Validate offline agent eval suites
@@ -1099,7 +1099,7 @@ Commands:
   usage      Summarize token usage and estimated cost
   cron       Schedule agent jobs (foreground, file-backed)
   repo-info  Characterize the current repository (local git only)
-  serve      Run Zero protocol servers
+  serve      Run PVYai protocol servers
   acp        Serve the Agent Client Protocol over stdio (editor backend)
   help       Show this help
   version    Print version
@@ -1231,7 +1231,7 @@ func baseURLIsLoopback(baseURL string) bool {
 }
 
 func writePromptRequired(stderr io.Writer) int {
-	if _, err := fmt.Fprintln(stderr, "[pvyai] Prompt required. Use `zero exec \"prompt\"` or `zero exec --file prompt.txt`."); err != nil {
+	if _, err := fmt.Fprintln(stderr, "[pvyai] Prompt required. Use `pvyai exec \"prompt\"` or `pvyai exec --file prompt.txt`."); err != nil {
 		return 1
 	}
 	return 2
@@ -1239,7 +1239,7 @@ func writePromptRequired(stderr io.Writer) int {
 
 func writeExecHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero exec [flags] [prompt]
+  pvyai exec [flags] [prompt]
 
 Runs a one-shot prompt through the Go agent runtime.
 

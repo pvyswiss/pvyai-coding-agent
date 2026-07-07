@@ -199,7 +199,7 @@ func load(dir string) ([]Skill, []DuplicateName, error) {
 }
 
 // List loads the skills directory and returns each skill without its (possibly
-// large) Content body — handy for `zero skills` listings.
+// large) Content body — handy for `pvyai skills` listings.
 func List(dir string) ([]Skill, error) {
 	loaded, err := Load(dir)
 	if err != nil {

@@ -39,7 +39,7 @@ type NetworkPolicy struct {
 	Mode NetworkMode `json:"mode"`
 }
 
-var protectedMetadataNames = []string{".git", ".zero", ".agents"}
+var protectedMetadataNames = []string{".git", ".pvyai", ".agents"}
 
 func DefaultPermissionProfile(workspaceRoot string) PermissionProfile {
 	return PermissionProfileFromPolicy(workspaceRoot, DefaultPolicy(), nil)

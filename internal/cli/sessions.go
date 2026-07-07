@@ -423,7 +423,7 @@ func writeSessionCommandError(stderr io.Writer, err error) int {
 	if message != err.Error() {
 		message = "PVYai session" + message
 	}
-	if strings.Contains(message, "not found") || strings.Contains(message, "invalid zero session id") {
+	if strings.Contains(message, "not found") || strings.Contains(message, "invalid pvyai session id") {
 		return writeExecUsageError(stderr, message)
 	}
 	return writeAppError(stderr, message, exitCrash)

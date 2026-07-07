@@ -20,8 +20,8 @@ func TestWriteExecProviderErrorAppendsHint(t *testing.T) {
 		if !strings.Contains(out, "auth error:") {
 			t.Fatalf("expected raw message, got %q", out)
 		}
-		if !strings.Contains(out, "zero auth") {
-			t.Fatalf("expected an actionable hint referencing `zero auth`, got %q", out)
+		if !strings.Contains(out, "pvyai auth") {
+			t.Fatalf("expected an actionable hint referencing `pvyai auth`, got %q", out)
 		}
 	})
 
@@ -43,7 +43,7 @@ func TestWriteExecProviderErrorAppendsHint(t *testing.T) {
 		if stderr.Len() != 0 {
 			t.Fatalf("json mode must not write to stderr, got %q", stderr.String())
 		}
-		if strings.Contains(stdout.String(), "zero auth") {
+		if strings.Contains(stdout.String(), "pvyai auth") {
 			t.Fatalf("json mode must not inject a hint into the structured payload, got %q", stdout.String())
 		}
 	})

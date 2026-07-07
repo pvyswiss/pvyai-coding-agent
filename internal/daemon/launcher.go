@@ -24,7 +24,7 @@ import (
 var reentrancyMarkers = []string{sandbox.EnvSandboxed, sandbox.EnvSandboxBackend}
 
 // scrubWorkerEnv returns env with the sandbox re-entrancy markers removed. Every
-// other variable is preserved — including the ZERO_SANDBOX_* policy config the
+// other variable is preserved — including the PVYAI_SANDBOX_* policy config the
 // worker reads to rebuild its own policy — so the sandbox policy is PROPAGATED,
 // not bypassed. The caller's slice is never mutated.
 func scrubWorkerEnv(env []string) []string {
@@ -44,7 +44,7 @@ func scrubWorkerEnv(env []string) []string {
 	return out
 }
 
-// execWorker is a WorkerHandle backed by a `zero exec` child process speaking
+// execWorker is a WorkerHandle backed by a `pvyai exec` child process speaking
 // stream-json on stdout.
 type execWorker struct {
 	cmd    *exec.Cmd
@@ -113,7 +113,7 @@ type ExecLauncherConfig struct {
 	Env []string
 }
 
-// NewExecLauncher builds a Launcher that spawns `zero exec` workers which speak
+// NewExecLauncher builds a Launcher that spawns `pvyai exec` workers which speak
 // stream-json on stdout. Each worker:
 //   - runs with the re-entrancy markers SCRUBBED from its env (so it establishes
 //     its own sandbox; the daemon never bypasses the sandbox), while the rest of

@@ -55,7 +55,7 @@ type Options struct {
 	OAuthResolver providerio.TokenResolver
 	// StreamIdleTimeout aborts the stream if no data arrives for this long.
 	// When unset, Zero uses providerio.ResolveStreamIdleTimeout — the
-	// ZERO_STREAM_IDLE_TIMEOUT override or providerio.DefaultStreamIdleTimeout.
+	// PVYAI_STREAM_IDLE_TIMEOUT override or providerio.DefaultStreamIdleTimeout.
 	StreamIdleTimeout time.Duration
 }
 

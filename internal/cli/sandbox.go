@@ -20,7 +20,7 @@ type sandboxCommandOptions struct {
 
 func runSandbox(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) int {
 	if len(args) == 0 {
-		return writeExecUsageError(stderr, "sandbox subcommand required. Use `zero sandbox policy` or `zero sandbox grants list`.")
+		return writeExecUsageError(stderr, "sandbox subcommand required. Use `pvyai sandbox policy` or `pvyai sandbox grants list`.")
 	}
 	switch args[0] {
 	case "-h", "--help", "help":
@@ -73,7 +73,7 @@ func runSandboxPolicy(args []string, stdout io.Writer, stderr io.Writer, deps ap
 		// Compute the effective write roots exactly the way the engine does:
 		// workspace root first, then the user-granted extras from the global
 		// config. A stale config entry (e.g. a directory that no longer
-		// exists) must not crash `zero sandbox policy --effective` — fall
+		// exists) must not crash `pvyai sandbox policy --effective` — fall
 		// back to the workspace root and surface the error visibly instead.
 		writeRoots := []string{workspaceRoot}
 		var writeRootsErr error
@@ -158,7 +158,7 @@ func runSandboxSetup(args []string, stdout io.Writer, stderr io.Writer, deps app
 	// Resolve the setup helper the same way the runner is resolved: a standalone
 	// .exe when shipped (release), else self-dispatch via the running zero binary
 	// (dev / plain build). This mirrors the backend's command-runner resolution
-	// so `zero sandbox setup` works in every layout, not just release.
+	// so `pvyai sandbox setup` works in every layout, not just release.
 	setupHelper := pvySandbox.ResolveWindowsSandboxSetupHelper(nil)
 	if !setupHelper.Available() {
 		return writeAppError(stderr, "Windows sandbox setup helper is not available", exitProvider)
@@ -326,7 +326,7 @@ func enabledLabel(enabled bool) string {
 
 func runSandboxGrants(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) int {
 	if len(args) == 0 {
-		return writeExecUsageError(stderr, "sandbox grants subcommand required. Use `zero sandbox grants list`.")
+		return writeExecUsageError(stderr, "sandbox grants subcommand required. Use `pvyai sandbox grants list`.")
 	}
 	switch args[0] {
 	case "-h", "--help", "help":
@@ -393,7 +393,7 @@ func runSandboxGrantSet(command string, args []string, stdout io.Writer, stderr 
 		return exitSuccess
 	}
 	if len(positional) != 1 {
-		return writeExecUsageError(stderr, "usage: zero sandbox grants "+command+" <tool> [--path file] [--reason text] [--json]")
+		return writeExecUsageError(stderr, "usage: pvyai sandbox grants "+command+" <tool> [--path file] [--reason text] [--json]")
 	}
 	decision := pvySandbox.GrantAllow
 	if command == "deny" {
@@ -448,7 +448,7 @@ func runSandboxGrantRevoke(args []string, stdout io.Writer, stderr io.Writer, de
 		return exitSuccess
 	}
 	if len(positional) != 1 {
-		return writeExecUsageError(stderr, "usage: zero sandbox grants revoke <tool> [--path file] [--json]")
+		return writeExecUsageError(stderr, "usage: pvyai sandbox grants revoke <tool> [--path file] [--json]")
 	}
 	store, err := deps.newSandboxStore()
 	if err != nil {
@@ -626,7 +626,7 @@ func formatSandboxPolicy(workspaceRoot string, policy pvySandbox.Policy, backend
 
 func writeSandboxHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero sandbox <command>
+  pvyai sandbox <command>
 
 Commands:
   policy      Inspect active sandbox policy and platform backend
@@ -640,7 +640,7 @@ Commands:
 
 func writeSandboxPolicyHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero sandbox policy [flags]
+  pvyai sandbox policy [flags]
 
 Flags:
       --effective         Print the resolved effective policy (merged config + guards)
@@ -652,7 +652,7 @@ Flags:
 
 func writeSandboxSetupHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero sandbox setup [flags]
+  pvyai sandbox setup [flags]
 
 Runs native platform sandbox setup when the selected backend requires it.
 
@@ -665,7 +665,7 @@ Flags:
 
 func writeSandboxGrantsHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero sandbox grants <command>
+  pvyai sandbox grants <command>
 
 Commands:
   list        List persistent sandbox grants
@@ -679,8 +679,8 @@ Commands:
 
 func writeSandboxGrantSetHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero sandbox grants allow <tool> [flags]
-  zero sandbox grants deny <tool> [flags]
+  pvyai sandbox grants allow <tool> [flags]
+  pvyai sandbox grants deny <tool> [flags]
 
 Flags:
       --reason <text>     Human-readable reason for the grant
@@ -693,7 +693,7 @@ Flags:
 
 func writeSandboxGrantRevokeHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero sandbox grants revoke <tool> [flags]
+  pvyai sandbox grants revoke <tool> [flags]
 
 Flags:
       --path <path>       Revoke only the grant scoped to this exact file/dir
@@ -706,7 +706,7 @@ Flags:
 
 func writeSandboxGrantClearHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero sandbox grants clear --confirm [flags]
+  pvyai sandbox grants clear --confirm [flags]
 
 Flags:
       --confirm           Confirm removal of all sandbox grants

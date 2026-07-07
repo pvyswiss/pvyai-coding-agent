@@ -151,7 +151,7 @@ func formatProviderDetectReport(report providerDetectReport) string {
 
 	lines = append(lines, "", "Configured providers:")
 	if len(report.Providers) == 0 {
-		lines = append(lines, "  (none configured — run `zero setup`)")
+		lines = append(lines, "  (none configured — run `pvyai setup`)")
 	}
 	for _, provider := range report.Providers {
 		name := strings.TrimSpace(provider.Name)

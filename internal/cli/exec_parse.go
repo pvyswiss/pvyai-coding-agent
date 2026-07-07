@@ -12,7 +12,7 @@ import (
 func parseExecArgs(args []string) (execOptions, bool, error) {
 	options := execOptions{inputFormat: execInputText, outputFormat: execOutputText, autonomy: "low"}
 	if len(args) == 0 {
-		return options, false, execUsageError{"Prompt required. Use `zero exec \"prompt\"` or `zero exec --file prompt.txt`."}
+		return options, false, execUsageError{"Prompt required. Use `pvyai exec \"prompt\"` or `pvyai exec --file prompt.txt`."}
 	}
 
 	for index := 0; index < len(args); index++ {
@@ -424,7 +424,7 @@ func parseExecArgs(args []string) (execOptions, bool, error) {
 		return options, false, execUsageError{"Stream-json input does not accept positional prompt text. Pipe JSONL or use --file."}
 	}
 	if !options.listTools && options.file == "" && options.inputFormat != execInputStreamJSON && strings.TrimSpace(strings.Join(options.promptParts, " ")) == "" {
-		return options, false, execUsageError{"Prompt required. Use `zero exec \"prompt\"` or `zero exec --file prompt.txt`."}
+		return options, false, execUsageError{"Prompt required. Use `pvyai exec \"prompt\"` or `pvyai exec --file prompt.txt`."}
 	}
 	return options, false, nil
 }

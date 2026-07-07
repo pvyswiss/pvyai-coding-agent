@@ -205,7 +205,7 @@ func writeConfigFile(path string, cfg FileConfig) error {
 	data = append(data, '\n')
 	// Write-to-temp + rename: an in-place write interrupted mid-way (crash,
 	// disk full) would leave the user's only config truncated or corrupt.
-	tmp, err := os.CreateTemp(dir, ".zero-config-*.tmp")
+	tmp, err := os.CreateTemp(dir, ".pvyai-config-*.tmp")
 	if err != nil {
 		return fmt.Errorf("write config %s: %w", path, err)
 	}

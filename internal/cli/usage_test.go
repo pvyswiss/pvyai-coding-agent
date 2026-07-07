@@ -138,7 +138,7 @@ func TestRunUsageHelp(t *testing.T) {
 	if exitCode != exitSuccess {
 		t.Fatalf("expected exit %d, got %d: %s", exitSuccess, exitCode, stderr.String())
 	}
-	for _, want := range []string{"zero usage report", "--json", "--days", "--since", "--session"} {
+	for _, want := range []string{"pvyai usage report", "--json", "--days", "--since", "--session"} {
 		if !strings.Contains(stdout.String(), want) {
 			t.Fatalf("usage help missing %q in:\n%s", want, stdout.String())
 		}

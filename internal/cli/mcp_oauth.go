@@ -12,7 +12,7 @@ import (
 
 func runMCPOAuth(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) int {
 	if len(args) == 0 {
-		return writeExecUsageError(stderr, "mcp oauth subcommand required. Use `zero mcp oauth status`.")
+		return writeExecUsageError(stderr, "mcp oauth subcommand required. Use `pvyai mcp oauth status`.")
 	}
 	if args[0] == "-h" || args[0] == "--help" || args[0] == "help" {
 		if err := writeMCPOAuthHelp(stdout); err != nil {
@@ -51,7 +51,7 @@ func runMCPOAuthLogin(args []string, stdout io.Writer, stderr io.Writer, deps ap
 		return writeExecUsageError(stderr, "pvyai mcp oauth login does not support --json")
 	}
 	if len(positional) != 1 {
-		return writeExecUsageError(stderr, "usage: zero mcp oauth login <server>")
+		return writeExecUsageError(stderr, "usage: pvyai mcp oauth login <server>")
 	}
 	serverName := positional[0]
 
@@ -104,7 +104,7 @@ func runMCPOAuthLogout(args []string, stdout io.Writer, stderr io.Writer, deps a
 		return exitSuccess
 	}
 	if len(positional) != 1 {
-		return writeExecUsageError(stderr, "usage: zero mcp oauth logout <server>")
+		return writeExecUsageError(stderr, "usage: pvyai mcp oauth logout <server>")
 	}
 	serverName := positional[0]
 
@@ -148,7 +148,7 @@ func runMCPOAuthStatus(args []string, stdout io.Writer, stderr io.Writer, deps a
 		return exitSuccess
 	}
 	if len(positional) > 1 {
-		return writeExecUsageError(stderr, "usage: zero mcp oauth status [server]")
+		return writeExecUsageError(stderr, "usage: pvyai mcp oauth status [server]")
 	}
 
 	store, err := deps.newMCPTokenStore()
@@ -231,7 +231,7 @@ func oauthConfigForServer(server mcp.Server) mcp.OAuthConfig {
 
 func writeMCPOAuthHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero mcp oauth <command>
+  pvyai mcp oauth <command>
 
 Commands:
   login <server>     Run the OAuth flow and store credentials for a server

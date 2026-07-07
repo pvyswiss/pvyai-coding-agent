@@ -33,7 +33,7 @@ func TestRunProvidersUseSetsActiveProvider(t *testing.T) {
 		t.Fatalf("ActiveProvider = %q, want fast", cfg.ActiveProvider)
 	}
 	output := stdout.String()
-	for _, want := range []string{"Active provider set to fast", "zero providers check fast"} {
+	for _, want := range []string{"Active provider set to fast", "pvyai providers check fast"} {
 		if !strings.Contains(output, want) {
 			t.Fatalf("expected providers use output to contain %q, got %q", want, output)
 		}
@@ -125,9 +125,9 @@ func TestRunProvidersSetupPrintsCommandPlan(t *testing.T) {
 	output := stdout.String()
 	for _, want := range []string{
 		"Set FAST_API_KEY to your API key",
-		"zero providers add groq --name fast --model llama-3.1-70b --base-url https://gateway.example/v1 --api-key-env FAST_API_KEY",
-		"zero providers check fast --connectivity",
-		"zero providers use fast",
+		"pvyai providers add groq --name fast --model llama-3.1-70b --base-url https://gateway.example/v1 --api-key-env FAST_API_KEY",
+		"pvyai providers check fast --connectivity",
+		"pvyai providers use fast",
 	} {
 		if !strings.Contains(output, want) {
 			t.Fatalf("expected setup output to contain %q, got %q", want, output)
@@ -167,8 +167,8 @@ func TestRunProvidersSetupJSONIncludesCommands(t *testing.T) {
 	}
 	if payload.CatalogID != "groq" ||
 		payload.Name != "fast" ||
-		payload.AddCommand != "zero providers add groq --name fast --api-key-env GROQ_API_KEY --set-active" ||
-		payload.CheckCommand != "zero providers check fast --connectivity" ||
+		payload.AddCommand != "pvyai providers add groq --name fast --api-key-env GROQ_API_KEY --set-active" ||
+		payload.CheckCommand != "pvyai providers check fast --connectivity" ||
 		payload.UseCommand != "" ||
 		payload.EnvVar != "GROQ_API_KEY" {
 		t.Fatalf("unexpected setup JSON payload: %#v", payload)
@@ -212,7 +212,7 @@ func TestRunProvidersSetupHelpListsOnboardingCommands(t *testing.T) {
 		t.Fatalf("expected exit code %d, got %d: %s", exitSuccess, exitCode, stderr.String())
 	}
 	output := stdout.String()
-	for _, want := range []string{"zero providers use <name>", "zero providers setup <catalog-id>"} {
+	for _, want := range []string{"pvyai providers use <name>", "pvyai providers setup <catalog-id>"} {
 		if !strings.Contains(output, want) {
 			t.Fatalf("expected providers help to contain %q, got %q", want, output)
 		}

@@ -13,14 +13,14 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
-const acpUsage = `zero acp — serve the Agent Client Protocol (ACP) over stdio
+const acpUsage = `pvyai acp — serve the Agent Client Protocol (ACP) over stdio
 
 Editors that speak ACP (Zed, JetBrains, Neovim, ...) spawn this command and drive
 ZERO as a backend over JSON-RPC 2.0 on stdin/stdout. ZERO keeps your provider,
 model, and API keys (BYOK); the editor only hosts the conversation thread.
 
 Usage:
-  zero acp
+  pvyai acp
 
 Not meant to be run interactively — point your editor's ACP / external-agent
 setting at "pvyai acp".`

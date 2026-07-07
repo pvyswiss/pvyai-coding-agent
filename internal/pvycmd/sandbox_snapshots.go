@@ -9,7 +9,7 @@ import (
 
 // SandboxPolicySnapshot is the typed view of the live sandbox policy
 // as it is exposed to the TUI render path, the headless
-// `zero sandbox policy --json` command, and PR/CI automation. The
+// `pvyai sandbox policy --json` command, and PR/CI automation. The
 // snapshot is a strict superset of the on-disk policy shape: every
 // field of sandbox.Policy is copied verbatim, and an EffectiveMode
 // field is added so consumers do not have to translate the empty
@@ -47,7 +47,7 @@ type SandboxBlockSnapshot struct {
 
 // SandboxBackendSnapshot is the typed view of a sandbox.Backend as
 // it is exposed to the TUI render path, the headless
-// `zero sandbox policy --json` command, and PR/CI automation. The
+// `pvyai sandbox policy --json` command, and PR/CI automation. The
 // snapshot is a strict superset of the on-disk backend shape: every
 // field of sandbox.Backend is copied verbatim, and a NativeIsolation
 // field is preserved so the JSON shape matches what consumers
@@ -65,7 +65,7 @@ type SandboxBackendSnapshot struct {
 
 // SandboxPlanSnapshot is the typed view of a sandbox.BackendPlan as
 // it is exposed to the TUI render path, the headless
-// `zero sandbox policy --json` command, and PR/CI automation. The
+// `pvyai sandbox policy --json` command, and PR/CI automation. The
 // snapshot bundles the policy, the backend, and the human-readable
 // restriction warnings so the operator gets one payload describing
 // the entire sandbox posture.

@@ -16,7 +16,7 @@ import (
 )
 
 // runAuth dispatches `pvyai auth <command>` for provider OAuth login. It is
-// additive and independent of `zero mcp oauth` (MCP server auth), which is
+// additive and independent of `pvyai mcp oauth` (MCP server auth), which is
 // unchanged.
 func runAuth(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) int {
 	if len(args) == 0 {
@@ -65,13 +65,13 @@ func runAuthOpenRouter(args []string, stdout io.Writer, stderr io.Writer, _ appD
 	key, err := provideroauth.OpenRouterLogin(context.Background(), provideroauth.OpenRouterOptions{
 		Out:        stdout,
 		HTTPClient: &http.Client{Timeout: 30 * time.Second},
-		// ZERO_OPENROUTER_BASE_URL overrides the endpoint (self-hosted gateway or tests).
-		BaseURL: strings.TrimSpace(os.Getenv("ZERO_OPENROUTER_BASE_URL")),
+		// PVYAI_OPENROUTER_BASE_URL overrides the endpoint (self-hosted gateway or tests).
+		BaseURL: strings.TrimSpace(os.Getenv("PVYAI_OPENROUTER_BASE_URL")),
 	})
 	if err != nil {
 		return writeAppError(stderr, redaction.ErrorMessage(err, redaction.Options{}), exitCrash)
 	}
-	if _, err := fmt.Fprintf(stdout, "\nOpenRouter login complete — new API key minted.\nUse it with zero, e.g.:\n  export OPENROUTER_API_KEY=%s\n(or add it to a provider profile with catalogID \"openrouter\").\n", key); err != nil {
+	if _, err := fmt.Fprintf(stdout, "\nOpenRouter login complete — new API key minted.\nUse it with pvyai, e.g.:\n  export OPENROUTER_API_KEY=%s\n(or add it to a provider profile with catalogID \"openrouter\").\n", key); err != nil {
 		return exitCrash
 	}
 	return exitSuccess
@@ -96,14 +96,14 @@ func runAuthChatGPT(args []string, stdout io.Writer, stderr io.Writer, deps appD
 	// Build the same env map the oauth engine reads so the chatgpt preset is
 	// opted into (the preset is off by default to keep third-party OAuth
 	// client identities out of the default credential path). The env is
-	// layered: process env first, then ZERO_OAUTH_ALLOW_PRESETS=1.
+	// layered: process env first, then PVYAI_OAUTH_ALLOW_PRESETS=1.
 	env := map[string]string{}
 	for _, kv := range os.Environ() {
 		if eq := strings.IndexByte(kv, '='); eq > 0 {
 			env[kv[:eq]] = kv[eq+1:]
 		}
 	}
-	env["ZERO_OAUTH_ALLOW_PRESETS"] = "1"
+	env["PVYAI_OAUTH_ALLOW_PRESETS"] = "1"
 
 	token, err := provideroauth.ChatGPTLogin(context.Background(), provideroauth.ChatGPTOptions{
 		Env:        env,
@@ -138,7 +138,7 @@ func runAuthChatGPT(args []string, stdout io.Writer, stderr io.Writer, deps appD
 	if _, err := fmt.Fprint(stdout, statuses); err != nil {
 		return exitCrash
 	}
-	if _, err := fmt.Fprint(stdout, "\nUse it with zero, e.g.:\n  zero --provider chatgpt --model gpt-5.5\n"); err != nil {
+	if _, err := fmt.Fprint(stdout, "\nUse it with pvyai, e.g.:\n  pvyai --provider chatgpt --model gpt-5.5\n"); err != nil {
 		return exitCrash
 	}
 	return exitSuccess
@@ -254,18 +254,18 @@ func validateAuthFlags(sub string, a authArgs) error {
 
 // newAuthManager builds an oauth.Manager backed by the file store, printing the
 // authorization URL / device code to stdout. The store path honors
-// ZERO_OAUTH_TOKENS_PATH (env), so callers/tests can redirect it. Setting
-// ZERO_OAUTH_STORAGE=encrypted-file selects the AES-256-GCM encrypted-at-rest
+// PVYAI_OAUTH_TOKENS_PATH (env), so callers/tests can redirect it. Setting
+// PVYAI_OAUTH_STORAGE=encrypted-file selects the AES-256-GCM encrypted-at-rest
 // backend (a per-user secret is created beside the token file).
 func newAuthManager(deps appDeps, out io.Writer) (*oauth.Manager, error) {
-	// Validate ZERO_OAUTH_STORAGE up front: a mistyped value must fail fast rather
+	// Validate PVYAI_OAUTH_STORAGE up front: a mistyped value must fail fast rather
 	// than silently change the backend. Empty = default (plaintext 0600 file);
 	// "encrypted-file" = AES-256-GCM; "keyring" = the OS keyring.
-	storage := strings.ToLower(strings.TrimSpace(os.Getenv("ZERO_OAUTH_STORAGE")))
+	storage := strings.ToLower(strings.TrimSpace(os.Getenv("PVYAI_OAUTH_STORAGE")))
 	switch storage {
 	case "", "file", "encrypted-file", "keyring":
 	default:
-		return nil, fmt.Errorf("invalid ZERO_OAUTH_STORAGE %q (supported: file, encrypted-file, keyring)", storage)
+		return nil, fmt.Errorf("invalid PVYAI_OAUTH_STORAGE %q (supported: file, encrypted-file, keyring)", storage)
 	}
 	store, err := oauth.NewStore(oauth.StoreOptions{
 		Now:     deps.now,
@@ -284,7 +284,7 @@ func newAuthManager(deps appDeps, out io.Writer) (*oauth.Manager, error) {
 		// performed (the sandbox/headless contexts make printing the safer default).
 		OpenBrowser: func(string) error { return nil },
 		// `pvyai auth login <preset>` (e.g. xai) should resolve the baked-in preset
-		// without the operator exporting ZERO_OAUTH_ALLOW_PRESETS first.
+		// without the operator exporting PVYAI_OAUTH_ALLOW_PRESETS first.
 		AllowPresets: true,
 	})
 }
@@ -503,21 +503,21 @@ Commands:
 
 A provider is any OAuth 2.0 / OIDC server. "openrouter" ('pvyai auth openrouter')
 works out of the box. "xai" ('pvyai auth login xai') uses a built-in preset that is
-off by default — enable it with ZERO_OAUTH_ALLOW_PRESETS=1, or set the
-ZERO_OAUTH_XAI_* vars yourself. "chatgpt" ('pvyai auth login chatgpt' or
+off by default — enable it with PVYAI_OAUTH_ALLOW_PRESETS=1, or set the
+PVYAI_OAUTH_XAI_* vars yourself. "chatgpt" ('pvyai auth login chatgpt' or
 'pvyai auth chatgpt') uses a fixed-port loopback flow against the Codex backend.
 Any preset field is overridable via the env vars below. For a custom provider named <name>, set:
-  ZERO_OAUTH_<NAME>_CLIENT_ID       (required)
-  ZERO_OAUTH_<NAME>_CLIENT_SECRET   (optional)
-  ZERO_OAUTH_<NAME>_AUTHORIZE_URL   ZERO_OAUTH_<NAME>_TOKEN_URL
-  ZERO_OAUTH_<NAME>_DEVICE_URL      ZERO_OAUTH_<NAME>_ISSUER_URL (for discovery)
-  ZERO_OAUTH_<NAME>_SCOPES          ZERO_OAUTH_<NAME>_FLOW (loopback|device)
+  PVYAI_OAUTH_<NAME>_CLIENT_ID       (required)
+  PVYAI_OAUTH_<NAME>_CLIENT_SECRET   (optional)
+  PVYAI_OAUTH_<NAME>_AUTHORIZE_URL   PVYAI_OAUTH_<NAME>_TOKEN_URL
+  PVYAI_OAUTH_<NAME>_DEVICE_URL      PVYAI_OAUTH_<NAME>_ISSUER_URL (for discovery)
+  PVYAI_OAUTH_<NAME>_SCOPES          PVYAI_OAUTH_<NAME>_FLOW (loopback|device)
 Endpoint URLs must be https (loopback exempt).
 
-Storage: tokens are written 0600 under $XDG_CONFIG_HOME/zero (override with
-ZERO_OAUTH_TOKENS_PATH). Set ZERO_OAUTH_STORAGE=encrypted-file to encrypt them at
+Storage: tokens are written 0600 under $XDG_CONFIG_HOME/pvyai (override with
+PVYAI_OAUTH_TOKENS_PATH). Set PVYAI_OAUTH_STORAGE=encrypted-file to encrypt them at
 rest with AES-256-GCM (a per-user secret beside the file), or
-ZERO_OAUTH_STORAGE=keyring to use the OS keyring (macOS Keychain / Linux
+PVYAI_OAUTH_STORAGE=keyring to use the OS keyring (macOS Keychain / Linux
 secret-tool). MCP server tokens share the same store.
 
 Flags:

@@ -281,7 +281,7 @@ func runExec(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) in
 	sessionTitle := execSessionTitle(options, prompt)
 
 	if !config.HasProviderProfile(resolved.Provider) {
-		return writeExecProviderError(stdout, stderr, options.outputFormat, "provider_error", "No provider configured. Run `zero setup` (guided), `zero auth` (OAuth providers), set a provider API key env var (e.g. OPENAI_API_KEY / ANTHROPIC_API_KEY / GEMINI_API_KEY), or add .zero/config.json.")
+		return writeExecProviderError(stdout, stderr, options.outputFormat, "provider_error", "No provider configured. Run `pvyai setup` (guided), `pvyai auth` (OAuth providers), set a provider API key env var (e.g. OPENAI_API_KEY / ANTHROPIC_API_KEY / GEMINI_API_KEY), or add .pvyai/config.json.")
 	}
 	// Activate deferred MCP-tool loading for this run only when the VISIBLE
 	// deferred-eligible count meets the resolved threshold; below threshold this
@@ -402,7 +402,7 @@ func runExec(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) in
 		Mode:      notify.Mode(strings.TrimSpace(execNotifyMode(options, resolved))),
 		FocusMode: notify.FocusAlways,
 	})
-	// Opt-in webhook fan-out (ZERO_NOTIFY_WEBHOOK_URL). Headless runs can safely
+	// Opt-in webhook fan-out (PVYAI_NOTIFY_WEBHOOK_URL). Headless runs can safely
 	// log a failed delivery to stderr (never stdout). The sink redacts before
 	// logging, so a token in the URL or message is masked.
 	notify.MaybeAddWebhookSink(notifier, os.Getenv, func(format string, args ...any) {
@@ -899,7 +899,7 @@ func resolveExecPrompt(options execOptions, workspaceRoot string, stdin io.Reade
 
 	prompt := strings.TrimSpace(strings.Join(parts, "\n\n"))
 	if prompt == "" {
-		return "", nil, execUsageError{"Prompt required. Use `zero exec \"prompt\"` or `zero exec --file prompt.txt`."}
+		return "", nil, execUsageError{"Prompt required. Use `pvyai exec \"prompt\"` or `pvyai exec --file prompt.txt`."}
 	}
 	return prompt, nil, nil
 }

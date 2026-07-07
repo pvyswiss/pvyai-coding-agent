@@ -88,8 +88,8 @@ func runTasksCommand(args []string, getenv func(string) string, stdout io.Writer
 
 func parseTaskArgs(args []string, getenv func(string) string) (taskOptions, error) {
 	options := taskOptions{
-		Version: strings.TrimSpace(getenv("ZERO_BENCH_VERSION")),
-		Commit:  strings.TrimSpace(getenv("ZERO_BENCH_COMMIT")),
+		Version: strings.TrimSpace(getenv("PVYAI_BENCH_VERSION")),
+		Commit:  strings.TrimSpace(getenv("PVYAI_BENCH_COMMIT")),
 	}
 	for index := 0; index < len(args); index++ {
 		arg := args[index]
@@ -205,9 +205,9 @@ func taskHelpText() string {
 		"  --model <model>     Model to run (required); recorded with the result",
 		"  --mode <name>       Exec mode preset to apply",
 		"  --self-correct      Enable the post-edit verify-and-correct loop",
-		"  --binary <path>     Path to the `zero` binary (required unless --dry-run)",
-		"  --version <v>       Record the ZERO version (default: $ZERO_BENCH_VERSION)",
-		"  --commit <sha>      Record the ZERO commit (default: $ZERO_BENCH_COMMIT)",
+		"  --binary <path>     Path to the `pvyai` binary (required unless --dry-run)",
+		"  --version <v>       Record the ZERO version (default: $PVYAI_BENCH_VERSION)",
+		"  --commit <sha>      Record the ZERO commit (default: $PVYAI_BENCH_COMMIT)",
 		"  --output <path>     Write the JSON result to path",
 		"  --json              Print only the JSON result",
 		"  --dry-run           Record every task as skipped without invoking the agent",

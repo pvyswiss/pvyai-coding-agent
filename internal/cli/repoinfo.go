@@ -151,10 +151,10 @@ func writeRepoInfoList(b *strings.Builder, label string, items []string) {
 }
 
 func writeRepoInfoHelp(w io.Writer) {
-	fmt.Fprint(w, `zero repo-info — characterize the current repository (local git only)
+	fmt.Fprint(w, `pvyai repo-info — characterize the current repository (local git only)
 
 Usage:
-  zero repo-info [--json] [--cwd <dir>]
+  pvyai repo-info [--json] [--cwd <dir>]
 
 Flags:
   --json        Emit the full characterization as JSON.

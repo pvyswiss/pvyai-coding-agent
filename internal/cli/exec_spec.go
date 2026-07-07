@@ -291,7 +291,7 @@ func formatExecSpecDraftSummary(info execSpecDraftInfo) string {
 		"  spec: " + redact(info.SpecID),
 		"  path: " + redact(path),
 		"  draft session: " + redact(info.DraftSessionID),
-		"Next: zero spec show " + redact(info.SpecID) + "; zero spec approve " + redact(info.SpecID),
+		"Next: pvyai spec show " + redact(info.SpecID) + "; pvyai spec approve " + redact(info.SpecID),
 	}
 	return strings.Join(lines, "\n")
 }

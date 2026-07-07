@@ -7,8 +7,8 @@ import (
 )
 
 // DefaultDir returns the per-user directory for the daemon's runtime files:
-// $XDG_RUNTIME_DIR/zero when set (a tmpfs owned by the user on Linux), otherwise
-// ~/.zero. Mirrors supervisor.js / config.js choosing a per-user runtime dir.
+// $XDG_RUNTIME_DIR/pvyai when set (a tmpfs owned by the user on Linux), otherwise
+// ~/.pvyai. Mirrors supervisor.js / config.js choosing a per-user runtime dir.
 func DefaultDir() (string, error) {
 	if rt := strings.TrimSpace(os.Getenv("XDG_RUNTIME_DIR")); rt != "" {
 		return filepath.Join(rt, "pvyai"), nil
@@ -17,7 +17,7 @@ func DefaultDir() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(home, ".zero"), nil
+	return filepath.Join(home, ".pvyai"), nil
 }
 
 // Paths bundles the daemon's socket, lock, and status file paths.

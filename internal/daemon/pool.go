@@ -42,7 +42,7 @@ type WorkerSpec struct {
 }
 
 // WorkerHandle is a launched worker process the pool supervises. The production
-// launcher wraps an exec.Cmd running `zero exec -i/-o stream-json`; tests inject
+// launcher wraps an exec.Cmd running `pvyai exec -i/-o stream-json`; tests inject
 // a fake. Stdout yields the worker's stream-json event lines.
 type WorkerHandle interface {
 	Stdout() Lines

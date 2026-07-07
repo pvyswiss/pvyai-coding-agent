@@ -437,7 +437,7 @@ var solarizedLightPalette = palette{
 	brandRed:  "#E62E27",
 }
 
-// themeEntry is one registered theme: Name is the /theme value + ZERO_THEME/--theme
+// themeEntry is one registered theme: Name is the /theme value + PVYAI_THEME/--theme
 // token (lowercase, kebab), Label is the picker display text, and IsDark groups the
 // picker (Dark/Light sections) and drives which built-in `auto` resolves to.
 type themeEntry struct {

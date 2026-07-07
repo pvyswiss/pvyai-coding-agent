@@ -210,7 +210,7 @@ func TestScanHonorsTraversalCaps(t *testing.T) {
 		}
 	})
 
-	t.Run("zero max depth includes root files only", func(t *testing.T) {
+	t.Run("pvyai max depth includes root files only", func(t *testing.T) {
 		root := t.TempDir()
 		writeFile(t, root, "top.go", "package top\n")
 		writeFile(t, root, "pkg/one.go", "package pkg\n")

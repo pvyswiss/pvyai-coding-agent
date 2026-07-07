@@ -175,7 +175,7 @@ func resolveProfile(profile config.ProviderProfile, options Options) (resolvedPr
 
 	// baseURL resolves in this order: profile override → catalog default.
 	// The catalog default makes the chatgpt Codex backend Just Work when a
-	// user runs `zero` with a `catalogID: chatgpt` profile; the user can
+	// user runs `pvyai` with a `catalogID: chatgpt` profile; the user can
 	// still pin their own URL (e.g. a self-hosted Codex gateway or a local
 	// OAuth proxy) and it wins.
 	baseURL := strings.TrimSpace(profile.BaseURL)
@@ -269,7 +269,7 @@ func isCodexCatalog(profile config.ProviderProfile, _ resolvedProfile) bool {
 // refreshes the token in place under that key; reading the account from the same
 // key keeps header and token on one login for the provider's life. Resolving the
 // key independently here (a second oauth.FirstStored) could, after a transient
-// per-candidate load error or a mid-session `zero auth login`, pick a different
+// per-candidate load error or a mid-session `pvyai auth login`, pick a different
 // login than the bearer — a mismatch the backend rejects.
 func newCodexProvider(profile config.ProviderProfile, resolved resolvedProfile, options Options) (pvyruntime.Provider, error) {
 	accountKey := options.OAuthLoginKey

@@ -30,7 +30,7 @@ Find the likely failure area.`)
 	if exitCode != exitSuccess {
 		t.Fatalf("exitCode = %d stderr=%s", exitCode, stderr.String())
 	}
-	for _, want := range []string{"Zero Specialists", "worker [builtin]", "triage [user]", "code-review"} {
+	for _, want := range []string{"PVYai Specialists", "worker [builtin]", "triage [user]", "code-review"} {
 		if !strings.Contains(stdout.String(), want) {
 			t.Fatalf("list output missing %q: %s", want, stdout.String())
 		}
@@ -42,7 +42,7 @@ Find the likely failure area.`)
 	if exitCode != exitSuccess {
 		t.Fatalf("exitCode = %d stderr=%s", exitCode, stderr.String())
 	}
-	if !strings.Contains(stdout.String(), "Zero Specialist: triage") || !strings.Contains(stdout.String(), "Find the likely failure area.") {
+	if !strings.Contains(stdout.String(), "PVYai Specialist: triage") || !strings.Contains(stdout.String(), "Find the likely failure area.") {
 		t.Fatalf("unexpected show output: %s", stdout.String())
 	}
 

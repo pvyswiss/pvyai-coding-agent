@@ -348,7 +348,7 @@ func windowsRestrictedTokenCommandPlan(execRequest SandboxExecutionRequest, poli
 	}
 	// Prepend the helper's args prefix: for self-dispatch this is the hidden
 	// subcommand token (Name is the running zero binary), so the launched command
-	// is `zero __windows-command-runner <sandbox args>`. Empty for a standalone
+	// is `pvyai __windows-command-runner <sandbox args>`. Empty for a standalone
 	// helper .exe, where args are passed unchanged.
 	fullArgs := append(append([]string{}, execRequest.Backend.ExecutableArgsPrefix...), args...)
 	return withSandboxExecutionMetadata(CommandPlan{
@@ -379,7 +379,7 @@ func windowsSandboxChildEnv(specEnv []string, policy Policy, workspaceRoot strin
 		"PATH="+firstEnv("PATH", defaultPath()),
 		"TERM="+firstEnv("TERM", "dumb"),
 		EnvSandboxBackend+"="+string(BackendWindowsRestrictedToken),
-		"ZERO_SANDBOX_NETWORK="+string(policy.Network),
+		"PVYAI_SANDBOX_NETWORK="+string(policy.Network),
 		EnvSandboxed+"=1",
 		"COMSPEC="+firstEnv("COMSPEC", "cmd.exe"),
 		"SystemRoot="+firstEnv("SystemRoot", `C:\Windows`),
@@ -465,7 +465,7 @@ type WindowsCapabilitySIDs struct {
 }
 
 func ResolveWindowsSandboxHome(env map[string]string) (string, error) {
-	if override := strings.TrimSpace(envValue(env, "ZERO_WINDOWS_SANDBOX_HOME")); override != "" {
+	if override := strings.TrimSpace(envValue(env, "PVYAI_WINDOWS_SANDBOX_HOME")); override != "" {
 		if filepath.IsAbs(override) {
 			return filepath.Clean(override), nil
 		}

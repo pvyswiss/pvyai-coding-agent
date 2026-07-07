@@ -79,7 +79,7 @@ func parseContextArgs(args []string) (contextOptions, bool, error) {
 
 func writeContextHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero context [flags]
+  pvyai context [flags]
 
 Reports the current workspace context budget.
 

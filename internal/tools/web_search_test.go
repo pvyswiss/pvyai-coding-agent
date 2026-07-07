@@ -388,7 +388,7 @@ func TestWebSearchRendersScoreWhenPresent(t *testing.T) {
 	}
 	// The zero-score row must NOT render "score 0.00" — that would be noisy.
 	if strings.Contains(res.Output, "score 0.00") {
-		t.Errorf("zero score must not be rendered, got: %s", res.Output)
+		t.Errorf("pvyai score must not be rendered, got: %s", res.Output)
 	}
 }
 

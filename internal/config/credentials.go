@@ -12,7 +12,7 @@ import (
 
 // ProviderKeyStoreAt opens the encrypted credential store whose file backend lives
 // in dir. The backend resolves keyring-first, then encrypted-file, with a plaintext
-// opt-out via ZERO_CRED_STORAGE. The dir parameter exists so tests can point the file
+// opt-out via PVYAI_CRED_STORAGE. The dir parameter exists so tests can point the file
 // backend at a temp directory; production always uses the user config directory
 // (ProviderKeyStore) because provider API keys are user-scoped by design — they are
 // only ever captured under the user config, never project config (a cloned repo must
@@ -186,7 +186,7 @@ func (profile ProviderProfile) HasConfiguredCredential() bool {
 // For a keyless profile the profile name comes first (a login under your own
 // profile name is unambiguously yours), then the catalog ID as a FALLBACK (so a
 // profile renamed away from its catalog ID — e.g. {name:"codex",
-// catalogID:"chatgpt"} — still finds a `zero auth login chatgpt` token).
+// catalogID:"chatgpt"} — still finds a `pvyai auth login chatgpt` token).
 // Candidates are trimmed, blank-skipped, and de-duplicated CASE-SENSITIVELY — the
 // OAuth token store is a case-sensitive map, so "ChatGPT" and "chatgpt" are
 // distinct keys and both must survive.

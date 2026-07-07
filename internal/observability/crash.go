@@ -39,7 +39,7 @@ func WriteCrashReport(dir, label string, recovered any, stack []byte, ts time.Ti
 // DefaultCrashDir is where crash reports are written by default.
 func DefaultCrashDir() string {
 	if home, err := os.UserHomeDir(); err == nil && home != "" {
-		return filepath.Join(home, ".zero", "crashes")
+		return filepath.Join(home, ".pvyai", "crashes")
 	}
 	return filepath.Join(os.TempDir(), "pvyai-crashes")
 }

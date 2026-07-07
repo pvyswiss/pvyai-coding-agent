@@ -520,10 +520,10 @@ func parseChangesArgs(args []string, command string) (changesCommandOptions, boo
 		}
 	}
 	if command != "commit" && options.message != "" {
-		return options, false, execUsageError{"--message is only valid with `zero changes commit`"}
+		return options, false, execUsageError{"--message is only valid with `pvyai changes commit`"}
 	}
 	if command != "commit" && (options.hasMessage || options.dryRun || options.auto) {
-		return options, false, execUsageError{"--message, --dry-run, and --auto are only valid with `zero changes commit`"}
+		return options, false, execUsageError{"--message, --dry-run, and --auto are only valid with `pvyai changes commit`"}
 	}
 	if command == "commit" && options.hasMessage && options.auto {
 		return options, false, execUsageError{"cannot specify both --message and --auto"}
@@ -532,13 +532,13 @@ func parseChangesArgs(args []string, command string) (changesCommandOptions, boo
 		return options, false, execUsageError{"--dry-run is only valid with commit or push"}
 	}
 	if command != "inspect" && options.baseRef != "" {
-		return options, false, execUsageError{"--base is only valid with `zero changes inspect`"}
+		return options, false, execUsageError{"--base is only valid with `pvyai changes inspect`"}
 	}
 	if command != "push" && command != "pr" && (options.remote != "" || options.force) {
 		return options, false, execUsageError{"--remote and --force are only valid with push or pr"}
 	}
 	if command != "pr" && (options.title != "" || options.body != "" || options.fill || options.draft) {
-		return options, false, execUsageError{"--title, --body, --fill, and --draft are only valid with `zero changes pr`"}
+		return options, false, execUsageError{"--title, --body, --fill, and --draft are only valid with `pvyai changes pr`"}
 	}
 	if command != "push" && command != "pr" && options.yes {
 		return options, false, execUsageError{"--yes is only valid with push or pr"}
@@ -785,7 +785,7 @@ func formatCommitResult(result pvygit.CommitResult) string {
 
 func writeWorktreesHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero worktrees prepare [flags] [name]
+  pvyai worktrees prepare [flags] [name]
 
 Prepares an isolated git worktree for a Zero task.
 
@@ -801,7 +801,7 @@ Flags:
 
 func writeVerifyHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero verify [flags]
+  pvyai verify [flags]
 
 Detects and runs local verification checks for the workspace.
 
@@ -818,10 +818,10 @@ Flags:
 
 func writeChangesHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero changes inspect [flags]
-  zero changes commit [flags]
-  zero changes push [flags]
-  zero changes pr [flags]
+  pvyai changes inspect [flags]
+  pvyai changes commit [flags]
+  pvyai changes push [flags]
+  pvyai changes pr [flags]
 
 Inspects, commits, pushes, and creates pull requests for local git changes.
 
@@ -829,7 +829,7 @@ Flags:
   -C, --cwd <path>        Workspace directory
       --base <ref>        Diff against <ref>...HEAD instead of the working tree
       --diff-bytes <n>    Maximum diff bytes to include
-  -m, --message <text>    Commit message for `+"`zero changes commit`"+`
+  -m, --message <text>    Commit message for `+"`pvyai changes commit`"+`
       --dry-run           Preview commit metadata / push without mutating git state
       --remote <name>     Remote to push to (defaults to upstream tracked branch or origin)
       --force             Use force-with-lease when pushing

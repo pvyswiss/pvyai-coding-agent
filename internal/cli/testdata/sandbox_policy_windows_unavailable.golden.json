@@ -42,7 +42,7 @@
             "root": "$WORKSPACE",
             "protectedMetadataNames": [
               ".git",
-              ".zero",
+              ".pvyai",
               ".agents"
             ]
           }

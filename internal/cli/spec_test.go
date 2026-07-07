@@ -124,12 +124,12 @@ func TestParseSpecRejectsCommandSpecificFlags(t *testing.T) {
 		{
 			name: "comment on show",
 			args: []string{"show", "draft", "--comment", "ship it"},
-			want: "--comment is only valid for zero spec approve",
+			want: "--comment is only valid for pvyai spec approve",
 		},
 		{
 			name: "reason on approve",
 			args: []string{"approve", "draft", "--reason", "too broad"},
-			want: "--reason is only valid for zero spec reject",
+			want: "--reason is only valid for pvyai spec reject",
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {

@@ -327,7 +327,7 @@ func ParseManifest(raw any, options ParseManifestOptions) (LoadedPlugin, error) 
 	}
 
 	// The tools/prompts/skills/hooks extensions parsed below feed two consumers:
-	// DISCOVERY (the `zero plugins` listing + backend snapshots) and ACTIVATION
+	// DISCOVERY (the `pvyai plugins` listing + backend snapshots) and ACTIVATION
 	// (activate.go), which turns the resolved tools/hooks/skills into live
 	// registrations — tools into the tools.Registry, hooks into the hooks
 	// dispatcher, and skills into the skills loader's search roots. Prompts remain

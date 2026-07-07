@@ -32,8 +32,8 @@ func TestPackageBinPointsToNodeWrapper(t *testing.T) {
 	if err := json.Unmarshal(bytes, &pkg); err != nil {
 		t.Fatalf("Unmarshal package.json: %v", err)
 	}
-	if pkg.Name != "@gitlawb/zero" {
-		t.Fatalf("name = %q, want @gitlawb/zero", pkg.Name)
+	if pkg.Name != "@pvyswiss/pvyai" {
+		t.Fatalf("name = %q, want @pvyswiss/pvyai", pkg.Name)
 	}
 	if pkg.Bin["pvyai"] != "bin/zero.js" {
 		t.Fatalf("bin.pvyai = %q, want bin/zero.js", pkg.Bin["pvyai"])
@@ -85,9 +85,9 @@ func TestPostinstallComputesAssetPlan(t *testing.T) {
 		platform, arch        string
 		wantAsset, wantBinary string
 	}{
-		{"linux", "x64", "zero-v" + version + "-linux-x64.tar.gz", "pvyai"},
-		{"darwin", "arm64", "zero-v" + version + "-macos-arm64.tar.gz", "pvyai"},
-		{"win32", "x64", "zero-v" + version + "-windows-x64.zip", "pvyai.exe"},
+		{"linux", "x64", "pvyai-v" + version + "-linux-x64.tar.gz", "pvyai"},
+		{"darwin", "arm64", "pvyai-v" + version + "-macos-arm64.tar.gz", "pvyai"},
+		{"win32", "x64", "pvyai-v" + version + "-windows-x64.zip", "pvyai.exe"},
 	}
 	for _, tc := range cases {
 		stdout, stderr, err := runPostinstall(t,

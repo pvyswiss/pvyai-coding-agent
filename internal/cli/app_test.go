@@ -40,7 +40,7 @@ func TestRunPrintsVersion(t *testing.T) {
 	if exitCode != 0 {
 		t.Fatalf("expected exit code 0, got %d", exitCode)
 	}
-	if got := stdout.String(); got != "zero dev\n" {
+	if got := stdout.String(); got != "pvyai dev\n" {
 		t.Fatalf("expected version output, got %q", got)
 	}
 	if stderr.Len() != 0 {
@@ -667,7 +667,7 @@ func TestRunSkipPermissionsUnsafeLaunchesTUIInUnsafeMode(t *testing.T) {
 	launched := false
 	var launchedOptions tui.Options
 
-	// "zero --skip-permissions-unsafe" must launch the interactive TUI in unsafe
+	// "pvyai --skip-permissions-unsafe" must launch the interactive TUI in unsafe
 	// mode (not fall through to "unknown command"). This is the only way to reach
 	// unsafe mode in the shell, which the "!" escape is gated behind.
 	exitCode := runWithDeps([]string{"--skip-permissions-unsafe"}, &stdout, &stderr, appDeps{
@@ -1061,7 +1061,7 @@ func TestRunSetupProviderWritesActiveConfig(t *testing.T) {
 	if len(cfg.Providers) != 1 || cfg.Providers[0].CatalogID != "ollama" || cfg.Providers[0].Model == "" {
 		t.Fatalf("Providers = %#v, want ollama provider with model", cfg.Providers)
 	}
-	if !strings.Contains(stdout.String(), "Zero setup complete") || !strings.Contains(stdout.String(), "next: zero") {
+	if !strings.Contains(stdout.String(), "PVYai setup complete") || !strings.Contains(stdout.String(), "next: pvyai") {
 		t.Fatalf("unexpected setup output: %q", stdout.String())
 	}
 	if stderr.Len() != 0 {
@@ -1392,7 +1392,7 @@ func TestRunUpgradeDefaultsToApply(t *testing.T) {
 			return update.ApplyResult{Message: "already up to date"}, nil
 		},
 		checkUpdate: func(context.Context, update.Options) (update.Result, error) {
-			t.Fatal("checkUpdate should not run for `zero upgrade`")
+			t.Fatal("checkUpdate should not run for `pvyai upgrade`")
 			return update.Result{}, nil
 		},
 	}
@@ -1404,7 +1404,7 @@ func TestRunUpgradeDefaultsToApply(t *testing.T) {
 		t.Fatalf("expected exit code %d, got %d: %s", exitSuccess, exitCode, stderr.String())
 	}
 	if !applyCalled {
-		t.Fatal("expected `zero upgrade` to call applyUpdate")
+		t.Fatal("expected `pvyai upgrade` to call applyUpdate")
 	}
 }
 
@@ -1491,7 +1491,7 @@ func assertHelpOutput(t *testing.T, args []string) {
 	for _, want := range []string{
 		"PVYai terminal coding agent",
 		"Usage:",
-		"zero [command]",
+		"pvyai [command]",
 		"exec",
 		"config",
 		"models",
@@ -1685,8 +1685,8 @@ func TestRunThemeFlagRejectsBadValue(t *testing.T) {
 	}
 }
 
-// A custom endpoint saved without a model previously bricked bare `zero` and
-// `zero setup` — the exact commands that could have fixed it (the resolve
+// A custom endpoint saved without a model previously bricked bare `pvyai` and
+// `pvyai setup` — the exact commands that could have fixed it (the resolve
 // error escaped before the wizard could open). The interactive TUI now treats
 // the requires-model failure as "needs onboarding", same as a missing active
 // provider. The error comes from a REAL Resolve over a real config file, so
@@ -1737,7 +1737,7 @@ func TestRunNoArgsEntersSetupWhenActiveProviderMissesModel(t *testing.T) {
 	}
 }
 
-// `zero login`/`zero logout` don't exist (it's `zero auth login`); first-run
+// `pvyai login`/`pvyai logout` don't exist (it's `pvyai auth login`); first-run
 // users try them (reported in the wild), so the unknown-command error points at
 // the real command.
 func TestRunUnknownLoginSuggestsAuthLogin(t *testing.T) {
@@ -1746,7 +1746,7 @@ func TestRunUnknownLoginSuggestsAuthLogin(t *testing.T) {
 	if exitCode != 2 {
 		t.Fatalf("exit = %d, want 2 (unknown command)", exitCode)
 	}
-	if !strings.Contains(stderr.String(), `"zero auth login"`) {
+	if !strings.Contains(stderr.String(), `"pvyai auth login"`) {
 		t.Fatalf("stderr = %q, want a zero auth login suggestion", stderr.String())
 	}
 	// An unrelated unknown command gets no misleading suggestion.

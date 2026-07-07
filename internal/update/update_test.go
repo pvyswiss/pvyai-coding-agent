@@ -186,7 +186,7 @@ func TestCheckRejectsInvalidLatestVersion(t *testing.T) {
 func TestCheckFallsBackReleaseURL(t *testing.T) {
 	result, err := Check(context.Background(), Options{
 		CurrentVersion: "0.1.0",
-		Repository:     "Gitlawb/zero",
+		Repository:     "pvyswiss/pvyai",
 		GOOS:           "linux",
 		GOARCH:         "amd64",
 		Fetch: func(context.Context, string) (Release, error) {
@@ -232,20 +232,20 @@ func TestCheckResolvesEndpointPrecedence(t *testing.T) {
 	}{
 		{
 			name:    "endpoint option wins",
-			options: Options{Endpoint: "Gitlawb/option-zero", Repository: "Gitlawb/repo-zero"},
-			env:     "Gitlawb/env-zero",
-			want:    Endpoint("Gitlawb/option-zero"),
+			options: Options{Endpoint: "pvyswiss/option-pvyai", Repository: "pvyswiss/repo-pvyai"},
+			env:     "pvyswiss/env-pvyai",
+			want:    Endpoint("pvyswiss/option-pvyai"),
 		},
 		{
 			name:    "environment wins over repository",
-			options: Options{Repository: "Gitlawb/repo-zero"},
-			env:     "Gitlawb/env-zero",
-			want:    Endpoint("Gitlawb/env-zero"),
+			options: Options{Repository: "pvyswiss/repo-pvyai"},
+			env:     "pvyswiss/env-pvyai",
+			want:    Endpoint("pvyswiss/env-pvyai"),
 		},
 		{
 			name:     "repository wins over default",
-			options:  Options{Repository: "Gitlawb/repo-zero"},
-			want:     Endpoint("Gitlawb/repo-zero"),
+			options:  Options{Repository: "pvyswiss/repo-pvyai"},
+			want:     Endpoint("pvyswiss/repo-pvyai"),
 			clearEnv: true,
 		},
 		{
@@ -289,7 +289,7 @@ func TestCheckRejectsMissingReleaseAssets(t *testing.T) {
 			return Release{
 				TagName: "v0.2.0",
 				Assets: []Asset{
-					{Name: "zero-v0.2.0-linux-arm64.tar.gz"},
+					{Name: "pvyai-v0.2.0-linux-arm64.tar.gz"},
 				},
 			}, nil
 		},
@@ -327,7 +327,7 @@ func TestExpectedAssetCheckUsesInstallerArchiveNames(t *testing.T) {
 			version:     "0.2.0",
 			goos:        "darwin",
 			goarch:      "arm64",
-			archiveName: "zero-v0.2.0-macos-arm64.tar.gz",
+			archiveName: "pvyai-v0.2.0-macos-arm64.tar.gz",
 			platform:    "macos",
 			arch:        "arm64",
 		},
@@ -336,7 +336,7 @@ func TestExpectedAssetCheckUsesInstallerArchiveNames(t *testing.T) {
 			version:     "0.2.0",
 			goos:        "windows",
 			goarch:      "amd64",
-			archiveName: "zero-v0.2.0-windows-x64.zip",
+			archiveName: "pvyai-v0.2.0-windows-x64.zip",
 			platform:    "windows",
 			arch:        "x64",
 		},
@@ -388,11 +388,11 @@ func TestCheckReportsInvalidHTTPJSON(t *testing.T) {
 }
 
 func TestResolveEndpointAcceptsURLAndRepositorySlug(t *testing.T) {
-	got, err := ResolveEndpoint("Gitlawb/alt-zero", DefaultRepository)
+	got, err := ResolveEndpoint("pvyswiss/alt-pvyai", DefaultRepository)
 	if err != nil {
 		t.Fatalf("ResolveEndpoint returned error: %v", err)
 	}
-	if got != Endpoint("Gitlawb/alt-zero") {
+	if got != Endpoint("pvyswiss/alt-pvyai") {
 		t.Fatalf("slug endpoint = %q", got)
 	}
 

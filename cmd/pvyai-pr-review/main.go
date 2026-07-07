@@ -55,13 +55,13 @@ func writeHelp(w io.Writer) error {
 Builds the deterministic PR review markdown used by GitHub Actions.
 
 Environment:
-  ZERO_REVIEW_DIFF_CHECK      Outcome for diff hygiene
-  ZERO_REVIEW_TEST            Outcome for tests
-  ZERO_REVIEW_BUILD           Outcome for build
-  ZERO_REVIEW_SMOKE           Outcome for smoke build
-  ZERO_CHANGED_FILES          Newline-separated changed file paths
-  ZERO_REVIEW_HEAD_SHA        Pull request head SHA
-  ZERO_PR_NUMBER              Pull request number
+  PVYAI_REVIEW_DIFF_CHECK      Outcome for diff hygiene
+  PVYAI_REVIEW_TEST            Outcome for tests
+  PVYAI_REVIEW_BUILD           Outcome for build
+  PVYAI_REVIEW_SMOKE           Outcome for smoke build
+  PVYAI_CHANGED_FILES          Newline-separated changed file paths
+  PVYAI_REVIEW_HEAD_SHA        Pull request head SHA
+  PVYAI_PR_NUMBER              Pull request number
 `)
 	return err
 }

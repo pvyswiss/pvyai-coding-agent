@@ -135,7 +135,7 @@ func TestSandboxCheckReportsWindowsNativeSetupStates(t *testing.T) {
 	}
 	setupStatus, _ := needsSetup.Details["setupStatus"].(string)
 	setupRemedy, _ := needsSetup.Details["remedy"].(string)
-	if setupStatus != "missing-or-out-of-date" || !strings.Contains(setupRemedy, "zero sandbox setup") {
+	if setupStatus != "missing-or-out-of-date" || !strings.Contains(setupRemedy, "pvyai sandbox setup") {
 		t.Fatalf("setup warning details = %#v, want missing/out-of-date with setup remedy", needsSetup.Details)
 	}
 
@@ -143,7 +143,7 @@ func TestSandboxCheckReportsWindowsNativeSetupStates(t *testing.T) {
 	// on PATH for the Windows backend to be usable — the running zero binary acts
 	// as its own command-runner/setup helper. So a missing PATH helper no longer
 	// reports "unavailable"; the backend is available and (with no workspace to
-	// require a setup marker) the check passes. The actionable "run `zero sandbox
+	// require a setup marker) the check passes. The actionable "run `pvyai sandbox
 	// setup`" guidance is covered by the marker-missing case above.
 	noPathHelpers := Run(Options{
 		Now:              fixedDoctorClock("2026-06-12T10:09:00Z"),

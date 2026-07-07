@@ -2,7 +2,7 @@
 // daemon (internal/daemon). It lets a remote client drive the SAME daemon
 // SessionManager/Pool over the network, behind bearer-token authentication and a
 // protocol-version floor. The local Unix-socket daemon is unchanged and remains
-// the default; nothing here activates unless `zero daemon serve-remote` is run.
+// the default; nothing here activates unless `pvyai daemon serve-remote` is run.
 //
 // Security (fail closed):
 //   - TLS is mandatory; the bridge refuses to serve without a cert/key.
@@ -30,8 +30,8 @@ import (
 
 // Env vars the bridge reads for its bearer token.
 const (
-	EnvToken     = "ZERO_DAEMON_REMOTE_TOKEN"
-	EnvTokenFile = "ZERO_DAEMON_REMOTE_TOKEN_FILE"
+	EnvToken     = "PVYAI_DAEMON_REMOTE_TOKEN"
+	EnvTokenFile = "PVYAI_DAEMON_REMOTE_TOKEN_FILE"
 )
 
 // ErrUnauthorized is returned when a token does not match.

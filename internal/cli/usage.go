@@ -299,7 +299,7 @@ func groupThousands(value int) string {
 
 func writeUsageHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero usage report [flags]
+  pvyai usage report [flags]
 
 Summarizes token usage and reconstructed (estimated) cost from persisted local
 Zero session usage events, plus a working-tree net-LOC efficiency estimate.

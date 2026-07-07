@@ -317,7 +317,7 @@ func TestRunSandboxPolicyInspectTextAndJSON(t *testing.T) {
 			} else {
 				output := stdout.String()
 				for _, want := range []string{
-					"Zero sandbox policy",
+					"PVYai sandbox policy",
 					"backend: unavailable",
 					"target_backend: windows-restricted-token",
 					"support_level: unavailable",
@@ -672,7 +672,7 @@ func TestRunSandboxPolicyEffectiveTextAndJSON(t *testing.T) {
 		}
 		output := stdout.String()
 		for _, want := range []string{
-			"Zero effective sandbox policy",
+			"PVYai effective sandbox policy",
 			"mode: enforce",
 			"network: deny",
 			"enforce_workspace: true",

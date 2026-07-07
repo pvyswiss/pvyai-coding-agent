@@ -62,7 +62,7 @@ func TestRunWorktreesPrepareTextAndJSON(t *testing.T) {
 				if decoded.Path != prepared.Path || decoded.Name != prepared.Name {
 					t.Fatalf("unexpected JSON result: %#v", decoded)
 				}
-			} else if !strings.Contains(stdout.String(), "Zero worktree ready") || !strings.Contains(stdout.String(), prepared.Path) {
+			} else if !strings.Contains(stdout.String(), "PVYai worktree ready") || !strings.Contains(stdout.String(), prepared.Path) {
 				t.Fatalf("unexpected worktree text output: %q", stdout.String())
 			}
 		})
@@ -230,7 +230,7 @@ func TestRunVerifyTextAndJSON(t *testing.T) {
 				if snapshot.Contract != verify.ReportContractVersion || len(snapshot.Events) == 0 {
 					t.Fatalf("verify JSON did not expose runtime contract: %#v", snapshot)
 				}
-			} else if !strings.Contains(stdout.String(), "Zero verification") || !strings.Contains(stdout.String(), "go.test") || !strings.Contains(stdout.String(), cwd) || !strings.Contains(stdout.String(), "tests: 2 total, 1 passed, 1 failed") {
+			} else if !strings.Contains(stdout.String(), "PVYai verification") || !strings.Contains(stdout.String(), "go.test") || !strings.Contains(stdout.String(), cwd) || !strings.Contains(stdout.String(), "tests: 2 total, 1 passed, 1 failed") {
 				t.Fatalf("unexpected verify text output: %q", stdout.String())
 			}
 		})
@@ -419,7 +419,7 @@ func TestRunVerifyAttemptsFormatsSelfVerifyText(t *testing.T) {
 		t.Fatalf("expected exit code %d, got %d: %s", exitSuccess, exitCode, stderr.String())
 	}
 	output := stdout.String()
-	for _, want := range []string{"Zero self-verification", "root: " + cwd, "stop: passed", "attempt 1: failed", "remediation: applied - prepared retry", "attempt 2: passed"} {
+	for _, want := range []string{"PVYai self-verification", "root: " + cwd, "stop: passed", "attempt 1: failed", "remediation: applied - prepared retry", "attempt 2: passed"} {
 		if !strings.Contains(output, want) {
 			t.Fatalf("expected %q in output: %q", want, output)
 		}
@@ -491,7 +491,7 @@ func TestRunChangesInspectAndCommit(t *testing.T) {
 		if exitCode != exitSuccess {
 			t.Fatalf("expected exit code %d, got %d: %s", exitSuccess, exitCode, stderr.String())
 		}
-		if !strings.Contains(stdout.String(), "Zero changes commit") || !strings.Contains(stdout.String(), "dry-run: true") {
+		if !strings.Contains(stdout.String(), "PVYai changes commit") || !strings.Contains(stdout.String(), "dry-run: true") {
 			t.Fatalf("unexpected changes commit output: %q", stdout.String())
 		}
 	})

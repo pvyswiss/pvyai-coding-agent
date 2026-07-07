@@ -196,7 +196,7 @@ func TestLooksLikeRedundantConfirmation(t *testing.T) {
 	}
 	no := []string{
 		"",
-		"File: README.md\n1: # Zero", // multi-line read
+		"File: README.md\n1: # PVYai", // multi-line read
 		"internal/cli/root.go:41: fs := flag.NewSet", // grep hit
 		"3 matches found",  // not a known verb
 		"--- a/x\n+++ b/x", // diff

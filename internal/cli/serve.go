@@ -29,7 +29,7 @@ func runServe(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) i
 		return exitSuccess
 	}
 	if !options.mcp {
-		return writeExecUsageError(stderr, "serve requires --mcp. Use `zero serve --mcp`.")
+		return writeExecUsageError(stderr, "serve requires --mcp. Use `pvyai serve --mcp`.")
 	}
 
 	workspaceRoot, err := resolveWorkspaceRoot(options.cwd, deps)
@@ -94,7 +94,7 @@ func parseServeArgs(args []string) (serveOptions, bool, error) {
 
 func writeServeHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero serve --mcp [flags]
+  pvyai serve --mcp [flags]
 
 Starts Zero as an MCP stdio server.
 

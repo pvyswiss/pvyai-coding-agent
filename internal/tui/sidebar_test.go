@@ -38,7 +38,7 @@ func TestSidebarActivityLines(t *testing.T) {
 		t.Errorf("activity must strip the 'tool result:' prefix:\n%s", joined)
 	}
 	if got := m.sidebarActivityLines(40, 0); got != nil {
-		t.Errorf("zero budget: want nil, got %v", got)
+		t.Errorf("pvyai budget: want nil, got %v", got)
 	}
 
 	// Active + quiet run -> a live "generating…" pulse.

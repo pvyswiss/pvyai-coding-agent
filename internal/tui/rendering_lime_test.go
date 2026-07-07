@@ -899,7 +899,7 @@ func TestRunningToolCardShowsHeadAndSpinnerSlot(t *testing.T) {
 func TestResolvedToolCallCollapsesIntoResultCard(t *testing.T) {
 	rows := []transcriptRow{
 		{kind: rowToolCall, id: "call_1", tool: "read_file", detail: "README.md"},
-		{kind: rowToolResult, id: "call_1", tool: "read_file", status: tools.StatusOK, detail: "File: README.md\n\n1: # Zero"},
+		{kind: rowToolResult, id: "call_1", tool: "read_file", status: tools.StatusOK, detail: "File: README.md\n\n1: # PVYai"},
 	}
 	rc := buildRowContext(rows)
 	if !rc.skip(rows[0]) {
@@ -1440,7 +1440,7 @@ func TestTitleBarShowsWorkspaceAndModel(t *testing.T) {
 			t.Fatalf("title bar = %q, missing %q", got, want)
 		}
 	}
-	for _, notWant := range []string{" 0 ", "zero /"} {
+	for _, notWant := range []string{" 0 ", "pvyai /"} {
 		if strings.Contains(got, notWant) {
 			t.Fatalf("title bar = %q, should not include old brand cluster %q", got, notWant)
 		}
@@ -1549,7 +1549,7 @@ func TestToolResultCardRendersInlineWithoutRail(t *testing.T) {
 		id:     "c",
 		tool:   "read_file",
 		status: tools.StatusOK,
-		detail: "File: README.md\n\n1: # Zero\n2: line two",
+		detail: "File: README.md\n\n1: # PVYai\n2: line two",
 	}
 	card := plainRender(t, m.renderRow(row, 80, buildRowContext(nil)))
 	lines := strings.Split(card, "\n")

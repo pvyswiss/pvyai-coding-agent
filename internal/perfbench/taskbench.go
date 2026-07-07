@@ -54,7 +54,7 @@ type TaskConfig struct {
 	// Now overrides the clock for the recorded date (tests inject a fixed time).
 	Now func() time.Time
 	// Runner executes one task and reports the outcome. Required. The default
-	// production runner (NewExecRunner) invokes headless `zero exec`.
+	// production runner (NewExecRunner) invokes headless `pvyai exec`.
 	Runner TaskRunner
 }
 
@@ -290,9 +290,9 @@ func displayOrUnknown(value string) string {
 	return "unknown"
 }
 
-// NewExecRunner builds the production runner: it invokes headless `zero exec`
+// NewExecRunner builds the production runner: it invokes headless `pvyai exec`
 // with stream-json output for each task and decides pass/fail. binary is the path
-// to the `zero` binary; extraArgs are appended to every invocation (e.g. sandbox
+// to the `pvyai` binary; extraArgs are appended to every invocation (e.g. sandbox
 // flags). The self-correct flag from RunContext is translated into the exec
 // invocation so the recorded config matches what actually ran.
 //

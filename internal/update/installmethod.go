@@ -9,7 +9,7 @@ import (
 // npmPackageName is the published package name for the npm distribution of
 // zero (see package.json). scripts/postinstall.mjs downloads the native
 // binary into the same directory as package.json and leaves a
-// ".zero-binary-version" marker file next to it — both are reliable signals
+// ".pvyai-binary-version" marker file next to it — both are reliable signals
 // that a given executable came from an npm install.
 const npmPackageName = "@pvyswiss/pvyai-agent"
 
@@ -25,7 +25,7 @@ const (
 // npm-install markers left by scripts/postinstall.mjs.
 func DetectInstallMethod(executablePath string) InstallMethod {
 	dir := filepath.Dir(executablePath)
-	if _, err := os.Stat(filepath.Join(dir, ".zero-binary-version")); err == nil {
+	if _, err := os.Stat(filepath.Join(dir, ".pvyai-binary-version")); err == nil {
 		return InstallMethodNpm
 	}
 	data, err := os.ReadFile(filepath.Join(dir, "package.json"))

@@ -293,7 +293,7 @@ func TestStoreRejectsNegativeSessionDepth(t *testing.T) {
 
 	_, err := store.Create(CreateInput{SessionID: "bad_depth", Depth: -1})
 
-	if err == nil || !strings.Contains(err.Error(), "invalid zero session depth") {
+	if err == nil || !strings.Contains(err.Error(), "invalid pvyai session depth") {
 		t.Fatalf("expected invalid depth error, got %v", err)
 	}
 }

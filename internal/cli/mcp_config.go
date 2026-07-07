@@ -100,7 +100,7 @@ func runMCPRemove(args []string, stdout io.Writer, stderr io.Writer, deps appDep
 		return exitSuccess
 	}
 	if len(positional) != 1 {
-		return writeExecUsageError(stderr, "usage: zero mcp remove <server> [--json]")
+		return writeExecUsageError(stderr, "usage: pvyai mcp remove <server> [--json]")
 	}
 	serverName := positional[0]
 	if err := mcp.ValidateServerName(serverName); err != nil {
@@ -162,7 +162,7 @@ func runMCPToggle(args []string, stdout io.Writer, stderr io.Writer, deps appDep
 		return exitSuccess
 	}
 	if len(positional) != 1 {
-		return writeExecUsageError(stderr, fmt.Sprintf("usage: zero mcp %s <server> [--json]", commandName))
+		return writeExecUsageError(stderr, fmt.Sprintf("usage: pvyai mcp %s <server> [--json]", commandName))
 	}
 	serverName := positional[0]
 	if err := mcp.ValidateServerName(serverName); err != nil {
@@ -232,7 +232,7 @@ func runMCPCheck(ctx context.Context, args []string, stdout io.Writer, stderr io
 		return exitSuccess
 	}
 	if len(positional) != 1 {
-		return writeExecUsageError(stderr, "usage: zero mcp check <server> [--json]")
+		return writeExecUsageError(stderr, "usage: pvyai mcp check <server> [--json]")
 	}
 	serverName := positional[0]
 	if err := mcp.ValidateServerName(serverName); err != nil {
@@ -303,7 +303,7 @@ func parseMCPAddArgs(args []string) (mcpAddOptions, bool, error) {
 			return options, true, nil
 		case options.serverName == "":
 			if strings.HasPrefix(arg, "-") {
-				return options, false, execUsageError{"usage: zero mcp add <server> [flags] -- <command> [args...]"}
+				return options, false, execUsageError{"usage: pvyai mcp add <server> [flags] -- <command> [args...]"}
 			}
 			options.serverName = arg
 		case arg == "--":
@@ -391,7 +391,7 @@ func parseMCPAddArgs(args []string) (mcpAddOptions, bool, error) {
 
 	options.serverName = strings.TrimSpace(options.serverName)
 	if options.serverName == "" {
-		return options, false, execUsageError{"usage: zero mcp add <server> [flags] -- <command> [args...]"}
+		return options, false, execUsageError{"usage: pvyai mcp add <server> [flags] -- <command> [args...]"}
 	}
 	if err := mcp.ValidateServerName(options.serverName); err != nil {
 		return options, false, err
@@ -412,7 +412,7 @@ func parseMCPAddArgs(args []string) (mcpAddOptions, bool, error) {
 			return options, false, execUsageError{"headers are only supported for http or sse transports"}
 		}
 		if len(command) == 0 {
-			return options, false, execUsageError{"usage: zero mcp add <server> [flags] -- <command> [args...]"}
+			return options, false, execUsageError{"usage: pvyai mcp add <server> [flags] -- <command> [args...]"}
 		}
 		options.server.Command = command[0]
 		options.server.Args = append([]string{}, command[1:]...)
@@ -544,7 +544,7 @@ func writeMCPWritableConfig(path string, cfg mcpWritableConfig) error {
 	if err != nil {
 		return fmt.Errorf("encode config JSON: %w", err)
 	}
-	tmp, err := os.CreateTemp(dir, ".zero-config-*.tmp")
+	tmp, err := os.CreateTemp(dir, ".pvyai-config-*.tmp")
 	if err != nil {
 		return fmt.Errorf("write config %s: %w", path, err)
 	}
@@ -705,7 +705,7 @@ func (cfg *mcpWritableConfig) setServerDisabled(name string, disabled bool) (boo
 			// A built-in default server isn't written to the file until the user
 			// overrides it. Treat it as present with an empty base so disabling it
 			// writes a minimal {"disabled":true} entry that merges over the default —
-			// letting `zero mcp disable <default>` work even though it lives in code.
+			// letting `pvyai mcp disable <default>` work even though it lives in code.
 			raw = nil
 			found = true
 		default:
@@ -887,8 +887,8 @@ func replaceMCPWritableConfigFile(tmpPath string, path string) error {
 
 func writeMCPAddHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero mcp add <server> [flags] -- <command> [args...]
-  zero mcp add <server> --url <url> [flags]
+  pvyai mcp add <server> [flags] -- <command> [args...]
+  pvyai mcp add <server> --url <url> [flags]
 
 Flags:
       --auth <auth>        Authentication mode for remote servers (for example: oauth)
@@ -905,7 +905,7 @@ Flags:
 
 func writeMCPRemoveHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero mcp remove <server> [flags]
+  pvyai mcp remove <server> [flags]
 
 Flags:
       --json    Print command result as JSON
@@ -916,7 +916,7 @@ Flags:
 
 func writeMCPToggleHelp(w io.Writer, commandName string) error {
 	_, err := fmt.Fprintf(w, `Usage:
-  zero mcp %s <server> [flags]
+  pvyai mcp %s <server> [flags]
 
 Flags:
       --json    Print command result as JSON
@@ -927,7 +927,7 @@ Flags:
 
 func writeMCPCheckHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero mcp check <server> [flags]
+  pvyai mcp check <server> [flags]
 
 Flags:
       --json    Print command result as JSON

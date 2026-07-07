@@ -7,7 +7,7 @@ import "strings"
 // seeded before user/project config is merged (see ResolveMCP), so a user can
 // override any field — for example point firecrawl at a self-hosted instance, or
 // add an API-key header to lift the free-tier limit — or disable it entirely with
-// `zero mcp disable <name>` (which writes `"disabled": true`).
+// `pvyai mcp disable <name>` (which writes `"disabled": true`).
 //
 // Keyless Firecrawl routes requests through firecrawl.dev (1,000 free credits per
 // month, no account). Self-host Firecrawl (AGPL-3.0) for unlimited and private

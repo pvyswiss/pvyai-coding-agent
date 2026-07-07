@@ -163,7 +163,7 @@ func providerConfigCheck(profile config.ProviderProfile) Check {
 	// Ollama/LM Studio) legitimately need no key, so they stay a pass. (AUDIT-H9)
 	if credential == "not set" && !localProviderBaseURL(profile.BaseURL) {
 		return check("provider.config", "Provider config", StatusFail,
-			fmt.Sprintf("No API key configured for %s. Run `zero auth` or `zero setup`, or set the provider's API key environment variable.", providerName(profile)),
+			fmt.Sprintf("No API key configured for %s. Run `pvyai auth` or `pvyai setup`, or set the provider's API key environment variable.", providerName(profile)),
 			details)
 	}
 	return check("provider.config", "Provider config", StatusPass, fmt.Sprintf("Provider config loaded for %s.", providerName(profile)), details)
@@ -202,7 +202,7 @@ func providerModelCheck(profile config.ProviderProfile) Check {
 	model, err := registry.Require(profile.Model)
 	if err != nil {
 		if profile.ProviderKind == config.ProviderKindOpenAICompatible || profile.ProviderKind == config.ProviderKindAnthropicCompat {
-			return check("provider.model", "Provider model", StatusWarn, fmt.Sprintf("Custom %s model was not found in the Zero registry; runtime will pass it through to the configured provider. Run `zero doctor --connectivity` to validate the endpoint and auth.", profile.ProviderKind), map[string]any{"model": profile.Model, "provider": providerName(profile)})
+			return check("provider.model", "Provider model", StatusWarn, fmt.Sprintf("Custom %s model was not found in the Zero registry; runtime will pass it through to the configured provider. Run `pvyai doctor --connectivity` to validate the endpoint and auth.", profile.ProviderKind), map[string]any{"model": profile.Model, "provider": providerName(profile)})
 		}
 		return check("provider.model", "Provider model", StatusFail, "Provider model is invalid: "+err.Error(), map[string]any{"model": profile.Model})
 	}
@@ -222,7 +222,7 @@ func connectivityCheck(profile config.ProviderProfile, enabled bool, modelStatus
 		if emptyProviderProfile(profile) || modelStatus == StatusFail {
 			return check("provider.connectivity", "Provider connectivity", StatusWarn, "Connectivity check was skipped because provider runtime did not resolve.", nil)
 		}
-		return check("provider.connectivity", "Provider connectivity", StatusWarn, "Connectivity probe skipped. Run `zero doctor --connectivity` to probe the provider endpoint.", map[string]any{"baseURL": profile.BaseURL})
+		return check("provider.connectivity", "Provider connectivity", StatusWarn, "Connectivity probe skipped. Run `pvyai doctor --connectivity` to probe the provider endpoint.", map[string]any{"baseURL": profile.BaseURL})
 	}
 	if health != nil {
 		if providerCheck := health.PrimaryCheck(); providerCheck != nil {

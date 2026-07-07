@@ -198,7 +198,7 @@ func ResolvePaths(options ResolvePathOptions) (Paths, error) {
 	dataHome := resolveEnvDir(options.Env, "XDG_DATA_HOME", filepath.Join(home, ".local", "share"), cwd)
 	return Paths{
 		UserConfigPath:    filepath.Join(configHome, "pvyai", "hooks.json"),
-		ProjectConfigPath: filepath.Join(cwd, ".zero", "hooks.json"),
+		ProjectConfigPath: filepath.Join(cwd, ".pvyai", "hooks.json"),
 		AuditPath:         filepath.Join(dataHome, "pvyai", "hooks", "audit.jsonl"),
 	}, nil
 }

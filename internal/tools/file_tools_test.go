@@ -97,7 +97,7 @@ func TestListDirectoryToolListsRecursivelyAndIgnoresJunk(t *testing.T) {
 	root := t.TempDir()
 	writeTestFile(t, filepath.Join(root, "src", "main.go"), "package main")
 	writeTestFile(t, filepath.Join(root, "node_modules", "leftpad", "index.js"), "module.exports = 1")
-	writeTestFile(t, filepath.Join(root, "README.md"), "# Zero")
+	writeTestFile(t, filepath.Join(root, "README.md"), "# PVYai")
 
 	result := NewListDirectoryTool(root).Run(context.Background(), map[string]any{
 		"path":      ".",

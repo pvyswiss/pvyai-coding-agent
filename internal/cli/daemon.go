@@ -16,7 +16,7 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/daemon/remote"
 )
 
-// runDaemon dispatches the `zero daemon ...` subcommands. The daemon supervises a
+// runDaemon dispatches the `pvyai daemon ...` subcommands. The daemon supervises a
 // pool of headless `pvyai exec` workers and routes sessions to them over an
 // owner-only local control socket. It is an ADDITIVE surface — interactive and
 // one-shot exec are unchanged.
@@ -49,7 +49,7 @@ func runDaemon(args []string, stdout io.Writer, stderr io.Writer, _ appDeps) int
 }
 
 func writeDaemonUsage(w io.Writer, code int) int {
-	fmt.Fprint(w, `Usage: zero daemon <command>
+	fmt.Fprint(w, `Usage: pvyai daemon <command>
 
 Commands:
   start [--foreground]      Start the daemon (background by default).
@@ -60,8 +60,8 @@ Commands:
   attach <session>          Attach to a running session's stream.
   serve-remote --addr <host:port> --tls-cert <f> --tls-key <f> [--bundle-dir <d>]
                             Serve an opt-in, TLS-only network bridge to this
-                            daemon. Requires a bearer token in $ZERO_DAEMON_REMOTE_TOKEN
-                            (or $ZERO_DAEMON_REMOTE_TOKEN_FILE). --bundle-dir enables
+                            daemon. Requires a bearer token in $PVYAI_DAEMON_REMOTE_TOKEN
+                            (or $PVYAI_DAEMON_REMOTE_TOKEN_FILE). --bundle-dir enables
                             git-bundle uploads, extracted into per-link work trees.
   link --remote <host:port> --repo <dir> --id <name> [--out <file>]
                             Upload repo's git history to the remote as a bundle and
@@ -400,7 +400,7 @@ func daemonDialError(flags remoteDialFlags, err error) string {
 	if strings.TrimSpace(flags.Addr) != "" {
 		return "failed to reach remote daemon at " + flags.Addr + ": " + err.Error()
 	}
-	return "pvyai daemon is not running (start it with `zero daemon start`)"
+	return "pvyai daemon is not running (start it with `pvyai daemon start`)"
 }
 
 // runDaemonServeRemote starts the local daemon plus an opt-in, TLS-only network
@@ -599,7 +599,7 @@ func runDaemonLink(args []string, stdout io.Writer, stderr io.Writer) int {
 		return writeAppError(stderr, err.Error(), exitCrash)
 	}
 	fmt.Fprintf(stdout, "uploaded %s; remote repo at %s\n", link.LinkID, link.RemotePath)
-	fmt.Fprintf(stdout, "run it with: zero daemon run --remote %s --cwd %s ...\n", link.Address, link.RemotePath)
+	fmt.Fprintf(stdout, "run it with: pvyai daemon run --remote %s --cwd %s ...\n", link.Address, link.RemotePath)
 	if strings.TrimSpace(out) != "" {
 		if err := link.Save(out); err != nil {
 			return writeAppError(stderr, err.Error(), exitCrash)

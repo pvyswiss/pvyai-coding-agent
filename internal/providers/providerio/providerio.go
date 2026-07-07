@@ -52,7 +52,7 @@ func StreamTimeoutMessage(err error, idleTimeout time.Duration) string {
 // and reasoning backends that pause for minutes without heartbeating, while
 // still bounding a truly hung connection. 90s was too aggressive and killed
 // healthy long generations; 5 minutes is the floor a real stall must cross.
-// Override globally with ZERO_STREAM_IDLE_TIMEOUT.
+// Override globally with PVYAI_STREAM_IDLE_TIMEOUT.
 const DefaultStreamIdleTimeout = 5 * time.Minute
 
 // ContentStallTimeout bounds a heartbeat-but-no-output stream: keep-alives reset
@@ -63,14 +63,14 @@ const DefaultStreamIdleTimeout = 5 * time.Minute
 // arrives), but only 1.2× rather than the old 2×: a genuine heartbeat-pause
 // stall on chatgpt/gpt-5.x rarely recovers, so a ~10-minute dead wait (at the 5m
 // idle default) was a terrible UX for a doomed turn. At the default idle this is
-// 6 minutes; it still scales with ZERO_STREAM_IDLE_TIMEOUT. A returned value <= 0
+// 6 minutes; it still scales with PVYAI_STREAM_IDLE_TIMEOUT. A returned value <= 0
 // (idle watchdog disabled) leaves the content watchdog off too.
 func ContentStallTimeout(idleTimeout time.Duration) time.Duration {
 	if idleTimeout <= 0 {
 		return 0
 	}
 	// 1.2× computed as idle + idle/5 (not idle*6/5), plus a clamp: a
-	// pathologically large ZERO_STREAM_IDLE_TIMEOUT could make idle*6 overflow
+	// pathologically large PVYAI_STREAM_IDLE_TIMEOUT could make idle*6 overflow
 	// int64 and wrap to a NEGATIVE duration, which would arm the content timer
 	// to fire immediately and abort every stream. Clamping to the max duration
 	// on overflow just means "effectively no content watchdog" — the sane
@@ -385,7 +385,7 @@ func ClassifiedError(statusCode int, message string, secrets ...string) string {
 		// Lead with an actionable instruction rather than the raw upstream auth blurb
 		// (which often points the user at the wrong provider's dashboard URL). Keep a
 		// redacted, one-line upstream detail for context — never the raw body. (AUDIT-H7)
-		curated := "auth error: your API key is missing or invalid — run `zero auth`, or set the provider's API key, then retry."
+		curated := "auth error: your API key is missing or invalid — run `pvyai auth`, or set the provider's API key, then retry."
 		if detail := strings.TrimSpace(Redact(message, secrets...)); detail != "" {
 			return curated + " (provider said: " + detail + ")"
 		}

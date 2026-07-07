@@ -78,7 +78,7 @@ func TestExtractTarGzRoundTrip(t *testing.T) {
 		t.Fatalf("ReadFile zero: %v", err)
 	}
 	if string(data) != "main-binary" {
-		t.Fatalf("zero content = %q", data)
+		t.Fatalf("pvyai content = %q", data)
 	}
 	data, err = os.ReadFile(filepath.Join(destDir, "helpers", "pvyai-seccomp"))
 	if err != nil {

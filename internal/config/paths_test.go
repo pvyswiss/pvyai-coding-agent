@@ -15,7 +15,7 @@ func TestDefaultResolveOptionsUsesExistingConfigPathsAndProviderCommand(t *testi
 	projectPath := filepath.Join(workspaceRoot, ".pvyai", "config.json")
 	writeFileAt(t, userPath, "{}")
 	writeFileAt(t, projectPath, "{}")
-	t.Setenv("PVYAI_PROVIDER_COMMAND", "  zero-provider  ")
+	t.Setenv("PVYAI_PROVIDER_COMMAND", "  pvyai-provider  ")
 
 	options, err := DefaultResolveOptions(workspaceRoot)
 	if err != nil {
@@ -28,8 +28,8 @@ func TestDefaultResolveOptionsUsesExistingConfigPathsAndProviderCommand(t *testi
 	if options.ProjectConfigPath != projectPath {
 		t.Fatalf("ProjectConfigPath = %q, want %q", options.ProjectConfigPath, projectPath)
 	}
-	if options.ProviderCommand != "zero-provider" {
-		t.Fatalf("ProviderCommand = %q, want zero-provider", options.ProviderCommand)
+	if options.ProviderCommand != "pvyai-provider" {
+		t.Fatalf("ProviderCommand = %q, want pvyai-provider", options.ProviderCommand)
 	}
 }
 

@@ -186,7 +186,7 @@ func (registry Registry) ResolveID(pattern string) (string, bool) {
 func (registry Registry) Require(pattern string) (ModelEntry, error) {
 	model, ok := registry.Get(pattern)
 	if !ok {
-		return ModelEntry{}, fmt.Errorf("unknown Zero model %q", pattern)
+		return ModelEntry{}, fmt.Errorf("unknown PVYai model %q", pattern)
 	}
 	return model, nil
 }

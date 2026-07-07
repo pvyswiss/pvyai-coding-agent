@@ -67,13 +67,13 @@ func TestNewBackendDoctorReportSurfacesDiagnosticsAndActions(t *testing.T) {
 	if report.Status != BackendDoctorStatusFail {
 		t.Fatalf("report.Status = %q, want %q", report.Status, BackendDoctorStatusFail)
 	}
-	assertBackendDoctorCheck(t, report, "backend.mcp.server", "remote", BackendDoctorStatusPass, "zero mcp check remote")
-	assertBackendDoctorCheck(t, report, "backend.mcp.invalid", "broken", BackendDoctorStatusFail, "zero mcp add broken")
-	assertBackendDoctorCheck(t, report, "backend.mcp.disabled", "disabled", BackendDoctorStatusWarn, "zero mcp enable disabled")
-	assertBackendDoctorCheck(t, report, "backend.hooks.disabled", "hooks", BackendDoctorStatusWarn, "zero hooks list")
-	assertBackendDoctorCheck(t, report, "backend.hooks.diagnostic", "zero.preflight-[REDACTED]", BackendDoctorStatusFail, "zero hooks list")
-	assertBackendDoctorCheck(t, report, "backend.plugins.disabled", "zero.docs", BackendDoctorStatusWarn, "zero plugins list")
-	assertBackendDoctorCheck(t, report, "backend.plugins.diagnostic", "zero.docs-[REDACTED]", BackendDoctorStatusWarn, "zero plugins list")
+	assertBackendDoctorCheck(t, report, "backend.mcp.server", "remote", BackendDoctorStatusPass, "pvyai mcp check remote")
+	assertBackendDoctorCheck(t, report, "backend.mcp.invalid", "broken", BackendDoctorStatusFail, "pvyai mcp add broken")
+	assertBackendDoctorCheck(t, report, "backend.mcp.disabled", "disabled", BackendDoctorStatusWarn, "pvyai mcp enable disabled")
+	assertBackendDoctorCheck(t, report, "backend.hooks.disabled", "hooks", BackendDoctorStatusWarn, "pvyai hooks list")
+	assertBackendDoctorCheck(t, report, "backend.hooks.diagnostic", "zero.preflight-[REDACTED]", BackendDoctorStatusFail, "pvyai hooks list")
+	assertBackendDoctorCheck(t, report, "backend.plugins.disabled", "zero.docs", BackendDoctorStatusWarn, "pvyai plugins list")
+	assertBackendDoctorCheck(t, report, "backend.plugins.diagnostic", "zero.docs-[REDACTED]", BackendDoctorStatusWarn, "pvyai plugins list")
 
 	encoded, err := json.Marshal(report)
 	if err != nil {
@@ -92,9 +92,9 @@ func TestNewBackendDoctorReportPassesEmptySetup(t *testing.T) {
 	if report.Status != BackendDoctorStatusPass {
 		t.Fatalf("report.Status = %q, want %q", report.Status, BackendDoctorStatusPass)
 	}
-	assertBackendDoctorCheck(t, report, "backend.mcp.configured", "mcp", BackendDoctorStatusPass, "zero mcp add")
-	assertBackendDoctorCheck(t, report, "backend.hooks.configured", "hooks", BackendDoctorStatusPass, "zero hooks list")
-	assertBackendDoctorCheck(t, report, "backend.plugins.configured", "plugins", BackendDoctorStatusPass, "zero plugins list")
+	assertBackendDoctorCheck(t, report, "backend.mcp.configured", "mcp", BackendDoctorStatusPass, "pvyai mcp add")
+	assertBackendDoctorCheck(t, report, "backend.hooks.configured", "hooks", BackendDoctorStatusPass, "pvyai hooks list")
+	assertBackendDoctorCheck(t, report, "backend.plugins.configured", "plugins", BackendDoctorStatusPass, "pvyai plugins list")
 }
 
 func TestNewBackendDoctorReportWarnsWithoutFailing(t *testing.T) {

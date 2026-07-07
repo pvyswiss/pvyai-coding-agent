@@ -8,7 +8,7 @@ import (
 
 func (store *Store) CreateChild(parentSessionID string, input ChildInput) (Metadata, error) {
 	if !ValidSessionID(parentSessionID) {
-		return Metadata{}, fmt.Errorf("invalid zero session id %q", parentSessionID)
+		return Metadata{}, fmt.Errorf("invalid pvyai session id %q", parentSessionID)
 	}
 	parent, err := store.Get(parentSessionID)
 	if err != nil {
@@ -62,7 +62,7 @@ func (store *Store) CreateChild(parentSessionID string, input ChildInput) (Metad
 
 func (store *Store) ListChildren(parentSessionID string) ([]Metadata, error) {
 	if !ValidSessionID(parentSessionID) {
-		return nil, fmt.Errorf("invalid zero session id %q", parentSessionID)
+		return nil, fmt.Errorf("invalid pvyai session id %q", parentSessionID)
 	}
 	parent, err := store.Get(parentSessionID)
 	if err != nil {
@@ -98,14 +98,14 @@ func sortChildSessions(children []Metadata) {
 
 func (store *Store) Lineage(sessionID string) ([]Metadata, error) {
 	if !ValidSessionID(sessionID) {
-		return nil, fmt.Errorf("invalid zero session id %q", sessionID)
+		return nil, fmt.Errorf("invalid pvyai session id %q", sessionID)
 	}
 	lineage := []Metadata{}
 	seen := map[string]bool{}
 	currentID := sessionID
 	for currentID != "" {
 		if seen[currentID] {
-			return nil, fmt.Errorf("cycle in zero session lineage at %s", currentID)
+			return nil, fmt.Errorf("cycle in pvyai session lineage at %s", currentID)
 		}
 		seen[currentID] = true
 		session, err := store.Get(currentID)
@@ -126,7 +126,7 @@ func (store *Store) Lineage(sessionID string) ([]Metadata, error) {
 
 func (store *Store) Tree(rootSessionID string) (TreeNode, error) {
 	if !ValidSessionID(rootSessionID) {
-		return TreeNode{}, fmt.Errorf("invalid zero session id %q", rootSessionID)
+		return TreeNode{}, fmt.Errorf("invalid pvyai session id %q", rootSessionID)
 	}
 	// Fetch the root directly first. store.List() silently skips sessions whose
 	// metadata cannot be read, so a corrupt/unreadable root would otherwise degrade
@@ -168,7 +168,7 @@ func (store *Store) Tree(rootSessionID string) (TreeNode, error) {
 
 func (store *Store) treeFrom(sessionID string, byID map[string]Metadata, childrenByParent map[string][]Metadata, seen map[string]bool) (TreeNode, error) {
 	if seen[sessionID] {
-		return TreeNode{}, fmt.Errorf("cycle in zero session tree at %s", sessionID)
+		return TreeNode{}, fmt.Errorf("cycle in pvyai session tree at %s", sessionID)
 	}
 	seen[sessionID] = true
 	session, ok := byID[sessionID]

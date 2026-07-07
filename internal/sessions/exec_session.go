@@ -175,7 +175,7 @@ func FormatExecPrompt(prompt string, prepared PreparedExec) string {
 		}
 	}
 	return strings.Join([]string{
-		fmt.Sprintf("%s Zero session %s.", label, sessionID),
+		fmt.Sprintf("%s PVYai session %s.", label, sessionID),
 		"Previous session context:",
 		strings.Join(lines, "\n"),
 		"",

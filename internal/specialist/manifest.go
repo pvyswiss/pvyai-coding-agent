@@ -129,7 +129,7 @@ func DefaultPaths(workspaceRoot string) (Paths, error) {
 		UserDir: filepath.Join(userConfigDir, "pvyai", "specialists"),
 	}
 	if strings.TrimSpace(workspaceRoot) != "" {
-		paths.ProjectDir = filepath.Join(filepath.Clean(workspaceRoot), ".zero", "specialists")
+		paths.ProjectDir = filepath.Join(filepath.Clean(workspaceRoot), ".pvyai", "specialists")
 	}
 	return paths, nil
 }

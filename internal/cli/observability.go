@@ -114,7 +114,7 @@ func runSearch(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) 
 		return exitSuccess
 	}
 	if strings.TrimSpace(options.query) == "" {
-		return writeExecUsageError(stderr, "search query required. Use `zero search <query>`.")
+		return writeExecUsageError(stderr, "search query required. Use `pvyai search <query>`.")
 	}
 
 	result, err := zsearch.Sessions(options.query, zsearch.Options{
@@ -265,7 +265,7 @@ func writePrettyJSON(w io.Writer, value any) error {
 
 func writeDoctorHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero doctor [flags]
+  pvyai doctor [flags]
 
 Runs Go backend health checks for config and provider setup.
 
@@ -279,7 +279,7 @@ Flags:
 
 func writeSearchHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero search [flags] <query>
+  pvyai search [flags] <query>
 
 Searches persisted local Zero session events.
 

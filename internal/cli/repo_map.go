@@ -282,7 +282,7 @@ func formatRepoMapStrings(values []string) string {
 
 func writeRepoMapHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero repo-map [flags]
+  pvyai repo-map [flags]
 
 Builds a deterministic repository map for agent context and local inspection.
 

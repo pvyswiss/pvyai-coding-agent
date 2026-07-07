@@ -365,7 +365,7 @@ func runSpecialistPath(paths specialist.Paths, options specialistOptions, stdout
 
 func writeSpecialistHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero specialist [command] [flags]
+  pvyai specialist [command] [flags]
 
 Commands:
   list       List built-in, user, and project specialists

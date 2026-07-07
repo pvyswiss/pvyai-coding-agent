@@ -192,7 +192,7 @@ func providerCheckNextActions(profile config.ProviderProfile, connectivity bool,
 		if model == "" {
 			return []string{"provider is ready"}
 		}
-		return []string{fmt.Sprintf("run zero exec %q --model %s", "hello", model)}
+		return []string{fmt.Sprintf("run pvyai exec %q --model %s", "hello", model)}
 	}
 }
 

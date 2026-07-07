@@ -119,7 +119,7 @@ func TestPerfBenchHelperProcess(t *testing.T) {
 	if os.Getenv("PVYAI_PERF_HELPER") != "1" {
 		return
 	}
-	fmt.Println("zero 0.1.0")
+	fmt.Println("pvyai 0.1.0")
 	os.Exit(0)
 }
 

@@ -122,7 +122,7 @@ var languageIDs = map[string]string{
 }
 
 // coreServerBinaries are the tier-1 servers for the languages agents hit most;
-// `zero doctor` treats their absence as warn-worthy. The long tail of servers
+// `pvyai doctor` treats their absence as warn-worthy. The long tail of servers
 // configured above for breadth is reported informationally only — warning about
 // a missing zls on a machine with no Zig code would be permanent noise.
 var coreServerBinaries = []string{
@@ -140,7 +140,7 @@ func CoreServerBinaries() []string {
 }
 
 // ServerBinaries returns the unique set of language-server binaries ZERO may
-// spawn, sorted for stable output. It is the canonical list `zero doctor` checks
+// spawn, sorted for stable output. It is the canonical list `pvyai doctor` checks
 // against PATH, so the configured commands stay the single source of truth.
 func ServerBinaries() []string {
 	seen := map[string]bool{}

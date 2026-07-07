@@ -90,7 +90,7 @@ func runHooksRemove(args []string, stdout io.Writer, stderr io.Writer, deps appD
 		return exitSuccess
 	}
 	if len(positional) != 1 {
-		return writeExecUsageError(stderr, "usage: zero hooks remove <id> [--user] [--json]")
+		return writeExecUsageError(stderr, "usage: pvyai hooks remove <id> [--user] [--json]")
 	}
 	hookID := positional[0]
 	store, path, err := hookConfigStore(deps, options.user)
@@ -138,7 +138,7 @@ func runHooksToggle(args []string, stdout io.Writer, stderr io.Writer, deps appD
 		return exitSuccess
 	}
 	if len(positional) != 1 {
-		return writeExecUsageError(stderr, fmt.Sprintf("usage: zero hooks %s <id> [--user] [--json]", commandName))
+		return writeExecUsageError(stderr, fmt.Sprintf("usage: pvyai hooks %s <id> [--user] [--json]", commandName))
 	}
 	hookID := positional[0]
 	store, path, err := hookConfigStore(deps, options.user)
@@ -284,13 +284,13 @@ func parseHooksAddArgs(args []string) (hookAddOptions, bool, error) {
 		case options.def.ID == "":
 			options.def.ID = arg
 		default:
-			return options, false, execUsageError{"usage: zero hooks add <id> --event <event> --command <cmd> [flags]"}
+			return options, false, execUsageError{"usage: pvyai hooks add <id> --event <event> --command <cmd> [flags]"}
 		}
 	}
 
 	options.def.ID = strings.TrimSpace(options.def.ID)
 	if options.def.ID == "" {
-		return options, false, execUsageError{"usage: zero hooks add <id> --event <event> --command <cmd> [flags]"}
+		return options, false, execUsageError{"usage: pvyai hooks add <id> --event <event> --command <cmd> [flags]"}
 	}
 	if strings.TrimSpace(string(options.def.Event)) == "" {
 		return options, false, execUsageError{"pvyai hooks add requires --event"}
@@ -309,7 +309,7 @@ func parseHooksAddArgs(args []string) (hookAddOptions, bool, error) {
 
 func writeHooksAddHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
-  zero hooks add <id> --event <event> --command <cmd> [flags]
+  pvyai hooks add <id> --event <event> --command <cmd> [flags]
 
 Events:
   beforeTool, afterTool, sessionStart, sessionEnd, specialistStart, specialistStop
@@ -332,7 +332,7 @@ New hooks are enabled; use "pvyai hooks disable <id>" to turn one off.
 
 func writeHooksTargetHelp(w io.Writer, command string) error {
 	_, err := fmt.Fprintf(w, `Usage:
-  zero hooks %s <id> [flags]
+  pvyai hooks %s <id> [flags]
 
 Flags:
       --user    Target user config instead of the project

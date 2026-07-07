@@ -140,7 +140,7 @@ func TestMergeEnvReplacesPathCaseInsensitivelyOnWindows(t *testing.T) {
 		}
 		pathCount++
 		if value != `C:\Zero` {
-			t.Fatalf("PATH value = %q, want C:\\Zero", value)
+			t.Fatalf("PATH value = %q, want C:\\PVYai", value)
 		}
 	}
 	if pathCount != 1 {

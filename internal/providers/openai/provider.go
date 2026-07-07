@@ -45,7 +45,7 @@ type Options struct {
 	MaxTokens int
 	// StreamIdleTimeout aborts the stream if no data arrives for this long.
 	// When unset, Zero uses providerio.ResolveStreamIdleTimeout — the
-	// ZERO_STREAM_IDLE_TIMEOUT override or providerio.DefaultStreamIdleTimeout.
+	// PVYAI_STREAM_IDLE_TIMEOUT override or providerio.DefaultStreamIdleTimeout.
 	StreamIdleTimeout time.Duration
 	// ParseThinkTags converts streamed <think>...</think> content into reasoning
 	// events for OpenAI-compatible models known to emit that legacy format.
@@ -424,7 +424,7 @@ func (provider *Provider) openAIRequest(request pvyruntime.CompletionRequest) ch
 	}
 	// prompt_cache_key is a documented OpenAI parameter; compatible servers
 	// ignore unknown fields, but a strict endpoint that rejects it can be
-	// accommodated with ZERO_DISABLE_PROMPT_CACHE_KEY=1.
+	// accommodated with PVYAI_DISABLE_PROMPT_CACHE_KEY=1.
 	if key := strings.TrimSpace(request.PromptCacheKey); key != "" && !promptCacheKeyDisabled() {
 		mapped.PromptCacheKey = key
 	}
@@ -444,12 +444,12 @@ func (provider *Provider) openAIRequest(request pvyruntime.CompletionRequest) ch
 	return mapped
 }
 
-// promptCacheKeyDisabled reports whether the ZERO_DISABLE_PROMPT_CACHE_KEY
+// promptCacheKeyDisabled reports whether the PVYAI_DISABLE_PROMPT_CACHE_KEY
 // kill switch is set to a truthy value. "0" and "false" (any case) are
-// no-ops, matching how ZERO_FORMAT_ON_WRITE parses boolean flags, so an
+// no-ops, matching how PVYAI_FORMAT_ON_WRITE parses boolean flags, so an
 // explicitly-disabled toggle never flips the behavior it names.
 func promptCacheKeyDisabled() bool {
-	value := strings.TrimSpace(os.Getenv("ZERO_DISABLE_PROMPT_CACHE_KEY"))
+	value := strings.TrimSpace(os.Getenv("PVYAI_DISABLE_PROMPT_CACHE_KEY"))
 	return value != "" && value != "0" && !strings.EqualFold(value, "false")
 }
 
