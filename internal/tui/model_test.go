@@ -1434,7 +1434,7 @@ func TestStaleExplanationDropped(t *testing.T) {
 }
 
 // TestBeginRunResetsSidebarHidden: a new run clears the sidebar's content, so the
-// stale Ctrl+B hide preference is reset (the new run's sidebar isn't suppressed)
+	// stale Ctrl+X hide preference is reset (the new run's sidebar isn't suppressed)
 // and the explanation generation advances.
 func TestBeginRunResetsSidebarHidden(t *testing.T) {
 	m := newModel(context.Background(), Options{})
@@ -1442,7 +1442,7 @@ func TestBeginRunResetsSidebarHidden(t *testing.T) {
 	gen := m.planDetailGen
 	m = m.beginRun(nil)
 	if m.sidebarHidden {
-		t.Error("beginRun should reset the Ctrl+B hide preference for the new run")
+		t.Error("beginRun should reset the Ctrl+X hide preference for the new run")
 	}
 	if m.planDetailGen <= gen {
 		t.Errorf("beginRun should bump planDetailGen, was %d now %d", gen, m.planDetailGen)

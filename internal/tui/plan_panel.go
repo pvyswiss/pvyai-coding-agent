@@ -290,8 +290,8 @@ func (m model) renderPlanPanel(width int) string {
 func (m model) renderPinnedPlanPanel(width int, maxHeight int) string {
 	// The pinned panel is only for terminals where the context sidebar CANNOT
 	// host the plan (too narrow / inline mode). Whenever the two-column layout is
-	// available — whether the sidebar is shown OR collapsed with Ctrl+B — the
-	// plan's home is the sidebar, so suppress the pinned copy: a Ctrl+B hide
+	// available — whether the sidebar is shown OR collapsed with Ctrl+X — the
+	// plan's home is the sidebar, so suppress the pinned copy: a Ctrl+X hide
 	// should hide the plan entirely, not resurrect it above the composer. Gating
 	// on sidebarAvailable (not sidebarActive) covers the hidden case too. The
 	// hidePinnedPlan flag additionally suppresses it in the two-column chat-column

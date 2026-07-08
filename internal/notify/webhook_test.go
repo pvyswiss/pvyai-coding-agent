@@ -253,3 +253,163 @@ func TestWebhookSinkCopiesConfigSlices(t *testing.T) {
 		t.Fatal("webhook server never received a request")
 	}
 }
+
+func TestWebhookSinkMatrixHTMLFormat(t *testing.T) {
+	got := make(chan webhookPayload, 1)
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var payload webhookPayload
+		_ = json.NewDecoder(r.Body).Decode(&payload)
+		got <- payload
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
+	sink := NewWebhookSink(WebhookConfig{
+		URL:        server.URL,
+		Format:     FormatHTML,
+		Summary:    "nightly audit",
+		DisplayName: "PVYai Agent",
+		MsgType:    "notice",
+	})
+	sink.Emit(Completion, "PVYai: ready")
+
+	select {
+	case payload := <-got:
+		if payload.Format != "html" {
+			t.Fatalf("format = %q, want html", payload.Format)
+		}
+		if !strings.Contains(payload.Text, "<b>") {
+			t.Fatalf("text = %q, want HTML bold tags", payload.Text)
+		}
+		if !strings.Contains(payload.Text, "<i>nightly audit</i>") {
+			t.Fatalf("text = %q, want summary in italic tags", payload.Text)
+		}
+		if payload.DisplayName != "PVYai Agent" {
+			t.Fatalf("displayName = %q, want PVYai Agent", payload.DisplayName)
+		}
+		if payload.MsgType != "notice" {
+			t.Fatalf("msgtype = %q, want notice", payload.MsgType)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("webhook server never received a request")
+	}
+}
+
+func TestWebhookSinkMatrixHTMLDefaultMessage(t *testing.T) {
+	got := make(chan webhookPayload, 1)
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var payload webhookPayload
+		_ = json.NewDecoder(r.Body).Decode(&payload)
+		got <- payload
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
+	sink := NewWebhookSink(WebhookConfig{
+		URL:    server.URL,
+		Format: FormatHTML,
+	})
+	sink.Emit(AwaitingInput, "")
+
+	select {
+	case payload := <-got:
+		if payload.Format != "html" {
+			t.Fatalf("format = %q, want html", payload.Format)
+		}
+		if !strings.Contains(payload.Text, "<b>PVYai: needs input</b>") {
+			t.Fatalf("text = %q, want HTML default awaiting input message", payload.Text)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("webhook server never received a request")
+	}
+}
+
+func TestWebhookSinkPlainFormatOmitsFormatField(t *testing.T) {
+	got := make(chan webhookPayload, 1)
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var payload webhookPayload
+		_ = json.NewDecoder(r.Body).Decode(&payload)
+		got <- payload
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
+	sink := NewWebhookSink(WebhookConfig{
+		URL:    server.URL,
+		Format: FormatPlain,
+	})
+	sink.Emit(Completion, "PVYai: ready")
+
+	select {
+	case payload := <-got:
+		if payload.Format != "plain" {
+			t.Fatalf("format = %q, want plain", payload.Format)
+		}
+		if payload.Text != "PVYai: ready" {
+			t.Fatalf("text = %q, want plain text", payload.Text)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("webhook server never received a request")
+	}
+}
+
+func TestWebhookSinkAvatarURLRedactedInPayload(t *testing.T) {
+	const secretAvatar = "https://example.test/secret-avatar-token-123"
+	got := make(chan string, 1)
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		raw, _ := io.ReadAll(r.Body)
+		got <- string(raw)
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
+	sink := NewWebhookSink(WebhookConfig{
+		URL:       server.URL,
+		AvatarURL: secretAvatar,
+		ExtraSecrets: []string{secretAvatar},
+	})
+	sink.Emit(Completion, "hi")
+
+	select {
+	case raw := <-got:
+		if strings.Contains(raw, secretAvatar) {
+			t.Fatalf("avatar URL leaked into webhook payload: %s", raw)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("webhook server never received a request")
+	}
+}
+
+func TestMaybeAddWebhookSinkFromConfigPassesFormat(t *testing.T) {
+	got := make(chan webhookPayload, 1)
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var payload webhookPayload
+		_ = json.NewDecoder(r.Body).Decode(&payload)
+		got <- payload
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
+	n := New(nil, Config{Mode: ModeBoth, FocusMode: FocusAlways})
+	MaybeAddWebhookSinkFromConfig(n, WebhookNotifyArgs{
+		Format:      "html",
+		DisplayName: "PVYai Coder",
+		MsgType:     "notice",
+	}, envFunc(map[string]string{EnvWebhookURL: server.URL}), nil)
+	n.Notify(Completion, DefaultMessage(Completion))
+
+	select {
+	case payload := <-got:
+		if payload.Format != "html" {
+			t.Fatalf("format = %q, want html", payload.Format)
+		}
+		if payload.DisplayName != "PVYai Coder" {
+			t.Fatalf("displayName = %q, want PVYai Coder", payload.DisplayName)
+		}
+		if payload.MsgType != "notice" {
+			t.Fatalf("msgtype = %q, want notice", payload.MsgType)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("webhook server never received a request")
+	}
+}

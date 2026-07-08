@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"html"
 	"io"
 	"net/http"
 	"strings"
@@ -21,6 +22,19 @@ const defaultWebhookTimeout = 10 * time.Second
 // log line, so a hostile or chatty endpoint cannot flood the audit trail.
 const maxWebhookBodyBytes = 2 << 10 // 2 KiB
 
+// WebhookFormat selects how the "text" field is rendered in the webhook
+// payload. The turt2live/matrix-appservice-webhooks bridge (used by PVYmessenger
+// via whapi) accepts "plain" or "html"; Slack incoming webhooks ignore the
+// field and render "text" as plain text.
+type WebhookFormat string
+
+const (
+	// FormatPlain sends the text field as-is (default, backward-compatible).
+	FormatPlain WebhookFormat = "plain"
+	// FormatHTML wraps the text in minimal HTML tags for Matrix rendering.
+	FormatHTML WebhookFormat = "html"
+)
+
 // WebhookLink is an optional labeled URL attached to a notification (for
 // example a link to the CI run, the opened PR, or the session log).
 type WebhookLink struct {
@@ -30,12 +44,23 @@ type WebhookLink struct {
 
 // webhookPayload is the JSON body POSTed to the configured webhook. It is
 // shaped to be useful to a generic consumer while remaining renderable by a
-// Slack incoming webhook: Slack reads the top-level "text" field, and the
-// structured fields (type/message/summary/links) carry the machine-readable
-// detail.
+// Slack incoming webhook (which reads the top-level "text" field) and by the
+// turt2live/matrix-appservice-webhooks bridge (which reads "text", "format",
+// "displayName", "avatarUrl", "msgtype", and "emoji"). The structured fields
+// (type/message/summary/links) carry machine-readable detail ignored by both.
 type webhookPayload struct {
-	// Text is the human-readable line Slack renders in the channel.
+	// Text is the human-readable line Slack/Matrix renders in the channel.
 	Text string `json:"text"`
+	// Format is "plain" or "html" (Matrix bridge only; Slack ignores it).
+	Format string `json:"format,omitempty"`
+	// DisplayName is the sender name shown in Matrix (Matrix bridge only).
+	DisplayName string `json:"displayName,omitempty"`
+	// AvatarURL is the sender avatar URL shown in Matrix (Matrix bridge only).
+	AvatarURL string `json:"avatarUrl,omitempty"`
+	// MsgType is the Matrix message type: "" (normal), "notice", or "emote".
+	MsgType string `json:"msgtype,omitempty"`
+	// Emoji controls auto-emoji conversion in the Matrix bridge (nil = default).
+	Emoji *bool `json:"emoji,omitempty"`
 	// Type is the machine-readable event kind ("completion", "awaiting_input").
 	Type string `json:"type"`
 	// Message is the notification body (already redacted).
@@ -46,15 +71,25 @@ type webhookPayload struct {
 	Links []WebhookLink `json:"links,omitempty"`
 }
 
-// WebhookConfig configures a WebhookSink. URL is a Slack incoming-webhook URL or
-// any generic endpoint that accepts a JSON POST. The zero value (empty URL)
-// yields an inert sink whose Emit is a no-op, so callers can wire a sink
-// unconditionally and let configuration decide whether it fires.
+// WebhookConfig configures a WebhookSink. URL is a Slack incoming-webhook URL,
+// a turt2live/matrix-appservice-webhooks bridge URL, or any generic endpoint
+// that accepts a JSON POST. The zero value (empty URL) yields an inert sink
+// whose Emit is a no-op, so callers can wire a sink unconditionally and let
+// configuration decide whether it fires.
 type WebhookConfig struct {
 	// URL is the destination. Empty disables the sink.
 	URL string
 	// Summary is an optional run summary attached to every emitted payload.
 	Summary string
+	// Format controls how the text field is rendered: "plain" (default) or
+	// "html" (enables HTML formatting for the Matrix bridge).
+	Format WebhookFormat
+	// DisplayName is the sender name shown in Matrix (Matrix bridge only).
+	DisplayName string
+	// AvatarURL is the sender avatar URL shown in Matrix (Matrix bridge only).
+	AvatarURL string
+	// MsgType is the Matrix message type: "" (normal), "notice", or "emote".
+	MsgType string
 	// Links are optional labeled URLs attached to every emitted payload.
 	Links []WebhookLink
 	// Client is the HTTP client used for delivery. When nil a client with a
@@ -70,17 +105,22 @@ type WebhookConfig struct {
 	ExtraSecrets []string
 }
 
-// WebhookSink delivers notifications to a webhook/Slack endpoint. It implements
-// Sink. Delivery is best-effort and fails soft: a non-2xx response or a
-// transport error is logged (redacted) and swallowed so it can never disrupt
-// the run.
+// WebhookSink delivers notifications to a webhook endpoint (Slack incoming
+// webhook, turt2live/matrix-appservice-webhooks bridge, or generic HTTP POST).
+// It implements Sink. Delivery is best-effort and fails soft: a non-2xx
+// response or a transport error is logged (redacted) and swallowed so it can
+// never disrupt the run.
 type WebhookSink struct {
-	url     string
-	summary string
-	links   []WebhookLink
-	client  *http.Client
-	logf    func(format string, args ...any)
-	secrets []string
+	url        string
+	summary    string
+	format     WebhookFormat
+	displayName string
+	avatarURL  string
+	msgType    string
+	links      []WebhookLink
+	client     *http.Client
+	logf       func(format string, args ...any)
+	secrets    []string
 }
 
 // NewWebhookSink builds a WebhookSink from cfg. A blank URL produces an inert
@@ -91,8 +131,12 @@ func NewWebhookSink(cfg WebhookConfig) *WebhookSink {
 		client = &http.Client{Timeout: defaultWebhookTimeout}
 	}
 	return &WebhookSink{
-		url:     strings.TrimSpace(cfg.URL),
-		summary: cfg.Summary,
+		url:         strings.TrimSpace(cfg.URL),
+		summary:     cfg.Summary,
+		format:      cfg.Format,
+		displayName: cfg.DisplayName,
+		avatarURL:   cfg.AvatarURL,
+		msgType:     cfg.MsgType,
 		// Copy the caller-owned slices so later mutation of cfg can neither
 		// change a future payload nor race with a concurrent Emit.
 		links:   append([]WebhookLink(nil), cfg.Links...),
@@ -116,14 +160,19 @@ func (s *WebhookSink) Emit(event Event, message string) {
 	options := redaction.Options{ExtraSecretValues: append([]string{s.url}, s.secrets...)}
 	safeMessage := redaction.RedactString(message, options)
 	safeSummary := redaction.RedactString(s.summary, options)
+	safeAvatar := redaction.RedactString(s.avatarURL, options)
 	links := s.redactLinks(options)
 
 	payload := webhookPayload{
-		Text:    s.text(event, safeMessage),
-		Type:    eventType(event),
-		Message: safeMessage,
-		Summary: safeSummary,
-		Links:   links,
+		Text:        s.text(event, safeMessage),
+		Format:      string(s.format),
+		DisplayName: s.displayName,
+		AvatarURL:   safeAvatar,
+		MsgType:     s.msgType,
+		Type:        eventType(event),
+		Message:     safeMessage,
+		Summary:     safeSummary,
+		Links:       links,
 	}
 
 	body, err := json.Marshal(payload)
@@ -159,12 +208,52 @@ func (s *WebhookSink) Emit(event Event, message string) {
 	_, _ = io.Copy(io.Discard, io.LimitReader(response.Body, maxWebhookBodyBytes))
 }
 
-// text renders the channel-facing line for an event.
+// text renders the channel-facing line for an event. When format is "html" the
+// message is wrapped in minimal HTML tags for the Matrix bridge.
 func (s *WebhookSink) text(event Event, safeMessage string) string {
+	if s.format == FormatHTML {
+		return s.htmlText(event, safeMessage, safeSummaryFor(s, event))
+	}
 	if strings.TrimSpace(safeMessage) != "" {
 		return safeMessage
 	}
 	return DefaultMessage(event)
+}
+
+// htmlText renders an HTML-formatted message for the Matrix bridge. The
+// message body is HTML-escaped to prevent injection, then wrapped in <b> tags.
+// When a summary is present it is appended as an <i> line.
+func (s *WebhookSink) htmlText(event Event, message, summary string) string {
+	var b strings.Builder
+	if strings.TrimSpace(message) != "" {
+		b.WriteString("<b>")
+		b.WriteString(html.EscapeString(message))
+		b.WriteString("</b>")
+	} else {
+		b.WriteString(htmlDefaultMessage(event))
+	}
+	if strings.TrimSpace(summary) != "" {
+		b.WriteString("<br><i>")
+		b.WriteString(html.EscapeString(summary))
+		b.WriteString("</i>")
+	}
+	return b.String()
+}
+
+// htmlDefaultMessage returns the HTML version of DefaultMessage.
+func htmlDefaultMessage(event Event) string {
+	if event == AwaitingInput {
+		return "<b>PVYai: needs input</b>"
+	}
+	return "<b>PVYai: ready</b>"
+}
+
+// safeSummaryFor returns the redacted summary for the sink, or empty string.
+func safeSummaryFor(s *WebhookSink, _ Event) string {
+	if s == nil {
+		return ""
+	}
+	return s.summary
 }
 
 // redactLinks returns a copy of the configured links with their URLs and labels

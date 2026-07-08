@@ -127,6 +127,12 @@ func Resolve(options ResolveOptions) (ResolvedConfig, error) {
 			return ResolvedConfig{}, fmt.Errorf("invalid notify.focusMode %q: expected unfocused, always, or focused", focusMode)
 		}
 	}
+	if wf := strings.TrimSpace(cfg.Notify.Webhook.Format); wf != "" && wf != "plain" && wf != "html" {
+		return ResolvedConfig{}, fmt.Errorf("invalid notify.webhook.format %q: expected plain or html", wf)
+	}
+	if mt := strings.TrimSpace(cfg.Notify.Webhook.MsgType); mt != "" && mt != "notice" && mt != "emote" {
+		return ResolvedConfig{}, fmt.Errorf("invalid notify.webhook.msgtype %q: expected notice or emote", mt)
+	}
 
 	providers, active, err := normalizeProviders(cfg.Providers, cfg.ActiveProvider, options.Env)
 	if err != nil {
@@ -213,6 +219,18 @@ func mergeConfig(dst *FileConfig, src FileConfig) {
 	if focusMode := strings.TrimSpace(src.Notify.FocusMode); focusMode != "" {
 		dst.Notify.FocusMode = focusMode
 	}
+	if wf := strings.TrimSpace(src.Notify.Webhook.Format); wf != "" {
+		dst.Notify.Webhook.Format = wf
+	}
+	if dn := strings.TrimSpace(src.Notify.Webhook.DisplayName); dn != "" {
+		dst.Notify.Webhook.DisplayName = dn
+	}
+	if au := strings.TrimSpace(src.Notify.Webhook.AvatarURL); au != "" {
+		dst.Notify.Webhook.AvatarURL = au
+	}
+	if mt := strings.TrimSpace(src.Notify.Webhook.MsgType); mt != "" {
+		dst.Notify.Webhook.MsgType = mt
+	}
 	if src.Tools.deferThresholdSet {
 		dst.Tools.DeferThreshold = src.Tools.DeferThreshold
 		dst.Tools.deferThresholdSet = true
@@ -275,6 +293,18 @@ func mergeProjectConfig(dst *FileConfig, src FileConfig) error {
 	}
 	if focusMode := strings.TrimSpace(src.Notify.FocusMode); focusMode != "" {
 		dst.Notify.FocusMode = focusMode
+	}
+	if wf := strings.TrimSpace(src.Notify.Webhook.Format); wf != "" {
+		dst.Notify.Webhook.Format = wf
+	}
+	if dn := strings.TrimSpace(src.Notify.Webhook.DisplayName); dn != "" {
+		dst.Notify.Webhook.DisplayName = dn
+	}
+	if au := strings.TrimSpace(src.Notify.Webhook.AvatarURL); au != "" {
+		dst.Notify.Webhook.AvatarURL = au
+	}
+	if mt := strings.TrimSpace(src.Notify.Webhook.MsgType); mt != "" {
+		dst.Notify.Webhook.MsgType = mt
 	}
 	if src.Tools.deferThresholdSet {
 		dst.Tools.DeferThreshold = src.Tools.DeferThreshold
@@ -674,6 +704,18 @@ func applyOverrides(cfg *FileConfig, overrides Overrides) {
 	}
 	if focusMode := strings.TrimSpace(overrides.Notify.FocusMode); focusMode != "" {
 		cfg.Notify.FocusMode = focusMode
+	}
+	if wf := strings.TrimSpace(overrides.Notify.Webhook.Format); wf != "" {
+		cfg.Notify.Webhook.Format = wf
+	}
+	if dn := strings.TrimSpace(overrides.Notify.Webhook.DisplayName); dn != "" {
+		cfg.Notify.Webhook.DisplayName = dn
+	}
+	if au := strings.TrimSpace(overrides.Notify.Webhook.AvatarURL); au != "" {
+		cfg.Notify.Webhook.AvatarURL = au
+	}
+	if mt := strings.TrimSpace(overrides.Notify.Webhook.MsgType); mt != "" {
+		cfg.Notify.Webhook.MsgType = mt
 	}
 	if overrides.Tools.deferThresholdSet || overrides.Tools.DeferThreshold != 0 {
 		cfg.Tools.DeferThreshold = overrides.Tools.DeferThreshold

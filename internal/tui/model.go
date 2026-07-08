@@ -224,7 +224,7 @@ type model struct {
 	// the chat-column model copy in the two-column layout, where the plan is
 	// surfaced in the context sidebar instead so it isn't shown twice.
 	hidePinnedPlan bool
-	// sidebarHidden is the user's Ctrl+B preference to collapse the right context
+	// sidebarHidden is the user's Ctrl+X preference to collapse the right context
 	// sidebar; when set, the chat reflows to full width. Distinct from the
 	// availability conditions in sidebarAvailable (geometry / mode / overlays).
 	sidebarHidden bool
@@ -729,7 +729,12 @@ func newModel(ctx context.Context, options Options) model {
 	// Opt-in webhook fan-out (PVYAI_NOTIFY_WEBHOOK_URL). Delivery failures stay
 	// silent here: the TUI owns the alt-screen, so writing to stderr would
 	// corrupt the display.
-	notify.MaybeAddWebhookSink(notifier, os.Getenv, nil)
+	notify.MaybeAddWebhookSinkFromConfig(notifier, notify.WebhookNotifyArgs{
+		Format:      options.Notify.Webhook.Format,
+		DisplayName: options.Notify.Webhook.DisplayName,
+		AvatarURL:   options.Notify.Webhook.AvatarURL,
+		MsgType:     options.Notify.Webhook.MsgType,
+	}, os.Getenv, nil)
 	notifier.SetFocused(true)
 
 	m := model{
@@ -1350,8 +1355,8 @@ func (m model) updateModel(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.plan.expanded = !m.plan.expanded
 				return m, nil
 			}
-		case m.keyMatch(m.keyBindings.toggleSidebar, msg, func(tea.KeyMsg) bool { return keyCtrl(msg, 'b') }):
-			// Ctrl+B collapses / restores the right context sidebar. Only acts when
+		case m.keyMatch(m.keyBindings.toggleSidebar, msg, func(tea.KeyMsg) bool { return keyCtrl(msg, 'x') }):
+			// Ctrl+X collapses / restores the right context sidebar. Only acts when
 			// the sidebar would otherwise be on screen (managed mode, wide enough,
 			// real conversation) so it's a no-op — not a confusing notice — on the
 			// home screen or a narrow terminal. Hiding reflows the chat to full
@@ -2551,7 +2556,7 @@ func (m model) composerIdleHint() string {
 		m.subchat.active || m.suggestionsActive() || m.transcriptDetailed {
 		return ""
 	}
-	sidebarKey := labelOr(m.keyBindings.toggleSidebar, "Ctrl+B")
+	sidebarKey := labelOr(m.keyBindings.toggleSidebar, "Ctrl+X")
 	detailKey := labelOr(m.keyBindings.toggleDetailed, "Ctrl+O")
 	mouseKey := labelOr(m.keyBindings.toggleMouse, "Ctrl+E")
 
@@ -4251,7 +4256,7 @@ func (m model) beginRun(cancel context.CancelFunc) model {
 	m.stepExplanation = nil
 	m.planDetailOpen = false
 	m.planDetailGen++ // invalidate any in-flight step-explanation from the prior run
-	// A new run clears the sidebar's content (plan/agents), so the user's Ctrl+B
+	// A new run clears the sidebar's content (plan/agents), so the user's Ctrl+X
 	// hide was for the OLD context — reset it so the new run's sidebar isn't
 	// suppressed by a stale preference.
 	m.sidebarHidden = false

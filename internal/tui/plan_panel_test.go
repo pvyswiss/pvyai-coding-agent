@@ -281,7 +281,7 @@ func TestPinnedPlanHiddenWhenEmpty(t *testing.T) {
 	}
 }
 
-// TestPinnedPlanHiddenWhenSidebarToggledOff: Ctrl+B (sidebarHidden) on a wide
+// TestPinnedPlanHiddenWhenSidebarToggledOff: Ctrl+X (sidebarHidden) on a wide
 // alt-screen terminal hides the plan entirely — it must NOT fall back to the
 // pinned panel above the composer, since the sidebar is the plan's home there.
 func TestPinnedPlanHiddenWhenSidebarToggledOff(t *testing.T) {
@@ -300,10 +300,10 @@ func TestPinnedPlanHiddenWhenSidebarToggledOff(t *testing.T) {
 		t.Fatalf("sidebar shown: pinned plan should be suppressed, got:\n%s", got)
 	}
 
-	// Ctrl+B collapses the sidebar -> the plan must be hidden entirely, not pinned.
+	// Ctrl+X collapses the sidebar -> the plan must be hidden entirely, not pinned.
 	m.sidebarHidden = true
 	if got := m.renderPinnedPlanPanel(m.chatColumnWidth(), 10); got != "" {
-		t.Fatalf("Ctrl+B should hide the plan entirely, but the pinned panel showed:\n%s", got)
+		t.Fatalf("Ctrl+X should hide the plan entirely, but the pinned panel showed:\n%s", got)
 	}
 
 	// Sidebar unavailable (no alt-screen): the pinned panel is the plan's only

@@ -231,13 +231,13 @@ func TestSidebarToggleHidesAndShows(t *testing.T) {
 		t.Fatal("sidebar should be active and available for the test model")
 	}
 
-	// Ctrl+B hide preference suppresses the sidebar even though it's available.
+	// Ctrl+X hide preference suppresses the sidebar even though it's available.
 	m.sidebarHidden = true
 	if m.sidebarActive() {
 		t.Fatal("sidebar should be inactive when hidden by the user")
 	}
 	if !m.sidebarAvailable() {
-		t.Fatal("sidebarAvailable must ignore the hide preference (so Ctrl+B can re-show)")
+		t.Fatal("sidebarAvailable must ignore the hide preference (so Ctrl+X can re-show)")
 	}
 	// Hidden → the chat reflows to full width.
 	if got, want := m.chatColumnWidth(), chatWidth(m.width); got != want {

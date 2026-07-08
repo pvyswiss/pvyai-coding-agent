@@ -405,7 +405,12 @@ func runExec(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) in
 	// Opt-in webhook fan-out (PVYAI_NOTIFY_WEBHOOK_URL). Headless runs can safely
 	// log a failed delivery to stderr (never stdout). The sink redacts before
 	// logging, so a token in the URL or message is masked.
-	notify.MaybeAddWebhookSink(notifier, os.Getenv, func(format string, args ...any) {
+	notify.MaybeAddWebhookSinkFromConfig(notifier, notify.WebhookNotifyArgs{
+		Format:      resolved.Notify.Webhook.Format,
+		DisplayName: resolved.Notify.Webhook.DisplayName,
+		AvatarURL:   resolved.Notify.Webhook.AvatarURL,
+		MsgType:     resolved.Notify.Webhook.MsgType,
+	}, os.Getenv, func(format string, args ...any) {
 		fmt.Fprintf(stderr, "[notify] "+format+"\n", args...)
 	})
 	if options.useSpec {

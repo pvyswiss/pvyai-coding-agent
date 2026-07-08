@@ -976,7 +976,7 @@ func TestRunExecUsesProjectConfigAndOpenAICompatibleProvider(t *testing.T) {
 
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
-	exitCode := Run([]string{"exec", "--cwd", root, "hello provider"}, &stdout, &stderr)
+	exitCode := Run([]string{"exec", "--no-notify", "--cwd", root, "hello provider"}, &stdout, &stderr)
 
 	if exitCode != 0 {
 		t.Fatalf("expected exit code 0, got %d: %s", exitCode, stderr.String())

@@ -175,7 +175,7 @@ Useful controls:
 | `Enter`     | send the prompt                |
 | `/`         | open slash-command suggestions |
 | `Shift+Tab` | cycle permission mode          |
-| `Ctrl+B`    | show/hide the sidebar          |
+| `Ctrl+X`    | show/hide the sidebar          |
 | `Ctrl+C`    | cancel or exit                 |
 
 Common slash commands:

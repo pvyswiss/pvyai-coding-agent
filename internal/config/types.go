@@ -86,8 +86,26 @@ type SandboxConfig struct {
 }
 
 type NotifyConfig struct {
-	Mode      string `json:"mode,omitempty"`
-	FocusMode string `json:"focusMode,omitempty"`
+	Mode      string        `json:"mode,omitempty"`
+	FocusMode string        `json:"focusMode,omitempty"`
+	Webhook   WebhookNotify `json:"webhook,omitempty"`
+}
+
+// WebhookNotify holds formatting options for the webhook/Matrix notification
+// sink. The webhook URL itself (which carries a secret bridge token) is sourced
+// from the PVYAI_NOTIFY_WEBHOOK_URL environment variable and is never stored
+// in config.json. Only non-secret formatting options live here.
+type WebhookNotify struct {
+	// Format is "plain" (default) or "html". When "html", the text field is
+	// wrapped in minimal HTML tags for the turt2live/matrix-appservice-webhooks
+	// bridge. Slack incoming webhooks ignore this field.
+	Format string `json:"format,omitempty"`
+	// DisplayName is the sender name shown in Matrix (Matrix bridge only).
+	DisplayName string `json:"displayName,omitempty"`
+	// AvatarURL is the sender avatar URL shown in Matrix (Matrix bridge only).
+	AvatarURL string `json:"avatarUrl,omitempty"`
+	// MsgType is the Matrix message type: "" (normal), "notice", or "emote".
+	MsgType string `json:"msgtype,omitempty"`
 }
 
 type ToolsConfig struct {
@@ -127,7 +145,7 @@ type KeyBindingsConfig struct {
 	CycleReasoning KeyBindingDef `json:"cycleReasoning,omitempty"`
 	// TogglePlan toggles the plan panel expansion (default: ctrl+p).
 	TogglePlan KeyBindingDef `json:"togglePlan,omitempty"`
-	// ToggleSidebar toggles the right context sidebar (default: ctrl+b).
+	// ToggleSidebar toggles the right context sidebar (default: ctrl+x).
 	ToggleSidebar KeyBindingDef `json:"toggleSidebar,omitempty"`
 }
 
