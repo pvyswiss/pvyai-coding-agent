@@ -51,7 +51,7 @@ func TestDefaultedOpenGatewayURL(t *testing.T) {
 	if got := defaultedOpenGatewayURL(providercatalog.Descriptor{}, " https://x/models.json "); got != "https://x/models.json" {
 		t.Fatalf("explicit override = %q, want trimmed override", got)
 	}
-	if got := defaultedOpenGatewayURL(providercatalog.Descriptor{DefaultBaseURL: "https://gw.example.com/v1"}, ""); got != "https://gw.example.com/zero/models.json" {
+	if got := defaultedOpenGatewayURL(providercatalog.Descriptor{DefaultBaseURL: "https://gw.example.com/v1"}, ""); got != "https://gw.example.com/pvyai/models.json" {
 		t.Fatalf("derived = %q", got)
 	}
 	if got := defaultedOpenGatewayURL(providercatalog.Descriptor{DefaultBaseURL: "::not a url"}, ""); got != "https://opengateway.pvyswiss.com/pvyai/models.json" {
@@ -125,7 +125,7 @@ func TestFetchModelsDevAndOpenGatewayOverHTTP(t *testing.T) {
 	}
 
 	// FetchRemote routes the opengateway provider to FetchOpenGateway via the override URL.
-	routed, err := FetchRemote(context.Background(), providercatalog.Descriptor{ID: "gitlawb-opengateway"}, FetchOptions{HTTPClient: gateway.Client(), OpenGatewayURL: gateway.URL})
+	routed, err := FetchRemote(context.Background(), providercatalog.Descriptor{ID: "pvyswiss-opengateway"}, FetchOptions{HTTPClient: gateway.Client(), OpenGatewayURL: gateway.URL})
 	if err != nil {
 		t.Fatalf("FetchRemote error: %v", err)
 	}

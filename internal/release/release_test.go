@@ -390,11 +390,11 @@ func TestCopyPackageFilesStagesLinuxSandboxHelper(t *testing.T) {
 	helper := filepath.Join(root, "pvyai-linux-sandbox")
 	seccomp := filepath.Join(root, "pvyai-seccomp")
 	for path, content := range map[string]string{
-		artifact:                              "pvyai",
-		helper:                                "helper",
-		seccomp:                               "seccomp",
-		filepath.Join(root, "README.md"):      "readme",
-		filepath.Join(root, "package.json"):   `{"version":"0.1.0"}`,
+		artifact:                               "pvyai",
+		helper:                                 "helper",
+		seccomp:                                "seccomp",
+		filepath.Join(root, "README.md"):       "readme",
+		filepath.Join(root, "package.json"):    `{"version":"0.1.0"}`,
 		filepath.Join(root, "bin", "pvyai.js"): "wrapper",
 	} {
 		mustWriteFile(t, path, content)
@@ -420,18 +420,18 @@ func TestCopyPackageFilesStagesWindowsSandboxHelpers(t *testing.T) {
 	runner := filepath.Join(root, "pvyai-windows-command-runner.exe")
 	setup := filepath.Join(root, "pvyai-windows-sandbox-setup.exe")
 	for path, content := range map[string]string{
-		artifact:                              "pvyai",
-		runner:                                "runner",
-		setup:                                 "setup",
-		filepath.Join(root, "README.md"):      "readme",
-		filepath.Join(root, "package.json"):   `{"version":"0.1.0"}`,
+		artifact:                               "pvyai",
+		runner:                                 "runner",
+		setup:                                  "setup",
+		filepath.Join(root, "README.md"):       "readme",
+		filepath.Join(root, "package.json"):    `{"version":"0.1.0"}`,
 		filepath.Join(root, "bin", "pvyai.js"): "wrapper",
 	} {
 		mustWriteFile(t, path, content)
 	}
 	if err := copyPackageFiles(root, staging, artifact, filepath.Join(staging, "pvyai.exe"), "windows", "0.1.0", map[string]string{
 		"pvyai-windows-command-runner.exe": runner,
-		"pvyai-windows-sandbox-setup.exe":   setup,
+		"pvyai-windows-sandbox-setup.exe":  setup,
 	}); err != nil {
 		t.Fatalf("copyPackageFiles: %v", err)
 	}

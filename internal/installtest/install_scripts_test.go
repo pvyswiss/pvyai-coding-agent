@@ -220,7 +220,7 @@ func runUnixInstaller(t *testing.T, fixture unixInstallFixture) (string, string,
 	command.Env = append(os.Environ(),
 		"PATH="+fixture.mockBin+string(os.PathListSeparator)+os.Getenv("PATH"),
 		"PVYAI_GITHUB_BASE_URL=https://example.test",
-		"PVYAI_REPO=pvyswiss/pvyai",
+		"PVYAI_REPO=pvyswiss/pvyai-coding-agent",
 	)
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer

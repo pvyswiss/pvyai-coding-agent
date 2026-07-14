@@ -186,7 +186,7 @@ func TestCheckRejectsInvalidLatestVersion(t *testing.T) {
 func TestCheckFallsBackReleaseURL(t *testing.T) {
 	result, err := Check(context.Background(), Options{
 		CurrentVersion: "0.1.0",
-		Repository:     "pvyswiss/pvyai",
+		Repository:     "pvyswiss/pvyai-coding-agent",
 		GOOS:           "linux",
 		GOARCH:         "amd64",
 		Fetch: func(context.Context, string) (Release, error) {
