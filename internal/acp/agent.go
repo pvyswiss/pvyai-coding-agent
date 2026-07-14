@@ -77,7 +77,7 @@ func NewAgent(conn *Conn, deps Deps) *Agent {
 	conn.Handle(MethodSessionPrompt, a.handleSessionPrompt)
 	conn.Handle(MethodSessionSetMode, a.handleSetMode)
 	conn.Handle(MethodSessionSetConfigOption, a.handleSetConfigOption)
-	conn.Handle(MethodZeroSetModel, a.handlePVYaiSetModel)
+	conn.Handle(MethodPVYaiSetModel, a.handlePVYaiSetModel)
 	conn.HandleNotify(MethodSessionCancel, a.handleCancel)
 	return a
 }

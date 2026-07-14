@@ -39,7 +39,7 @@ func TestWidthTierSegments(t *testing.T) {
 
 	for _, tc := range cases {
 		m := newModel(context.Background(), Options{
-			Cwd:          "/Users/dev/zero-project-workspace",
+			Cwd:          "/Users/dev/pvyai-project-workspace",
 			ProviderName: "anthropic",
 			ModelName:    "claude-sonnet-4.5",
 		})
@@ -49,7 +49,7 @@ func TestWidthTierSegments(t *testing.T) {
 		if got := strings.Contains(title, "200K"); got != tc.wantCtx {
 			t.Errorf("width %d: title ctx = %v, want %v (%q)", tc.width, got, tc.wantCtx, title)
 		}
-		if got := strings.Contains(title, "zero-project-workspace"); got != tc.wantCwd {
+		if got := strings.Contains(title, "pvyai-project-workspace"); got != tc.wantCwd {
 			t.Errorf("width %d: title cwd = %v, want %v (%q)", tc.width, got, tc.wantCwd, title)
 		}
 
@@ -166,7 +166,7 @@ func TestViewNeverExceedsTerminalWidth(t *testing.T) {
 	diff := "+++ b/a.go\n@@ -1,1 +1,1 @@\n-old line that is reasonably long for the card\n+new line that is reasonably long for the card"
 	for _, width := range []int{24, 40, 58, 70, 80, 100, 120} {
 		m := newModel(context.Background(), Options{
-			Cwd:          "/Users/dev/zero-project-workspace",
+			Cwd:          "/Users/dev/pvyai-project-workspace",
 			ProviderName: "anthropic",
 			ModelName:    "claude-sonnet-4.5",
 		})
@@ -205,7 +205,7 @@ var permissionEventLongDetailFixture = agent.PermissionEvent{
 	Action:         agent.PermissionActionPrompt,
 	Permission:     "prompt",
 	PermissionMode: agent.PermissionModeAsk,
-	SideEffect:     "runs `go test ./... -timeout 600s` in /Users/dev/zero-project-workspace with network access",
+	SideEffect:     "runs `go test ./... -timeout 600s` in /Users/dev/pvyai-project-workspace with network access",
 	Reason:         "command writes outside the workspace and downloads modules from the network proxy",
 	Risk:           sandbox.Risk{Level: sandbox.RiskMedium},
 }

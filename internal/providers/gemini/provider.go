@@ -360,7 +360,7 @@ func (provider *Provider) geminiRequest(request pvyruntime.CompletionRequest) (g
 
 // geminiSchemaFields is the subset of JSON Schema keywords Google's
 // functionDeclarations[].parameters accepts (the Generative AI Schema type).
-// Anything outside it — most notably OpenAI's `additionalProperties`, which Zero
+// Anything outside it — most notably OpenAI's `additionalProperties`, which PVYai
 // emits on every tool's parameters and which Gemini 400s on ("Unknown name
 // \"additionalProperties\" … Cannot find field") — must be dropped before the
 // request goes out. Kept as an allowlist rather than a denylist so a schema

@@ -227,7 +227,7 @@ func rootsCoverPath(roots []string, path string) bool {
 func outsideDefaultTempPath(workspaceRoot string, elems ...string) string {
 	volume := filepath.VolumeName(workspaceRoot)
 	root := volume + string(filepath.Separator)
-	parts := append([]string{root, "zero-sandbox-outside-test"}, elems...)
+	parts := append([]string{root, "pvyai-sandbox-outside-test"}, elems...)
 	return filepath.Join(parts...)
 }
 

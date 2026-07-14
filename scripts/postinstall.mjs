@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// postinstall: fetch the prebuilt `zero` binary for this platform from the
+// postinstall: fetch the prebuilt `pvyai` binary for this platform from the
 // matching GitHub Release and place it next to bin/pvyai.js, which execs it.
 //
 // Mirrors scripts/install.sh and scripts/install.ps1. The asset-name scheme is
@@ -56,7 +56,7 @@ function fail(message) {
 
 function warnSkip(message) {
   // Exit 0 so an unsupported platform or an opt-out does not break `npm install`;
-  // bin/pvyai.js reports a clear "no native binary" message if the user runs zero.
+  // bin/pvyai.js reports a clear "no native binary" message if the user runs pvyai.
   console.error(`[pvyai] ${message}`);
   process.exit(0);
 }

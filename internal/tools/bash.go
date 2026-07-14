@@ -468,7 +468,7 @@ func sectionWithCaptureGap(text string, total int) string {
 
 // boundedBuffer is an io.Writer that retains at most headCap bytes from the start
 // and tailCap bytes from the end of a stream while counting the total written, so
-// a command emitting unbounded output (`cat huge.log`, `yes`) cannot grow Zero's
+// a command emitting unbounded output (`cat huge.log`, `yes`) cannot grow PVYai's
 // memory: the middle is discarded as it arrives instead of buffered whole and then
 // truncated. total records the full size for the truncation marker even though the
 // middle is never held. Not safe for concurrent writes; exec drives Stdout and

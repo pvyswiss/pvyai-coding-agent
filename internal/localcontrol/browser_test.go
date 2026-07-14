@@ -109,7 +109,7 @@ func TestBrowserRunUsesHelperManifest(t *testing.T) {
 
 func TestBrowserRunUsesManifestPrefixArgs(t *testing.T) {
 	runner := &fakeCommandRunner{}
-	t.Setenv(EnvHelperManifest, `{"version":1,"helpers":{"agent-browser":{"command":"cmd.exe","prefixArgs":["/d","/s","/c","C:\\zero\\agent-browser.cmd"]}}}`)
+	t.Setenv(EnvHelperManifest, `{"version":1,"helpers":{"agent-browser":{"command":"cmd.exe","prefixArgs":["/d","/s","/c","C:\\pvyai\\agent-browser.cmd"]}}}`)
 	browser := NewBrowser(BrowserOptions{
 		Enabled: true,
 		Runner:  runner,
@@ -121,7 +121,7 @@ func TestBrowserRunUsesManifestPrefixArgs(t *testing.T) {
 	if runner.path != "cmd.exe" {
 		t.Fatalf("runner path = %q, want cmd.exe", runner.path)
 	}
-	want := []string{"/d", "/s", "/c", `C:\zero\agent-browser.cmd`, "open", "https://example.com"}
+	want := []string{"/d", "/s", "/c", `C:\pvyai\agent-browser.cmd`, "open", "https://example.com"}
 	if !reflect.DeepEqual(runner.args, want) {
 		t.Fatalf("runner args = %#v, want %#v", runner.args, want)
 	}

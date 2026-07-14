@@ -140,7 +140,7 @@ func TestSandboxCheckReportsWindowsNativeSetupStates(t *testing.T) {
 	}
 
 	// With self-dispatch, the standalone helper .exe files no longer need to be
-	// on PATH for the Windows backend to be usable — the running zero binary acts
+	// on PATH for the Windows backend to be usable — the running pvyai binary acts
 	// as its own command-runner/setup helper. So a missing PATH helper no longer
 	// reports "unavailable"; the backend is available and (with no workspace to
 	// require a setup marker) the check passes. The actionable "run `pvyai sandbox

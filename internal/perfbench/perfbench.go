@@ -182,11 +182,11 @@ func Run(ctx context.Context, options Options) (Result, error) {
 }
 
 func ResolveColdStartCommand(rootDir string) ([]string, error) {
-	return resolveZeroVersionCommand(rootDir)
+	return resolvePVYaiVersionCommand(rootDir)
 }
 
 func ResolveFirstOutputCommand(rootDir string) ([]string, error) {
-	return resolveZeroVersionCommand(rootDir)
+	return resolvePVYaiVersionCommand(rootDir)
 }
 
 func SummarizeSamples(samples []float64) NumericStats {
@@ -250,7 +250,7 @@ func FormatSummary(result Result) string {
 
 func EmitWarnings(w io.Writer, result Result) {
 	for _, warning := range result.Warnings {
-		_, _ = fmt.Fprintf(w, "::warning title=Zero performance::%s\n", EscapeActionCommand(warning.Message))
+		_, _ = fmt.Fprintf(w, "::warning title=PVYai performance::%s\n", EscapeActionCommand(warning.Message))
 	}
 }
 
@@ -369,7 +369,7 @@ func EscapeActionCommand(value string) string {
 	return replacer.Replace(value)
 }
 
-func resolveZeroVersionCommand(rootDir string) ([]string, error) {
+func resolvePVYaiVersionCommand(rootDir string) ([]string, error) {
 	if strings.TrimSpace(rootDir) == "" {
 		var err error
 		rootDir, err = os.Getwd()

@@ -330,7 +330,7 @@ type compactionState struct {
 	// real prompt-token count. ApproxTextTokens over-counts code-heavy content by
 	// ~15-20%, which would trip compaction early (at ~60% of true capacity). It
 	// starts at 1.0 and converges via an EMA as each turn reports actual usage, so
-	// later turns compact nearer to real capacity. Zero is treated as 1.0.
+	// later turns compact nearer to real capacity. PVYai is treated as 1.0.
 	calibrationRatio float64
 }
 

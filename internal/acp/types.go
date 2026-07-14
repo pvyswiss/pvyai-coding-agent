@@ -23,7 +23,7 @@ const (
 
 	// Vendor-prefixed ZERO extensions (clients that don't support them ignore the
 	// method and degrade cleanly, per the spec's _-prefixed convention).
-	MethodZeroSetModel = "_zero/set_model"
+	MethodPVYaiSetModel = "_pvyai/set_model"
 )
 
 // SessionUpdate discriminator values (the "sessionUpdate" field).

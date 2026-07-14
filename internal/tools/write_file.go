@@ -74,7 +74,7 @@ func (tool writeFileTool) RunWithOptions(ctx context.Context, args map[string]an
 	}
 
 	// On overwrite, refuse to clobber a tracked file that changed on disk outside
-	// Zero since it was last read — the new content was likely composed against a
+	// PVYai since it was last read — the new content was likely composed against a
 	// stale view. Only read current bytes when there is a baseline to compare,
 	// so a first-touch create/overwrite stays a single write with no extra read.
 	if existed {

@@ -404,7 +404,7 @@ func TestRunSandboxSetupRunsWindowsHelper(t *testing.T) {
 		t.Fatalf("setup exit = %d, stderr %q", exitCode, stderr.String())
 	}
 	// The setup helper is now resolved independently of backend.Executable: an
-	// adjacent zero-windows-sandbox-setup.exe in release, else self-dispatch via
+	// adjacent pvyai-windows-sandbox-setup.exe in release, else self-dispatch via
 	// the running binary. Under `go test` no sibling helper exists, so it
 	// self-dispatches: path is the running binary and the first arg is the hidden
 	// setup subcommand, followed by the real setup args.

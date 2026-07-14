@@ -75,7 +75,7 @@ func TestFillAppDepsWrapsNewProviderWithStoredKey(t *testing.T) {
 // buildProvider (the TUI/exec STARTUP construction site) must export
 // PVYAI_PROVIDER so children spawned at any point in the run are pinned to the
 // parent's provider from launch — not only after an in-session switch. Without
-// this, a provider switch persisted by another zero process mid-session moves
+// this, a provider switch persisted by another pvyai process mid-session moves
 // new children onto a different provider (and credentials) than the parent.
 func TestBuildProviderExportsActiveProviderEnv(t *testing.T) {
 	t.Setenv(config.ActiveProviderEnv, "stale-from-elsewhere")

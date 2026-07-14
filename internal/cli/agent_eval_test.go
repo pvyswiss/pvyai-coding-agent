@@ -160,7 +160,7 @@ func TestRunEvalBenchJSONModePassesHarnessOptions(t *testing.T) {
 				t.Fatalf("unexpected eval bench options: %#v", options)
 			}
 			if got, want := strings.Join(options.AgentCommand, "\x00"), strings.Join([]string{"pvyai", "exec", "{prompt}"}, "\x00"); got != want {
-				t.Fatalf("agent command = %#v, want zero exec {prompt}", options.AgentCommand)
+				t.Fatalf("agent command = %#v, want pvyai exec {prompt}", options.AgentCommand)
 			}
 			return agentEvalReport{
 				Suite:  "quality-context",
