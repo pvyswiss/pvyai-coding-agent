@@ -97,7 +97,7 @@ func TestFormatSummaryIncludesWarnings(t *testing.T) {
 	summary := FormatSummary(result)
 
 	for _, want := range []string{
-		"Zero performance benchmark",
+		"PVYai performance benchmark",
 		"cold start: median 105.00 ms",
 		"harness end RSS: max 310.00 MB",
 		"warnings:",

@@ -58,7 +58,7 @@ func detectShellCommandIssue(command string, goos string) *shellIssue {
 		windowsLSCommandPattern.MatchString(trimmed) {
 		return &shellIssue{
 			Kind:       "windows_shell_syntax",
-			Message:    "Command looks like POSIX/Bash syntax, but Zero runs bash tool commands through Windows cmd.exe on this host.",
+			Message:    "Command looks like POSIX/Bash syntax, but PVYai runs bash tool commands through Windows cmd.exe on this host.",
 			Suggestion: "Use the cwd argument instead of cd, use Windows cmd.exe syntax, or use native tools such as list_directory, read_file, grep, and glob.",
 		}
 	}
@@ -66,7 +66,7 @@ func detectShellCommandIssue(command string, goos string) *shellIssue {
 		return &shellIssue{
 			Kind:       "windows_shell_syntax",
 			Message:    "Command uses a POSIX utility (head/tail/grep/wc/awk/sed/cut/xargs/tr) that Windows cmd.exe does not have.",
-			Suggestion: "Use cmd.exe equivalents (e.g. `findstr` for grep, `more` to page output) or Zero's native tools (grep, read_file with offset/limit) instead of piping to a POSIX utility.",
+			Suggestion: "Use cmd.exe equivalents (e.g. `findstr` for grep, `more` to page output) or PVYai's native tools (grep, read_file with offset/limit) instead of piping to a POSIX utility.",
 		}
 	}
 	return nil
@@ -82,7 +82,7 @@ func detectShellOutputIssue(command string, output string, goos string) *shellIs
 		return &shellIssue{
 			Kind:       "windows_shell_syntax",
 			Message:    "Windows cmd.exe rejected the command syntax.",
-			Suggestion: "Translate the command to Windows cmd.exe syntax, set the bash tool cwd argument instead of running cd, or prefer native Zero tools for file inspection.",
+			Suggestion: "Translate the command to Windows cmd.exe syntax, set the bash tool cwd argument instead of running cd, or prefer native PVYai tools for file inspection.",
 		}
 	}
 	return nil

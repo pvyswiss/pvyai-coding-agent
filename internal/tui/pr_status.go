@@ -373,13 +373,13 @@ func renderPRSegment(segment PrSegment) string {
 	style := lipgloss.NewStyle()
 	switch segment.Color {
 	case ColorAccent:
-		style = zeroTheme.accent
+		style = pvyaiTheme.accent
 	case ColorGreen:
-		style = zeroTheme.gitAdd
+		style = pvyaiTheme.gitAdd
 	case ColorRed:
-		style = zeroTheme.gitDel
+		style = pvyaiTheme.gitDel
 	case ColorDefault:
-		style = zeroTheme.muted
+		style = pvyaiTheme.muted
 	}
 	if segment.Bold {
 		style = style.Bold(true)

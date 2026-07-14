@@ -11,15 +11,15 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/providerhealth"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/providermodeldiscovery"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/skills"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/usage"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
-// Options configures the reusable Zero terminal UI shell.
+// Options configures the reusable PVYai terminal UI shell.
 type Options struct {
 	Cwd                         string
 	UserConfigPath              string

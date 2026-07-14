@@ -93,7 +93,7 @@ func PrepareExec(options PrepareExecOptions) (PreparedExec, error) {
 				return PreparedExec{}, err
 			}
 			if latest == nil {
-				return PreparedExec{}, ExecError{"No Zero sessions available to resume."}
+				return PreparedExec{}, ExecError{"No PVYai sessions available to resume."}
 			}
 			sessionID = latest.SessionID
 		}

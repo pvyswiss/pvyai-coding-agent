@@ -10,10 +10,10 @@ import (
 	tea "charm.land/bubbletea/v2"
 
 	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/specmode"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 func TestSpecCommandCreatesDraftReview(t *testing.T) {

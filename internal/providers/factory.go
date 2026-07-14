@@ -143,7 +143,7 @@ type resolvedProfile struct {
 }
 
 // RuntimeMetadata describes the provider identity and concrete API model used
-// after Zero model aliases and provider-kind defaults are resolved.
+// after PVYai model aliases and provider-kind defaults are resolved.
 type RuntimeMetadata struct {
 	ProviderKind config.ProviderKind
 	APIModel     string

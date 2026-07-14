@@ -364,12 +364,12 @@ type SetSessionConfigOptionResult struct {
 
 // ---- vendor: _zero/set_model ----
 
-type ZeroSetModelParams struct {
+type PVYaiSetModelParams struct {
 	SessionID string `json:"sessionId"`
 	Model     string `json:"model"`
 }
 
-type ZeroSetModelResult struct {
+type PVYaiSetModelResult struct {
 	Model string `json:"model"`
 }
 

@@ -10,11 +10,11 @@ import (
 	"github.com/charmbracelet/x/term"
 )
 
-// Run starts the Zero Bubble Tea shell and returns a process-style exit code.
+// Run starts the PVYai Bubble Tea shell and returns a process-style exit code.
 func Run(ctx context.Context, options Options) int {
 	// The interactive shell needs a real terminal on stdin: with piped or
 	// redirected input Bubble Tea blocks forever waiting for events that never
-	// arrive (e.g. `echo "" | zero`). Fail fast with guidance toward the headless
+	// arrive (e.g. `echo "" | pvyai`). Fail fast with guidance toward the headless
 	// path instead of hanging. term.IsTerminal is a true TTY check (it rejects
 	// pipes, regular files, and non-terminal char devices like /dev/null) and
 	// fails closed — anything that is not a verified terminal blocks the shell.

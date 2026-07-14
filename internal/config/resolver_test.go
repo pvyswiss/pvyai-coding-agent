@@ -39,7 +39,7 @@ func TestResolveAppliesLayerPrecedence(t *testing.T) {
 		ProjectConfigPath: projectPath,
 		Env: map[string]string{
 			"PVYAI_PROVIDER": "env",
-			"OPENAI_MODEL":  "env-model",
+			"OPENAI_MODEL":   "env-model",
 		},
 		Overrides: Overrides{
 			ActiveProvider: "cli",
@@ -717,7 +717,7 @@ func TestResolveDoesNotDefaultOpenAICustomBaseURLModel(t *testing.T) {
 func TestResolveUsesAnthropicEnvFallback(t *testing.T) {
 	resolved, err := Resolve(ResolveOptions{
 		Env: map[string]string{
-			"PVYAI_PROVIDER":     "anthropic",
+			"PVYAI_PROVIDER":    "anthropic",
 			"ANTHROPIC_API_KEY": "sk-ant-env",
 			"ANTHROPIC_MODEL":   "claude-sonnet-4.5",
 			"OPENAI_API_KEY":    "sk-openai-env",
@@ -788,7 +788,7 @@ func TestResolveUsesAnthropicEnvFallbackWithCustomProfile(t *testing.T) {
 	resolved, err := Resolve(ResolveOptions{
 		ProjectConfigPath: path,
 		Env: map[string]string{
-			"PVYAI_PROVIDER":     "claude-prod",
+			"PVYAI_PROVIDER":    "claude-prod",
 			"ANTHROPIC_API_KEY": "sk-ant-env",
 			"ANTHROPIC_MODEL":   "claude-sonnet-4.5",
 		},
@@ -820,7 +820,7 @@ func TestResolveUsesAnthropicEnvFallbackWithCustomProfile(t *testing.T) {
 func TestResolveUsesGoogleEnvFallbackAliases(t *testing.T) {
 	resolved, err := Resolve(ResolveOptions{
 		Env: map[string]string{
-			"PVYAI_PROVIDER":  "google",
+			"PVYAI_PROVIDER": "google",
 			"GOOGLE_API_KEY": "sk-google-env",
 			"GOOGLE_MODEL":   "gemini-2.5-pro",
 		},
@@ -1523,7 +1523,7 @@ func TestResolveNotifyDefaultEmpty(t *testing.T) {
 func writeConfig(t *testing.T, body string) string {
 	t.Helper()
 
-	path := filepath.Join(t.TempDir(), "zero.json")
+	path := filepath.Join(t.TempDir(), "pvyai.json")
 	if err := os.WriteFile(path, []byte(body), 0o600); err != nil {
 		t.Fatalf("write config: %v", err)
 	}

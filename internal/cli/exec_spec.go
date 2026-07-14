@@ -11,13 +11,13 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/notify"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/specmode"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/streamjson"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/usage"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 type execSpecDraftRun struct {

@@ -360,8 +360,8 @@ func TestRunProvidersAddWritesCustomHeaders(t *testing.T) {
 		"--api-key-env", "GATEWAY_API_KEY",
 		"--auth-header", "X-API-Key",
 		"--auth-scheme", "Token",
-		"--header", "HTTP-Referer=https://zero.dev",
-		"--header", "X-Title=Zero",
+		"--header", "HTTP-Referer=https://pvy.swiss",
+		"--header", "X-Title=PVYai",
 	}, &stdout, &stderr, providerSetupDeps(configPath))
 
 	if exitCode != exitSuccess {
@@ -371,7 +371,7 @@ func TestRunProvidersAddWritesCustomHeaders(t *testing.T) {
 	if profile.AuthHeader != "X-API-Key" || profile.AuthScheme != "Token" {
 		t.Fatalf("unexpected auth override: %#v", profile)
 	}
-	if profile.CustomHeaders["HTTP-Referer"] != "https://zero.dev" || profile.CustomHeaders["X-Title"] != "Zero" {
+	if profile.CustomHeaders["HTTP-Referer"] != "https://pvy.swiss" || profile.CustomHeaders["X-Title"] != "PVYai" {
 		t.Fatalf("unexpected custom headers: %#v", profile.CustomHeaders)
 	}
 }

@@ -13,7 +13,7 @@ import (
 )
 
 func TestSetActiveProviderSwitchesConfiguredProvider(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "zero.json")
+	path := filepath.Join(t.TempDir(), "pvyai.json")
 	writeConfigFixture(t, path, FileConfig{
 		ActiveProvider: "OpenAI",
 		Providers: []ProviderProfile{
@@ -46,7 +46,7 @@ func TestSetActiveProviderSwitchesConfiguredProvider(t *testing.T) {
 }
 
 func TestSetActiveProviderRejectsUnknownProviderWithoutRewriting(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "zero.json")
+	path := filepath.Join(t.TempDir(), "pvyai.json")
 	before := writeConfigFixture(t, path, FileConfig{
 		ActiveProvider: "openai",
 		Providers: []ProviderProfile{
@@ -75,7 +75,7 @@ func TestSetActiveProviderRejectsUnknownProviderWithoutRewriting(t *testing.T) {
 }
 
 func TestSetActiveProviderRejectsEmptyProviderName(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "zero.json")
+	path := filepath.Join(t.TempDir(), "pvyai.json")
 	before := writeConfigFixture(t, path, FileConfig{
 		ActiveProvider: "openai",
 		Providers: []ProviderProfile{
@@ -111,7 +111,7 @@ func TestSetActiveProviderRejectsEmptyConfigPath(t *testing.T) {
 }
 
 func TestSetActiveProviderRejectsMissingConfig(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "zero.json")
+	path := filepath.Join(t.TempDir(), "pvyai.json")
 
 	_, err := SetActiveProvider(path, "openai")
 	if err == nil {
@@ -127,7 +127,7 @@ func TestSetActiveProviderTightensExistingConfigFilePermissions(t *testing.T) {
 		t.Skip("Windows does not expose POSIX mode bits reliably")
 	}
 
-	path := filepath.Join(t.TempDir(), "zero.json")
+	path := filepath.Join(t.TempDir(), "pvyai.json")
 	writeConfigFixture(t, path, FileConfig{
 		ActiveProvider: "openai",
 		Providers: []ProviderProfile{
@@ -151,7 +151,7 @@ func TestSetActiveProviderTightensExistingConfigFilePermissions(t *testing.T) {
 }
 
 func TestSetProviderModelUpdatesConfiguredProvider(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "zero.json")
+	path := filepath.Join(t.TempDir(), "pvyai.json")
 	writeConfigFixture(t, path, FileConfig{
 		ActiveProvider: "openai",
 		Providers: []ProviderProfile{
@@ -194,7 +194,7 @@ func TestSetProviderModelUpdatesConfiguredProvider(t *testing.T) {
 }
 
 func TestSetProviderModelRejectsUnknownProviderWithoutRewriting(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "zero.json")
+	path := filepath.Join(t.TempDir(), "pvyai.json")
 	before := writeConfigFixture(t, path, FileConfig{
 		ActiveProvider: "openai",
 		Providers: []ProviderProfile{
@@ -221,7 +221,7 @@ func TestUpsertProviderTightensExistingConfigFilePermissions(t *testing.T) {
 		t.Skip("Windows does not expose POSIX mode bits reliably")
 	}
 
-	path := filepath.Join(t.TempDir(), "zero.json")
+	path := filepath.Join(t.TempDir(), "pvyai.json")
 	if err := os.WriteFile(path, []byte(`{"providers":[]}`), 0o644); err != nil {
 		t.Fatalf("write existing config: %v", err)
 	}
@@ -246,7 +246,7 @@ func TestUpsertProviderTightensExistingConfigFilePermissions(t *testing.T) {
 }
 
 func TestSetFavoriteModelsPersistsUserPreferences(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "zero.json")
+	path := filepath.Join(t.TempDir(), "pvyai.json")
 	writeConfigFixture(t, path, FileConfig{
 		ActiveProvider: "openai",
 		Providers: []ProviderProfile{
@@ -273,7 +273,7 @@ func TestSetFavoriteModelsPersistsUserPreferences(t *testing.T) {
 }
 
 func TestSetThemePersistsUserPreference(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "zero.json")
+	path := filepath.Join(t.TempDir(), "pvyai.json")
 	writeConfigFixture(t, path, FileConfig{
 		ActiveProvider: "openai",
 		Providers: []ProviderProfile{
@@ -311,7 +311,7 @@ func TestRecapsPreferenceRoundTrips(t *testing.T) {
 		t.Error("unset recaps should default to ON")
 	}
 
-	path := filepath.Join(t.TempDir(), "zero.json")
+	path := filepath.Join(t.TempDir(), "pvyai.json")
 	writeConfigFixture(t, path, FileConfig{ActiveProvider: "openai"}, 0o600)
 
 	// Persist OFF, then read it back.

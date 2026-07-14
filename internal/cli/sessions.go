@@ -5,9 +5,9 @@ import (
 	"io"
 	"strings"
 
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvycmd"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvycmd"
 )
 
 type sessionCommandOptions struct {
@@ -455,7 +455,7 @@ func formatCompactionPlan(plan sessions.CompactionPlan) string {
 
 func formatSessionSnapshotsList(items []pvycmd.SessionSnapshot) string {
 	if len(items) == 0 {
-		return "No Zero sessions found."
+		return "No PVYai sessions found."
 	}
 	lines := []string{fmt.Sprintf("PVYai sessions (%d):", len(items))}
 	for _, session := range items {
@@ -525,7 +525,7 @@ func writeSessionsHelp(w io.Writer) error {
   pvyai sessions <command> [flags]
 
 Commands:
-  list                  List local Zero sessions
+  list                  List local PVYai sessions
   children <id>         List direct child sessions for a parent session
   lineage <id>          Print the root-to-session lineage path
   tree <id>             Print a child-session tree

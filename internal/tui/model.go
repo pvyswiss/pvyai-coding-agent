@@ -27,6 +27,7 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/providerhealth"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/providermodeldiscovery"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/providers/providerio"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/skills"
@@ -34,7 +35,6 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/usage"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/usercommands"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 const tuiToolOutputLimit = 240
@@ -187,7 +187,7 @@ type model struct {
 	pending        bool
 	// turnStartedAt is when the in-flight run began; the working status line
 	// renders the live elapsed time from it so a long or stalled turn never looks
-	// like a frozen terminal (for ANY provider, not just slow ones). Zero = idle.
+	// like a frozen terminal (for ANY provider, not just slow ones). PVYai = idle.
 	turnStartedAt time.Time
 	queuedMessage string
 	exiting       bool
@@ -869,7 +869,7 @@ func (m model) Init() tea.Cmd {
 	// `if m.altScreen && m.height > 0` (transcriptView) falls back to the
 	// unpadded, non-fullscreen render path for the rest of the session, and
 	// the alt-screen viewport never gets filled below the actual content.
-	// Explicitly requesting it here means Zero doesn't depend solely on the
+	// Explicitly requesting it here means PVYai doesn't depend solely on the
 	// terminal's unprompted push — mirrors the RequestBackgroundColor request
 	// below for the same reason.
 	cmds = append(cmds, tea.RequestWindowSize)
@@ -2316,7 +2316,7 @@ func (m model) View() tea.View {
 
 	view := tea.NewView(content)
 	view.AltScreen = m.altScreen
-	// Paint the whole frame with the active theme's surface. Zero never paints the
+	// Paint the whole frame with the active theme's surface. PVYai never paints the
 	// terminal's own canvas, so without this a theme's text falls on the terminal
 	// background — fine when they share polarity, but a light theme's dark text on a
 	// dark terminal (or vice versa) is invisible, and a color theme never shows its
@@ -2325,7 +2325,7 @@ func (m model) View() tea.View {
 	// picker) too. Alt-screen only, so inline output never leaves a painted
 	// background behind in the user's scrollback after exit.
 	if m.altScreen {
-		view.BackgroundColor = zeroTheme.bgPanel
+		view.BackgroundColor = pvyaiTheme.bgPanel
 	}
 	view.ReportFocus = m.notifier != nil
 	if m.wantsMouseCapture() {
@@ -2521,7 +2521,7 @@ func (m model) footerView(width int) string {
 	// cue on the right when scrolled up. Always one line (blank when nothing shows),
 	// so the footer height is unchanged.
 	if copyStatus := strings.TrimSpace(m.copyStatus); copyStatus != "" {
-		footer.WriteString(rightAlignedLine(zeroTheme.ink.Render(copyStatus), width))
+		footer.WriteString(rightAlignedLine(pvyaiTheme.ink.Render(copyStatus), width))
 	} else if left, right := m.composerIdleHint(), m.jumpToBottomHint(); left != "" || right != "" {
 		footer.WriteString(fitStyledLine(joinHeaderLine("  "+left, right, width), width))
 	}
@@ -2571,7 +2571,7 @@ func (m model) composerIdleHint() string {
 	default:
 		hint = fmt.Sprintf("? shortcuts · %s sidebar · %s detail · %s copy · Shift+Tab mode", sidebarKey, detailKey, mouseKey)
 	}
-	return zeroTheme.faint.Render(hint)
+	return pvyaiTheme.faint.Render(hint)
 }
 
 // jumpToBottomHint returns a faint "↓ N more · PgDn" cue when the transcript is
@@ -2581,7 +2581,7 @@ func (m model) jumpToBottomHint() string {
 	if m.chatScrollOffset <= 0 {
 		return ""
 	}
-	return zeroTheme.faint.Render(fmt.Sprintf("↓ %d more · PgDn", m.chatScrollOffset))
+	return pvyaiTheme.faint.Render(fmt.Sprintf("↓ %d more · PgDn", m.chatScrollOffset))
 }
 
 // pinnedPlanMaxHeight is the line budget for the pinned plan panel: at most a
@@ -2784,7 +2784,7 @@ func scrimViewportLine(line string, width int) string {
 	if strings.TrimSpace(plain) == "" {
 		return line
 	}
-	return zeroTheme.faint.Render(plain)
+	return pvyaiTheme.faint.Render(plain)
 }
 
 func normalizeOverlayBlock(lines []string, width int) (int, []string, int) {
@@ -2893,7 +2893,7 @@ func (m model) chatTranscriptViewport() (transcriptViewport, bool) {
 	if m.transcriptDetailed {
 		items := m.transcriptBodyItems(width, "", true)
 		body := measureTranscriptBodyItems(items, m.transcriptBodyHeights)
-		header := detailedTranscriptHeader(width) + "\n" + zeroTheme.line.Render(strings.Repeat("-", width))
+		header := detailedTranscriptHeader(width) + "\n" + pvyaiTheme.line.Render(strings.Repeat("-", width))
 		footer := m.detailedTranscriptFooter(width)
 		frame := m.scrollableTranscriptFrame(header, footer)
 		return transcriptViewportForLayout(body, frame, m.chatScrollOffset), true
@@ -3044,19 +3044,19 @@ func (m model) workingStatusLine() string {
 	// 6-char wavelength fits the 7-letter word so a full oscillation is visible.
 	// Under reduced motion the phase is frozen, so this renders a static gradient.
 	working := rippleText("Working", ripplePalette(), m.spinnerPhase, 6)
-	line := zeroTheme.accent.Render(m.spinnerGlyph()) + " " + working
+	line := pvyaiTheme.accent.Render(m.spinnerGlyph()) + " " + working
 	// Phase label so a long, output-less step reads as live progress rather than a
 	// frozen screen: "writing" while the answer streams, "thinking" otherwise
 	// (reasoning, waiting on the model, or running a tool).
-	line += zeroTheme.faint.Render("  ·  " + m.workingActivity())
+	line += pvyaiTheme.faint.Render("  ·  " + m.workingActivity())
 	if !m.turnStartedAt.IsZero() {
-		line += zeroTheme.faint.Render("  ·  " + formatWorkingElapsed(m.now().Sub(m.turnStartedAt)))
+		line += pvyaiTheme.faint.Render("  ·  " + formatWorkingElapsed(m.now().Sub(m.turnStartedAt)))
 	}
 	// Live token estimate so the working line visibly climbs as the model reasons
 	// and writes, instead of a static figure. Shown from the start of the turn (at
 	// 0) so the counter is never missing — the authoritative totals stay in the
 	// status line and sidebar; this is the at-a-glance "it's generating" pulse.
-	line += zeroTheme.faint.Render("  ·  " + m.workingTokenIndicator())
+	line += pvyaiTheme.faint.Render("  ·  " + m.workingTokenIndicator())
 	// If the model has gone quiet (no streamed text, reasoning, OR tool-call output
 	// for a while — common when a provider buffers a large tool call instead of
 	// streaming it), say so plainly with an advancing timer, so a long silent
@@ -3065,7 +3065,7 @@ func (m model) workingStatusLine() string {
 	// whenever the sidebar is up, so it never appears in both places at once.
 	if !m.sidebarActive() {
 		if hint := m.quietGenerationHint(); hint != "" {
-			line += zeroTheme.amber.Render("  ·  " + hint)
+			line += pvyaiTheme.amber.Render("  ·  " + hint)
 		}
 	}
 	// A second line carries live plan progress (how far along + the current step)
@@ -3096,7 +3096,7 @@ func (m model) workingPlanLine() string {
 	if current := truncateStep(currentStepContent(m.plan.steps), 48); current != "" {
 		text += " · " + current
 	}
-	return "  " + zeroTheme.faint.Render(text)
+	return "  " + pvyaiTheme.faint.Render(text)
 }
 
 // workingTokenIndicator renders a live "↑ <n> tok" estimate of the tokens
@@ -3127,7 +3127,7 @@ const quietWorkingHint = 8 * time.Second
 // else "". The advancing number is itself the liveness signal.
 //
 // Past half the provider's idle timeout, the cue escalates to name what's
-// actually happening and when Zero will act on its own: a heartbeating-but-
+// actually happening and when PVYai will act on its own: a heartbeating-but-
 // silent stream (observed on chatgpt/gpt-5.x and ollama reasoning models,
 // see providerio.ErrStreamStalled) is bounded by the content-stall watchdog at
 // providerio.ContentStallTimeout(idle), but until it fires this exact same
@@ -3151,7 +3151,7 @@ func (m model) quietGenerationHint() string {
 	}
 	if idleTimeout := providerio.ResolveStreamIdleTimeout(0); idleTimeout > 0 && quiet >= idleTimeout/2 {
 		ceiling := providerio.ContentStallTimeout(idleTimeout)
-		return fmt.Sprintf("still generating… %s — unusually quiet, Zero will auto-recover by ~%s if it doesn't resume", formatWorkingElapsed(quiet), formatWorkingElapsed(ceiling))
+		return fmt.Sprintf("still generating… %s — unusually quiet, PVYai will auto-recover by ~%s if it doesn't resume", formatWorkingElapsed(quiet), formatWorkingElapsed(ceiling))
 	}
 	return "still generating… " + formatWorkingElapsed(quiet)
 }
@@ -3191,7 +3191,7 @@ func reasoningPreviewLines(reasoning string, width int) []string {
 	}
 	out := make([]string, 0, len(lines))
 	for _, line := range lines {
-		out = append(out, "  "+zeroTheme.faint.Render(previewTail(line, avail)))
+		out = append(out, "  "+pvyaiTheme.faint.Render(previewTail(line, avail)))
 	}
 	return out
 }
@@ -3214,9 +3214,9 @@ func (m model) appendStreamingCursor(lines []string, width int) []string {
 	// Pulse the caret on the shared spinner clock so the typing edge reads as alive
 	// even during fade-tick gaps or upstream stalls. Width-stable (bright ↔ dim,
 	// never on/off, so the line never jitters). Steady bright under reduced motion.
-	cursor := zeroTheme.accent.Render("▌")
+	cursor := pvyaiTheme.accent.Render("▌")
 	if !m.reducedMotion && (m.spinnerPhase/6)%2 == 1 {
-		cursor = zeroTheme.faint.Render("▌")
+		cursor = pvyaiTheme.faint.Render("▌")
 	}
 	if len(lines) == 0 {
 		return []string{cursor}
@@ -3285,7 +3285,7 @@ func renderComposerInput(input textinput.Model, state composerState, width int, 
 		if cursorVisible {
 			cursor = composerCursor(" ")
 		}
-		return fitStyledLine(composerVisualLinePrefix(input, true)+cursor+zeroTheme.faint.Render(input.Placeholder), width)
+		return fitStyledLine(composerVisualLinePrefix(input, true)+cursor+pvyaiTheme.faint.Render(input.Placeholder), width)
 	}
 
 	segments, cursorLine := composerVisibleVisualLines(input, state, width)
@@ -3376,7 +3376,7 @@ func composerCursorVisualLine(segments []composerVisualLine, cursor int) int {
 func renderComposerVisualLine(input textinput.Model, state composerState, segment composerVisualLine, hasCursor bool, cursorVisible bool, selection composerSelectionState) string {
 	runes := []rune(state.text)
 	prefix := composerVisualLinePrefix(input, segment.first)
-	textStyle := zeroTheme.ink.Inline(true)
+	textStyle := pvyaiTheme.ink.Inline(true)
 	selectionStart, selectionEnd, hasSelection := selection.rangeFor(state)
 	cursorIndex := -1
 	if hasCursor && !hasSelection {
@@ -3391,7 +3391,7 @@ func renderComposerVisualLine(input textinput.Model, state composerState, segmen
 		case index == cursorIndex && cursorVisible:
 			line.WriteString(composerCursor(cell))
 		case hasSelection && index >= selectionStart && index < selectionEnd:
-			line.WriteString(zeroTheme.selection.Render(cell))
+			line.WriteString(pvyaiTheme.selection.Render(cell))
 		default:
 			line.WriteString(textStyle.Render(cell))
 		}
@@ -3404,7 +3404,7 @@ func renderComposerVisualLine(input textinput.Model, state composerState, segmen
 
 func composerVisualLinePrefix(input textinput.Model, first bool) string {
 	if first {
-		return zeroTheme.userPrompt.Render(input.Prompt)
+		return pvyaiTheme.userPrompt.Render(input.Prompt)
 	}
 	return "  "
 }
@@ -3533,15 +3533,15 @@ func commandArgumentHintComposerLine(input textinput.Model, argumentHint string)
 		return input.View()
 	}
 	displayValue := strings.TrimRightFunc(input.Value(), unicode.IsSpace)
-	return zeroTheme.userPrompt.Render(input.Prompt) +
-		zeroTheme.ink.Inline(true).Render(displayValue) +
-		zeroTheme.faint.Render(" ") +
-		composerCursor(zeroTheme.faint.Render(string(hintRunes[0]))) +
-		zeroTheme.faint.Render(string(hintRunes[1:]))
+	return pvyaiTheme.userPrompt.Render(input.Prompt) +
+		pvyaiTheme.ink.Inline(true).Render(displayValue) +
+		pvyaiTheme.faint.Render(" ") +
+		composerCursor(pvyaiTheme.faint.Render(string(hintRunes[0]))) +
+		pvyaiTheme.faint.Render(string(hintRunes[1:]))
 }
 
 func composerCursor(char string) string {
-	return zeroTheme.selection.Render(char)
+	return pvyaiTheme.selection.Render(char)
 }
 
 func commandArgumentHintForInput(value string) string {
@@ -3561,18 +3561,18 @@ func (m model) composerBox(width int) string {
 	lines := strings.Split(content, "\n")
 
 	rendered := make([]string, 0, len(lines)+3)
-	rendered = append(rendered, zeroTheme.lineStrong.Render("╭"+strings.Repeat("─", width-2)+"╮"))
+	rendered = append(rendered, pvyaiTheme.lineStrong.Render("╭"+strings.Repeat("─", width-2)+"╮"))
 	// Attachment chips ([Image #1] …) render INSIDE the box, above the input line,
 	// instead of as a separate row above the box.
 	if chips := renderAttachmentChips(m.pendingImageLabels, m.pendingDocuments); chips != "" {
-		fitted := fitStyledLine(zeroTheme.muted.Render(chips), innerWidth)
+		fitted := fitStyledLine(pvyaiTheme.muted.Render(chips), innerWidth)
 		pad := strings.Repeat(" ", maxInt(0, innerWidth-lipgloss.Width(fitted)))
-		rendered = append(rendered, zeroTheme.lineStrong.Render("│ ")+fitted+pad+zeroTheme.lineStrong.Render(" │"))
+		rendered = append(rendered, pvyaiTheme.lineStrong.Render("│ ")+fitted+pad+pvyaiTheme.lineStrong.Render(" │"))
 	}
 	for _, line := range lines {
 		fitted := fitStyledLine(line, innerWidth)
 		pad := strings.Repeat(" ", maxInt(0, innerWidth-lipgloss.Width(fitted)))
-		rendered = append(rendered, zeroTheme.lineStrong.Render("│ ")+fitted+pad+zeroTheme.lineStrong.Render(" │"))
+		rendered = append(rendered, pvyaiTheme.lineStrong.Render("│ ")+fitted+pad+pvyaiTheme.lineStrong.Render(" │"))
 	}
 	rendered = append(rendered, m.composerDividerLine(width))
 	return strings.Join(rendered, "\n")
@@ -3606,7 +3606,7 @@ func (m model) composerDescriptionHint(width int) string {
 	if desc == "" {
 		return ""
 	}
-	return fitStyledLine(zeroTheme.muted.Render(desc), width)
+	return fitStyledLine(pvyaiTheme.muted.Render(desc), width)
 }
 
 // startsTurn reports whether a row begins a new conversational turn and therefore

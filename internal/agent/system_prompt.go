@@ -30,20 +30,20 @@ var confirmationPolicy string
 
 // fallbackSystemPrompt is used only if the embedded core prompt is somehow empty
 // (it never should be) so a run always has a non-empty system turn.
-const fallbackSystemPrompt = "You are Zero, a terminal coding agent. Help with the current workspace and use tools when needed."
+const fallbackSystemPrompt = "You are PVYai, a terminal coding agent. Help with the current workspace and use tools when needed."
 
 // projectContextFiles are workspace docs injected into the system prompt so the
 // agent honors project-specific conventions (mirrors AGENTS.md / CLAUDE.md).
 // The first match at each directory level wins; the loader walks the chain
 // from the git root down to the cwd and injects the matches in
 // general-to-specific order.
-var projectContextFiles = []string{"AGENTS.md", "ZERO.md", ".pvyai/AGENTS.md"}
+var projectContextFiles = []string{"AGENTS.md", "PVYAI.md", ".pvyai/AGENTS.md"}
 
 // userContextFile is the per-user instruction file, resolved under
-// config.UserConfigDir()/pvyai/ alongside the rest of Zero's per-user config
+// config.UserConfigDir()/pvyai/ alongside the rest of PVYai's per-user config
 // (config.json, commands, specialists) so users can keep personal guidance out
 // of individual repositories.
-const userContextFile = "ZERO.md"
+const userContextFile = "PVYAI.md"
 
 var userConfigDirForPrompt = config.UserConfigDir
 
@@ -347,13 +347,13 @@ func projectGuidelines(cwd, gitRoot string) string {
 	return b.String()
 }
 
-// userGuidelines returns the per-user ZERO.md instructions block, if present.
-// The file lives in config.UserConfigDir()/pvyai/ next to Zero's other
+// userGuidelines returns the per-user PVYAI.md instructions block, if present.
+// The file lives in config.UserConfigDir()/pvyai/ next to PVYai's other
 // per-user config; the basename match is case-insensitive so a file saved as
-// zero.md still resolves on case-sensitive filesystems, mirroring the project
+// pvyai.md still resolves on case-sensitive filesystems, mirroring the project
 // guideline loader. The section carries an explicit precedence note because
 // this is a global, personal preferences file: it is injected earlier in the
-// prompt than the project's AGENTS.md/ZERO.md (see buildSystemPrompt), and
+// prompt than the project's AGENTS.md/PVYAI.md (see buildSystemPrompt), and
 // the note keeps that precedence unambiguous even if a model weighs later
 // context more heavily than section order alone implies.
 func userGuidelines() string {

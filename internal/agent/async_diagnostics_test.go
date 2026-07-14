@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 func TestAsyncDiagnosticsNilCollectorNoOps(t *testing.T) {

@@ -164,7 +164,7 @@ func TestRunPluginAddListRemove(t *testing.T) {
 	src := writeSourcePluginDir(t, filepath.Join(t.TempDir(), "src"), map[string]any{
 		"schemaVersion": float64(1),
 		"id":            "zero.demo",
-		"name":          "Zero Demo",
+		"name":          "PVYai Demo",
 		"version":       "0.1.0",
 	})
 	deps := appDeps{pluginsDir: func() string { return pluginsDir }}

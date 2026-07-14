@@ -265,11 +265,11 @@ func TestWebhookSinkMatrixHTMLFormat(t *testing.T) {
 	defer server.Close()
 
 	sink := NewWebhookSink(WebhookConfig{
-		URL:        server.URL,
-		Format:     FormatHTML,
-		Summary:    "nightly audit",
+		URL:         server.URL,
+		Format:      FormatHTML,
+		Summary:     "nightly audit",
 		DisplayName: "PVYai Agent",
-		MsgType:    "notice",
+		MsgType:     "notice",
 	})
 	sink.Emit(Completion, "PVYai: ready")
 
@@ -364,8 +364,8 @@ func TestWebhookSinkAvatarURLRedactedInPayload(t *testing.T) {
 	defer server.Close()
 
 	sink := NewWebhookSink(WebhookConfig{
-		URL:       server.URL,
-		AvatarURL: secretAvatar,
+		URL:          server.URL,
+		AvatarURL:    secretAvatar,
 		ExtraSecrets: []string{secretAvatar},
 	})
 	sink.Emit(Completion, "hi")

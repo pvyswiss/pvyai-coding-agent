@@ -97,7 +97,7 @@ func runSkillsList(dir string, options skillListOptions, stdout io.Writer, stder
 
 func formatSkillList(discovered []skills.Skill, dir string) string {
 	if len(discovered) == 0 {
-		return fmt.Sprintf("No Zero skills found in %s.", dir)
+		return fmt.Sprintf("No PVYai skills found in %s.", dir)
 	}
 	lines := []string{"PVYai Skills:"}
 	for _, skill := range discovered {
@@ -131,7 +131,7 @@ func writeSkillsHelp(w io.Writer) error {
   pvyai skills <command>
 
 Commands:
-  list                 List discovered Zero skills
+  list                 List discovered PVYai skills
   add <git-url|path>   Install a skill (checksum-pinned in skills.lock)
   info <name>          Show a skill's frontmatter, source, and pinned hash
   remove <name>        Remove an installed skill and its lockfile entry

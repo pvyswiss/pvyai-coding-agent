@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/pvyswiss/pvyai-coding-agent/internal/usage"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/usage"
 )
 
 // The context-fill gauge is empty before any request, then shows

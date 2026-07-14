@@ -13,7 +13,7 @@ func TestSelectBackendChoosesPlatformAdapterWithFallback(t *testing.T) {
 			GOOS: "linux",
 			LookupExecutable: func(name string) (string, error) {
 				if name == LinuxSandboxHelperName {
-					return "/usr/bin/zero-linux-sandbox", nil
+					return "/usr/bin/pvyai-linux-sandbox", nil
 				}
 				if name == "bwrap" {
 					return "/usr/bin/bwrap", nil
@@ -21,7 +21,7 @@ func TestSelectBackendChoosesPlatformAdapterWithFallback(t *testing.T) {
 				return "", errors.New("missing")
 			},
 		})
-		if backend.Name != BackendLinuxBwrap || !backend.Available || backend.Executable != "/usr/bin/zero-linux-sandbox" {
+		if backend.Name != BackendLinuxBwrap || !backend.Available || backend.Executable != "/usr/bin/pvyai-linux-sandbox" {
 			t.Fatalf("linux backend = %#v, want available Linux helper", backend)
 		}
 		if backend.Platform != "linux" || backend.Fallback || !backend.CommandWrapping || !backend.NativeIsolation {

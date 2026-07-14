@@ -69,7 +69,7 @@ func TestBorderedBlockFitsLongPlainLines(t *testing.T) {
 
 func TestBorderedBlockFitsLongStyledLines(t *testing.T) {
 	block := borderedBlock(26, []string{
-		zeroTheme.accent.Render("styled line should truncate inside the border"),
+		pvyaiTheme.accent.Render("styled line should truncate inside the border"),
 	})
 
 	assertContains(t, block, "\u2026")

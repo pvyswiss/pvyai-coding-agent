@@ -377,7 +377,7 @@ func resolveZeroVersionCommand(rootDir string) ([]string, error) {
 			return nil, err
 		}
 	}
-	binaryName := release.ZeroArtifactName(runtime.GOOS)
+	binaryName := release.PVYaiArtifactName(runtime.GOOS)
 	binaryPath := filepath.Join(rootDir, binaryName)
 	if _, err := os.Stat(binaryPath); err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -468,18 +468,18 @@ func offlineBenchmarkEnv(env []string) []string {
 	remove := map[string]bool{
 		"PVYAI_PROVIDER_COMMAND": true,
 		"PVYAI_PROVIDER":         true,
-		"OPENAI_API_KEY":        true,
-		"OPENAI_BASE_URL":       true,
-		"OPENAI_MODEL":          true,
-		"ANTHROPIC_API_KEY":     true,
-		"ANTHROPIC_BASE_URL":    true,
-		"ANTHROPIC_MODEL":       true,
-		"GEMINI_API_KEY":        true,
-		"GEMINI_BASE_URL":       true,
-		"GEMINI_MODEL":          true,
-		"GOOGLE_API_KEY":        true,
-		"GOOGLE_BASE_URL":       true,
-		"GOOGLE_MODEL":          true,
+		"OPENAI_API_KEY":         true,
+		"OPENAI_BASE_URL":        true,
+		"OPENAI_MODEL":           true,
+		"ANTHROPIC_API_KEY":      true,
+		"ANTHROPIC_BASE_URL":     true,
+		"ANTHROPIC_MODEL":        true,
+		"GEMINI_API_KEY":         true,
+		"GEMINI_BASE_URL":        true,
+		"GEMINI_MODEL":           true,
+		"GOOGLE_API_KEY":         true,
+		"GOOGLE_BASE_URL":        true,
+		"GOOGLE_MODEL":           true,
 	}
 	filtered := make([]string, 0, len(env)+1)
 	for _, entry := range env {

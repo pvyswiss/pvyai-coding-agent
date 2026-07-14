@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 )
 
 // The persistence round-trip is LOSSLESS for cost: a cache-heavy + reasoning turn
@@ -64,9 +64,9 @@ func TestEventUsageRoundTripPreservesCacheAndReasoningCost(t *testing.T) {
 	}
 }
 
-// Zero cache/reasoning fields are omitted so non-cache turns stay compact and
+// PVYai cache/reasoning fields are omitted so non-cache turns stay compact and
 // decode identically to the pre-feature payload.
-func TestEventUsagePayloadOmitsZeroFields(t *testing.T) {
+func TestEventUsagePayloadOmitsPVYaiFields(t *testing.T) {
 	p := EventUsagePayload(pvyruntime.Usage{InputTokens: 1000, OutputTokens: 200})
 	for _, k := range []string{"cachedInputTokens", "cacheWriteTokens", "reasoningTokens"} {
 		if _, ok := p[k]; ok {

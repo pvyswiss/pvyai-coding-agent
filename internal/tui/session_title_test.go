@@ -8,8 +8,8 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 )
 
 // titleProvider is a fakeProvider that streams a single line of text as the

@@ -100,13 +100,13 @@ func TestBuildCommandPlanWrapsWhenNotAlreadySandboxed(t *testing.T) {
 	engine := NewEngine(EngineOptions{
 		WorkspaceRoot: root,
 		Policy:        DefaultPolicy(),
-		Backend:       Backend{Name: BackendLinuxBwrap, Available: true, Executable: "/usr/bin/zero-linux-sandbox"},
+		Backend:       Backend{Name: BackendLinuxBwrap, Available: true, Executable: "/usr/bin/pvyai-linux-sandbox"},
 	})
 	plan, err := engine.BuildCommandPlan(CommandSpec{Name: "/bin/sh", Args: []string{"-c", "pwd"}, Dir: root})
 	if err != nil {
 		t.Fatalf("BuildCommandPlan: %v", err)
 	}
-	if !plan.Wrapped || plan.Name != "/usr/bin/zero-linux-sandbox" {
+	if !plan.Wrapped || plan.Name != "/usr/bin/pvyai-linux-sandbox" {
 		t.Fatalf("expected a wrapped Linux helper plan, got wrapped=%v name=%q", plan.Wrapped, plan.Name)
 	}
 }
@@ -120,7 +120,7 @@ func TestBuildCommandPlanReEntrancyGuardReturnsPassThrough(t *testing.T) {
 	engine := NewEngine(EngineOptions{
 		WorkspaceRoot: root,
 		Policy:        DefaultPolicy(),
-		Backend:       Backend{Name: BackendLinuxBwrap, Available: true, Executable: "/usr/bin/zero-linux-sandbox"},
+		Backend:       Backend{Name: BackendLinuxBwrap, Available: true, Executable: "/usr/bin/pvyai-linux-sandbox"},
 	})
 	plan, err := engine.BuildCommandPlan(CommandSpec{Name: "/bin/sh", Args: []string{"-c", "pwd"}, Dir: root})
 	if err != nil {

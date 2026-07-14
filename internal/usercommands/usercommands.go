@@ -11,7 +11,7 @@
 //	Create a pull request for the current branch. Title: $1. Summarize: $ARGUMENTS
 //
 // Typing `/<name> some args` expands the body template ($ARGUMENTS, $1..$N) and
-// submits it as a normal prompt. This turns Zero's model-pulled skills into
+// submits it as a normal prompt. This turns PVYai's model-pulled skills into
 // user-invokable, repo-checked-in team workflows. Project commands override
 // user commands of the same name (mirrors the specialist scope precedence).
 package usercommands

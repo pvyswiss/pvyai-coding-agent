@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
-	pvySandbox "github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/pvycmd"
+	pvySandbox "github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 type sandboxCheckOptions struct {
@@ -26,7 +26,7 @@ type sandboxCheckOptions struct {
 // contract, giving operators and CI a stable, redacted JSON view of "what would
 // the sandbox do for this action?".
 type sandboxCheckReport struct {
-	Tool     string                                 `json:"tool"`
+	Tool     string                           `json:"tool"`
 	Plan     pvycmd.SandboxPlanSnapshot       `json:"plan"`
 	Decision pvycmd.SandboxDecisionSnapshot   `json:"decision"`
 	Grant    pvycmd.SandboxGrantMatchSnapshot `json:"grant"`

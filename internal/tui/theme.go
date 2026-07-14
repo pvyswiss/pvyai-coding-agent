@@ -6,9 +6,9 @@ import (
 	"charm.land/lipgloss/v2"
 )
 
-// tuiTheme is the resolved terminal palette Zero renders with. It is produced by
+// tuiTheme is the resolved terminal palette PVYai renders with. It is produced by
 // buildTheme from a palette, so the same renderers serve both the dark default
-// and the light variant; the active theme lives in the package var zeroTheme and
+// and the light variant; the active theme lives in the package var pvyaiTheme and
 // may be swapped at startup (background detection / PVYAI_THEME / --theme) or live
 // via /theme. Colors are truecolor hex; lipgloss downsamples on limited displays
 // and renders plain text when there is no TTY (tests). Every renderer consumes
@@ -212,11 +212,11 @@ func buildTheme(p palette) tuiTheme {
 	}
 }
 
-// zeroTheme is the active palette every renderer reads. It defaults to dark and is
+// pvyaiTheme is the active palette every renderer reads. It defaults to dark and is
 // reassigned by theme selection at startup and by /theme. All references are
 // .field accesses evaluated at render time, so reassigning this var repaints every
 // subsequent render.
-var zeroTheme = buildTheme(darkPalette)
+var pvyaiTheme = buildTheme(darkPalette)
 
 // onPanel returns a copy of style that paints on the panel surface. lipgloss
 // resets the background between adjacent Render calls, so every segment of a

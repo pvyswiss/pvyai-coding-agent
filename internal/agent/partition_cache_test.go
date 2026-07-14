@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 // countingSchemaTool records how many times its Parameters() schema is read, so a

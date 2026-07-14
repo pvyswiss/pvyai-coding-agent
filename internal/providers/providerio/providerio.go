@@ -148,7 +148,7 @@ func NormalizeBaseURL(baseURL string, defaultBaseURL string, label string) (stri
 //     idle past the timeout, but not one that's alive-but-severely-degraded —
 //     e.g. reused shortly after a prior request on the same host (well within
 //     30s, common across quick retries of the same turn), where it still
-//     delivers real bytes, just at a crippled rate, resetting Zero's stream
+//     delivers real bytes, just at a crippled rate, resetting PVYai's stream
 //     idle/content-stall watchdogs (which only fire on true silence) without
 //     ever recovering. That degraded-not-dead case is indistinguishable from
 //     genuine backend slowness from inside the stream, so the only reliable

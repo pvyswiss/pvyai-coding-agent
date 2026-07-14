@@ -12,7 +12,7 @@ import (
 // TestMain points userConfigDirForPrompt at an empty, package-wide temp
 // directory for every test in this package. Without this, buildSystemPrompt
 // falls back to the real config.UserConfigDir, so any developer with a
-// personal ~/.config/zero/PVYAI.md would get its content folded into
+// personal ~/.config/pvyai/PVYAI.md would get its content folded into
 // otherwise-unrelated prompt assertions, making test runs non-deterministic
 // across contributor machines. Tests that specifically exercise user
 // guidelines stub userConfigDirForPrompt themselves via
@@ -149,7 +149,7 @@ func systemPromptTestBlock(t *testing.T, prompt, start, end string) string {
 
 func TestBuildSystemPromptIncludesUserGuidelines(t *testing.T) {
 	configDir := t.TempDir()
-	writeSystemPromptTestFile(t, configDir, "zero/PVYAI.md", "  Prefer concise summaries.  \n")
+	writeSystemPromptTestFile(t, configDir, "pvyai/PVYAI.md", "  Prefer concise summaries.  \n")
 	t.Cleanup(withSystemPromptTestUserConfigDir(t, configDir))
 
 	prompt := buildSystemPrompt(Options{})
@@ -166,12 +166,12 @@ func TestBuildSystemPromptIncludesUserGuidelines(t *testing.T) {
 
 func TestBuildSystemPromptIncludesUserGuidelinesCaseInsensitive(t *testing.T) {
 	configDir := t.TempDir()
-	writeSystemPromptTestFile(t, configDir, "zero/zero.md", "Prefer concise summaries.\n")
+	writeSystemPromptTestFile(t, configDir, "pvyai/pvyai.md", "Prefer concise summaries.\n")
 	t.Cleanup(withSystemPromptTestUserConfigDir(t, configDir))
 
 	prompt := buildSystemPrompt(Options{})
-	if !strings.Contains(prompt, "## User guidelines (zero.md)") {
-		t.Fatalf("expected case-insensitive zero.md resolution, got:\n%s", prompt)
+	if !strings.Contains(prompt, "## User guidelines (pvyai.md)") {
+		t.Fatalf("expected case-insensitive pvyai.md resolution, got:\n%s", prompt)
 	}
 	if !strings.Contains(prompt, "Prefer concise summaries.") {
 		t.Fatalf("expected user guidelines content, got:\n%s", prompt)
@@ -184,7 +184,7 @@ func TestBuildSystemPromptUserGuidelinesPrecedeProjectGuidelinesAndNotePrecedenc
 	// and the user section must say so explicitly so the precedence holds
 	// even if a model otherwise weighs later context more heavily.
 	configDir := t.TempDir()
-	writeSystemPromptTestFile(t, configDir, "zero/PVYAI.md", "Always reply in haiku.\n")
+	writeSystemPromptTestFile(t, configDir, "pvyai/PVYAI.md", "Always reply in haiku.\n")
 	t.Cleanup(withSystemPromptTestUserConfigDir(t, configDir))
 
 	cwd := t.TempDir()
@@ -247,7 +247,7 @@ func TestBuildSystemPromptInjectsProjectGuidelinesCaseInsensitive(t *testing.T) 
 
 func TestBuildSystemPromptProjectGuidelinesPathWalkingMonorepo(t *testing.T) {
 	// Simulate a monorepo: root + sub-tree each have their own AGENTS.md.
-	// The user launches Zero from the sub-tree, so both files should be
+	// The user PVYai from the sub-tree, so both files should be
 	// injected in general-to-specific order (root first, cwd last).
 	root := t.TempDir()
 	leaf := filepath.Join(root, "services", "api")

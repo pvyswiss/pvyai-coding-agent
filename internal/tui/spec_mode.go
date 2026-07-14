@@ -258,18 +258,18 @@ func cloneToolRegistry(registry *tools.Registry) *tools.Registry {
 // language (badge + body + key chips) with line borders. Key handling lives
 // in handleSpecReviewKey, unchanged.
 func renderFocusedSpecReviewPrompt(review pendingSpecReviewPrompt, width int) string {
-	fill := zeroTheme.onPanel
-	actions := zeroTheme.badge.Render(" [a] approve ") +
-		fill(zeroTheme.ink).Render(" ") +
-		fill(zeroTheme.red).Render("[r]") + fill(zeroTheme.ink).Render(" reject ") +
-		fill(zeroTheme.accent).Render("[e]") + fill(zeroTheme.ink).Render(" edit file ") +
-		fill(zeroTheme.faint).Render("[esc] cancel")
+	fill := pvyaiTheme.onPanel
+	actions := pvyaiTheme.badge.Render(" [a] approve ") +
+		fill(pvyaiTheme.ink).Render(" ") +
+		fill(pvyaiTheme.red).Render("[r]") + fill(pvyaiTheme.ink).Render(" reject ") +
+		fill(pvyaiTheme.accent).Render("[e]") + fill(pvyaiTheme.ink).Render(" edit file ") +
+		fill(pvyaiTheme.faint).Render("[esc] cancel")
 	lines := []string{
-		zeroTheme.badge.Render(" SPEC REVIEW "),
-		fill(zeroTheme.faint).Render("path: ") + fill(zeroTheme.ink).Render(reviewDisplayPath(review)),
+		pvyaiTheme.badge.Render(" SPEC REVIEW "),
+		fill(pvyaiTheme.faint).Render("path: ") + fill(pvyaiTheme.ink).Render(reviewDisplayPath(review)),
 		actions,
 	}
-	return styledBlockFill(width, lines, zeroTheme.line, zeroTheme.panel)
+	return styledBlockFill(width, lines, pvyaiTheme.line, pvyaiTheme.panel)
 }
 
 func specReviewSummary(review pendingSpecReviewPrompt) string {

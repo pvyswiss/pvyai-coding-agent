@@ -73,7 +73,7 @@ func (tool readFileTool) RunWithOptions(_ context.Context, args map[string]any, 
 		return errorResult("Error reading file " + relativePath + ": " + err.Error())
 	}
 	// Record the whole-file baseline (the raw bytes, matching what edit_file and
-	// write_file read) so a later write can detect an out-of-Zero modification.
+	// write_file read) so a later write can detect an out-of-PVYai modification.
 	// Stat is best-effort: a missing FileInfo only drops the diagnostic size/mtime,
 	// not the authoritative content hash.
 	info, _ := os.Stat(absolutePath)

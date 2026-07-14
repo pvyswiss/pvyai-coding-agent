@@ -106,7 +106,7 @@ func ChatGPTLogin(ctx context.Context, opts ChatGPTOptions) (oauth.Token, error)
 	}
 	listener, err := oauth.NewLoopbackListenerOnPort(state, chatgptCallbackPort)
 	if err != nil {
-		return oauth.Token{}, fmt.Errorf("provideroauth: start loopback listener on port %d (close any other Zero or Codex login already running and retry): %w", chatgptCallbackPort, err)
+		return oauth.Token{}, fmt.Errorf("provideroauth: start loopback listener on port %d (close any other PVYai or Codex login already running and retry): %w", chatgptCallbackPort, err)
 	}
 	defer listener.Close()
 

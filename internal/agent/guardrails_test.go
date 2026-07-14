@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 // emptyTurn is a stream that produces no visible text and no tool calls.

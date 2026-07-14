@@ -76,7 +76,7 @@ func validManifest() map[string]any {
 	return map[string]any{
 		"schemaVersion": float64(1),
 		"id":            "zero.demo",
-		"name":          "Zero Demo",
+		"name":          "PVYai Demo",
 		"version":       "0.1.0",
 		"description":   "Demo plugin",
 	}

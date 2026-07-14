@@ -107,7 +107,7 @@ func BuildMarkdown(input SummaryInput) string {
 	blockers := blockingChecks(input.Checks)
 	lines := []string{
 		Marker,
-		"## Zero automated PR review",
+		"## PVYai automated PR review",
 		"",
 		fmt.Sprintf("Verdict: **%s**", verdict(blockers)),
 		"",

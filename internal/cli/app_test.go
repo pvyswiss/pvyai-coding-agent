@@ -17,10 +17,10 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/mcp"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/tui"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/update"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 var errWriteFailed = errors.New("write failed")

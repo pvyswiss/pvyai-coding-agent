@@ -112,7 +112,7 @@ func TestQuietGenerationHint(t *testing.T) {
 // identical under the plain "still generating… Xs" cue — the ticking number
 // is the only signal, whether real content is still coming or nothing ever
 // will. Past half the provider's idle timeout the cue must say so explicitly
-// and name when Zero's own content-stall watchdog will act, rather than
+// and name when PVYai's own content-stall watchdog will act, rather than
 // leaving the user to guess whether this is a hang.
 func TestQuietGenerationHintEscalatesPastHalfIdleTimeout(t *testing.T) {
 	// 30s idle timeout: half (15s) sits comfortably above quietWorkingHint (8s),

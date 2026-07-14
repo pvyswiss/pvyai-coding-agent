@@ -182,7 +182,7 @@ need_command sed
 need_command tar
 need_command mktemp
 
-tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/zero-install.XXXXXX")"
+tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/pvyai-install.XXXXXX")"
 cleanup() {
   rm -rf "$tmp_dir"
 }
@@ -207,7 +207,7 @@ archive_path="$tmp_dir/$archive_name"
 checksum_path="$tmp_dir/$checksum_name"
 extract_dir="$tmp_dir/extract"
 
-echo "Installing Zero ${tag} for ${platform}-${arch}"
+echo "Installing PVYai ${tag} for ${platform}-${arch}"
 download "${release_url}/${archive_name}" "$archive_path"
 download "${release_url}/${checksum_name}" "$checksum_path"
 
@@ -224,7 +224,7 @@ binary_path="$(find_extracted_binary "$extract_dir")" || fail "release archive d
 mkdir -p "$PVYAI_INSTALL_DIR"
 cp "$binary_path" "$PVYAI_INSTALL_DIR/pvyai"
 chmod 755 "$PVYAI_INSTALL_DIR/pvyai"
-copy_optional_file "pvyai-sandbox"
+copy_optional_file "pvyai-linux-sandbox"
 copy_optional_file "pvyai-seccomp"
 copy_optional_dir "helpers"
 
@@ -232,5 +232,5 @@ echo "Installed $PVYAI_INSTALL_DIR/pvyai"
 
 case ":$PATH:" in
   *":$PVYAI_INSTALL_DIR:"*) ;;
-  *) echo "Add $PVYAI_INSTALL_DIR to PATH to run zero from any directory." ;;
+  *) echo "Add $PVYAI_INSTALL_DIR to PATH to run pvyai from any directory." ;;
 esac

@@ -69,7 +69,7 @@ func TestNewThreadsCustomProviderHeaders(t *testing.T) {
 		APIKey:        "sk-gateway",
 		AuthHeader:    "X-API-Key",
 		AuthScheme:    "Token",
-		CustomHeaders: map[string]string{"HTTP-Referer": "https://zero.dev"},
+		CustomHeaders: map[string]string{"HTTP-Referer": "https://pvy.swiss"},
 		Model:         "gateway-model",
 	}, Options{HTTPClient: client})
 	if err != nil {
@@ -90,7 +90,7 @@ func TestNewThreadsCustomProviderHeaders(t *testing.T) {
 	if transport.request.Header.Get("X-API-Key") != "Token sk-gateway" {
 		t.Fatalf("X-API-Key = %q, want custom auth header", transport.request.Header.Get("X-API-Key"))
 	}
-	if transport.request.Header.Get("HTTP-Referer") != "https://zero.dev" {
+	if transport.request.Header.Get("HTTP-Referer") != "https://pvy.swiss" {
 		t.Fatalf("HTTP-Referer = %q, want custom provider header", transport.request.Header.Get("HTTP-Referer"))
 	}
 }

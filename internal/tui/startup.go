@@ -54,7 +54,7 @@ func (m model) emptyStateLines(width int) []string {
 		lines = append(lines, centerLine(glyph, width))
 	}
 	lines = append(lines, "")
-	lines = append(lines, centerLine(zeroTheme.muted.Render(emptyStateTagline), width))
+	lines = append(lines, centerLine(pvyaiTheme.muted.Render(emptyStateTagline), width))
 	// Orientation: where ZERO is pointed (cwd · branch · model) so a returning user
 	// sees the context before typing instead of a blank brand screen.
 	if orient := m.emptyStateOrientation(); orient != "" {
@@ -63,9 +63,9 @@ func (m model) emptyStateLines(width int) []string {
 	}
 	// A couple of example prompts to seed the first message.
 	lines = append(lines, "")
-	lines = append(lines, centerLine(zeroTheme.faint.Render(emptyStateExamples), width))
+	lines = append(lines, centerLine(pvyaiTheme.faint.Render(emptyStateExamples), width))
 	lines = append(lines, "")
-	lines = append(lines, centerLine(zeroTheme.faint.Render("Press ? for keyboard shortcuts · / for commands"), width))
+	lines = append(lines, centerLine(pvyaiTheme.faint.Render("Press ? for keyboard shortcuts · / for commands"), width))
 	// centerLine pads but never truncates; below ~62 cols the lines would exceed
 	// the frame without this fit.
 	for index := range lines {
@@ -93,17 +93,17 @@ func (m model) emptyStateOrientation() string {
 	if len(parts) == 0 {
 		return ""
 	}
-	return zeroTheme.faint.Render(strings.Join(parts, "  ·  "))
+	return pvyaiTheme.faint.Render(strings.Join(parts, "  ·  "))
 }
 
 func zeroWordmarkLines() []string {
-	pvy := zeroTheme.brandBlue.Render(pvyaiWordmarkPVY)
-	ai := zeroTheme.brandRed.Render(pvyaiWordmarkAI)
+	pvy := pvyaiTheme.brandBlue.Render(pvyaiWordmarkPVY)
+	ai := pvyaiTheme.brandRed.Render(pvyaiWordmarkAI)
 	return []string{pvy + ai}
 }
 
 func borderedBlock(width int, lines []string) string {
-	return styledBlock(width, lines, zeroTheme.line)
+	return styledBlock(width, lines, pvyaiTheme.line)
 }
 
 // styledBlock draws a rounded box around lines with the given border style,

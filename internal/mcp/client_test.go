@@ -60,7 +60,7 @@ func TestStdioClientListsAndCallsTools(t *testing.T) {
 	if result.IsError {
 		t.Fatalf("CallTool() result IsError = true: %#v", result)
 	}
-	if got := TextContent(result.Content); got != "lookup: zero" {
+	if got := TextContent(result.Content); got != "lookup: pvyai" {
 		t.Fatalf("CallTool() text = %q, want lookup result", got)
 	}
 }
@@ -171,7 +171,7 @@ func TestHTTPClientListsAndCallsTools(t *testing.T) {
 				return
 			}
 			writeHTTPRPCResponse(t, response, message.ID, map[string]any{
-				"content": []map[string]any{{"type": "text", "text": "lookup: zero"}},
+				"content": []map[string]any{{"type": "text", "text": "lookup: pvyai"}},
 			})
 		default:
 			t.Errorf("unexpected method %q", message.Method)
@@ -207,7 +207,7 @@ func TestHTTPClientListsAndCallsTools(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CallTool() error = %v", err)
 	}
-	if got := TextContent(result.Content); got != "lookup: zero" {
+	if got := TextContent(result.Content); got != "lookup: pvyai" {
 		t.Fatalf("CallTool() text = %q, want lookup result", got)
 	}
 }
@@ -377,7 +377,7 @@ func TestSSEClientListsAndCallsToolsFromRemoteStream(t *testing.T) {
 				return
 			}
 			events <- formatSSERPCResponse(t, message.ID, map[string]any{
-				"content": []map[string]any{{"type": "text", "text": "lookup: zero"}},
+				"content": []map[string]any{{"type": "text", "text": "lookup: pvyai"}},
 			})
 			response.WriteHeader(http.StatusAccepted)
 		default:
@@ -415,7 +415,7 @@ func TestSSEClientListsAndCallsToolsFromRemoteStream(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CallTool() error = %v", err)
 	}
-	if got := TextContent(result.Content); got != "lookup: zero" {
+	if got := TextContent(result.Content); got != "lookup: pvyai" {
 		t.Fatalf("CallTool() text = %q, want lookup result", got)
 	}
 }

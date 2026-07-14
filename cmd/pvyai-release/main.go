@@ -334,9 +334,9 @@ func writeHelp(w io.Writer) error {
   pvyai-release <command>
 
 Commands:
-  build      Build the Go-native zero binary
+  build      Build the Go-native pvyai binary
   package    Build and package the current platform release archive
-  smoke      Verify the built zero binary prints the package version
+  smoke      Verify the built pvyai binary prints the package version
   verify     Verify release archive checksums
 `)
 	return err
@@ -346,7 +346,7 @@ func writeBuildHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
   pvyai-release build [flags]
 
-Builds the Go-native zero binary.
+Builds the Go-native pvyai binary.
 
 Flags:
       --root <path>       Repository root (default: current directory)
@@ -366,7 +366,7 @@ func writePackageHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
   pvyai-release package [flags]
 
-Builds the Go-native zero binary, stages npm wrapper files, writes a release
+Builds the Go-native pvyai binary, stages npm wrapper files, writes a release
 archive, and writes the matching SHA-256 checksum file.
 
 Flags:
@@ -383,12 +383,12 @@ func writeSmokeHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
   pvyai-release smoke [flags]
 
-Runs the built zero binary with --version and verifies it prints the package
+Runs the built pvyai binary with --version and verifies it prints the package
 version.
 
 Flags:
       --root <path>     Repository root (default: current directory)
-      --path <path>     Binary path (default: ./zero or ./zero.exe)
+      --path <path>     Binary path (default: ./pvyai or ./pvyai.exe)
       --binary <path>   Alias for --path
       --goos <goos>     Binary target GOOS for default path selection
       --version <ver>   Expected version (default: package.json version)

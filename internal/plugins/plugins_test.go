@@ -17,7 +17,7 @@ func TestParseManifestNormalizesExtensionsAndPaths(t *testing.T) {
 	plugin, err := ParseManifest(map[string]any{
 		"schemaVersion": float64(1),
 		"id":            "zero.demo",
-		"name":          "Zero Demo",
+		"name":          "PVYai Demo",
 		"version":       "0.1.0",
 		"description":   "Demo plugin",
 		"tools": []any{map[string]any{
@@ -46,7 +46,7 @@ func TestParseManifestNormalizesExtensionsAndPaths(t *testing.T) {
 		t.Fatalf("ParseManifest returned error: %v", err)
 	}
 
-	if plugin.ID != "zero.demo" || plugin.Name != "Zero Demo" || !plugin.Enabled {
+	if plugin.ID != "zero.demo" || plugin.Name != "PVYai Demo" || !plugin.Enabled {
 		t.Fatalf("unexpected plugin metadata: %#v", plugin)
 	}
 	if plugin.Tools[0].Permission != PermissionPrompt || plugin.Tools[0].Args[0] != "tools/lookup.mjs" {
@@ -71,7 +71,7 @@ func TestParseManifestReadsOptionalMetadata(t *testing.T) {
 	plugin, err := ParseManifest(map[string]any{
 		"schemaVersion": float64(1),
 		"id":            "zero.demo",
-		"name":          "Zero Demo",
+		"name":          "PVYai Demo",
 		"version":       "0.1.0",
 		"author": map[string]any{
 			"name":  "OpenAI",
@@ -153,7 +153,7 @@ func TestFormatListSurfacesOptionalMetadata(t *testing.T) {
 	output := FormatList([]LoadedPlugin{{
 		SchemaVersion: 1,
 		ID:            "zero.demo",
-		Name:          "Zero Demo",
+		Name:          "PVYai Demo",
 		Version:       "0.1.0",
 		Enabled:       true,
 		Source:        SourceUser,
@@ -174,7 +174,7 @@ func TestParseManifestClampsAutoApprovalByDefault(t *testing.T) {
 	manifest := map[string]any{
 		"schemaVersion": float64(1),
 		"id":            "zero.demo",
-		"name":          "Zero Demo",
+		"name":          "PVYai Demo",
 		"version":       "0.1.0",
 		"tools": []any{map[string]any{
 			"name":       "lookup",

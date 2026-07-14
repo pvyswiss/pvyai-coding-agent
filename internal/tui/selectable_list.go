@@ -47,28 +47,28 @@ func renderSelectableList(options selectableListOptions) string {
 	lines := make([]string, 0, maxVisible+1)
 	for index, item := range visible {
 		absoluteIndex := start + index
-		surface := zeroTheme.onPanel
-		marker := surface(zeroTheme.faintest).Render("  ")
+		surface := pvyaiTheme.onPanel
+		marker := surface(pvyaiTheme.faintest).Render("  ")
 		if absoluteIndex == selected {
-			surface = zeroTheme.onSel
-			marker = surface(zeroTheme.accent).Render("❯ ")
+			surface = pvyaiTheme.onSel
+			marker = surface(pvyaiTheme.accent).Render("❯ ")
 		}
 
-		label := surface(zeroTheme.ink).Render(item.Label)
-		pad := surface(zeroTheme.ink).Render(strings.Repeat(" ", maxInt(0, labelWidth-lipgloss.Width(item.Label))))
+		label := surface(pvyaiTheme.ink).Render(item.Label)
+		pad := surface(pvyaiTheme.ink).Render(strings.Repeat(" ", maxInt(0, labelWidth-lipgloss.Width(item.Label))))
 		line := marker + label + pad
 		if strings.TrimSpace(item.Description) != "" {
 			descWidth := width - lipgloss.Width(marker) - labelWidth - 2
 			desc := truncateRunes(item.Description, maxInt(0, descWidth))
 			if desc != "" {
-				line += surface(zeroTheme.faint).Render("  " + desc)
+				line += surface(pvyaiTheme.faint).Render("  " + desc)
 			}
 		}
 		lines = append(lines, fitStyledLine(line, width))
 	}
 
 	if hidden := len(options.Items) - len(visible); hidden > 0 {
-		lines = append(lines, fitStyledLine(zeroTheme.faint.Render(fmt.Sprintf("  %d more", hidden)), width))
+		lines = append(lines, fitStyledLine(pvyaiTheme.faint.Render(fmt.Sprintf("  %d more", hidden)), width))
 	}
 	return strings.Join(lines, "\n")
 }

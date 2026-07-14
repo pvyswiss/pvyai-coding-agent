@@ -2,7 +2,7 @@
 
 // Command pvyai-seccomp is retained as a compatibility wrapper for existing Linux
 // installs and scripts. The main sandbox path now applies the same optional
-// Unix-socket filter inside zero-linux-sandbox when sandbox.blockUnixSockets is
+// Unix-socket filter inside pvyai-linux-sandbox when sandbox.blockUnixSockets is
 // enabled.
 package main
 

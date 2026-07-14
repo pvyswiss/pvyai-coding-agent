@@ -17,8 +17,8 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/hooks"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/mcp"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/plugins"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/pvycmd"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 func TestRunBackendsJSONUsesLifecycleSnapshotWithoutConnectingMCP(t *testing.T) {

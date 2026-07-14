@@ -603,7 +603,7 @@ func blockedAddrReason(addr netip.Addr) string {
 // /v1/<provider>/<path>"), so probe its public /health endpoint at the host root
 // instead, which reports real reachability without a per-model call.
 func overrideHealthEndpoint(profile config.ProviderProfile, baseURL string) (string, bool) {
-	if profile.CatalogID != "gitlawb-opengateway" {
+	if profile.CatalogID != "pvyswiss-opengateway" {
 		return "", false
 	}
 	parsed, err := url.Parse(baseURL)

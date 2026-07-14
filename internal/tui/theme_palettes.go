@@ -364,7 +364,7 @@ var everforestPalette = palette{
 }
 
 // lightPalette is dark-on-light: a warm cream surface (so cards lift off the
-// terminal page, which Zero never paints) with near-black ink and an olive-lime
+// terminal page, which PVYai never paints) with near-black ink and an olive-lime
 // accent that keeps the brand identity while clearing AA on the light panel. The
 // muted/faint/faintest grays get progressively LIGHTER toward the surface; diff and
 // permission tints are light surfaces. Replaces the old flat cool-gray light set

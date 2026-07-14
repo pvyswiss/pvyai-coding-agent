@@ -10,9 +10,9 @@ import (
 	"testing"
 
 	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // TestRunAddDirDispatchForwardsGrantIntoExecScope pins the dispatch seam

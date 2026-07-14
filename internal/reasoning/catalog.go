@@ -86,7 +86,7 @@ func (c Catalog) Lookup(provider, apiModel string) (Capability, bool) {
 	return Capability{}, false
 }
 
-// providerSlugs maps a Zero provider kind to the models.dev provider slug to
+// providerSlugs maps a PVYai provider kind to the models.dev provider slug to
 // look up. Gemini and Google both resolve to "google" (AI Studio), the
 // first-party source for Gemini models.
 func providerSlugs(provider string) []string {

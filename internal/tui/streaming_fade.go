@@ -79,7 +79,7 @@ type streamingFadeTickMsg time.Time
 // struct-field access and a single Render call, not a hex parse.
 var streamingFadePalette [streamingFadeSteps]lipgloss.Style
 
-// init builds the palette once at package load (after zeroTheme's var init), so
+// init builds the palette once at package load (after pvyaiTheme's var init), so
 // the fade tracks the active theme's accent→ink. Cheap; before any model exists.
 func init() {
 	rebuildStreamingFadePalette()
@@ -91,8 +91,8 @@ func init() {
 func rebuildStreamingFadePalette() {
 	streamingFadePalette = buildStreamingFadePalette(
 		streamingFadeSteps,
-		zeroTheme.accentColor,
-		zeroTheme.inkColor,
+		pvyaiTheme.accentColor,
+		pvyaiTheme.inkColor,
 	)
 }
 
@@ -271,10 +271,10 @@ func (m model) styleStreamingLine(line string, visualIndex, visualCount int) str
 		return line
 	}
 	if !m.fadeActive || m.lineAges == nil {
-		return zeroTheme.ink.Render(line)
+		return pvyaiTheme.ink.Render(line)
 	}
 	bornAt := streamingLineBornAt(visualIndex, visualCount, m.lineAges, m.lastStreamActivity)
-	return ageDimLine(line, bornAt, m.now(), zeroTheme.ink)
+	return ageDimLine(line, bornAt, m.now(), pvyaiTheme.ink)
 }
 
 // ensureAgeTickReschedule is a small helper used after a fade-state change

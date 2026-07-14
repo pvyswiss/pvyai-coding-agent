@@ -1181,9 +1181,9 @@ func (m model) setupView(width int) string {
 	height := normalizedStartupHeight(m.height)
 	content := m.setupStageLines(width, height)
 	if m.setup.err != "" {
-		content = append(content, "", zeroTheme.red.Render("error: "+m.setup.err))
+		content = append(content, "", pvyaiTheme.red.Render("error: "+m.setup.err))
 		if hint := m.setupErrorAffordance(); hint != "" {
-			content = append(content, zeroTheme.faint.Render(hint))
+			content = append(content, pvyaiTheme.faint.Render(hint))
 		}
 	}
 	progress := m.setupProgressText()
@@ -1223,21 +1223,21 @@ func (m model) setupStageLines(width int, height int) []string {
 		return m.setupModelLines(width, height)
 	case setupStageSafety:
 		return []string{
-			zeroTheme.ink.Bold(true).Render("Safety"),
+			pvyaiTheme.ink.Bold(true).Render("Safety"),
 			"",
 			"PVYai asks before running shell commands or changing files.",
 			"Unsafe mode stays off unless you explicitly enable it.",
 			"",
-			zeroTheme.faint.Render("Default: ask before risky work."),
+			pvyaiTheme.faint.Render("Default: ask before risky work."),
 		}
 	case setupStageReady:
 		return m.setupReadyLines(width)
 	default:
 		return []string{
-			zeroTheme.accent.Render("Welcome to PVYai"),
+			pvyaiTheme.accent.Render("Welcome to PVYai"),
 			"",
-			zeroTheme.ink.Render("A terminal agent for changing real code."),
-			zeroTheme.faint.Render("Plan changes, edit with approval, run checks, and resume sessions."),
+			pvyaiTheme.ink.Render("A terminal agent for changing real code."),
+			pvyaiTheme.faint.Render("Plan changes, edit with approval, run checks, and resume sessions."),
 		}
 	}
 }
@@ -1266,7 +1266,7 @@ func (m model) setupReadyLines(width int) []string {
 	)
 
 	lines := []string{
-		zeroTheme.ink.Bold(true).Render("Ready"),
+		pvyaiTheme.ink.Bold(true).Render("Ready"),
 		"",
 		"PVYai will save this setup and open chat.",
 		"",
@@ -1279,13 +1279,13 @@ func (m model) setupReadyLines(width int) []string {
 	rowWidth := setupReadyRowsWidth(width, labelWidth, rows)
 	for _, row := range rows {
 		label := fmt.Sprintf("%*s", labelWidth, row.label+":")
-		line := "  " + zeroTheme.faint.Render(label) + "  " + zeroTheme.ink.Render(row.value)
+		line := "  " + pvyaiTheme.faint.Render(label) + "  " + pvyaiTheme.ink.Render(row.value)
 		lines = append(lines, padSetupLine(line, rowWidth))
 	}
 
 	lines = append(lines,
 		"",
-		zeroTheme.faint.Render("Later, use /provider, /doctor, or /help anytime."),
+		pvyaiTheme.faint.Render("Later, use /provider, /doctor, or /help anytime."),
 	)
 	return lines
 }
@@ -1312,16 +1312,16 @@ func (m model) setupModelLines(width int, height int) []string {
 	maxVisible := setupModelMaxVisible(height, len(models))
 	start := selectableListStart(len(models), maxVisible, m.setup.modelIndex)
 	lines := []string{
-		padSetupLine("  "+zeroTheme.ink.Bold(true).Render("Choose a model"), rowWidth),
+		padSetupLine("  "+pvyaiTheme.ink.Bold(true).Render("Choose a model"), rowWidth),
 		blankSetupBlockLine(rowWidth),
 		padSetupLine("  "+m.setupModelSearchLine(rowWidth-2), rowWidth),
 	}
 	if status := m.setupModelStatus(); status != "" {
-		lines = append(lines, padSetupLine("  "+zeroTheme.faint.Render(status), rowWidth))
+		lines = append(lines, padSetupLine("  "+pvyaiTheme.faint.Render(status), rowWidth))
 	}
 	lines = append(lines, blankSetupBlockLine(rowWidth))
 	if len(models) == 0 {
-		lines = append(lines, padSetupLine("  "+zeroTheme.faint.Render("No matching models"), rowWidth))
+		lines = append(lines, padSetupLine("  "+pvyaiTheme.faint.Render("No matching models"), rowWidth))
 		return lines
 	}
 	visibleModels := models[start : start+maxVisible]
@@ -1331,7 +1331,7 @@ func (m model) setupModelLines(width int, height int) []string {
 	detail := setupModelSelectedDetail(m.setupCurrentModel())
 	lines = append(lines,
 		blankSetupBlockLine(rowWidth),
-		padSetupLine("  "+zeroTheme.faint.Render(detail), rowWidth),
+		padSetupLine("  "+pvyaiTheme.faint.Render(detail), rowWidth),
 	)
 	return lines
 }
@@ -1340,10 +1340,10 @@ func (m model) setupTypedModelLines(width int) []string {
 	option := m.setupProvider()
 	rowWidth := setupTextInputBlockWidth(width, option.DefaultModel)
 	return []string{
-		padSetupLine("  "+zeroTheme.ink.Bold(true).Render("Choose a model"), rowWidth),
+		padSetupLine("  "+pvyaiTheme.ink.Bold(true).Render("Choose a model"), rowWidth),
 		blankSetupBlockLine(rowWidth),
-		padSetupLine("  "+zeroTheme.ink.Render("Enter the model ID this endpoint expects."), rowWidth),
-		padSetupLine("  "+zeroTheme.faint.Render("Examples: gpt-4.1, claude-sonnet-4-5, llama-3.3-70b"), rowWidth),
+		padSetupLine("  "+pvyaiTheme.ink.Render("Enter the model ID this endpoint expects."), rowWidth),
+		padSetupLine("  "+pvyaiTheme.faint.Render("Examples: gpt-4.1, claude-sonnet-4-5, llama-3.3-70b"), rowWidth),
 		blankSetupBlockLine(rowWidth),
 		padSetupLine("  "+providerWizardInputLine("model > ", strings.TrimSpace(m.setup.modelQuery), option.DefaultModel, rowWidth-2), rowWidth),
 	}
@@ -1352,10 +1352,10 @@ func (m model) setupTypedModelLines(width int) []string {
 func (m model) setupModelLoadingLines(width int) []string {
 	rowWidth := setupModelLoadingBlockWidth(width)
 	return []string{
-		padSetupLine("  "+zeroTheme.ink.Bold(true).Render("Choose a model"), rowWidth),
+		padSetupLine("  "+pvyaiTheme.ink.Bold(true).Render("Choose a model"), rowWidth),
 		blankSetupBlockLine(rowWidth),
-		padSetupLine("  "+zeroTheme.faint.Render("Checking available models..."), rowWidth),
-		padSetupLine("  "+zeroTheme.faint.Render("Built-in models will be used if discovery fails."), rowWidth),
+		padSetupLine("  "+pvyaiTheme.faint.Render("Checking available models..."), rowWidth),
+		padSetupLine("  "+pvyaiTheme.faint.Render("Built-in models will be used if discovery fails."), rowWidth),
 	}
 }
 
@@ -1409,12 +1409,12 @@ func setupModelBlockWidth(terminalWidth int, models []providerWizardModel) int {
 
 func (m model) setupModelSearchLine(width int) string {
 	query := strings.TrimSpace(m.setup.modelQuery)
-	prompt := zeroTheme.userPrompt.Render("search > ")
-	cursor := zeroTheme.accent.Render("▌")
+	prompt := pvyaiTheme.userPrompt.Render("search > ")
+	cursor := pvyaiTheme.accent.Render("▌")
 	if query == "" {
-		return fitStyledLine(prompt+cursor+zeroTheme.faint.Render("model name..."), width)
+		return fitStyledLine(prompt+cursor+pvyaiTheme.faint.Render("model name..."), width)
 	}
-	return fitStyledLine(prompt+zeroTheme.ink.Render(query)+cursor, width)
+	return fitStyledLine(prompt+pvyaiTheme.ink.Render(query)+cursor, width)
 }
 
 func (m model) setupModelStatus() string {
@@ -1430,10 +1430,10 @@ func (m model) setupModelStatus() string {
 func (m model) setupModelRow(width int, index int, model providerWizardModel) string {
 	selected := index == m.setup.modelIndex
 	marker := "  "
-	style := zeroTheme.ink
+	style := pvyaiTheme.ink
 	if selected {
 		marker = "❯ "
-		style = zeroTheme.accent.Bold(true)
+		style = pvyaiTheme.accent.Bold(true)
 	}
 	left := marker + style.Render(model.displayLabel())
 	return padSetupLine(left, width)
@@ -1455,18 +1455,18 @@ func (m model) setupMethodLines(width int) []string {
 	rowWidth := setupMethodBlockWidth(width, options)
 	idx := clamp(m.setup.selectedMethod, 0, maxInt(0, len(options)-1))
 	lines := []string{
-		padSetupLine("  "+zeroTheme.ink.Bold(true).Render("How do you want to connect?"), rowWidth),
+		padSetupLine("  "+pvyaiTheme.ink.Bold(true).Render("How do you want to connect?"), rowWidth),
 		blankSetupBlockLine(rowWidth),
 	}
 	for index, option := range options {
 		marker := "  "
-		style := zeroTheme.ink
+		style := pvyaiTheme.ink
 		if index == idx {
 			marker = "❯ "
-			style = zeroTheme.accent.Bold(true)
+			style = pvyaiTheme.accent.Bold(true)
 		}
 		lines = append(lines, padSetupLine(marker+style.Render(option.label), rowWidth))
-		lines = append(lines, padSetupLine("    "+zeroTheme.faint.Render(option.subtitle), rowWidth))
+		lines = append(lines, padSetupLine("    "+pvyaiTheme.faint.Render(option.subtitle), rowWidth))
 	}
 	return lines
 }
@@ -1486,29 +1486,29 @@ func (m model) setupOAuthWaitingLines(width int) []string {
 	name := displayValue(provider.Name, provider.ID)
 	var lines []string
 	if m.setup.oauthDevice {
-		lines = []string{zeroTheme.ink.Bold(true).Render("Device-code sign-in for " + name), ""}
+		lines = []string{pvyaiTheme.ink.Bold(true).Render("Device-code sign-in for " + name), ""}
 		if m.setup.deviceUserCode == "" {
-			lines = append(lines, zeroTheme.faint.Render("Requesting a device code..."))
+			lines = append(lines, pvyaiTheme.faint.Render("Requesting a device code..."))
 		} else {
 			lines = append(lines,
-				"1. On any device, visit:  "+zeroTheme.accent.Render(m.setup.deviceVerificationURI),
-				"2. Enter the code:  "+zeroTheme.accent.Bold(true).Render(m.setup.deviceUserCode),
+				"1. On any device, visit:  "+pvyaiTheme.accent.Render(m.setup.deviceVerificationURI),
+				"2. Enter the code:  "+pvyaiTheme.accent.Bold(true).Render(m.setup.deviceUserCode),
 				"",
-				zeroTheme.faint.Render("Waiting for authorization..."),
+				pvyaiTheme.faint.Render("Waiting for authorization..."),
 			)
 		}
 	} else {
 		lines = []string{
-			zeroTheme.ink.Bold(true).Render("Signing in with " + name),
+			pvyaiTheme.ink.Bold(true).Render("Signing in with " + name),
 			"",
 			"Opening your browser — approve there, then return here.",
-			zeroTheme.faint.Render("Waiting for authorization..."),
+			pvyaiTheme.faint.Render("Waiting for authorization..."),
 			"",
-			zeroTheme.faint.Render("If your browser didn't open, run:  " + providerWizardOAuthCLIHint(provider)),
+			pvyaiTheme.faint.Render("If your browser didn't open, run:  " + providerWizardOAuthCLIHint(provider)),
 		}
 	}
 	if m.setup.oauthErr != "" {
-		lines = append(lines, "", zeroTheme.red.Render("Sign-in failed: "+m.setup.oauthErr))
+		lines = append(lines, "", pvyaiTheme.red.Render("Sign-in failed: "+m.setup.oauthErr))
 	}
 	return lines
 }
@@ -1519,16 +1519,16 @@ func (m model) setupProviderLines(width int, height int) []string {
 	start := selectableListStart(len(m.setup.providers), maxVisible, m.setup.selected)
 	visibleProviders := m.setup.providers[start : start+maxVisible]
 	lines := []string{
-		padSetupLine("  "+zeroTheme.ink.Bold(true).Render("Choose a provider"), rowWidth),
+		padSetupLine("  "+pvyaiTheme.ink.Bold(true).Render("Choose a provider"), rowWidth),
 		blankSetupBlockLine(rowWidth),
 	}
 	for index, option := range visibleProviders {
 		absoluteIndex := start + index
 		marker := "  "
-		style := zeroTheme.ink
+		style := pvyaiTheme.ink
 		if absoluteIndex == m.setup.selected {
 			marker = "❯ "
-			style = zeroTheme.accent.Bold(true)
+			style = pvyaiTheme.accent.Bold(true)
 		}
 		label := displayValue(option.Name, option.ID)
 		if option.Recommended {
@@ -1536,7 +1536,7 @@ func (m model) setupProviderLines(width int, height int) []string {
 		}
 		line := marker + style.Render(label)
 		if option.Recommended {
-			line += zeroTheme.faint.Render("  (recommended)")
+			line += pvyaiTheme.faint.Render("  (recommended)")
 		}
 		lines = append(lines, padSetupLine(line, rowWidth))
 	}
@@ -1546,7 +1546,7 @@ func (m model) setupProviderLines(width int, height int) []string {
 	if m.setup.oauthMode && m.setup.oauthErr != "" {
 		lines = append(lines,
 			blankSetupBlockLine(rowWidth),
-			padSetupLine("  "+zeroTheme.red.Render("Sign-in failed: "+m.setup.oauthErr), rowWidth),
+			padSetupLine("  "+pvyaiTheme.red.Render("Sign-in failed: "+m.setup.oauthErr), rowWidth),
 		)
 	}
 	return lines
@@ -1557,10 +1557,10 @@ func (m model) setupEndpointLines(width int) []string {
 	provider := setupProviderDescriptor(option)
 	rowWidth := setupTextInputBlockWidth(width, providerWizardEndpointPlaceholder(provider), m.setup.baseURL)
 	return []string{
-		padSetupLine("  "+zeroTheme.ink.Bold(true).Render("Endpoint URL"), rowWidth),
+		padSetupLine("  "+pvyaiTheme.ink.Bold(true).Render("Endpoint URL"), rowWidth),
 		blankSetupBlockLine(rowWidth),
-		padSetupLine("  "+zeroTheme.ink.Render("Enter the API base URL for "+displayValue(option.Name, option.ID)+"."), rowWidth),
-		padSetupLine("  "+zeroTheme.faint.Render(providerWizardEndpointHint(provider)), rowWidth),
+		padSetupLine("  "+pvyaiTheme.ink.Render("Enter the API base URL for "+displayValue(option.Name, option.ID)+"."), rowWidth),
+		padSetupLine("  "+pvyaiTheme.faint.Render(providerWizardEndpointHint(provider)), rowWidth),
 		blankSetupBlockLine(rowWidth),
 		padSetupLine("  "+providerWizardInputLine("url > ", strings.TrimSpace(m.setup.baseURL), providerWizardEndpointPlaceholder(provider), rowWidth-2), rowWidth),
 	}
@@ -1572,10 +1572,10 @@ func (m model) setupNameLines(width int) []string {
 	name := providerWizardDisplayName(provider, m.setup.baseURL, m.setup.name)
 	rowWidth := setupTextInputBlockWidth(width, name, m.setup.name)
 	return []string{
-		padSetupLine("  "+zeroTheme.ink.Bold(true).Render("Provider name"), rowWidth),
+		padSetupLine("  "+pvyaiTheme.ink.Bold(true).Render("Provider name"), rowWidth),
 		blankSetupBlockLine(rowWidth),
-		padSetupLine("  "+zeroTheme.ink.Render("Choose the short label shown in PVYai."), rowWidth),
-		padSetupLine("  "+zeroTheme.faint.Render("Leave blank to use "+name+"."), rowWidth),
+		padSetupLine("  "+pvyaiTheme.ink.Render("Choose the short label shown in PVYai."), rowWidth),
+		padSetupLine("  "+pvyaiTheme.faint.Render("Leave blank to use "+name+"."), rowWidth),
 		blankSetupBlockLine(rowWidth),
 		padSetupLine("  "+providerWizardInputLine("name > ", strings.TrimSpace(m.setup.name), name, rowWidth-2), rowWidth),
 	}
@@ -1615,7 +1615,7 @@ func blankSetupBlockLine(width int) string {
 func (m model) setupCredentialLines(width int) []string {
 	option := m.setupProvider()
 	lines := []string{
-		zeroTheme.ink.Bold(true).Render("Credentials"),
+		pvyaiTheme.ink.Bold(true).Render("Credentials"),
 		"",
 	}
 	if option.Local || !option.RequiresAuth {
@@ -1632,8 +1632,8 @@ func (m model) setupCredentialLines(width int) []string {
 		"",
 		m.setupAPIKeyInputLine(width),
 		"",
-		zeroTheme.faint.Render("Saved keys stay in your user config."),
-		zeroTheme.faint.Render("Blank uses "+envVar+" from your shell."),
+		pvyaiTheme.faint.Render("Saved keys stay in your user config."),
+		pvyaiTheme.faint.Render("Blank uses "+envVar+" from your shell."),
 	)
 	return lines
 }
@@ -1641,7 +1641,7 @@ func (m model) setupCredentialLines(width int) []string {
 func (m model) setupAPIKeyInputLine(width int) string {
 	input := m.setup.apiKey
 	if strings.TrimSpace(input.Value()) == "" {
-		return zeroTheme.faint.Render(input.Placeholder)
+		return pvyaiTheme.faint.Render(input.Placeholder)
 	}
 	contentWidth := lipgloss.Width(input.Value())
 	if contentWidth == 0 {
@@ -1671,36 +1671,36 @@ func (m model) setupCredentialSummary(option SetupProviderOption) string {
 
 func (m model) setupFooter() string {
 	if m.setup.oauthPending {
-		return zeroTheme.faint.Render("Esc cancel")
+		return pvyaiTheme.faint.Render("Esc cancel")
 	}
 	switch m.setup.stage {
 	case setupStageMethod:
-		return zeroTheme.faint.Render("↑/↓ choose   ") + zeroTheme.accent.Render("Enter") + zeroTheme.faint.Render(" continue   q quit")
+		return pvyaiTheme.faint.Render("↑/↓ choose   ") + pvyaiTheme.accent.Render("Enter") + pvyaiTheme.faint.Render(" continue   q quit")
 	case setupStageReady:
-		return zeroTheme.accent.Render("Enter") + zeroTheme.faint.Render(" to save and start chat")
+		return pvyaiTheme.accent.Render("Enter") + pvyaiTheme.faint.Render(" to save and start chat")
 	case setupStageEndpoint:
-		return zeroTheme.accent.Render("Enter") + zeroTheme.faint.Render(" continue   left back")
+		return pvyaiTheme.accent.Render("Enter") + pvyaiTheme.faint.Render(" continue   left back")
 	case setupStageName:
-		return zeroTheme.faint.Render("name optional   ") + zeroTheme.accent.Render("Enter") + zeroTheme.faint.Render(" continue   left back")
+		return pvyaiTheme.faint.Render("name optional   ") + pvyaiTheme.accent.Render("Enter") + pvyaiTheme.faint.Render(" continue   left back")
 	case setupStageCredentials:
 		if m.setupCredentialInputActive() {
-			return zeroTheme.faint.Render("paste key optional   ") + zeroTheme.accent.Render("Enter") + zeroTheme.faint.Render(" continue   left back")
+			return pvyaiTheme.faint.Render("paste key optional   ") + pvyaiTheme.accent.Render("Enter") + pvyaiTheme.faint.Render(" continue   left back")
 		}
-		return zeroTheme.accent.Render("Space") + zeroTheme.faint.Render(" to continue")
+		return pvyaiTheme.accent.Render("Space") + pvyaiTheme.faint.Render(" to continue")
 	case setupStageProvider:
 		if m.setup.oauthMode && m.setupProviderDescriptor().OAuthDeviceFlow {
-			return zeroTheme.faint.Render("↑/↓ choose   ") + zeroTheme.accent.Render("Enter") + zeroTheme.faint.Render(" sign in   ") + zeroTheme.accent.Render("d") + zeroTheme.faint.Render(" device code   q quit")
+			return pvyaiTheme.faint.Render("↑/↓ choose   ") + pvyaiTheme.accent.Render("Enter") + pvyaiTheme.faint.Render(" sign in   ") + pvyaiTheme.accent.Render("d") + pvyaiTheme.faint.Render(" device code   q quit")
 		}
-		return zeroTheme.faint.Render("↑/↓ choose   ") + zeroTheme.accent.Render("Enter") + zeroTheme.faint.Render(" continue   q quit")
+		return pvyaiTheme.faint.Render("↑/↓ choose   ") + pvyaiTheme.accent.Render("Enter") + pvyaiTheme.faint.Render(" continue   q quit")
 	case setupStageModel:
 		if m.setup.modelLoad {
-			return zeroTheme.faint.Render("checking models...")
+			return pvyaiTheme.faint.Render("checking models...")
 		}
-		return zeroTheme.faint.Render("↑/↓ choose   type search   ") + zeroTheme.accent.Render("Enter") + zeroTheme.faint.Render(" continue")
+		return pvyaiTheme.faint.Render("↑/↓ choose   type search   ") + pvyaiTheme.accent.Render("Enter") + pvyaiTheme.faint.Render(" continue")
 	case setupStageWelcome:
-		return zeroTheme.accent.Render("Space") + zeroTheme.faint.Render(" to set up PVYai")
+		return pvyaiTheme.accent.Render("Space") + pvyaiTheme.faint.Render(" to set up PVYai")
 	default:
-		return zeroTheme.accent.Render("Space") + zeroTheme.faint.Render(" to continue")
+		return pvyaiTheme.accent.Render("Space") + pvyaiTheme.faint.Render(" to continue")
 	}
 }
 
@@ -1721,7 +1721,7 @@ func (m model) setupProgressText() string {
 			break
 		}
 	}
-	return zeroTheme.faint.Render(fmt.Sprintf("%d/%d", position+1, len(stages)))
+	return pvyaiTheme.faint.Render(fmt.Sprintf("%d/%d", position+1, len(stages)))
 }
 
 func padSetupLine(line string, width int) string {

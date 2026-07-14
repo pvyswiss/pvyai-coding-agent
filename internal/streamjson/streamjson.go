@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
 const SchemaVersion = 2

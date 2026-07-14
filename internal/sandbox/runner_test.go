@@ -23,7 +23,7 @@ func TestBuildCommandPlanWrapsLinuxHelper(t *testing.T) {
 		Backend: Backend{
 			Name:       BackendLinuxBwrap,
 			Available:  true,
-			Executable: "/usr/bin/zero-linux-sandbox",
+			Executable: "/usr/bin/pvyai-linux-sandbox",
 			Platform:   "linux",
 			Message:    "Linux sandbox helper available",
 		},
@@ -38,7 +38,7 @@ func TestBuildCommandPlanWrapsLinuxHelper(t *testing.T) {
 		t.Fatalf("BuildCommandPlan: %v", err)
 	}
 
-	if !plan.Wrapped || plan.Name != "/usr/bin/zero-linux-sandbox" || plan.Backend.Name != BackendLinuxBwrap {
+	if !plan.Wrapped || plan.Name != "/usr/bin/pvyai-linux-sandbox" || plan.Backend.Name != BackendLinuxBwrap {
 		t.Fatalf("plan backend = %#v, want wrapped Linux helper", plan)
 	}
 	assertArgsContainSequence(t, plan.Args, "--sandbox-policy-cwd", resolvedRoot)
@@ -544,7 +544,7 @@ func TestLinuxHelperPlanCarriesExtraWriteRoots(t *testing.T) {
 		WorkspaceRoot: workspace,
 		Policy:        DefaultPolicy(),
 		Scope:         scope,
-		Backend:       Backend{Name: BackendLinuxBwrap, Available: true, Executable: "/usr/bin/zero-linux-sandbox"},
+		Backend:       Backend{Name: BackendLinuxBwrap, Available: true, Executable: "/usr/bin/pvyai-linux-sandbox"},
 	})
 	plan, err := engine.BuildCommandPlan(CommandSpec{Name: "true"})
 	if err != nil {
@@ -587,7 +587,7 @@ func TestLinuxHelperPlanPreservesRealExtraRootCwd(t *testing.T) {
 		WorkspaceRoot: workspace,
 		Policy:        DefaultPolicy(),
 		Scope:         scope,
-		Backend:       Backend{Name: BackendLinuxBwrap, Available: true, Executable: "/usr/bin/zero-linux-sandbox"},
+		Backend:       Backend{Name: BackendLinuxBwrap, Available: true, Executable: "/usr/bin/pvyai-linux-sandbox"},
 	})
 	resolvedExtra := scope.Roots()[1]
 	plan, err := engine.BuildCommandPlan(CommandSpec{Name: "true", Dir: extra})
@@ -602,7 +602,7 @@ func TestLinuxHelperPlanPreservesRealExtraRootCwd(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ParseLinuxSandboxHelperArgs: %v", err)
 	}
-	bwrapArgs, err := BuildLinuxSandboxBwrapArgs(LinuxSandboxBwrapOptions{Config: config, HelperPath: "/usr/bin/zero-linux-sandbox"})
+	bwrapArgs, err := BuildLinuxSandboxBwrapArgs(LinuxSandboxBwrapOptions{Config: config, HelperPath: "/usr/bin/pvyai-linux-sandbox"})
 	if err != nil {
 		t.Fatalf("BuildLinuxSandboxBwrapArgs: %v", err)
 	}

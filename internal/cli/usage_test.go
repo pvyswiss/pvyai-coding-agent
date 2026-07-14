@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/pvygit"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 )
 
 func seedUsageStore(t *testing.T) *sessions.Store {

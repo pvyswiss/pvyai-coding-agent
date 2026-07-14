@@ -122,7 +122,7 @@ func TestPermissionProfileFromDisabledPolicyDoesNotRequirePlatformSandbox(t *tes
 }
 
 func TestSandboxManagerBuildsExecutionRequestFromProfile(t *testing.T) {
-	backend := Backend{Name: BackendLinuxBwrap, Available: true, Executable: "/usr/bin/zero-linux-sandbox", Platform: "linux"}
+	backend := Backend{Name: BackendLinuxBwrap, Available: true, Executable: "/usr/bin/pvyai-linux-sandbox", Platform: "linux"}
 	policy := DefaultPolicy()
 	profile := PermissionProfileFromPolicy("/workspace", policy, nil)
 	request, err := NewSandboxManager(SandboxManagerOptions{GOOS: "linux", Backend: backend}).BuildExecutionRequest(SandboxManagerRequest{
@@ -145,7 +145,7 @@ func TestSandboxManagerBuildsExecutionRequestFromProfile(t *testing.T) {
 }
 
 func TestSandboxManagerBuildsCommandPlanThroughLinuxHelper(t *testing.T) {
-	backend := Backend{Name: BackendLinuxBwrap, Available: true, Executable: "/usr/bin/zero-linux-sandbox", Platform: "linux"}
+	backend := Backend{Name: BackendLinuxBwrap, Available: true, Executable: "/usr/bin/pvyai-linux-sandbox", Platform: "linux"}
 	policy := DefaultPolicy()
 	policy.BlockUnixSockets = true
 	manager := NewSandboxManager(SandboxManagerOptions{GOOS: "linux", Backend: backend})
@@ -160,7 +160,7 @@ func TestSandboxManagerBuildsCommandPlanThroughLinuxHelper(t *testing.T) {
 	if err != nil {
 		t.Fatalf("BuildCommandPlan: %v", err)
 	}
-	if !plan.Wrapped || plan.Name != "/usr/bin/zero-linux-sandbox" || plan.TargetBackend != BackendLinuxBwrap {
+	if !plan.Wrapped || plan.Name != "/usr/bin/pvyai-linux-sandbox" || plan.TargetBackend != BackendLinuxBwrap {
 		t.Fatalf("command plan = %#v, want native linux helper wrapper", plan)
 	}
 	if plan.EnforcementLevel != EnforcementNative {
@@ -249,7 +249,7 @@ func TestSandboxManagerSelectsPlatformBackend(t *testing.T) {
 		want       BackendName
 		wantTarget BackendName
 	}{
-		{name: "linux", goos: "linux", lookupName: LinuxSandboxHelperName, lookupPath: "/usr/bin/zero-linux-sandbox", want: BackendLinuxBwrap, wantTarget: BackendLinuxBwrap},
+		{name: "linux", goos: "linux", lookupName: LinuxSandboxHelperName, lookupPath: "/usr/bin/pvyai-linux-sandbox", want: BackendLinuxBwrap, wantTarget: BackendLinuxBwrap},
 		{name: "macos", goos: "darwin", lookupName: "sandbox-exec", lookupPath: "/usr/bin/sandbox-exec", want: BackendMacOSSeatbelt, wantTarget: BackendMacOSSeatbelt},
 		{name: "windows", goos: "windows", lookupName: WindowsSandboxCommandRunnerName, lookupPath: `C:\zero\pvyai-windows-command-runner.exe`, setupPath: `C:\zero\zero-windows-sandbox-setup.exe`, want: BackendWindowsRestrictedToken, wantTarget: BackendWindowsRestrictedToken},
 		{name: "unsupported", goos: "plan9", want: BackendUnavailable, wantTarget: BackendUnavailable},
@@ -311,7 +311,7 @@ func TestSelectBackendDelegatesToSandboxManagerSelection(t *testing.T) {
 		GOOS: "linux",
 		LookupExecutable: func(name string) (string, error) {
 			if name == LinuxSandboxHelperName {
-				return "/usr/bin/zero-linux-sandbox", nil
+				return "/usr/bin/pvyai-linux-sandbox", nil
 			}
 			if name == "bwrap" {
 				return "/usr/bin/bwrap", nil
@@ -323,7 +323,7 @@ func TestSelectBackendDelegatesToSandboxManagerSelection(t *testing.T) {
 		GOOS: "linux",
 		LookupExecutable: func(name string) (string, error) {
 			if name == LinuxSandboxHelperName {
-				return "/usr/bin/zero-linux-sandbox", nil
+				return "/usr/bin/pvyai-linux-sandbox", nil
 			}
 			if name == "bwrap" {
 				return "/usr/bin/bwrap", nil

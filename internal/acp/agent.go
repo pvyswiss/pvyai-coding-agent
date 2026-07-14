@@ -10,10 +10,10 @@ import (
 
 	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // Deps are the ZERO capabilities the ACP Agent drives. The CLI fills these with
@@ -77,7 +77,7 @@ func NewAgent(conn *Conn, deps Deps) *Agent {
 	conn.Handle(MethodSessionPrompt, a.handleSessionPrompt)
 	conn.Handle(MethodSessionSetMode, a.handleSetMode)
 	conn.Handle(MethodSessionSetConfigOption, a.handleSetConfigOption)
-	conn.Handle(MethodZeroSetModel, a.handleZeroSetModel)
+	conn.Handle(MethodZeroSetModel, a.handlePVYaiSetModel)
 	conn.HandleNotify(MethodSessionCancel, a.handleCancel)
 	return a
 }
@@ -347,8 +347,8 @@ func (a *Agent) handleSetConfigOption(_ context.Context, params json.RawMessage)
 	return SetSessionConfigOptionResult{}, nil
 }
 
-func (a *Agent) handleZeroSetModel(_ context.Context, params json.RawMessage) (any, error) {
-	var p ZeroSetModelParams
+func (a *Agent) handlePVYaiSetModel(_ context.Context, params json.RawMessage) (any, error) {
+	var p PVYaiSetModelParams
 	if err := json.Unmarshal(params, &p); err != nil {
 		return nil, RPCError(codeInvalidParams, "invalid _zero/set_model params")
 	}
@@ -357,7 +357,7 @@ func (a *Agent) handleZeroSetModel(_ context.Context, params json.RawMessage) (a
 		return nil, RPCError(codeInvalidParams, "unknown session: "+p.SessionID)
 	}
 	sess.setModel(p.Model)
-	return ZeroSetModelResult{Model: p.Model}, nil
+	return PVYaiSetModelResult{Model: p.Model}, nil
 }
 
 func (a *Agent) handleCancel(_ context.Context, params json.RawMessage) {

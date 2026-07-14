@@ -188,10 +188,10 @@ func RebuildIndex(store *sessions.Store, session sessions.Metadata, now func() t
 	}
 	data, err := json.MarshalIndent(index, "", "  ")
 	if err != nil {
-		return Index{}, fmt.Errorf("encode Zero search index: %w", err)
+		return Index{}, fmt.Errorf("encode PVYai search index: %w", err)
 	}
 	if err := os.WriteFile(indexPath(store, session.SessionID), append(data, '\n'), 0o600); err != nil {
-		return Index{}, fmt.Errorf("write Zero search index: %w", err)
+		return Index{}, fmt.Errorf("write PVYai search index: %w", err)
 	}
 	return index, nil
 }

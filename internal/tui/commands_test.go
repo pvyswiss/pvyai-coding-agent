@@ -829,12 +829,12 @@ func TestMCPCommandPreservesQuotedArguments(t *testing.T) {
 				ExitCode: 0,
 				Output:   "Added MCP server docs.",
 				Config: config.MCPConfig{Servers: map[string]config.MCPServerConfig{
-					"docs": {Type: "stdio", Command: `C:\Program Files\docs mcp.exe`, Args: []string{"--label", "Zero Docs"}},
+					"docs": {Type: "stdio", Command: `C:\Program Files\docs mcp.exe`, Args: []string{"--label", "PVYai Docs"}},
 				}},
 			}
 		},
 	})
-	m.input.SetValue(`/mcp add docs -- "C:\Program Files\docs mcp.exe" --label "Zero Docs"`)
+	m.input.SetValue(`/mcp add docs -- "C:\Program Files\docs mcp.exe" --label "PVYai Docs"`)
 
 	updated, cmd := m.Update(testKey(tea.KeyEnter))
 	next := updated.(model)
@@ -843,7 +843,7 @@ func TestMCPCommandPreservesQuotedArguments(t *testing.T) {
 		t.Fatal("expected /mcp add to run asynchronously")
 	}
 	next = applyCommandResult(t, next, cmd)
-	want := []string{"add", "docs", "--", `C:\Program Files\docs mcp.exe`, "--label", "Zero Docs"}
+	want := []string{"add", "docs", "--", `C:\Program Files\docs mcp.exe`, "--label", "PVYai Docs"}
 	if !reflect.DeepEqual(called, want) {
 		t.Fatalf("MCPCommand args = %#v, want %#v", called, want)
 	}

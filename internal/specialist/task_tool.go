@@ -23,7 +23,7 @@ func (tool *TaskTool) Name() string {
 }
 
 func (tool *TaskTool) Description() string {
-	return "Launch a Zero specialist sub-agent for a focused delegated task."
+	return "Launch a PVYai specialist sub-agent for a focused delegated task."
 }
 
 func (tool *TaskTool) Parameters() tools.Schema {
@@ -61,7 +61,7 @@ func (tool *TaskTool) Safety() tools.Safety {
 	return tools.Safety{
 		SideEffect:      tools.SideEffectShell,
 		Permission:      tools.PermissionPrompt,
-		Reason:          "Spawns a Zero specialist sub-agent process.",
+		Reason:          "Spawns a PVYai specialist sub-agent process.",
 		AdvertiseInAuto: true,
 	}
 }

@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 )
 
 func usageEvent(t *testing.T, sessionID string, sequence int, createdAt string, prompt int, completion int) sessions.Event {

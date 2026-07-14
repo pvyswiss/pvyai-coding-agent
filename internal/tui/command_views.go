@@ -10,9 +10,9 @@ import (
 
 	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvycmd"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvycmd"
 )
 
 func (m model) toolsText() string {

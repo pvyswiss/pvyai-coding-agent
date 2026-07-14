@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 func enabledSelfCorrector(t *testing.T) *SelfCorrector {

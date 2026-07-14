@@ -165,7 +165,7 @@ func TestStreamCompletionAppliesCustomAuthAndHeaders(t *testing.T) {
 		Model:         "custom-model",
 		AuthHeader:    "X-API-Key",
 		AuthScheme:    "Token",
-		CustomHeaders: map[string]string{"HTTP-Referer": "https://zero.dev"},
+		CustomHeaders: map[string]string{"HTTP-Referer": "https://pvy.swiss"},
 	})
 	if err != nil {
 		t.Fatalf("New returned error: %v", err)
@@ -184,7 +184,7 @@ func TestStreamCompletionAppliesCustomAuthAndHeaders(t *testing.T) {
 	if gotAltAuth != "Token sk-custom" {
 		t.Fatalf("X-API-Key = %q, want custom scheme token", gotAltAuth)
 	}
-	if gotReferer != "https://zero.dev" {
+	if gotReferer != "https://pvy.swiss" {
 		t.Fatalf("HTTP-Referer = %q, want custom header", gotReferer)
 	}
 }

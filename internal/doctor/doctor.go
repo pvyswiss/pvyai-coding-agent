@@ -131,7 +131,7 @@ func configFilesCheck(userPath string, projectPath string) Check {
 		details["projectConfigPath"] = projectPath
 	}
 	if len(details) == 0 {
-		return check("config.files", "Config files", StatusWarn, "No explicit Zero config files were inspected.", nil)
+		return check("config.files", "Config files", StatusWarn, "No explicit PVYai config files were inspected.", nil)
 	}
 	return check("config.files", "Config files", StatusPass, "PVYai config file inputs are available for inspection.", details)
 }
@@ -202,7 +202,7 @@ func providerModelCheck(profile config.ProviderProfile) Check {
 	model, err := registry.Require(profile.Model)
 	if err != nil {
 		if profile.ProviderKind == config.ProviderKindOpenAICompatible || profile.ProviderKind == config.ProviderKindAnthropicCompat {
-			return check("provider.model", "Provider model", StatusWarn, fmt.Sprintf("Custom %s model was not found in the Zero registry; runtime will pass it through to the configured provider. Run `pvyai doctor --connectivity` to validate the endpoint and auth.", profile.ProviderKind), map[string]any{"model": profile.Model, "provider": providerName(profile)})
+			return check("provider.model", "Provider model", StatusWarn, fmt.Sprintf("Custom %s model was not found in the PVYai registry; runtime will pass it through to the configured provider. Run `pvyai doctor --connectivity` to validate the endpoint and auth.", profile.ProviderKind), map[string]any{"model": profile.Model, "provider": providerName(profile)})
 		}
 		return check("provider.model", "Provider model", StatusFail, "Provider model is invalid: "+err.Error(), map[string]any{"model": profile.Model})
 	}
@@ -352,7 +352,7 @@ func configValidationCheck(userPath string, projectPath string) Check {
 		}
 	}
 	if len(paths) == 0 {
-		return check("config.validation", "Config validation", StatusWarn, "No Zero config files were available to validate.", nil)
+		return check("config.validation", "Config validation", StatusWarn, "No PVYai config files were available to validate.", nil)
 	}
 
 	status := StatusPass

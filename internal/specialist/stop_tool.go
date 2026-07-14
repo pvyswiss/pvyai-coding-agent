@@ -31,7 +31,7 @@ func (tool *StopTool) Name() string {
 }
 
 func (tool *StopTool) Description() string {
-	return "Stop a running background Zero specialist task."
+	return "Stop a running background PVYai specialist task."
 }
 
 func (tool *StopTool) Parameters() tools.Schema {

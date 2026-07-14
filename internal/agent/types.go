@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"github.com/pvyswiss/pvyai-coding-agent/internal/hooks"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/streamjson"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 type Message = pvyruntime.Message
@@ -240,7 +240,7 @@ type Options struct {
 	Autonomy               string
 	Sandbox                *sandbox.Engine
 	// FileTracker records per-session file read/write versions so the write tools
-	// can detect a file changed on disk outside Zero since it was last read. nil
+	// can detect a file changed on disk outside PVYai since it was last read. nil
 	// disables the check. Created once per session and threaded into every tool run.
 	FileTracker *tools.FileTracker
 	// Hooks, when set, runs configured beforeTool (blocking) and afterTool

@@ -12,10 +12,10 @@ import (
 	tea "charm.land/bubbletea/v2"
 
 	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 type scriptedProvider struct {
@@ -581,7 +581,7 @@ func TestResumeCommandHydratesSessionTranscript(t *testing.T) {
 		t.Fatalf("Create returned error: %v", err)
 	}
 	appendTestEvent(t, store, session.SessionID, sessions.EventMessage, map[string]any{"role": "user", "content": "previous request"})
-	appendTestEvent(t, store, session.SessionID, sessions.EventToolCall, map[string]any{"id": "call_1", "name": "grep", "arguments": `{"pattern":"Zero"}`})
+	appendTestEvent(t, store, session.SessionID, sessions.EventToolCall, map[string]any{"id": "call_1", "name": "grep", "arguments": `{"pattern":"PVYai"}`})
 	appendTestEvent(t, store, session.SessionID, sessions.EventPermissionDecision, map[string]any{
 		"toolCallId":     "call_1",
 		"name":           "grep",
@@ -612,7 +612,7 @@ func TestResumeCommandHydratesSessionTranscript(t *testing.T) {
 		}
 	}
 	toolCall, ok := findTranscriptRow(next.transcript, rowToolCall)
-	if !ok || toolCall.tool != "grep" || toolCall.detail != "Zero" {
+	if !ok || toolCall.tool != "grep" || toolCall.detail != "PVYai" {
 		t.Fatalf("expected hydrated tool call metadata, got ok=%v row=%#v", ok, toolCall)
 	}
 	permissionRow, ok := findTranscriptRow(next.transcript, rowPermission)

@@ -87,8 +87,8 @@ func TestServeListsAndCallsRegistryTools(t *testing.T) {
 	if callResult.IsError {
 		t.Fatalf("call result IsError = true: %#v", callResult)
 	}
-	if got := TextContent(callResult.Content); got != "lookup: zero" {
-		t.Fatalf("call result text = %q, want lookup: zero", got)
+	if got := TextContent(callResult.Content); got != "lookup: pvyai" {
+		t.Fatalf("call result text = %q, want lookup: pvyai", got)
 	}
 }
 

@@ -9,13 +9,13 @@ import (
 	"time"
 
 	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvygit"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/selfverify"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/testrunner"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/verify"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/worktrees"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvygit"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 type worktreeCommandOptions struct {
@@ -787,11 +787,11 @@ func writeWorktreesHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
   pvyai worktrees prepare [flags] [name]
 
-Prepares an isolated git worktree for a Zero task.
+Prepares an isolated git worktree for a PVYai task.
 
 Flags:
       --name <name>       Worktree name; defaults to a timestamped task name
-      --dir <path>        Base directory for Zero worktrees
+      --dir <path>        Base directory for PVYai worktrees
   -C, --cwd <path>        Source repository directory
       --json              Print JSON output
   -h, --help              Show this help

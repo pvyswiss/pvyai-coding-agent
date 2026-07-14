@@ -344,7 +344,7 @@ func NewSkillTool(defaultDir string, pluginRoots []string) tools.Tool {
 func (tool skillTool) Name() string { return "skill" }
 
 func (tool skillTool) Description() string {
-	return "Load a named Zero skill and return its instructions as the tool output. " +
+	return "Load a named PVYai skill and return its instructions as the tool output. " +
 		"Skills are reusable, on-demand instruction sets (including any contributed by plugins). " +
 		"Call this when a relevant skill exists; an unknown name returns the list of available skills."
 }

@@ -81,7 +81,7 @@ func rippleText(text string, palette []lipgloss.Style, phase, waveLen int) strin
 }
 
 // ripplePalette is the run-state colour ramp used by the working status line: the
-// curated zeroTheme styles ordered cold (faint) at the cosine troughs to
+// curated pvyaiTheme styles ordered cold (faint) at the cosine troughs to
 // warm-bright (accent) at its peaks, giving a visible "the agent is thinking"
 // temperature feel. Built lazily from the active theme so a /theme swap is
 // reflected. No hex literal appears here — every entry is a named theme style
@@ -92,10 +92,10 @@ func ripplePalette() []lipgloss.Style {
 	// trains the eye to ignore the exact colours that signal a real permission
 	// prompt or a success, so the decorative working line stays in the brand lime.
 	// Falls back to a coarse named ramp if the theme has no parseable accent/faint.
-	bright := zeroTheme.accent.GetForeground()
-	dim := zeroTheme.faint.GetForeground()
+	bright := pvyaiTheme.accent.GetForeground()
+	dim := pvyaiTheme.faint.GetForeground()
 	if bright == nil || dim == nil {
-		return []lipgloss.Style{zeroTheme.faint, zeroTheme.muted, zeroTheme.accent}
+		return []lipgloss.Style{pvyaiTheme.faint, pvyaiTheme.muted, pvyaiTheme.accent}
 	}
 	blend := lipgloss.Blend1D(5, dim, bright)
 	out := make([]lipgloss.Style, len(blend))

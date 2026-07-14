@@ -78,7 +78,7 @@ func preflightExecSession(options execOptions) error {
 			return err
 		}
 		if latest == nil {
-			return execUsageError{"No Zero sessions available to resume."}
+			return execUsageError{"No PVYai sessions available to resume."}
 		}
 	}
 	return nil

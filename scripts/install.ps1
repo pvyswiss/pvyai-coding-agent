@@ -1,10 +1,10 @@
 [CmdletBinding()]
 param(
-  [string]$Version = $env:ZERO_VERSION,
-  [string]$Repository = $(if ($env:ZERO_REPO) { $env:ZERO_REPO } else { "Gitlawb/zero" }),
-  [string]$InstallDir = $env:ZERO_INSTALL_DIR,
-  [string]$GitHubApi = $(if ($env:ZERO_GITHUB_API) { $env:ZERO_GITHUB_API } else { "https://api.github.com" }),
-  [string]$GitHubBaseUrl = $(if ($env:ZERO_GITHUB_BASE_URL) { $env:ZERO_GITHUB_BASE_URL } else { "https://github.com" })
+  [string]$Version = $env:PVYAI_VERSION,
+  [string]$Repository = $(if ($env:PVYAI_REPO) { $env:PVYAI_REPO } else { "pvyswiss/pvyai-coding-agent" }),
+  [string]$InstallDir = $env:PVYAI_INSTALL_DIR,
+  [string]$GitHubApi = $(if ($env:PVYAI_GITHUB_API) { $env:PVYAI_GITHUB_API } else { "https://api.github.com" }),
+  [string]$GitHubBaseUrl = $(if ($env:PVYAI_GITHUB_BASE_URL) { $env:PVYAI_GITHUB_BASE_URL } else { "https://github.com" })
 )
 
 $ErrorActionPreference = "Stop"
@@ -17,7 +17,7 @@ if ([string]::IsNullOrWhiteSpace($InstallDir)) {
   $InstallDir = Join-Path $env:LOCALAPPDATA "pvyai\bin"
 }
 
-function Get-ZeroLatestTag {
+function Get-PVYaiLatestTag {
   param([string]$Repository, [string]$GitHubApi)
 
   $apiBase = $GitHubApi.TrimEnd([char[]]"/")
@@ -33,7 +33,7 @@ function Get-ZeroLatestTag {
   return [string]$release.tag_name
 }
 
-function Get-ZeroArch {
+function Get-PVYaiArch {
   $arch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()
 
   switch ($arch) {
@@ -43,7 +43,7 @@ function Get-ZeroArch {
   }
 }
 
-function Find-ZeroExtractedFile {
+function Find-PVYaiExtractedFile {
   param(
     [string]$Root,
     [string]$FileName
@@ -62,7 +62,7 @@ function Find-ZeroExtractedFile {
   throw "Release archive did not contain exactly one $FileName"
 }
 
-function Test-ZeroPathContainsDir {
+function Test-PVYaiPathContainsDir {
   param(
     [string]$PathValue,
     [string]$Dir
@@ -75,7 +75,7 @@ function Test-ZeroPathContainsDir {
   return @($PathValue -split [System.IO.Path]::PathSeparator) -contains $Dir
 }
 
-function Find-ZeroOptionalExtractedDirectory {
+function Find-PVYaiOptionalExtractedDirectory {
   param(
     [string]$Root,
     [string]$DirectoryName
@@ -105,7 +105,7 @@ function Find-ZeroOptionalExtractedDirectory {
 }
 
 if ($Version -eq "latest") {
-  $tag = Get-ZeroLatestTag -Repository $Repository -GitHubApi $GitHubApi
+  $tag = Get-PVYaiLatestTag -Repository $Repository -GitHubApi $GitHubApi
 } elseif ($Version.StartsWith("v")) {
   $tag = $Version
 } else {
@@ -113,7 +113,7 @@ if ($Version -eq "latest") {
 }
 
 $releaseVersion = $tag -replace "^v", ""
-$arch = Get-ZeroArch
+$arch = Get-PVYaiArch
 $archiveName = "pvyai-v$releaseVersion-windows-$arch.zip"
 $checksumName = "$archiveName.sha256"
 $releaseBase = $GitHubBaseUrl.TrimEnd([char[]]"/")
@@ -126,7 +126,7 @@ $checksumPath = Join-Path $tempDir $checksumName
 try {
   New-Item -ItemType Directory -Path $tempDir, $extractDir -Force | Out-Null
 
-  Write-Host "Installing Zero $tag for windows-$arch"
+  Write-Host "Installing PVYai $tag for windows-$arch"
   Invoke-WebRequest -Uri "$releaseUrl/$archiveName" -OutFile $archivePath -UseBasicParsing -TimeoutSec 300
   Invoke-WebRequest -Uri "$releaseUrl/$checksumName" -OutFile $checksumPath -UseBasicParsing -TimeoutSec 300
 
@@ -147,10 +147,10 @@ try {
     "pvyai-windows-sandbox-setup.exe"
   )
   foreach ($fileName in $requiredFiles) {
-    $sourcePath = Find-ZeroExtractedFile -Root $extractDir -FileName $fileName
+    $sourcePath = Find-PVYaiExtractedFile -Root $extractDir -FileName $fileName
     Copy-Item -Path $sourcePath -Destination (Join-Path $InstallDir $fileName) -Force
   }
-  $helpersPath = Find-ZeroOptionalExtractedDirectory -Root $extractDir -DirectoryName "helpers"
+  $helpersPath = Find-PVYaiOptionalExtractedDirectory -Root $extractDir -DirectoryName "helpers"
   if ($null -ne $helpersPath) {
     $targetHelpersPath = Join-Path $InstallDir "helpers"
     if (Test-Path $targetHelpersPath) {
@@ -163,18 +163,18 @@ try {
   Write-Host "Installed $targetPath"
 
   $userPath = [Environment]::GetEnvironmentVariable("PATH", "User")
-  if (-not (Test-ZeroPathContainsDir -PathValue $userPath -Dir $InstallDir)) {
+  if (-not (Test-PVYaiPathContainsDir -PathValue $userPath -Dir $InstallDir)) {
     try {
       $newUserPath = if ([string]::IsNullOrEmpty($userPath)) { $InstallDir } else { "$userPath;$InstallDir" }
       [Environment]::SetEnvironmentVariable("PATH", $newUserPath, "User")
-      Write-Host "Added $InstallDir to your user PATH. Restart your terminal to use 'zero'."
+      Write-Host "Added $InstallDir to your user PATH. Restart your terminal to use 'pvyai'."
     } catch {
       Write-Warning "Could not update your user PATH automatically: $_"
-      Write-Warning "Add $InstallDir to PATH manually to run zero from any directory."
+      Write-Warning "Add $InstallDir to PATH manually to run pvyai from any directory."
     }
   }
 
-  if (-not (Test-ZeroPathContainsDir -PathValue $env:PATH -Dir $InstallDir)) {
+  if (-not (Test-PVYaiPathContainsDir -PathValue $env:PATH -Dir $InstallDir)) {
     $env:PATH = "$env:PATH;$InstallDir"
   }
 } finally {

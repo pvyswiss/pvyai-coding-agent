@@ -95,7 +95,7 @@ func runSandboxPolicy(args []string, stdout io.Writer, stderr io.Writer, deps ap
 			Policy     pvySandbox.Policy      `json:"policy"`
 			Backend    pvySandbox.Backend     `json:"backend"`
 			Plan       pvySandbox.BackendPlan `json:"plan"`
-			GrantsPath string                  `json:"grantsPath"`
+			GrantsPath string                 `json:"grantsPath"`
 		}{
 			Policy:     policy,
 			Backend:    backend,
@@ -185,11 +185,11 @@ func runSandboxSetup(args []string, stdout io.Writer, stderr io.Writer, deps app
 }
 
 type sandboxSetupResult struct {
-	Platform string                  `json:"platform"`
+	Platform string                 `json:"platform"`
 	Backend  pvySandbox.BackendName `json:"backend"`
-	Helper   string                  `json:"helper,omitempty"`
-	Ran      bool                    `json:"ran"`
-	Message  string                  `json:"message"`
+	Helper   string                 `json:"helper,omitempty"`
+	Ran      bool                   `json:"ran"`
+	Message  string                 `json:"message"`
 }
 
 func writeSandboxSetupResult(stdout io.Writer, asJSON bool, result sandboxSetupResult) int {
@@ -247,12 +247,12 @@ func runSandboxPolicyEffective(options sandboxCommandOptions, workspaceRoot stri
 			// JSON consumers see the same signal as the text write_roots_error
 			// line: a stale sandbox.additionalWriteRoots entry means the real
 			// entrypoints would refuse to launch, not run workspace-only.
-			WriteRootsError string                  `json:"writeRootsError,omitempty"`
+			WriteRootsError string                 `json:"writeRootsError,omitempty"`
 			Policy          pvySandbox.Policy      `json:"policy"`
 			Backend         pvySandbox.Backend     `json:"backend"`
 			Plan            pvySandbox.BackendPlan `json:"plan"`
-			Guards          sandboxGuards           `json:"guards"`
-			GrantsPath      string                  `json:"grantsPath"`
+			Guards          sandboxGuards          `json:"guards"`
+			GrantsPath      string                 `json:"grantsPath"`
 		}{
 			WorkspaceRoot: workspaceRoot,
 			WriteRoots:    writeRoots,

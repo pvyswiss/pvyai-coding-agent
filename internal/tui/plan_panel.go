@@ -1,4 +1,4 @@
-// plan_panel.go renders the sticky plan panel for the Zero TUI. The panel
+// plan_panel.go renders the sticky plan panel for the PVYai TUI. The panel
 // surfaces the in-progress task plan produced by the update_plan tool: a
 // one-line header with a live spinner and progress count, a text progress
 // bar, and (while running or expanded) the per-step list with status icons
@@ -344,14 +344,14 @@ func (m model) renderPlanSummaryLine(width int) string {
 		}
 	}
 	if state.isComplete() {
-		return zeroTheme.green.Render(fmt.Sprintf("✓ PLAN · %d/%d complete", done, total))
+		return pvyaiTheme.green.Render(fmt.Sprintf("✓ PLAN · %d/%d complete", done, total))
 	}
 	label := fmt.Sprintf("%s PLAN · %d/%d · ", m.spinnerGlyph(), done, total)
 	room := width - len([]rune(label)) - 1
 	if room < 4 {
 		room = 4
 	}
-	return zeroTheme.accent.Render(label + truncateStep(current, room))
+	return pvyaiTheme.accent.Render(label + truncateStep(current, room))
 }
 
 // currentStepContent returns the content of the step the plan is "on": the
@@ -388,9 +388,9 @@ func renderPlanHeader(state planPanelState, spinnerView string, done, total int,
 		current = truncateStep(currentStepContent(state.steps), 40)
 	}
 	if state.isComplete() {
-		return zeroTheme.green.Render(fmt.Sprintf("✓ PLAN COMPLETE · %d/%d · %s", done, total, formatElapsedSeconds(elapsed)))
+		return pvyaiTheme.green.Render(fmt.Sprintf("✓ PLAN COMPLETE · %d/%d · %s", done, total, formatElapsedSeconds(elapsed)))
 	}
-	return zeroTheme.accent.Render(fmt.Sprintf("%s PLAN · %s · %d/%d · %s", spinnerView, current, done, total, formatElapsedSeconds(elapsed)))
+	return pvyaiTheme.accent.Render(fmt.Sprintf("%s PLAN · %s · %d/%d · %s", spinnerView, current, done, total, formatElapsedSeconds(elapsed)))
 }
 
 // renderPlanStepLine renders one step row: an indent, a status icon, the
@@ -402,31 +402,31 @@ func renderPlanStepLine(step planStep, now time.Time, maxContent int) string {
 	var icon, body, timeStr string
 	switch step.status {
 	case "completed":
-		icon = zeroTheme.green.Render("✓")
+		icon = pvyaiTheme.green.Render("✓")
 		// Quiet the completed body (muted, not saturated green) so the single
 		// in-progress accent step is the obvious focus: past=quiet, now=bright,
 		// future=faint. The green ✓ icon still marks success.
-		body = zeroTheme.muted.Render(content)
+		body = pvyaiTheme.muted.Render(content)
 		timeStr = formatElapsedSeconds(step.completedAt.Sub(step.startedAt))
 	case "in_progress":
-		icon = zeroTheme.accent.Render("•")
-		body = zeroTheme.accent.Render(content)
+		icon = pvyaiTheme.accent.Render("•")
+		body = pvyaiTheme.accent.Render(content)
 		started := step.startedAt
 		if started.IsZero() {
 			started = now
 		}
 		timeStr = formatElapsedSeconds(now.Sub(started))
 	case "failed":
-		icon = zeroTheme.red.Render("✗")
-		body = zeroTheme.red.Render(content)
+		icon = pvyaiTheme.red.Render("✗")
+		body = pvyaiTheme.red.Render(content)
 		timeStr = formatElapsedSeconds(step.completedAt.Sub(step.startedAt))
 	default: // pending
-		icon = zeroTheme.faint.Render("○")
-		body = zeroTheme.faint.Render(content)
+		icon = pvyaiTheme.faint.Render("○")
+		body = pvyaiTheme.faint.Render(content)
 	}
 	line := "  " + icon + " " + body
 	if timeStr != "" {
-		line += " " + zeroTheme.faint.Render(timeStr)
+		line += " " + pvyaiTheme.faint.Render(timeStr)
 	}
 	return line
 }

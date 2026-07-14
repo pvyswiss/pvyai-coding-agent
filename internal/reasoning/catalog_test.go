@@ -151,11 +151,11 @@ func TestGroundTruthGemini(t *testing.T) {
 	}
 }
 
-// TestCoversZeroShippedReasoningModels pins that every reasoning model Zero
+// TestCoversPVYaiShippedReasoningModels pins that every reasoning model Zero
 // currently ships resolves in the catalog (by its api model id), so the
-// models.dev fallback actually covers Zero's catalog rather than just well-known
+// models.dev fallback actually covers PVYai's catalog rather than just well-known
 // ids. The api ids mirror internal/modelregistry's curated entries.
-func TestCoversZeroShippedReasoningModels(t *testing.T) {
+func TestCoversPVYaiShippedReasoningModels(t *testing.T) {
 	c := Embedded()
 	shipped := []struct {
 		provider, api string

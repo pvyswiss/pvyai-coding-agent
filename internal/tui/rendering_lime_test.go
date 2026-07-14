@@ -922,7 +922,7 @@ func TestDiffCardBodyRendersCountsNumbersAndCap(t *testing.T) {
 	}, "\n")
 	row := transcriptRow{kind: rowToolResult, id: "call_1", tool: "write_file", status: tools.StatusOK, detail: diff}
 	styled := m.renderRow(row, 80, buildRowContext(nil))
-	for _, want := range []string{zeroTheme.diffAdd.Render("+3"), zeroTheme.diffDel.Render("-0")} {
+	for _, want := range []string{pvyaiTheme.diffAdd.Render("+3"), pvyaiTheme.diffDel.Render("-0")} {
 		if !strings.Contains(styled, want) {
 			t.Fatalf("diff card count tag should color additions/deletions, missing styled %q in:\n%s", want, styled)
 		}
@@ -1459,14 +1459,14 @@ func TestTitleBarHighlightsBranchOverWorkspace(t *testing.T) {
 	m.gitBranch = "main"
 	got := m.titleWorkspaceSegment()
 
-	highlightedBranch := zeroTheme.muted.Render("") + " " + zeroTheme.muted.Render("main")
-	recessedWorkspace := zeroTheme.faint.Render("/workspace/zero")
+	highlightedBranch := pvyaiTheme.muted.Render("") + " " + pvyaiTheme.muted.Render("main")
+	recessedWorkspace := pvyaiTheme.faint.Render("/workspace/zero")
 	for _, want := range []string{highlightedBranch, recessedWorkspace} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("title workspace segment = %q, missing styled segment %q", got, want)
 		}
 	}
-	if faintBranch := zeroTheme.faint.Render("") + " " + zeroTheme.faint.Render("main"); strings.Contains(got, faintBranch) {
+	if faintBranch := pvyaiTheme.faint.Render("") + " " + pvyaiTheme.faint.Render("main"); strings.Contains(got, faintBranch) {
 		t.Fatalf("title workspace segment = %q, branch should use highlighted title colour", got)
 	}
 }

@@ -31,7 +31,7 @@ func (tool *GenerateTool) Name() string {
 }
 
 func (tool *GenerateTool) Description() string {
-	return "Create a project-local Zero specialist profile from a designed name, description, and system prompt."
+	return "Create a project-local PVYai specialist profile from a designed name, description, and system prompt."
 }
 
 func (tool *GenerateTool) Parameters() tools.Schema {
@@ -204,7 +204,7 @@ func parseWritableLocation(value string) (Location, error) {
 func defaultGeneratedSystemPrompt(description string) string {
 	description = strings.TrimSpace(description)
 	return strings.Join([]string{
-		"You are a focused Zero specialist.",
+		"You are a focused PVYai specialist.",
 		"",
 		"Purpose: " + description,
 		"",

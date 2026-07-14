@@ -22,7 +22,7 @@ func TestUnixInstallerScriptMatchesReleaseContracts(t *testing.T) {
 	}
 	containsAll(t, script, []string{
 		"set -euo pipefail",
-		`PVYAI_REPO="${PVYAI_REPO:-pvyswiss/pvyai}"`,
+		`PVYAI_REPO="${PVYAI_REPO:-pvyswiss/pvyai-coding-agent}"`,
 		`PVYAI_INSTALL_DIR="${PVYAI_INSTALL_DIR:-$HOME/.local/bin}"`,
 		`archive_name="pvyai-v${version}-${platform}-${arch}.tar.gz"`,
 		`checksum_name="${archive_name}.sha256"`,
@@ -30,8 +30,8 @@ func TestUnixInstallerScriptMatchesReleaseContracts(t *testing.T) {
 		`verify_checksum "$checksum_name"`,
 		`tar -xzf "$archive_path" -C "$extract_dir"`,
 		`find_extracted_binary "$extract_dir"`,
-		`cp "$binary_path" "$PVYAI_INSTALL_DIR/zero"`,
-		`copy_optional_file "zero-linux-sandbox"`,
+		`cp "$binary_path" "$PVYAI_INSTALL_DIR/pvyai"`,
+		`copy_optional_file "pvyai-linux-sandbox"`,
 		`copy_optional_file "pvyai-seccomp"`,
 		`copy_optional_dir "helpers"`,
 	})
@@ -42,16 +42,16 @@ func TestPowerShellInstallerScriptMatchesWindowsReleaseContracts(t *testing.T) {
 
 	containsAll(t, script, []string{
 		`[string]$Repository = $(if ($env:PVYAI_REPO)`,
-		`Join-Path $env:LOCALAPPDATA "zero\bin"`,
+		`Join-Path $env:LOCALAPPDATA "pvyai\bin"`,
 		`$archiveName = "pvyai-v$releaseVersion-windows-$arch.zip"`,
 		`$checksumName = "$archiveName.sha256"`,
 		`Get-FileHash -Path $archivePath -Algorithm SHA256`,
 		`Expand-Archive -Path $archivePath -DestinationPath $extractDir -Force`,
-		`Find-ZeroExtractedFile -Root $extractDir -FileName $fileName`,
+		`Find-PVYaiExtractedFile -Root $extractDir -FileName $fileName`,
 		`"pvyai-windows-command-runner.exe"`,
-		`"zero-windows-sandbox-setup.exe"`,
+		`"pvyai-windows-sandbox-setup.exe"`,
 		`Copy-Item -Path $sourcePath -Destination (Join-Path $InstallDir $fileName) -Force`,
-		`Find-ZeroOptionalExtractedDirectory -Root $extractDir -DirectoryName "helpers"`,
+		`Find-PVYaiOptionalExtractedDirectory -Root $extractDir -DirectoryName "helpers"`,
 		`Copy-Item -Path $helpersPath -Destination $targetHelpersPath -Recurse -Force`,
 	})
 }
@@ -70,13 +70,13 @@ func TestUnixInstallerInstallsFromPrefixedReleaseArchiveWithoutNetwork(t *testin
 	}
 
 	installed := readFile(t, filepath.Join(fixture.installDir, "pvyai"))
-	if !strings.Contains(string(installed), "mock-zero") {
-		t.Fatalf("installed binary = %q, want mock-zero script", string(installed))
+	if !strings.Contains(string(installed), "mock-pvyai") {
+		t.Fatalf("installed binary = %q, want mock-pvyai script", string(installed))
 	}
 	if _, err := os.Stat(filepath.Join(fixture.installDir, "helpers", "node_modules", ".bin", "agent-browser")); err != nil {
 		t.Fatalf("installed helper package missing: %v", err)
 	}
-	if _, err := os.Stat(filepath.Join(fixture.installDir, "zero-linux-sandbox")); err != nil {
+	if _, err := os.Stat(filepath.Join(fixture.installDir, "pvyai-linux-sandbox")); err != nil {
 		t.Fatalf("installed linux sandbox helper missing: %v", err)
 	}
 }
@@ -139,8 +139,8 @@ func newUnixInstallFixture(t *testing.T) unixInstallFixture {
 	mustMkdirAll(t, filepath.Dir(fixture.archivePath))
 	mustMkdirAll(t, fixture.installDir)
 	mustMkdirAll(t, filepath.Join(packageDir, "helpers", "node_modules", ".bin"))
-	writeFile(t, filepath.Join(packageDir, "pvyai"), []byte("#!/usr/bin/env sh\necho mock-zero\n"), 0o755)
-	writeFile(t, filepath.Join(packageDir, "zero-linux-sandbox"), []byte("#!/usr/bin/env sh\n"), 0o755)
+	writeFile(t, filepath.Join(packageDir, "pvyai"), []byte("#!/usr/bin/env sh\necho mock-pvyai\n"), 0o755)
+	writeFile(t, filepath.Join(packageDir, "pvyai-linux-sandbox"), []byte("#!/usr/bin/env sh\n"), 0o755)
 	writeFile(t, filepath.Join(packageDir, "pvyai-seccomp"), []byte("#!/usr/bin/env sh\n"), 0o755)
 	mustMkdirAll(t, filepath.Join(packageDir, "helpers", "node_modules", "agent-browser", "bin"))
 	writeFile(t, filepath.Join(packageDir, "helpers", "node_modules", "agent-browser", "bin", "agent-browser.js"), []byte("#!/usr/bin/env node\n"), 0o755)

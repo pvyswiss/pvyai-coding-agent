@@ -548,7 +548,7 @@ func writePluginsHelp(w io.Writer) error {
   pvyai plugins <command>
 
 Commands:
-  list                 List local Zero plugins
+  list                 List local PVYai plugins
   add <git-url|path>   Install a plugin (manifest-validated, pinned in plugins.lock)
   remove <id>          Remove an installed plugin and its lockfile entry
 `)
@@ -571,7 +571,7 @@ func writeHooksHelp(w io.Writer) error {
   pvyai hooks <command>
 
 Commands:
-  list      List configured Zero hooks
+  list      List configured PVYai hooks
   add       Add or update a hook
   remove    Remove a hook by id
   enable    Enable a hook by id

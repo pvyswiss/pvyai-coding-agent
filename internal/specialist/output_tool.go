@@ -48,7 +48,7 @@ func (tool *OutputTool) Name() string {
 }
 
 func (tool *OutputTool) Description() string {
-	return "Poll the output of a background Zero specialist task."
+	return "Poll the output of a background PVYai specialist task."
 }
 
 func (tool *OutputTool) Parameters() tools.Schema {

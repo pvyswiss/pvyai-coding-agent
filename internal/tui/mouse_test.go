@@ -203,7 +203,7 @@ func TestMouseCaptureOnlyWhileInteractiveSurfaceOpen(t *testing.T) {
 	m := mouseTestModel()
 	m.transcript = appendRow(m.transcript, rowUser, "hello")
 	if !m.wantsMouseCapture() {
-		t.Fatal("chat should capture mouse for Zero-owned transcript selection")
+		t.Fatal("chat should capture mouse for PVYai-owned transcript selection")
 	}
 
 	m = typeRunes(t, m, "/")
@@ -227,7 +227,7 @@ func TestMouseCaptureOnEmptyChatSplash(t *testing.T) {
 
 	m.transcript = appendRow(m.transcript, rowUser, "hello")
 	if !m.wantsMouseCapture() {
-		t.Fatal("chat with transcript rows should keep mouse capture for Zero-owned selection")
+		t.Fatal("chat with transcript rows should keep mouse capture for PVYai-owned selection")
 	}
 }
 

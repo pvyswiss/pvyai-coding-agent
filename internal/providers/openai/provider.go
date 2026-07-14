@@ -40,11 +40,11 @@ type Options struct {
 	// is preferred over APIKey; a nil resolver (or one that yields ok=false) uses
 	// the API key. See providerio.SendWithAuthRetry.
 	OAuthResolver providerio.TokenResolver
-	// MaxTokens caps the model's output tokens. Zero omits the cap (the model's
+	// MaxTokens caps the model's output tokens. PVYai omits the cap (the model's
 	// own default applies). Resolved from the model registry by the factory.
 	MaxTokens int
 	// StreamIdleTimeout aborts the stream if no data arrives for this long.
-	// When unset, Zero uses providerio.ResolveStreamIdleTimeout — the
+	// When unset, PVYai uses providerio.ResolveStreamIdleTimeout — the
 	// PVYAI_STREAM_IDLE_TIMEOUT override or providerio.DefaultStreamIdleTimeout.
 	StreamIdleTimeout time.Duration
 	// ParseThinkTags converts streamed <think>...</think> content into reasoning

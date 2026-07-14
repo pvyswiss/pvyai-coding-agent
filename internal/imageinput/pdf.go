@@ -13,8 +13,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 	"github.com/ledongthuc/pdf"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // Dependency posture (see stage 12): the DEFAULT build extracts a PDF's text

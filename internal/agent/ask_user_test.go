@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
 // providerCallingAskUserThenAnswer returns a mock provider whose first turn calls

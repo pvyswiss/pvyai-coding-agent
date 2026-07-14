@@ -200,8 +200,8 @@ func Package(ctx context.Context, options PackageOptions) (PackageResult, error)
 	}
 	stagingDir := filepath.Join(stagingRoot, packageName)
 	archivePath := filepath.Join(releaseDir, archiveName)
-	artifactPath := filepath.Join(rootDir, ZeroArtifactName(goos))
-	stagedBinaryPath := filepath.Join(stagingDir, ZeroArtifactName(goos))
+	artifactPath := filepath.Join(rootDir, PVYaiArtifactName(goos))
+	stagedBinaryPath := filepath.Join(stagingDir, PVYaiArtifactName(goos))
 	helperArtifacts := map[string]string{}
 	if goos == "linux" {
 		helperPath := filepath.Join(rootDir, LinuxSandboxHelperArtifactName(goos))
@@ -264,7 +264,7 @@ func Package(ctx context.Context, options PackageOptions) (PackageResult, error)
 	}, nil
 }
 
-func ZeroArtifactName(goos string) string {
+func PVYaiArtifactName(goos string) string {
 	if goos == "windows" {
 		return "pvyai.exe"
 	}
@@ -300,7 +300,7 @@ func WindowsSandboxSetupArtifactName(goos string) string {
 }
 
 func DefaultBuildOutput(rootDir string, goos string) string {
-	return filepath.Join(rootDir, ZeroArtifactName(goos))
+	return filepath.Join(rootDir, PVYaiArtifactName(goos))
 }
 
 func BuildLdflags(version string) string {

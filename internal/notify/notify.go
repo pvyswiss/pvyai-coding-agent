@@ -1,5 +1,5 @@
 // Package notify emits dep-free terminal notifications (BEL and/or OSC-9
-// desktop notifications) when Zero finishes a turn or needs user input.
+// desktop notifications) when PVYai finishes a turn or needs user input.
 package notify
 
 import (

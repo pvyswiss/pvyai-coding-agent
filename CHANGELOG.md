@@ -28,12 +28,12 @@ tagged. Until then, source builds report the version `dev`.
   and applies on select (Esc reverts).
 - Ten built-in color themes alongside the `dark`/`light` built-ins — `dracula`, `nord`, `gruvbox`,
   `tokyo-night`, `catppuccin`, `one-dark`, `solarized-dark`, `rose-pine`, `everforest`, and
-  `solarized-light` — selectable via `/theme <name>`, `--theme <name>`, or `ZERO_THEME`. Every palette
+  `solarized-light` — selectable via `/theme <name>`, `--theme <name>`, or `PVYAI_THEME`. Every palette
   is contrast-audited to WCAG AA. The built-in light theme was reworked for legibility.
 - `--theme <name>` flag for the TUI, accepting `auto` or any registered theme (previously only the
-  `ZERO_THEME` env var existed).
-- "Accessibility / Appearance" section in the README documenting `NO_COLOR`, `ZERO_THEME`, `/theme`,
-  and `ZERO_NO_FADE`.
+  `PVYAI_THEME` env var existed).
+- "Accessibility / Appearance" section in the README documenting `NO_COLOR`, `PVYAI_THEME`, `/theme`,
+  and `PVYAI_NO_FADE`.
 
 ### Changed
 - Provider connectivity health checks now allow loopback hosts for explicitly user-configured local

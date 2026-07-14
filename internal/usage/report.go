@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 )
 
 // usageEventPayload mirrors the persisted EventUsage payload written by the exec

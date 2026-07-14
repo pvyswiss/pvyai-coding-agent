@@ -22,7 +22,7 @@ var ErrNoActiveProvider = errors.New("no active provider configured")
 
 // ErrProviderRequiresModel marks a resolve failure caused solely by the active
 // provider missing a model with no catalog default to fall back on (custom
-// openai-/anthropic-compatible endpoints — Zero cannot guess a gateway's model).
+// openai-/anthropic-compatible endpoints — PVYai cannot guess a gateway's model).
 // Like ErrNoActiveProvider, the interactive TUI treats it as "needs onboarding"
 // and drops into the setup wizard so the user can fix it; headless commands
 // (zero config, zero exec) still fail with the actionable message.
@@ -51,7 +51,7 @@ const defaultMaxTurns = 50
 const MaxTurnsCeiling = 500
 
 // defaultDeferThreshold is the number of deferred-eligible (MCP) tools at which
-// Zero collapses their full JSON schemas into compact `tool_search` reminder
+// PVYai collapses their full JSON schemas into compact `tool_search` reminder
 // lines instead of advertising every schema on every turn. MCP tool schemas run
 // 300-600 tokens each, so eagerly shipping even a small server's toolset wastes
 // thousands of input tokens per message. Kept low so a typical single-server set
@@ -160,7 +160,7 @@ func Resolve(options ResolveOptions) (ResolvedConfig, error) {
 }
 
 func ResolveMCP(options ResolveOptions) (MCPConfig, error) {
-	// Seed Zero's built-in default MCP servers (e.g. keyless Firecrawl for free,
+	// Seed PVYai's built-in default MCP servers (e.g. keyless Firecrawl for free,
 	// no-setup web search/scrape) BEFORE merging user/project config, so the user
 	// can override any field or disable a default by writing over it.
 	cfg := FileConfig{MCP: MCPConfig{Servers: DefaultMCPServers()}}

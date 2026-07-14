@@ -33,7 +33,7 @@ func TestBackendPlanCarriesPhase0ManagerFields(t *testing.T) {
 		GOOS: "linux",
 		LookupExecutable: func(name string) (string, error) {
 			if name == LinuxSandboxHelperName {
-				return "/usr/bin/zero-linux-sandbox", nil
+				return "/usr/bin/pvyai-linux-sandbox", nil
 			}
 			if name == "bwrap" {
 				return "/usr/bin/bwrap", nil
@@ -81,7 +81,7 @@ func TestCommandPlanCarriesSandboxMetadata(t *testing.T) {
 			Name:            BackendLinuxBwrap,
 			Available:       true,
 			Platform:        "linux",
-			Executable:      "/usr/bin/zero-linux-sandbox",
+			Executable:      "/usr/bin/pvyai-linux-sandbox",
 			CommandWrapping: true,
 			NativeIsolation: true,
 		},

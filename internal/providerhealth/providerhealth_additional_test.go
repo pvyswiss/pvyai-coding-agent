@@ -172,7 +172,7 @@ func TestProbeConnectivityRedactsProviderErrorDetails(t *testing.T) {
 }
 
 func TestOverrideHealthEndpointOpenGateway(t *testing.T) {
-	got, ok := overrideHealthEndpoint(config.ProviderProfile{CatalogID: "gitlawb-opengateway"}, "https://opengateway.gitlawb.com/v1")
+	got, ok := overrideHealthEndpoint(config.ProviderProfile{CatalogID: "pvyswiss-opengateway"}, "https://opengateway.gitlawb.com/v1")
 	if !ok {
 		t.Fatal("expected OpenGateway to override the health endpoint")
 	}
@@ -183,7 +183,7 @@ func TestOverrideHealthEndpointOpenGateway(t *testing.T) {
 	if _, ok := overrideHealthEndpoint(config.ProviderProfile{CatalogID: "openai"}, "https://api.openai.com/v1"); ok {
 		t.Fatal("non-OpenGateway providers must not override the health endpoint")
 	}
-	if _, ok := overrideHealthEndpoint(config.ProviderProfile{CatalogID: "gitlawb-opengateway"}, "::not a url"); ok {
+	if _, ok := overrideHealthEndpoint(config.ProviderProfile{CatalogID: "pvyswiss-opengateway"}, "::not a url"); ok {
 		t.Fatal("an unparseable base URL must not produce an override")
 	}
 }

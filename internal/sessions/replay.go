@@ -297,10 +297,10 @@ func rehydrateEventsWithCompaction(events []Event, compaction Event, payload Com
 
 func buildCompactionPrompt(events []Event, maxChars int) (string, bool) {
 	if len(events) == 0 {
-		return "No compactable Zero session events.", false
+		return "No compactable PVYai session events.", false
 	}
 	lines := []string{
-		"Summarize these Zero session events for future context.",
+		"Summarize these PVYai session events for future context.",
 		"Preserve user intent, tool outcomes, important files, blockers, and follow-up state.",
 	}
 	for _, event := range events {

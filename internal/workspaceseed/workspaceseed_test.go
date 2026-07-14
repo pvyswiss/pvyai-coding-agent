@@ -11,7 +11,7 @@ import (
 func TestBuildOrdersAndClassifiesWorkspaceSeed(t *testing.T) {
 	dirty := true
 	got := Build(Input{
-		CWD:        filepath.Join("tmp", "Zero"),
+		CWD:        filepath.Join("tmp", "PVYai"),
 		GitBranch:  "feat/context",
 		GitDirty:   &dirty,
 		GitSummary: "3 modified, 1 untracked",
@@ -28,7 +28,7 @@ func TestBuildOrdersAndClassifiesWorkspaceSeed(t *testing.T) {
 		},
 	})
 
-	if got.CWD != filepath.Clean(filepath.Join("tmp", "Zero")) {
+	if got.CWD != filepath.Clean(filepath.Join("tmp", "PVYai")) {
 		t.Fatalf("CWD=%q", got.CWD)
 	}
 	if got.GitBranch != "feat/context" {
@@ -49,7 +49,7 @@ func TestBuildOrdersAndClassifiesWorkspaceSeed(t *testing.T) {
 }
 
 func TestBuildKeepsPathsRelativeToCWD(t *testing.T) {
-	root := filepath.Join(t.TempDir(), "Zero")
+	root := filepath.Join(t.TempDir(), "PVYai")
 	dirty := false
 	got := Build(Input{
 		CWD:       root,
@@ -69,7 +69,7 @@ func TestBuildKeepsPathsRelativeToCWD(t *testing.T) {
 	if strings.Contains(rendered, "outside") {
 		t.Fatalf("Render included path outside root:\n%s", rendered)
 	}
-	if !strings.Contains(rendered, "cwd: Zero") {
+	if !strings.Contains(rendered, "cwd: PVYai") {
 		t.Fatalf("Render should use safe cwd base, got:\n%s", rendered)
 	}
 	if got.GitSummary != "clean" {
@@ -109,7 +109,7 @@ func TestBuildNormalizesBackslashPathsBeforeTraversalChecks(t *testing.T) {
 
 func TestRenderHonorsLineAndWidthBudgets(t *testing.T) {
 	seed := Build(Input{
-		CWD:       "/repo/Zero",
+		CWD:       "/repo/PVYai",
 		GitBranch: "feature/very-long-branch-name",
 		Paths: []string{
 			"averyveryveryverylongdirectoryname/averyveryveryverylongfilename.go",

@@ -7,7 +7,7 @@ import (
 )
 
 func TestRenderPromptIncludesRepoSummaryAndRelativePaths(t *testing.T) {
-	root, err := filepath.Abs(filepath.Join("testdata", "Zero"))
+	root, err := filepath.Abs(filepath.Join("testdata", "PVYai"))
 	if err != nil {
 		t.Fatalf("Abs: %v", err)
 	}
@@ -25,7 +25,7 @@ func TestRenderPromptIncludesRepoSummaryAndRelativePaths(t *testing.T) {
 	got := RenderPrompt(repo, 2048)
 
 	for _, want := range []string{
-		"Repo: Zero",
+		"Repo: PVYai",
 		"Counts: files=5 dirs=5",
 		"Important files: README.md, go.mod",
 		"Languages: Go=2, Markdown=1, TypeScript=1",
@@ -45,7 +45,7 @@ func TestRenderPromptIncludesRepoSummaryAndRelativePaths(t *testing.T) {
 }
 
 func TestRenderPromptIsDeterministicAndDeduplicatesPaths(t *testing.T) {
-	root, err := filepath.Abs(filepath.Join("testdata", "Zero"))
+	root, err := filepath.Abs(filepath.Join("testdata", "PVYai"))
 	if err != nil {
 		t.Fatalf("Abs: %v", err)
 	}
@@ -81,7 +81,7 @@ func TestRenderPromptIsDeterministicAndDeduplicatesPaths(t *testing.T) {
 
 func TestRenderPromptHonorsBudget(t *testing.T) {
 	repo := RepoMap{
-		Root: "Zero",
+		Root: "PVYai",
 		Files: []File{
 			{Path: "cmd/pvyai/main.go"},
 			{Path: "internal/agent/loop.go"},
@@ -107,7 +107,7 @@ func TestRenderPromptHonorsBudget(t *testing.T) {
 }
 
 func TestRenderPromptReturnsEmptyForNonPositiveBudget(t *testing.T) {
-	got := RenderPrompt(RepoMap{Root: "Zero", Files: []File{{Path: "main.go"}}}, 0)
+	got := RenderPrompt(RepoMap{Root: "PVYai", Files: []File{{Path: "main.go"}}}, 0)
 	if got != "" {
 		t.Fatalf("RenderPrompt() with zero budget=%q want empty", got)
 	}

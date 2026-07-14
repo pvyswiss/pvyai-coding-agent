@@ -281,7 +281,7 @@ func writeSearchHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
   pvyai search [flags] <query>
 
-Searches persisted local Zero session events.
+Searches persisted local PVYai session events.
 
 Flags:
       --json                 Print JSON results

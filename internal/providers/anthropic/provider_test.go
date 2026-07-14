@@ -44,7 +44,7 @@ func TestStreamCompletionPostsMessagesRequest(t *testing.T) {
 
 	stream, err := provider.StreamCompletion(context.Background(), pvyruntime.CompletionRequest{
 		Messages: []pvyruntime.Message{
-			{Role: pvyruntime.MessageRoleSystem, Content: "You are Zero."},
+			{Role: pvyruntime.MessageRoleSystem, Content: "You are PVYai."},
 			{Role: pvyruntime.MessageRoleUser, Content: "Read the file."},
 			{
 				Role:    pvyruntime.MessageRoleAssistant,
@@ -86,7 +86,7 @@ func TestStreamCompletionPostsMessagesRequest(t *testing.T) {
 	// Prompt caching: system is sent as a cacheable text block, not a bare string.
 	system := gotBody["system"].([]any)
 	sysBlock := system[0].(map[string]any)
-	if sysBlock["type"] != "text" || sysBlock["text"] != "You are Zero." {
+	if sysBlock["type"] != "text" || sysBlock["text"] != "You are PVYai." {
 		t.Fatalf("unexpected system block: %#v", gotBody["system"])
 	}
 	if cc, _ := sysBlock["cache_control"].(map[string]any); cc["type"] != "ephemeral" {
@@ -168,7 +168,7 @@ func TestStreamCompletionEmitsTextUsageAndDone(t *testing.T) {
 	provider := newTestProvider(t, func(w http.ResponseWriter, r *http.Request) {
 		writeSSEEvent(w, "message_start", `{"type":"message_start","message":{"usage":{"input_tokens":25}}}`)
 		writeSSEEvent(w, "content_block_delta", `{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hello"}}`)
-		writeSSEEvent(w, "content_block_delta", `{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" Zero"}}`)
+		writeSSEEvent(w, "content_block_delta", `{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" PVYai"}}`)
 		writeSSEEvent(w, "message_delta", `{"type":"message_delta","usage":{"output_tokens":15}}`)
 		writeSSEEvent(w, "message_stop", `{"type":"message_stop"}`)
 	})
@@ -176,7 +176,7 @@ func TestStreamCompletionEmitsTextUsageAndDone(t *testing.T) {
 	events := collectProviderEvents(t, provider)
 	want := []pvyruntime.StreamEvent{
 		{Type: pvyruntime.StreamEventText, Content: "Hello"},
-		{Type: pvyruntime.StreamEventText, Content: " Zero"},
+		{Type: pvyruntime.StreamEventText, Content: " PVYai"},
 		{Type: pvyruntime.StreamEventUsage, Usage: pvyruntime.Usage{InputTokens: 25, OutputTokens: 15, PromptTokens: 25, CompletionTokens: 15}},
 		{Type: pvyruntime.StreamEventDone},
 	}

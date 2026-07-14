@@ -96,7 +96,7 @@ func writeServeHelp(w io.Writer) error {
 	_, err := fmt.Fprint(w, `Usage:
   pvyai serve --mcp [flags]
 
-Starts Zero as an MCP stdio server.
+Starts PVYai as an MCP stdio server.
 
 Flags:
       --mcp                   Run the MCP stdio server

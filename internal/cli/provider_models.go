@@ -21,7 +21,7 @@ type providerModelsOptions struct {
 // works for custom OpenAI-/Anthropic-compatible providers too: discovery runs off
 // the profile's base URL + credentials, so a self-hosted endpoint serving a dozen
 // models no longer needs a config object per model — configure the provider once,
-// then run any listed model with `pvyai exec --model <id>` (Zero passes unknown
+// then run any listed model with `pvyai exec --model <id>` (PVYai passes unknown
 // model ids through to the provider).
 func runProvidersModels(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) int {
 	options, help, err := parseProviderModelsArgs(args)

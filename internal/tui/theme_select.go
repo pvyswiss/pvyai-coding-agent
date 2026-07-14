@@ -58,12 +58,12 @@ func validThemeMode(s string) bool {
 // this one source of truth instead of hardcoding the theme list.
 func ValidThemeArg(s string) bool { return validThemeMode(s) }
 
-// applyTheme swaps the active palette (zeroTheme) and the globals derived from it
+// applyTheme swaps the active palette (pvyaiTheme) and the globals derived from it
 // — the streaming-fade ramp and the static render cache — so a switch repaints
 // every subsequent render. For themeAuto it resolves to dark/light from
 // hasDarkBackground; explicit dark/light ignore it. Returns the concrete mode
 // applied (never auto). Must run on the Bubble Tea update goroutine (or before the
-// program starts), like every other zeroTheme access.
+// program starts), like every other pvyaiTheme access.
 func applyTheme(mode themeMode, hasDarkBackground bool) themeMode {
 	resolved := mode
 	if mode == themeAuto {
@@ -73,12 +73,12 @@ func applyTheme(mode themeMode, hasDarkBackground bool) themeMode {
 		}
 	}
 	// Resolve the (now concrete) mode to its registered palette; an unknown name
-	// falls back to the dark built-in so a bad value can never leave zeroTheme unset.
+	// falls back to the dark built-in so a bad value can never leave pvyaiTheme unset.
 	entry, ok := lookupTheme(string(resolved))
 	if !ok {
 		entry, _ = lookupTheme(string(themeDark))
 	}
-	zeroTheme = buildTheme(entry.Palette)
+	pvyaiTheme = buildTheme(entry.Palette)
 	rebuildStreamingFadePalette()
 	if defaultRenderCache != nil {
 		defaultRenderCache.clear() // old-palette entries must not be reused
@@ -91,10 +91,10 @@ func applyTheme(mode themeMode, hasDarkBackground bool) themeMode {
 // m.themeMode when the filter matches nothing. Called on every change to the
 // picker's selection or filter (arrow/wheel moves, mouse, and query typing) so the
 // whole UI — and the overlay itself — always renders the mode the popup points at,
-// and never strands on a stale preview. It only swaps the global zeroTheme via
+// and never strands on a stale preview. It only swaps the global pvyaiTheme via
 // applyTheme; m.themeMode keeps the committed preference so Esc can restore it. A
 // no-op unless a theme picker is open. Runs on the Update goroutine, like every
-// zeroTheme access.
+// pvyaiTheme access.
 func (m model) previewSelectedTheme() {
 	if m.picker == nil || m.picker.kind != pickerTheme {
 		return

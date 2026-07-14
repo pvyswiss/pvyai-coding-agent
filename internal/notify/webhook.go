@@ -111,16 +111,16 @@ type WebhookConfig struct {
 // response or a transport error is logged (redacted) and swallowed so it can
 // never disrupt the run.
 type WebhookSink struct {
-	url        string
-	summary    string
-	format     WebhookFormat
+	url         string
+	summary     string
+	format      WebhookFormat
 	displayName string
-	avatarURL  string
-	msgType    string
-	links      []WebhookLink
-	client     *http.Client
-	logf       func(format string, args ...any)
-	secrets    []string
+	avatarURL   string
+	msgType     string
+	links       []WebhookLink
+	client      *http.Client
+	logf        func(format string, args ...any)
+	secrets     []string
 }
 
 // NewWebhookSink builds a WebhookSink from cfg. A blank URL produces an inert

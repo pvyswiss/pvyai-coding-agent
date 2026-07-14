@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/pvyswiss/pvyai-coding-agent/internal/modelregistry"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvygit"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/usage"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvygit"
 )
 
 type usageOptions struct {
@@ -302,7 +302,7 @@ func writeUsageHelp(w io.Writer) error {
   pvyai usage report [flags]
 
 Summarizes token usage and reconstructed (estimated) cost from persisted local
-Zero session usage events, plus a working-tree net-LOC efficiency estimate.
+PVYai session usage events, plus a working-tree net-LOC efficiency estimate.
 
 Flags:
       --json                 Print JSON report

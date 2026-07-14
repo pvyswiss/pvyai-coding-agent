@@ -1,8 +1,8 @@
-name: ZERO
+name: PVYAI
 description: >-
-  Run the ZERO coding agent headlessly in a GitHub workflow. ZERO is
+  Run the PVYai coding agent headlessly in a GitHub workflow. PVYai is
   model- and provider-agnostic: you supply the provider and API key as inputs.
-author: Gitlawb
+author: pvyswiss
 
 branding:
   icon: terminal
@@ -10,7 +10,7 @@ branding:
 
 inputs:
   prompt:
-    description: The instruction for ZERO to execute. Mutually exclusive with prompt-file.
+    description: The instruction for PVYai to execute. Mutually exclusive with prompt-file.
     required: false
     default: ""
   prompt-file:
@@ -21,20 +21,20 @@ inputs:
     description: >-
       Provider id to activate (for example openai, anthropic, gemini, ollama, or
       any configured OpenAI-/Anthropic-compatible endpoint). Optional when the
-      repository already carries a .zero/config.json with an active provider.
+      repository already carries a .pvyai/config.json with an active provider.
     required: false
     default: ""
   api-key:
     description: >-
       The provider API key. Pass it from a repository or organization secret;
-      it is exported only for the ZERO step and never written to the log.
+      it is exported only for the PVYai step and never written to the log.
     required: false
     default: ""
   api-key-env:
     description: >-
       Name of the environment variable the chosen provider reads its key from
       (for example OPENAI_API_KEY or ANTHROPIC_API_KEY). When set together with
-      api-key, that variable is exported only for the ZERO step. Leave the action
+      api-key, that variable is exported only for the PVYai step. Leave the action
       provider-agnostic by passing the env name your provider expects rather
       than hardcoding one here.
     required: false
@@ -44,43 +44,43 @@ inputs:
     required: false
     default: ""
   mode:
-    description: Run mode passed to `zero exec --mode` (for example smart, deep, or fast).
+    description: Run mode passed to `pvyai exec --mode` (for example smart, deep, or fast).
     required: false
     default: ""
   auto:
     description: >-
-      Autonomy ceiling passed to `zero exec --auto` (low, medium, or high).
+      Autonomy ceiling passed to `pvyai exec --auto` (low, medium, or high).
       Defaults to the conservative `low` so an unattended CI run cannot take
       high-impact actions implicitly.
     required: false
     default: low
   self-correct:
     description: >-
-      When true, allow ZERO to request a stronger model mid-run if it hits a
-      wall (maps to `zero exec --allow-escalation`).
+      When true, allow PVYai to request a stronger model mid-run if it hits a
+      wall (maps to `pvyai exec --allow-escalation`).
     required: false
     default: "false"
   add-dir:
     description: >-
       Newline- or comma-separated extra write roots granted to the run (each
-      passed as `zero exec --add-dir`). The checked-out repository is always
+      passed as `pvyai exec --add-dir`). The checked-out repository is always
       writable; everything else stays read-only unless listed here.
     required: false
     default: ""
   worktree:
-    description: When true, run inside an isolated git worktree (`zero exec --worktree`).
+    description: When true, run inside an isolated git worktree (`pvyai exec --worktree`).
     required: false
     default: "false"
   output-format:
     description: >-
-      Output format for `zero exec` (text, json, or stream-json). Defaults to
+      Output format for `pvyai exec` (text, json, or stream-json). Defaults to
       stream-json, which is captured to a file and exposed as the output-file
       output and uploaded by the caller if desired.
     required: false
     default: stream-json
   post-to:
     description: >-
-      Optional destination for a run summary after ZERO finishes: `pr-comment`
+      Optional destination for a run summary after PVYai finishes: `pr-comment`
       posts to the triggering pull request using github-token, `slack` posts to
       slack-webhook-url, or `none` (default) posts nowhere.
     required: false
@@ -98,26 +98,26 @@ inputs:
     required: false
     default: ${{ github.token }}
   working-directory:
-    description: Directory to run ZERO in. Defaults to the workspace root.
+    description: Directory to run PVYai in. Defaults to the workspace root.
     required: false
     default: ${{ github.workspace }}
-  zero-version:
+  pvyai-version:
     description: >-
-      ZERO release version/tag to install (for example v1.2.3 or latest).
+      PVYai release version/tag to install (for example v1.2.3 or latest).
       Defaults to the ref this action was resolved at, falling back to latest.
     required: false
     default: ""
-  zero-repo:
-    description: Repository to install the ZERO release from (owner/repo).
+  pvyai-repo:
+    description: Repository to install the PVYai release from (owner/repo).
     required: false
-    default: Gitlawb/zero
+    default: pvyswiss/pvyai-coding-agent
 
 outputs:
   exit-code:
-    description: The exit code ZERO returned (0 success, 2 usage, 3 provider, non-zero otherwise).
+    description: The exit code PVYai returned (0 success, 2 usage, 3 provider, non-zero otherwise).
     value: ${{ steps.run.outputs.exit-code }}
   output-file:
-    description: Path to the captured ZERO stdout (the raw output-format stream).
+    description: Path to the captured PVYai stdout (the raw output-format stream).
     value: ${{ steps.run.outputs.output-file }}
   summary:
     description: A short human-readable summary line parsed from the run, when available.
@@ -126,23 +126,23 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Install ZERO
+    - name: Install PVYai
       shell: bash
       env:
-        ZERO_REPO: ${{ inputs.zero-repo }}
-        ZERO_VERSION_INPUT: ${{ inputs.zero-version }}
+        PVYAI_REPO: ${{ inputs.pvyai-repo }}
+        PVYAI_VERSION_INPUT: ${{ inputs.pvyai-version }}
         ACTION_REF: ${{ github.action_ref }}
         ACTION_PATH: ${{ github.action_path }}
         RUNNER_TEMP: ${{ runner.temp }}
       run: |
         set -euo pipefail
         if [ "${RUNNER_OS}" = "Windows" ]; then
-          echo "::error::The ZERO action currently supports Linux and macOS runners only." >&2
+          echo "::error<IP_ADDRESS>The PVYai action currently supports Linux and macOS runners only." >&2
           exit 1
         fi
         # Resolve the version to install: explicit input wins; otherwise the ref
         # this action was checked out at (a tag); otherwise the latest release.
-        version="${ZERO_VERSION_INPUT}"
+        version="${PVYAI_VERSION_INPUT}"
         if [ -z "${version}" ]; then
           version="${ACTION_REF}"
         fi
@@ -154,32 +154,32 @@ runs:
         if printf '%s' "${version}" | grep -qiE '^[0-9a-f]{40}$'; then
           version="latest"
         fi
-        install_dir="${RUNNER_TEMP}/zero-bin"
+        install_dir="${RUNNER_TEMP}/pvyai-bin"
         mkdir -p "${install_dir}"
-        # Reuse ZERO's own checksum-verifying installer, shipped with the action.
-        ZERO_REPO="${ZERO_REPO}" ZERO_VERSION="${version}" ZERO_INSTALL_DIR="${install_dir}" \
+        # Reuse PVYai's own checksum-verifying installer, shipped with the action.
+        PVYAI_REPO="${PVYAI_REPO}" PVYAI_VERSION="${version}" PVYAI_INSTALL_DIR="${install_dir}" \
           bash "${ACTION_PATH}/scripts/install.sh"
         echo "${install_dir}" >> "${GITHUB_PATH}"
 
-    - name: Run ZERO
+    - name: Run PVYai
       id: run
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       env:
         # Secrets are passed via the environment and never echoed. `set +x` and
         # the absence of any `echo` of these values keep them out of the log.
-        ZERO_INPUT_API_KEY: ${{ inputs.api-key }}
-        ZERO_INPUT_API_KEY_ENV: ${{ inputs.api-key-env }}
-        ZERO_INPUT_PROVIDER: ${{ inputs.provider }}
-        ZERO_INPUT_PROMPT: ${{ inputs.prompt }}
-        ZERO_INPUT_PROMPT_FILE: ${{ inputs.prompt-file }}
-        ZERO_INPUT_MODEL: ${{ inputs.model }}
-        ZERO_INPUT_MODE: ${{ inputs.mode }}
-        ZERO_INPUT_AUTO: ${{ inputs.auto }}
-        ZERO_INPUT_SELF_CORRECT: ${{ inputs.self-correct }}
-        ZERO_INPUT_ADD_DIR: ${{ inputs.add-dir }}
-        ZERO_INPUT_WORKTREE: ${{ inputs.worktree }}
-        ZERO_INPUT_OUTPUT_FORMAT: ${{ inputs.output-format }}
+        PVYAI_INPUT_API_KEY: ${{ inputs.api-key }}
+        PVYAI_INPUT_API_KEY_ENV: ${{ inputs.api-key-env }}
+        PVYAI_INPUT_PROVIDER: ${{ inputs.provider }}
+        PVYAI_INPUT_PROMPT: ${{ inputs.prompt }}
+        PVYAI_INPUT_PROMPT_FILE: ${{ inputs.prompt-file }}
+        PVYAI_INPUT_MODEL: ${{ inputs.model }}
+        PVYAI_INPUT_MODE: ${{ inputs.mode }}
+        PVYAI_INPUT_AUTO: ${{ inputs.auto }}
+        PVYAI_INPUT_SELF_CORRECT: ${{ inputs.self-correct }}
+        PVYAI_INPUT_ADD_DIR: ${{ inputs.add-dir }}
+        PVYAI_INPUT_WORKTREE: ${{ inputs.worktree }}
+        PVYAI_INPUT_OUTPUT_FORMAT: ${{ inputs.output-format }}
         RUNNER_TEMP: ${{ runner.temp }}
       run: |
         set -euo pipefail
@@ -187,60 +187,60 @@ runs:
         # Export the provider key under the env name the provider expects. This
         # keeps the action provider-agnostic: no provider->env mapping is baked
         # in. The value is never printed.
-        if [ -n "${ZERO_INPUT_API_KEY}" ] && [ -n "${ZERO_INPUT_API_KEY_ENV}" ]; then
-          if ! printf '%s' "${ZERO_INPUT_API_KEY_ENV}" | grep -qE '^[A-Za-z_][A-Za-z0-9_]*$'; then
-            echo "::error::api-key-env must be a valid environment variable name." >&2
+        if [ -n "${PVYAI_INPUT_API_KEY}" ] && [ -n "${PVYAI_INPUT_API_KEY_ENV}" ]; then
+          if ! printf '%s' "${PVYAI_INPUT_API_KEY_ENV}" | grep -qE '^[A-Za-z_][A-Za-z0-9_]*$'; then
+            echo "::error<IP_ADDRESS>api-key-env must be a valid environment variable name." >&2
             exit 2
           fi
-          # Export in-process for this Run ZERO step so zero can read it; do
+          # Export in-process for this Run PVYai step so pvyai can read it; do
           # not persist provider credentials to later job steps.
-          export "${ZERO_INPUT_API_KEY_ENV}=${ZERO_INPUT_API_KEY}"
+          export "${PVYAI_INPUT_API_KEY_ENV}=${PVYAI_INPUT_API_KEY}"
         fi
-        if [ -n "${ZERO_INPUT_PROVIDER}" ]; then
-          export ZERO_PROVIDER="${ZERO_INPUT_PROVIDER}"
+        if [ -n "${PVYAI_INPUT_PROVIDER}" ]; then
+          export PVYAI_PROVIDER="${PVYAI_INPUT_PROVIDER}"
         fi
 
         args=(exec)
 
-        if [ -n "${ZERO_INPUT_PROMPT_FILE}" ] && [ -n "${ZERO_INPUT_PROMPT}" ]; then
-          echo "::error::The 'prompt' and 'prompt-file' inputs are mutually exclusive." >&2
+        if [ -n "${PVYAI_INPUT_PROMPT_FILE}" ] && [ -n "${PVYAI_INPUT_PROMPT}" ]; then
+          echo "::error<IP_ADDRESS>The 'prompt' and 'prompt-file' inputs are mutually exclusive." >&2
           exit 2
         fi
-        if [ -n "${ZERO_INPUT_PROMPT_FILE}" ]; then
-          args+=(--file "${ZERO_INPUT_PROMPT_FILE}")
-        elif [ -n "${ZERO_INPUT_PROMPT}" ]; then
-          args+=(--prompt "${ZERO_INPUT_PROMPT}")
+        if [ -n "${PVYAI_INPUT_PROMPT_FILE}" ]; then
+          args+=(--file "${PVYAI_INPUT_PROMPT_FILE}")
+        elif [ -n "${PVYAI_INPUT_PROMPT}" ]; then
+          args+=(--prompt "${PVYAI_INPUT_PROMPT}")
         else
-          echo "::error::Provide either the 'prompt' or 'prompt-file' input." >&2
+          echo "::error<IP_ADDRESS>Provide either the 'prompt' or 'prompt-file' input." >&2
           exit 2
         fi
 
-        [ -n "${ZERO_INPUT_MODEL}" ] && args+=(--model "${ZERO_INPUT_MODEL}")
-        [ -n "${ZERO_INPUT_MODE}" ] && args+=(--mode "${ZERO_INPUT_MODE}")
-        [ -n "${ZERO_INPUT_AUTO}" ] && args+=(--auto "${ZERO_INPUT_AUTO}")
-        [ "${ZERO_INPUT_SELF_CORRECT}" = "true" ] && args+=(--allow-escalation)
-        [ "${ZERO_INPUT_WORKTREE}" = "true" ] && args+=(--worktree)
-        args+=(--output-format "${ZERO_INPUT_OUTPUT_FORMAT}")
+        [ -n "${PVYAI_INPUT_MODEL}" ] && args+=(--model "${PVYAI_INPUT_MODEL}")
+        [ -n "${PVYAI_INPUT_MODE}" ] && args+=(--mode "${PVYAI_INPUT_MODE}")
+        [ -n "${PVYAI_INPUT_AUTO}" ] && args+=(--auto "${PVYAI_INPUT_AUTO}")
+        [ "${PVYAI_INPUT_SELF_CORRECT}" = "true" ] && args+=(--allow-escalation)
+        [ "${PVYAI_INPUT_WORKTREE}" = "true" ] && args+=(--worktree)
+        args+=(--output-format "${PVYAI_INPUT_OUTPUT_FORMAT}")
         # No --notify in CI (no terminal); the optional Slack post is handled
         # separately below so it works regardless of output format.
         args+=(--no-notify)
 
         # Split add-dir on newlines and commas; each non-empty entry is a root.
-        if [ -n "${ZERO_INPUT_ADD_DIR}" ]; then
+        if [ -n "${PVYAI_INPUT_ADD_DIR}" ]; then
           while IFS= read -r dir; do
             # Trim only surrounding whitespace so paths with internal spaces survive.
             dir="$(printf '%s' "${dir}" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
             [ -n "${dir}" ] && args+=(--add-dir "${dir}")
-          done < <(printf '%s' "${ZERO_INPUT_ADD_DIR}" | tr ',' '\n')
+          done < <(printf '%s' "${PVYAI_INPUT_ADD_DIR}" | tr ',' '\n')
         fi
 
-        output_file="${RUNNER_TEMP}/zero-output.txt"
+        output_file="${RUNNER_TEMP}/pvyai-output.txt"
 
-        # Run ZERO. Capture stdout to a file AND echo it to the log. Surface the
+        # Run PVYai. Capture stdout to a file AND echo it to the log. Surface the
         # real exit code as the step's status. The sandbox is active by default;
         # this action never enables unsafe permission-skipping.
         set +e
-        zero "${args[@]}" | tee "${output_file}"
+        pvyai "${args[@]}" | tee "${output_file}"
         code=${PIPESTATUS[0]}
         set -e
 
@@ -252,9 +252,9 @@ runs:
         # Keep the summary single-line and bounded for the step output.
         summary="$(printf '%s' "${summary}" | cut -c1-280)"
         {
-          echo "summary<<ZERO_EOF"
+          echo "summary<<PVYAI_EOF"
           printf '%s\n' "${summary}"
-          echo "ZERO_EOF"
+          echo "PVYAI_EOF"
         } >> "${GITHUB_OUTPUT}"
 
         exit "${code}"
@@ -265,13 +265,13 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.github-token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
-        ZERO_EXIT: ${{ steps.run.outputs.exit-code }}
-        ZERO_SUMMARY: ${{ steps.run.outputs.summary }}
+        PVYAI_EXIT: ${{ steps.run.outputs.exit-code }}
+        PVYAI_SUMMARY: ${{ steps.run.outputs.summary }}
       run: |
         set -euo pipefail
         status="succeeded"
-        [ "${ZERO_EXIT}" != "0" ] && status="failed (exit ${ZERO_EXIT})"
-        body="$(printf 'ZERO run %s.\n\n%s' "${status}" "${ZERO_SUMMARY}")"
+        [ "${PVYAI_EXIT}" != "0" ] && status="failed (exit ${PVYAI_EXIT})"
+        body="$(printf 'PVYai run %s.\n\n%s' "${status}" "${PVYAI_SUMMARY}")"
         gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
           -f body="${body}" >/dev/null
 
@@ -280,14 +280,14 @@ runs:
       shell: bash
       env:
         SLACK_WEBHOOK_URL: ${{ inputs.slack-webhook-url }}
-        ZERO_EXIT: ${{ steps.run.outputs.exit-code }}
-        ZERO_SUMMARY: ${{ steps.run.outputs.summary }}
+        PVYAI_EXIT: ${{ steps.run.outputs.exit-code }}
+        PVYAI_SUMMARY: ${{ steps.run.outputs.summary }}
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       run: |
         set -euo pipefail
         status="succeeded"
-        [ "${ZERO_EXIT}" != "0" ] && status="failed (exit ${ZERO_EXIT})"
-        text="ZERO run ${status} for ${GITHUB_REPOSITORY}@${GITHUB_REF_NAME}. ${ZERO_SUMMARY} ${RUN_URL}"
+        [ "${PVYAI_EXIT}" != "0" ] && status="failed (exit ${PVYAI_EXIT})"
+        text="PVYai run ${status} for ${GITHUB_REPOSITORY}@${GITHUB_REF_NAME}. ${PVYAI_SUMMARY} ${RUN_URL}"
         # Slack incoming webhooks accept {"text": "..."}; jq escapes the body and
         # the URL is never echoed. A delivery failure is a warning, not a failure.
         payload="$(jq -n --arg text "${text}" '{text: $text}')"

@@ -11,11 +11,11 @@ import (
 	"sync"
 
 	"github.com/pvyswiss/pvyai-coding-agent/internal/hooks"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/streamjson"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 const maxTurnsAnswer = "Agent reached maximum number of turns without a final answer."
@@ -1142,7 +1142,7 @@ func executeToolCall(ctx context.Context, registry *tools.Registry, call ToolCal
 		Depth:             options.Depth,
 		Cwd:               options.Cwd,
 		// Per-session file version tracker so write_file/edit_file refuse to clobber
-		// a file that changed on disk outside Zero since it was last read.
+		// a file that changed on disk outside PVYai since it was last read.
 		FileTracker: options.FileTracker,
 		// Post-edit diagnostics are NOT forwarded to the tools: they used to run
 		// synchronously inside edit_file/write_file and block every mutating tool

@@ -647,7 +647,7 @@ func readSingleConfig(path string) (Config, error) {
 	layer, ok := readLayer(SourceProject, path, &diagnostics)
 	if len(diagnostics) > 0 {
 		diagnostic := diagnostics[0]
-		return Config{}, fmt.Errorf("invalid Zero hook config at %s: %s", diagnostic.Path, diagnostic.Message)
+		return Config{}, fmt.Errorf("invalid PVYai hook config at %s: %s", diagnostic.Path, diagnostic.Message)
 	}
 	if !ok {
 		return Config{Enabled: true, Hooks: []Definition{}}, nil
@@ -883,12 +883,12 @@ func requiredID(obj map[string]any, field string) (string, error) {
 	return value, nil
 }
 
-// KnownEvents returns the hook events Zero recognizes, in dispatch order.
+// KnownEvents returns the hook events PVYai recognizes, in dispatch order.
 func KnownEvents() []Event {
 	return []Event{EventBeforeTool, EventAfterTool, EventSessionStart, EventSessionEnd, EventSpecialistStart, EventSpecialistStop}
 }
 
-// IsValidEvent reports whether event is one Zero recognizes.
+// IsValidEvent reports whether event is one PVYai recognizes.
 func IsValidEvent(event Event) bool {
 	for _, known := range KnownEvents() {
 		if event == known {

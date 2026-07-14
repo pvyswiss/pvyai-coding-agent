@@ -32,14 +32,14 @@ func TestPackageBinPointsToNodeWrapper(t *testing.T) {
 	if err := json.Unmarshal(bytes, &pkg); err != nil {
 		t.Fatalf("Unmarshal package.json: %v", err)
 	}
-	if pkg.Name != "@pvyswiss/pvyai" {
+	if pkg.Name != "@pvyswiss/pvyai-agent" {
 		t.Fatalf("name = %q, want @pvyswiss/pvyai", pkg.Name)
 	}
-	if pkg.Bin["pvyai"] != "bin/zero.js" {
-		t.Fatalf("bin.pvyai = %q, want bin/zero.js", pkg.Bin["pvyai"])
+	if pkg.Bin["pvyai"] != "bin/pvyai.js" {
+		t.Fatalf("bin.pvyai = %q, want bin/pvyai.js", pkg.Bin["pvyai"])
 	}
-	if pkg.Module != "bin/zero.js" {
-		t.Fatalf("module = %q, want bin/zero.js", pkg.Module)
+	if pkg.Module != "bin/pvyai.js" {
+		t.Fatalf("module = %q, want bin/pvyai.js", pkg.Module)
 	}
 	// Only a postinstall hook (which downloads the prebuilt binary) is allowed.
 	// Repository build scripts (build/prepare/prepack/…) must not ship in the
@@ -66,7 +66,7 @@ func TestPackageBinPointsToNodeWrapper(t *testing.T) {
 			t.Fatalf("package.json dependencies is missing %q", name)
 		}
 	}
-	wantFiles := map[string]bool{"bin/zero.js": false, "scripts/postinstall.mjs": false}
+	wantFiles := map[string]bool{"bin/pvyai.js": false, "scripts/postinstall.mjs": false}
 	for _, f := range pkg.Files {
 		if _, ok := wantFiles[f]; ok {
 			wantFiles[f] = true
@@ -213,7 +213,7 @@ func packageVersion(t *testing.T) string {
 
 func TestNodeWrapperIsExecutableAndDoesNotImportBun(t *testing.T) {
 	root := repoRoot(t)
-	wrapperPath := filepath.Join(root, "bin", "zero.js")
+	wrapperPath := filepath.Join(root, "bin", "pvyai.js")
 	bytes, err := os.ReadFile(wrapperPath)
 	if err != nil {
 		t.Fatalf("ReadFile wrapper: %v", err)
@@ -269,7 +269,7 @@ func TestNodeWrapperLaunchesNativeBinary(t *testing.T) {
 	wrapperPath := copyWrapperFixture(t)
 	root := filepath.Dir(filepath.Dir(wrapperPath))
 	nativePath := filepath.Join(root, "pvyai")
-	if err := os.WriteFile(nativePath, []byte("#!/usr/bin/env sh\nprintf 'mock-zero'; for arg in \"$@\"; do printf ' %s' \"$arg\"; done; printf '\\n'\n"), 0o755); err != nil {
+	if err := os.WriteFile(nativePath, []byte("#!/usr/bin/env sh\nprintf 'mock-pvyai'; for arg in \"$@\"; do printf ' %s' \"$arg\"; done; printf '\\n'\n"), 0o755); err != nil {
 		t.Fatalf("WriteFile native fixture: %v", err)
 	}
 
@@ -283,7 +283,7 @@ func TestNodeWrapperLaunchesNativeBinary(t *testing.T) {
 	if err != nil {
 		t.Fatalf("wrapper returned error: %v; output: %s", err, output)
 	}
-	if got := strings.TrimSpace(string(output)); got != "mock-zero --version" {
+	if got := strings.TrimSpace(string(output)); got != "mock-pvyai --version" {
 		t.Fatalf("wrapper output = %q", got)
 	}
 }
@@ -401,7 +401,7 @@ func withoutEnvKey(env []string, key string) []string {
 func copyWrapperFixture(t *testing.T) string {
 	t.Helper()
 	root := repoRoot(t)
-	bytes, err := os.ReadFile(filepath.Join(root, "bin", "zero.js"))
+	bytes, err := os.ReadFile(filepath.Join(root, "bin", "pvyai.js"))
 	if err != nil {
 		t.Fatalf("ReadFile wrapper: %v", err)
 	}
@@ -420,7 +420,7 @@ func copyWrapperFixture(t *testing.T) string {
 	if err := os.WriteFile(filepath.Join(dir, "package.json"), []byte(`{"type":"module"}`), 0o644); err != nil {
 		t.Fatalf("WriteFile package fixture: %v", err)
 	}
-	wrapperPath := filepath.Join(binDir, "zero.js")
+	wrapperPath := filepath.Join(binDir, "pvyai.js")
 	if err := os.WriteFile(wrapperPath, bytes, 0o755); err != nil {
 		t.Fatalf("WriteFile wrapper fixture: %v", err)
 	}

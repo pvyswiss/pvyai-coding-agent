@@ -123,7 +123,7 @@ func (tool bashTool) run(ctx context.Context, args map[string]any, engine *pvySa
 	addSandboxMeta(meta, plan)
 
 	// Bound the capture so a command with runaway output (`cat huge.log`, `yes`)
-	// can't grow Zero's memory before truncation: only the head+tail each stream
+	// can't grow PVYai's memory before truncation: only the head+tail each stream
 	// will ever surface to the model are retained, the middle is discarded as it
 	// streams, and the true size is counted for the truncation marker.
 	stdout := newBoundedBuffer(bashCaptureBudgetBytes, bashCaptureBudgetBytes)

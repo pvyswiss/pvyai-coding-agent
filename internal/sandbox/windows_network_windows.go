@@ -235,7 +235,7 @@ func ensureWindowsWFPProvider(engine windows.Handle, providerKey windows.GUID) e
 	if err != nil {
 		return err
 	}
-	description, err := windows.UTF16PtrFromString("Persistent WFP provider for Zero Windows sandbox filters")
+	description, err := windows.UTF16PtrFromString("Persistent WFP provider for PVYai Windows sandbox filters")
 	if err != nil {
 		return err
 	}
@@ -256,7 +256,7 @@ func ensureWindowsWFPSubLayer(engine windows.Handle, providerKey windows.GUID, s
 	if err != nil {
 		return err
 	}
-	description, err := windows.UTF16PtrFromString("Persistent WFP sublayer for Zero Windows sandbox filters")
+	description, err := windows.UTF16PtrFromString("Persistent WFP sublayer for PVYai Windows sandbox filters")
 	if err != nil {
 		return err
 	}

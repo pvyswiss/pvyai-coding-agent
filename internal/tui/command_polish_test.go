@@ -278,7 +278,7 @@ func TestContextAndPermissionsCommandsRenderProductState(t *testing.T) {
 		"Context",
 		"go runtime | ask permissions | 1 tool",
 		"Runtime",
-		"cwd        D:\\codings\\Opensource\\Zero",
+		"cwd        D:\\codings\\Opensource\\PVYai",
 		"provider   openai",
 		"model      gpt-4.1",
 		"Session",

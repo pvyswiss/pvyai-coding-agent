@@ -206,9 +206,9 @@ func Format(result Result) string {
 		}
 		lines = appendAssetLines(lines, result.ReleaseAsset)
 		if target := releaseAssetTarget(result.ReleaseAsset); target != "" {
-			lines = append(lines, "Download the verified "+target+" release asset, then replace the current zero binary.")
+			lines = append(lines, "Download the verified "+target+" release asset, then replace the current pvyai binary.")
 		} else {
-			lines = append(lines, "Download the verified release asset, then replace the current zero binary.")
+			lines = append(lines, "Download the verified release asset, then replace the current pvyai binary.")
 		}
 		return strings.Join(lines, "\n")
 	}

@@ -10,10 +10,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/specmode"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 type mockProvider struct {
@@ -595,7 +595,7 @@ func TestRunReturnsProviderText(t *testing.T) {
 	provider := &mockProvider{
 		turns: [][]pvyruntime.StreamEvent{{
 			{Type: pvyruntime.StreamEventText, Content: "hello"},
-			{Type: pvyruntime.StreamEventText, Content: " zero"},
+			{Type: pvyruntime.StreamEventText, Content: " pvyai"},
 			{Type: pvyruntime.StreamEventDone},
 		}},
 	}
@@ -719,7 +719,7 @@ func TestRunEmitsTextDeltas(t *testing.T) {
 	provider := &mockProvider{
 		turns: [][]pvyruntime.StreamEvent{{
 			{Type: pvyruntime.StreamEventText, Content: "hello"},
-			{Type: pvyruntime.StreamEventText, Content: " zero"},
+			{Type: pvyruntime.StreamEventText, Content: " pvyai"},
 			{Type: pvyruntime.StreamEventDone},
 		}},
 	}
@@ -733,7 +733,7 @@ func TestRunEmitsTextDeltas(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if strings.Join(deltas, "|") != "hello| zero" {
+	if strings.Join(deltas, "|") != "hello| pvyai" {
 		t.Fatalf("expected text deltas, got %#v", deltas)
 	}
 }
@@ -2837,7 +2837,7 @@ func TestRunAppendsConfirmationPolicyToSystemPrompt(t *testing.T) {
 		t.Fatalf("expected first message to be system, got %s", system.Role)
 	}
 	// The overhauled core prompt: identity + the mandatory testing gate.
-	for _, marker := range []string{"You are Zero", "Testing gate"} {
+	for _, marker := range []string{"You are PVYai", "Testing gate"} {
 		if !strings.Contains(system.Content, marker) {
 			t.Fatalf("system prompt missing core marker %q: %q", marker, system.Content)
 		}
@@ -2852,7 +2852,7 @@ func TestRunAppendsConfirmationPolicyToSystemPrompt(t *testing.T) {
 
 func TestSystemPromptEmbedsConfirmationPolicy(t *testing.T) {
 	prompt := buildSystemPrompt(Options{})
-	if !strings.HasPrefix(prompt, "You are Zero") {
+	if !strings.HasPrefix(prompt, "You are PVYai") {
 		t.Fatalf("system prompt should start with the core instructions, got %q", prompt)
 	}
 	if !strings.Contains(prompt, "Confirmation Modes") {

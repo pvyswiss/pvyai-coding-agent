@@ -27,6 +27,8 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/providermodeldiscovery"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/provideronboarding"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/providers"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvygit"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/selfverify"
@@ -39,8 +41,6 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/update"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/verify"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/worktrees"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvygit"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 var version = "dev"

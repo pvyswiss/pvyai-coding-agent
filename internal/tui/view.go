@@ -60,7 +60,7 @@ func (m model) titleBar(width int) string {
 	workspace := m.titleWorkspaceSegment()
 	workspaceShort := m.titleWorkspaceSegmentShort()
 	branchOnly := m.titleBranchSegment()
-	cwdOnly := zeroTheme.faint.Render(shortenPath(m.cwd))
+	cwdOnly := pvyaiTheme.faint.Render(shortenPath(m.cwd))
 	compactLeft := cwdOnly
 	if branchOnly != "" {
 		compactLeft = branchOnly
@@ -68,7 +68,7 @@ func (m model) titleBar(width int) string {
 	model := m.titleModelSegment()
 	ctx := ""
 	if window := m.modelContextWindow(m.modelName); window > 0 {
-		ctx = zeroTheme.faint.Render(" · " + formatContextWindow(window))
+		ctx = pvyaiTheme.faint.Render(" · " + formatContextWindow(window))
 	}
 
 	var candidates []headerCandidate
@@ -102,12 +102,12 @@ func (m model) titleBar(width int) string {
 	}
 
 	line := startupHeaderLine(width, candidates)
-	rule := zeroTheme.line.Render(strings.Repeat("─", width))
+	rule := pvyaiTheme.line.Render(strings.Repeat("─", width))
 	return line + "\n" + rule
 }
 
 func (m model) titleWorkspaceSegment() string {
-	cwd := zeroTheme.faint.Render(shortenPath(m.cwd))
+	cwd := pvyaiTheme.faint.Render(shortenPath(m.cwd))
 	parts := []string{}
 	if branch := m.titleBranchSegment(); branch != "" {
 		parts = append(parts, branch)
@@ -122,12 +122,12 @@ func (m model) titleWorkspaceSegment() string {
 }
 
 func (m model) titleWorkspaceSegmentShort() string {
-	cwd := zeroTheme.faint.Render(shortenPath(m.cwd))
+	cwd := pvyaiTheme.faint.Render(shortenPath(m.cwd))
 	parts := []string{}
 	branch := strings.TrimSpace(m.gitBranch)
 	if branch != "" {
-		icon := zeroTheme.muted.Render("")
-		parts = append(parts, icon+" "+zeroTheme.muted.Render(middleTruncate(branch, 22)))
+		icon := pvyaiTheme.muted.Render("")
+		parts = append(parts, icon+" "+pvyaiTheme.muted.Render(middleTruncate(branch, 22)))
 	}
 	if pr := m.titlePRSegment(); pr != "" {
 		parts = append(parts, pr)
@@ -143,7 +143,7 @@ func (m model) titleBranchSegment() string {
 	if branch == "" {
 		return ""
 	}
-	return zeroTheme.muted.Render("") + " " + zeroTheme.muted.Render(branch)
+	return pvyaiTheme.muted.Render("") + " " + pvyaiTheme.muted.Render(branch)
 }
 
 func (m model) titlePRSegment() string {
@@ -155,13 +155,13 @@ func (m model) titleModelSegment() string {
 	model := strings.TrimSpace(m.modelName)
 	switch {
 	case provider == "" && model == "":
-		return zeroTheme.muted.Render("no provider")
+		return pvyaiTheme.muted.Render("no provider")
 	case model == "":
-		return zeroTheme.ink.Render(provider)
+		return pvyaiTheme.ink.Render(provider)
 	case provider == "":
-		return zeroTheme.ink.Render(model)
+		return pvyaiTheme.ink.Render(model)
 	default:
-		return zeroTheme.ink.Render(provider + "/" + model)
+		return pvyaiTheme.ink.Render(provider + "/" + model)
 	}
 }
 
@@ -170,16 +170,16 @@ func (m model) composerDividerLine(width int) string {
 	// The composer rule is a quiet model reminder above the input. Permission mode
 	// and reasoning effort now live in the persistent status line (the conventional
 	// footer for run-state), so they're not duplicated on this rule.
-	meta := zeroTheme.muted.Render(model)
+	meta := pvyaiTheme.muted.Render(model)
 	metaWidth := lipgloss.Width(meta)
 	if width < 8 {
-		return zeroTheme.lineStrong.Render(strings.Repeat("─", width))
+		return pvyaiTheme.lineStrong.Render(strings.Repeat("─", width))
 	}
 	if width < metaWidth+4 {
-		return zeroTheme.lineStrong.Render("╰" + strings.Repeat("─", width-2) + "╯")
+		return pvyaiTheme.lineStrong.Render("╰" + strings.Repeat("─", width-2) + "╯")
 	}
 	rule := strings.Repeat("─", width-metaWidth-4)
-	return zeroTheme.lineStrong.Render("╰"+rule+" ") + meta + zeroTheme.lineStrong.Render(" ╯")
+	return pvyaiTheme.lineStrong.Render("╰"+rule+" ") + meta + pvyaiTheme.lineStrong.Render(" ╯")
 }
 
 // statusLine renders the bottom readout as ` │ `-separated groups: the run-state
@@ -188,35 +188,35 @@ func (m model) composerDividerLine(width int) string {
 // title bar and is NOT duplicated here. Groups drop with the width tier.
 func (m model) statusLine(width int) string {
 	tier := widthTier(width)
-	separator := zeroTheme.line.Render(" │ ")
+	separator := pvyaiTheme.line.Render(" │ ")
 	prefix := "  "
 
 	// Left chip: the safety-relevant run-state — permission mode (auto/ask/unsafe)
 	// in its mode colour. This was previously only on the easy-to-miss composer
 	// rule; the persistent footer is where users look for "will it run commands?".
 	modeText, modeStyle := m.modeLabel()
-	left := prefix + zeroTheme.accent.Render("●") + " " + modeStyle.Render(modeText)
+	left := prefix + pvyaiTheme.accent.Render("●") + " " + modeStyle.Render(modeText)
 
 	if tier == tierTiny {
 		if m.exitConfirmActive {
-			return fitStyledLine(prefix+zeroTheme.amber.Render("●")+" "+zeroTheme.amber.Render(ctrlCExitConfirmText), width)
+			return fitStyledLine(prefix+pvyaiTheme.amber.Render("●")+" "+pvyaiTheme.amber.Render(ctrlCExitConfirmText), width)
 		}
 		if m.cancelConfirmActive {
-			return fitStyledLine(prefix+zeroTheme.amber.Render("●")+" "+zeroTheme.amber.Render(escCancelConfirmText), width)
+			return fitStyledLine(prefix+pvyaiTheme.amber.Render("●")+" "+pvyaiTheme.amber.Render(escCancelConfirmText), width)
 		}
 		return fitStyledLine(left, width)
 	}
 
 	// Non-tiny: append the active reasoning effort (brand lime, omitted on auto).
 	if m.reasoningEffort != "" {
-		left += zeroTheme.muted.Render(" · ") + zeroTheme.accent.Render(string(m.reasoningEffort))
+		left += pvyaiTheme.muted.Render(" · ") + pvyaiTheme.accent.Render(string(m.reasoningEffort))
 	}
 	if m.exitConfirmActive {
-		left = prefix + zeroTheme.amber.Render("●") + " " + zeroTheme.amber.Render(ctrlCExitConfirmText)
+		left = prefix + pvyaiTheme.amber.Render("●") + " " + pvyaiTheme.amber.Render(ctrlCExitConfirmText)
 	} else if m.cancelConfirmActive {
-		left = prefix + zeroTheme.amber.Render("●") + " " + zeroTheme.amber.Render(escCancelConfirmText)
+		left = prefix + pvyaiTheme.amber.Render("●") + " " + pvyaiTheme.amber.Render(escCancelConfirmText)
 	} else if summary := m.backgroundTerminalSummary(); summary != "" {
-		left += separator + zeroTheme.muted.Render(summary)
+		left += separator + pvyaiTheme.muted.Render(summary)
 	}
 
 	rightGroups := []string{}
@@ -239,7 +239,7 @@ func (m model) statusLine(width int) string {
 		usage = m.usageCostSegment()
 	}
 	if usage != "" {
-		rightGroups = append(rightGroups, zeroTheme.muted.Render(usage))
+		rightGroups = append(rightGroups, pvyaiTheme.muted.Render(usage))
 	}
 	right := strings.Join(rightGroups, separator)
 
@@ -296,17 +296,17 @@ func nextPermissionMode(mode agent.PermissionMode) agent.PermissionMode {
 func (m model) modeLabel() (string, lipgloss.Style) {
 	switch m.permissionMode {
 	case agent.PermissionModeAuto:
-		return "auto-approve", zeroTheme.modeAuto
+		return "auto-approve", pvyaiTheme.modeAuto
 	case agent.PermissionModeAsk:
-		return "ask", zeroTheme.modeAsk
+		return "ask", pvyaiTheme.modeAsk
 	case agent.PermissionModeUnsafe:
-		return "unsafe", zeroTheme.modeUnsafe
+		return "unsafe", pvyaiTheme.modeUnsafe
 	default:
 		mode := strings.TrimSpace(string(m.permissionMode))
 		if mode == "" {
-			return "auto-approve", zeroTheme.modeAuto
+			return "auto-approve", pvyaiTheme.modeAuto
 		}
-		return mode, zeroTheme.muted
+		return mode, pvyaiTheme.muted
 	}
 }
 
@@ -365,12 +365,12 @@ func (m model) contextFillPercent() (pct, used, window int, style lipgloss.Style
 	if ratio > 1 {
 		ratio = 1
 	}
-	style = zeroTheme.green
+	style = pvyaiTheme.green
 	switch {
 	case ratio >= 0.90:
-		style = zeroTheme.red
+		style = pvyaiTheme.red
 	case ratio >= 0.75:
-		style = zeroTheme.amber
+		style = pvyaiTheme.amber
 	}
 	return int(ratio*100 + 0.5), used, window, style, true
 }
@@ -544,27 +544,27 @@ func renderSuggestionPalette(items []selectableListItem, selected, width int, ti
 
 	lines := make([]string, 0, len(visible)+5)
 	searchInset := lipgloss.Width("❯ ")
-	searchPrefix := transparentSurface(zeroTheme.ink).Render(strings.Repeat(" ", searchInset))
+	searchPrefix := transparentSurface(pvyaiTheme.ink).Render(strings.Repeat(" ", searchInset))
 	lines = append(lines, fillPaletteLine(searchPrefix+renderSuggestionSearchLine(query, maxInt(1, innerWidth-searchInset)), innerWidth, transparentSurface))
-	lines = append(lines, zeroTheme.line.Render(strings.Repeat("─", innerWidth)))
+	lines = append(lines, pvyaiTheme.line.Render(strings.Repeat("─", innerWidth)))
 
 	for index, item := range visible {
 		absoluteIndex := start + index
 		surface := transparentSurface
-		marker := surface(zeroTheme.faintest).Render("  ")
+		marker := surface(pvyaiTheme.faintest).Render("  ")
 		if absoluteIndex == selected {
-			surface = zeroTheme.onSel
-			marker = surface(zeroTheme.accent).Render("❯ ")
+			surface = pvyaiTheme.onSel
+			marker = surface(pvyaiTheme.accent).Render("❯ ")
 		}
 
 		labelText := truncateRunes(item.Label, labelWidth)
-		label := surface(zeroTheme.ink).Render(labelText)
-		pad := surface(zeroTheme.ink).Render(strings.Repeat(" ", maxInt(0, labelWidth-lipgloss.Width(labelText))))
+		label := surface(pvyaiTheme.ink).Render(labelText)
+		pad := surface(pvyaiTheme.ink).Render(strings.Repeat(" ", maxInt(0, labelWidth-lipgloss.Width(labelText))))
 		line := marker + label + pad
 		if desc := strings.TrimSpace(item.Description); desc != "" {
 			descWidth := innerWidth - lipgloss.Width(marker) - labelWidth - 2
 			if truncated := truncateRunes(desc, maxInt(0, descWidth)); truncated != "" {
-				line += surface(zeroTheme.faint).Render("  " + truncated)
+				line += surface(pvyaiTheme.faint).Render("  " + truncated)
 			}
 		}
 		lines = append(lines, fillPaletteLine(line, innerWidth, surface))
@@ -574,19 +574,19 @@ func renderSuggestionPalette(items []selectableListItem, selected, width int, ti
 		if strings.EqualFold(strings.TrimSpace(title), "Files") {
 			message = "no matching files"
 		}
-		lines = append(lines, fillPaletteLine(searchPrefix+zeroTheme.faint.Render(message), innerWidth, transparentSurface))
+		lines = append(lines, fillPaletteLine(searchPrefix+pvyaiTheme.faint.Render(message), innerWidth, transparentSurface))
 	}
 
 	if footer = strings.TrimSpace(footer); footer != "" {
-		lines = append(lines, zeroTheme.line.Render(strings.Repeat("─", innerWidth)))
-		line := zeroTheme.faint.Render(footer)
+		lines = append(lines, pvyaiTheme.line.Render(strings.Repeat("─", innerWidth)))
+		line := pvyaiTheme.faint.Render(footer)
 		lines = append(lines, fillPaletteLine(line, innerWidth, transparentSurface))
 	}
-	return styledBlockFillTitle(paletteWidth, strings.TrimSpace(title), lines, zeroTheme.lineStrong, lipgloss.NewStyle())
+	return styledBlockFillTitle(paletteWidth, strings.TrimSpace(title), lines, pvyaiTheme.lineStrong, lipgloss.NewStyle())
 }
 
 func styledBlockFillTitle(width int, title string, lines []string, borderStyle lipgloss.Style, fill lipgloss.Style) string {
-	return styledBlockFillTitleStyled(width, title, lines, borderStyle, fill, zeroTheme.ink.Bold(true))
+	return styledBlockFillTitleStyled(width, title, lines, borderStyle, fill, pvyaiTheme.ink.Bold(true))
 }
 
 // styledBlockFillTitleStyled is styledBlockFillTitle with a caller-supplied style
@@ -625,9 +625,9 @@ func styledBlockFillTitleStyled(width int, title string, lines []string, borderS
 
 func renderSuggestionSearchLine(query string, width int) string {
 	query = strings.TrimSpace(query)
-	label := zeroTheme.userPrompt.Render("search > ")
+	label := pvyaiTheme.userPrompt.Render("search > ")
 	valueWidth := maxInt(1, width-lipgloss.Width(label))
-	value := zeroTheme.ink.Render(truncateRunes(query, valueWidth))
+	value := pvyaiTheme.ink.Render(truncateRunes(query, valueWidth))
 	return fitStyledLine(label+value, width)
 }
 
@@ -639,7 +639,7 @@ func fillPaletteLine(line string, width int, surface func(lipgloss.Style) lipglo
 	line = fitStyledLine(line, width)
 	pad := maxInt(0, width-lipgloss.Width(line))
 	if pad > 0 {
-		line += surface(zeroTheme.ink).Render(strings.Repeat(" ", pad))
+		line += surface(pvyaiTheme.ink).Render(strings.Repeat(" ", pad))
 	}
 	return line
 }
@@ -723,45 +723,45 @@ func (m model) pickerOverlay(width int) string {
 	lines := make([]string, 0, len(visible)+5)
 	title := strings.TrimSpace(m.picker.title)
 	hint := "↑/↓ · ⏎ · esc"
-	lines = append(lines, zeroTheme.faint.Render(hint))
+	lines = append(lines, pvyaiTheme.faint.Render(hint))
 	lastGroup := ""
 	for index, item := range visible {
 		absoluteIndex := start + index
 		if item.Group != "" && item.Group != lastGroup {
-			lines = append(lines, zeroTheme.accent.Render(item.Group))
+			lines = append(lines, pvyaiTheme.accent.Render(item.Group))
 			lastGroup = item.Group
 		}
 		surface := transparentSurface
-		marker := surface(zeroTheme.faintest).Render("  ")
+		marker := surface(pvyaiTheme.faintest).Render("  ")
 		if absoluteIndex == m.picker.selected {
-			surface = zeroTheme.onSel
-			marker = surface(zeroTheme.accent).Render("❯ ")
+			surface = pvyaiTheme.onSel
+			marker = surface(pvyaiTheme.accent).Render("❯ ")
 		}
 		left := marker
 		switch {
 		case item.Local:
-			left += surface(zeroTheme.blue).Render("● ")
+			left += surface(pvyaiTheme.blue).Render("● ")
 		case item.Remote:
-			left += surface(zeroTheme.accent).Render("● ")
+			left += surface(pvyaiTheme.accent).Render("● ")
 		}
 		if item.Favorite {
-			left += surface(zeroTheme.accent).Render("* ")
+			left += surface(pvyaiTheme.accent).Render("* ")
 		}
-		left += surface(zeroTheme.ink).Render(item.Label)
+		left += surface(pvyaiTheme.ink).Render(item.Label)
 		right := ""
 		if item.Meta != "" {
-			right = surface(zeroTheme.faintest).Render(item.Meta)
+			right = surface(pvyaiTheme.faintest).Render(item.Meta)
 		}
 		// Paint the gap on the row surface so selected rows read as one solid
 		// band; joinHeaderLine would pad with bare (untinted) spaces.
 		gap := innerWidth - lipgloss.Width(left) - lipgloss.Width(right)
-		line := left + surface(zeroTheme.ink).Render(strings.Repeat(" ", maxInt(1, gap))) + right
+		line := left + surface(pvyaiTheme.ink).Render(strings.Repeat(" ", maxInt(1, gap))) + right
 		lines = append(lines, fitStyledLine(line, innerWidth))
 	}
 	if len(visible) == 0 {
-		lines = append(lines, zeroTheme.faint.Render("  no matching items"))
+		lines = append(lines, pvyaiTheme.faint.Render("  no matching items"))
 	}
-	return centerRenderedBlock(styledBlockFillTitle(overlayWidth, title, lines, zeroTheme.lineStrong, lipgloss.NewStyle()), width)
+	return centerRenderedBlock(styledBlockFillTitle(overlayWidth, title, lines, pvyaiTheme.lineStrong, lipgloss.NewStyle()), width)
 }
 
 func (m model) modelPickerOverlay(width int) string {
@@ -784,53 +784,53 @@ func (m model) modelPickerOverlay(width int) string {
 
 	lines := make([]string, 0, len(visible)+6)
 	searchInset := lipgloss.Width("❯ ")
-	searchPrefix := transparentSurface(zeroTheme.ink).Render(strings.Repeat(" ", searchInset))
+	searchPrefix := transparentSurface(pvyaiTheme.ink).Render(strings.Repeat(" ", searchInset))
 	lines = append(lines, fillPaletteLine(searchPrefix+renderModelPickerSearchLine(m.picker.query, maxInt(1, innerWidth-searchInset)), innerWidth, transparentSurface))
 	if status := strings.TrimSpace(m.modelPickerLoadError); status != "" {
-		lines = append(lines, fillPaletteLine(searchPrefix+zeroTheme.faint.Render(status), innerWidth, transparentSurface))
+		lines = append(lines, fillPaletteLine(searchPrefix+pvyaiTheme.faint.Render(status), innerWidth, transparentSurface))
 	}
-	lines = append(lines, zeroTheme.line.Render(strings.Repeat("─", innerWidth)))
+	lines = append(lines, pvyaiTheme.line.Render(strings.Repeat("─", innerWidth)))
 	lastGroup := ""
 	for index, item := range visible {
 		if item.Group != "" && item.Group != lastGroup {
-			lines = append(lines, fillPaletteLine(zeroTheme.accent.Bold(true).Render(item.Group), innerWidth, transparentSurface))
+			lines = append(lines, fillPaletteLine(pvyaiTheme.accent.Bold(true).Render(item.Group), innerWidth, transparentSurface))
 			lastGroup = item.Group
 		}
 		lines = append(lines, renderModelPickerRow(innerWidth, start+index == m.picker.selected, item))
 	}
 	if len(visible) == 0 {
-		lines = append(lines, fillPaletteLine(searchPrefix+zeroTheme.faint.Render("no matching models"), innerWidth, transparentSurface))
+		lines = append(lines, fillPaletteLine(searchPrefix+pvyaiTheme.faint.Render("no matching models"), innerWidth, transparentSurface))
 	}
 	if item, ok := m.picker.current(); ok {
 		if detail := modelPickerItemDetail(item); detail != "" {
-			lines = append(lines, zeroTheme.line.Render(strings.Repeat("─", innerWidth)))
-			lines = append(lines, fillPaletteLine(searchPrefix+zeroTheme.faint.Render(detail), innerWidth, transparentSurface))
+			lines = append(lines, pvyaiTheme.line.Render(strings.Repeat("─", innerWidth)))
+			lines = append(lines, fillPaletteLine(searchPrefix+pvyaiTheme.faint.Render(detail), innerWidth, transparentSurface))
 		}
 	}
-	lines = append(lines, zeroTheme.line.Render(strings.Repeat("─", innerWidth)))
+	lines = append(lines, pvyaiTheme.line.Render(strings.Repeat("─", innerWidth)))
 	footer := "↑/↓ move   Enter select   Ctrl+F favorite   Esc close"
-	lines = append(lines, fillPaletteLine(zeroTheme.faint.Render(footer), innerWidth, transparentSurface))
+	lines = append(lines, fillPaletteLine(pvyaiTheme.faint.Render(footer), innerWidth, transparentSurface))
 	title := strings.TrimSpace(m.picker.title)
 	if title == "" {
 		title = "Choose a model"
 	}
-	return centerRenderedBlock(styledBlockFillTitle(overlayWidth, title, lines, zeroTheme.lineStrong, lipgloss.NewStyle()), width)
+	return centerRenderedBlock(styledBlockFillTitle(overlayWidth, title, lines, pvyaiTheme.lineStrong, lipgloss.NewStyle()), width)
 }
 
 func (m model) modelPickerLoadingOverlay(width int) string {
 	overlayWidth := modelPickerLoadingOverlayWidth(width)
 	innerWidth := maxInt(1, overlayWidth-4)
 	lines := []string{
-		fillPaletteLine(zeroTheme.faint.Render("Checking available models..."), innerWidth, transparentSurface),
-		fillPaletteLine(zeroTheme.faint.Render("Built-in models will be used if discovery fails."), innerWidth, transparentSurface),
-		zeroTheme.line.Render(strings.Repeat("─", innerWidth)),
-		fillPaletteLine(zeroTheme.faint.Render("Esc close"), innerWidth, transparentSurface),
+		fillPaletteLine(pvyaiTheme.faint.Render("Checking available models..."), innerWidth, transparentSurface),
+		fillPaletteLine(pvyaiTheme.faint.Render("Built-in models will be used if discovery fails."), innerWidth, transparentSurface),
+		pvyaiTheme.line.Render(strings.Repeat("─", innerWidth)),
+		fillPaletteLine(pvyaiTheme.faint.Render("Esc close"), innerWidth, transparentSurface),
 	}
 	title := strings.TrimSpace(m.picker.title)
 	if title == "" {
 		title = "Choose a model"
 	}
-	return centerRenderedBlock(styledBlockFillTitle(overlayWidth, title, lines, zeroTheme.lineStrong, lipgloss.NewStyle()), width)
+	return centerRenderedBlock(styledBlockFillTitle(overlayWidth, title, lines, pvyaiTheme.lineStrong, lipgloss.NewStyle()), width)
 }
 
 func modelPickerLoadingOverlayWidth(terminalWidth int) int {
@@ -878,20 +878,20 @@ func modelPickerOverlayWidth(terminalWidth int, picker *commandPicker) int {
 
 func renderModelPickerSearchLine(query string, width int) string {
 	query = strings.TrimSpace(query)
-	prompt := zeroTheme.userPrompt.Render("search > ")
-	cursor := zeroTheme.accent.Render("▌")
+	prompt := pvyaiTheme.userPrompt.Render("search > ")
+	cursor := pvyaiTheme.accent.Render("▌")
 	if query == "" {
-		return fitStyledLine(prompt+cursor+zeroTheme.faint.Render("model name..."), width)
+		return fitStyledLine(prompt+cursor+pvyaiTheme.faint.Render("model name..."), width)
 	}
-	return fitStyledLine(prompt+zeroTheme.ink.Render(query)+cursor, width)
+	return fitStyledLine(prompt+pvyaiTheme.ink.Render(query)+cursor, width)
 }
 
 func renderModelPickerRow(width int, selected bool, item pickerItem) string {
 	surface := transparentSurface
-	marker := surface(zeroTheme.faintest).Render("  ")
+	marker := surface(pvyaiTheme.faintest).Render("  ")
 	if selected {
-		surface = zeroTheme.onSel
-		marker = surface(zeroTheme.accent).Render("❯ ")
+		surface = pvyaiTheme.onSel
+		marker = surface(pvyaiTheme.accent).Render("❯ ")
 	}
 	label := strings.TrimSpace(item.Label)
 	if label == "" {
@@ -901,7 +901,7 @@ func renderModelPickerRow(width int, selected bool, item pickerItem) string {
 	if item.Favorite {
 		prefix = "* "
 	}
-	left := marker + surface(zeroTheme.ink).Render(prefix+label)
+	left := marker + surface(pvyaiTheme.ink).Render(prefix+label)
 	// The provider is shown as a section header above each group, so rows no longer
 	// repeat it as a right-aligned tag (matches a grouped provider+model list).
 	return fillPaletteLine(left, width, surface)

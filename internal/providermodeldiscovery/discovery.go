@@ -138,7 +138,7 @@ func DiscoverOllamaContextWindow(ctx context.Context, baseURL string, model stri
 }
 
 // ollamaShowEndpoint derives the native Ollama API root from the
-// OpenAI-compatible base URL Zero stores for the provider (".../v1") and
+// OpenAI-compatible base URL PVYai stores for the provider (".../v1") and
 // appends /api/show.
 func ollamaShowEndpoint(baseURL string) (string, error) {
 	baseURL = strings.TrimSpace(baseURL)

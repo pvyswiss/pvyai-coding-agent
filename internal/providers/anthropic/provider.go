@@ -87,7 +87,7 @@ type Options struct {
 	// the API key. See providerio.SendWithAuthRetry.
 	OAuthResolver providerio.TokenResolver
 	// StreamIdleTimeout aborts the stream if no data arrives for this long.
-	// When unset, Zero uses providerio.ResolveStreamIdleTimeout — the
+	// When unset, PVYai uses providerio.ResolveStreamIdleTimeout — the
 	// PVYAI_STREAM_IDLE_TIMEOUT override or providerio.DefaultStreamIdleTimeout.
 	StreamIdleTimeout time.Duration
 }

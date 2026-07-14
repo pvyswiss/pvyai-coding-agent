@@ -54,7 +54,7 @@ func TestRegisterToolsAddsPromptGatedMCPTools(t *testing.T) {
 		t.Fatalf("Run without approval = %#v, want permission error", denied)
 	}
 	approved := registry.RunWithOptions(context.Background(), "mcp_docs_lookup", map[string]any{"query": "pvyai"}, tools.RunOptions{PermissionGranted: true})
-	if approved.Status != tools.StatusOK || approved.Output != "lookup: zero" {
+	if approved.Status != tools.StatusOK || approved.Output != "lookup: pvyai" {
 		t.Fatalf("approved run = %#v, want lookup output", approved)
 	}
 	if approved.Meta["mcp.server"] != "docs" || approved.Meta["mcp.tool"] != "lookup" {

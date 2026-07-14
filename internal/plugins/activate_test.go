@@ -42,7 +42,7 @@ func toolPlugin(pluginDir string, tool ToolExtension) LoadedPlugin {
 	return LoadedPlugin{
 		SchemaVersion: 1,
 		ID:            "zero.demo",
-		Name:          "Zero Demo",
+		Name:          "PVYai Demo",
 		Version:       "0.1.0",
 		Enabled:       true,
 		Source:        SourceProject,

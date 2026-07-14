@@ -71,7 +71,7 @@ func (tool editFileTool) RunWithOptions(ctx context.Context, args map[string]any
 	if err != nil {
 		return errorResult("Error reading " + relativePath + ": " + err.Error())
 	}
-	// Refuse to edit a file that changed on disk outside Zero since it was last
+	// Refuse to edit a file that changed on disk outside PVYai since it was last
 	// read: the model's old_string was formed against a stale view, so applying it
 	// now could silently corrupt the newer content.
 	if cerr := options.FileTracker.CheckConflict(absolutePath, contentBytes); cerr != nil {

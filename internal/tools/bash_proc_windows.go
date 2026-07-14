@@ -20,7 +20,7 @@ var bashWaitDelay = 2 * time.Second
 // hardenProcessLifetime makes a Windows shell command killable as a process
 // tree. cmd.exe starts helper commands as child processes, so killing only the
 // shell can leave a long-running child alive and holding cwd/temp handles after
-// Zero exits.
+// PVYai exits.
 func hardenProcessLifetime(command *exec.Cmd) {
 	command.WaitDelay = bashWaitDelay
 	command.Cancel = func() error {

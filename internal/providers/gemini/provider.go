@@ -54,7 +54,7 @@ type Options struct {
 	// the OpenAI and Anthropic providers). Nil falls back to plain API-key auth.
 	OAuthResolver providerio.TokenResolver
 	// StreamIdleTimeout aborts the stream if no data arrives for this long.
-	// When unset, Zero uses providerio.ResolveStreamIdleTimeout — the
+	// When unset, PVYai uses providerio.ResolveStreamIdleTimeout — the
 	// PVYAI_STREAM_IDLE_TIMEOUT override or providerio.DefaultStreamIdleTimeout.
 	StreamIdleTimeout time.Duration
 }
@@ -364,7 +364,7 @@ func (provider *Provider) geminiRequest(request pvyruntime.CompletionRequest) (g
 // emits on every tool's parameters and which Gemini 400s on ("Unknown name
 // \"additionalProperties\" … Cannot find field") — must be dropped before the
 // request goes out. Kept as an allowlist rather than a denylist so a schema
-// keyword Zero (or an MCP server) adds later can't silently leak an unsupported
+// keyword PVYai (or an MCP server) adds later can't silently leak an unsupported
 // field into the Gemini payload.
 var geminiSchemaFields = map[string]bool{
 	"type": true, "format": true, "title": true, "description": true,

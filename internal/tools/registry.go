@@ -25,7 +25,7 @@ type RunOptions struct {
 	Cwd               string
 	// FileTracker, when set, records the version of each file read or written this
 	// session so write_file/edit_file can refuse to clobber a file that changed on
-	// disk outside Zero since it was last read. nil disables the feature entirely
+	// disk outside PVYai since it was last read. nil disables the feature entirely
 	// (the read/write tools behave exactly as before).
 	FileTracker *FileTracker
 	// EnabledTools / DisabledTools carry the run's operator tool filters so a

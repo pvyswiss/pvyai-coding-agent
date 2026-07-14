@@ -44,7 +44,7 @@ func TestStreamCompletionPostsGenerateContentRequest(t *testing.T) {
 
 	stream, err := provider.StreamCompletion(context.Background(), pvyruntime.CompletionRequest{
 		Messages: []pvyruntime.Message{
-			{Role: pvyruntime.MessageRoleSystem, Content: "You are Zero."},
+			{Role: pvyruntime.MessageRoleSystem, Content: "You are PVYai."},
 			{Role: pvyruntime.MessageRoleUser, Content: "Read the file."},
 			{
 				Role:    pvyruntime.MessageRoleAssistant,
@@ -56,7 +56,7 @@ func TestStreamCompletionPostsGenerateContentRequest(t *testing.T) {
 				}},
 			},
 			{Role: pvyruntime.MessageRoleTool, Content: "file contents", ToolCallID: "call_1"},
-			{Role: pvyruntime.MessageRoleUser, Content: "Now grep for Zero."},
+			{Role: pvyruntime.MessageRoleUser, Content: "Now grep for PVYai."},
 		},
 		Tools: []pvyruntime.ToolDefinition{{
 			Name:        "read_file",
@@ -107,7 +107,7 @@ func TestStreamCompletionPostsGenerateContentRequest(t *testing.T) {
 	if mergedUserParts[0].(map[string]any)["functionResponse"].(map[string]any)["name"] != "read_file" {
 		t.Fatalf("unexpected functionResponse: %#v", mergedUserParts[0])
 	}
-	if mergedUserParts[1].(map[string]any)["text"] != "Now grep for Zero." {
+	if mergedUserParts[1].(map[string]any)["text"] != "Now grep for PVYai." {
 		t.Fatalf("user text after tool result was not merged: %#v", mergedUserParts)
 	}
 	tools := gotBody["tools"].([]any)
@@ -282,13 +282,13 @@ func TestStreamCompletionAppliesCustomAuthAndHeaders(t *testing.T) {
 func TestStreamCompletionEmitsTextUsageAndReasoningTokens(t *testing.T) {
 	provider := newTestProvider(t, func(w http.ResponseWriter, r *http.Request) {
 		writeSSE(w, `{"candidates":[{"content":{"parts":[{"text":"Hello"}]}}]}`)
-		writeSSE(w, `{"candidates":[{"content":{"parts":[{"text":" Zero"}]}}],"usageMetadata":{"promptTokenCount":25,"candidatesTokenCount":15,"thoughtsTokenCount":3,"cachedContentTokenCount":7}}`)
+		writeSSE(w, `{"candidates":[{"content":{"parts":[{"text":" PVYai"}]}}],"usageMetadata":{"promptTokenCount":25,"candidatesTokenCount":15,"thoughtsTokenCount":3,"cachedContentTokenCount":7}}`)
 	})
 
 	events := collectProviderEvents(t, provider)
 	want := []pvyruntime.StreamEvent{
 		{Type: pvyruntime.StreamEventText, Content: "Hello"},
-		{Type: pvyruntime.StreamEventText, Content: " Zero"},
+		{Type: pvyruntime.StreamEventText, Content: " PVYai"},
 		{Type: pvyruntime.StreamEventUsage, Usage: pvyruntime.Usage{InputTokens: 25, OutputTokens: 18, PromptTokens: 25, CompletionTokens: 18, ReasoningTokens: 3, CachedInputTokens: 7}},
 		{Type: pvyruntime.StreamEventDone},
 	}
@@ -299,7 +299,7 @@ func TestStreamCompletionEmitsTextUsageAndReasoningTokens(t *testing.T) {
 
 func TestStreamCompletionEmitsCandidateFunctionCalls(t *testing.T) {
 	provider := newTestProvider(t, func(w http.ResponseWriter, r *http.Request) {
-		writeSSE(w, `{"candidates":[{"content":{"parts":[{"functionCall":{"id":"call_1","name":"read_file","args":{"path":"src/index.ts"}}},{"functionCall":{"id":"call_2","name":"grep","args":{"pattern":"Zero"}}}]}}]}`)
+		writeSSE(w, `{"candidates":[{"content":{"parts":[{"functionCall":{"id":"call_1","name":"read_file","args":{"path":"src/index.ts"}}},{"functionCall":{"id":"call_2","name":"grep","args":{"pattern":"PVYai"}}}]}}]}`)
 	})
 
 	events := collectProviderEvents(t, provider)
@@ -308,7 +308,7 @@ func TestStreamCompletionEmitsCandidateFunctionCalls(t *testing.T) {
 		{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call_1", ArgumentsFragment: `{"path":"src/index.ts"}`},
 		{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call_1"},
 		{Type: pvyruntime.StreamEventToolCallStart, ToolCallID: "call_2", ToolName: "grep"},
-		{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call_2", ArgumentsFragment: `{"pattern":"Zero"}`},
+		{Type: pvyruntime.StreamEventToolCallDelta, ToolCallID: "call_2", ArgumentsFragment: `{"pattern":"PVYai"}`},
 		{Type: pvyruntime.StreamEventToolCallEnd, ToolCallID: "call_2"},
 		{Type: pvyruntime.StreamEventDone},
 	}
@@ -336,7 +336,7 @@ func TestStreamCompletionEmitsTopLevelFunctionCalls(t *testing.T) {
 
 func TestStreamCompletionUsesSyntheticToolIDsWhenMissing(t *testing.T) {
 	provider := newTestProvider(t, func(w http.ResponseWriter, r *http.Request) {
-		writeSSE(w, `{"functionCalls":[{"name":"grep","args":{"pattern":"Zero"}}]}`)
+		writeSSE(w, `{"functionCalls":[{"name":"grep","args":{"pattern":"PVYai"}}]}`)
 	})
 
 	events := collectProviderEvents(t, provider)
@@ -629,7 +629,7 @@ func assertNoAdditionalProps(t *testing.T, node any, path string) {
 }
 
 // TestGeminiRequestOmitsAdditionalPropertiesInToolSchema: end-to-end, the tool
-// parameters Zero emits (schemaToRuntimeMap always writes additionalProperties)
+// parameters PVYai emits (schemaToRuntimeMap always writes additionalProperties)
 // must not reach Gemini — otherwise every functionDeclaration is 400-rejected
 // ("Unknown name additionalProperties"), which broke all tool-using exec calls
 // against Google (issue #373).

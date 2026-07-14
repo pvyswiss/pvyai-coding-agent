@@ -8,8 +8,8 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/hooks"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/mcp"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/plugins"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/pvycmd"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/redaction"
 )
 
 type backendStatusOptions struct {

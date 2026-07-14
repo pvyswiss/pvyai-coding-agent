@@ -18,10 +18,10 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/agent"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/config"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/notify"
+	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sessions"
 	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
-	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
 // execCmd runs a possibly-batched command synchronously and returns the first
@@ -560,7 +560,7 @@ func TestModelCommandSwitchesSessionModel(t *testing.T) {
 }
 
 func TestModelCommandPersistsSelectedModelToUserConfig(t *testing.T) {
-	configPath := filepath.Join(t.TempDir(), "zero.json")
+	configPath := filepath.Join(t.TempDir(), "pvyai.json")
 	if _, err := config.UpsertProvider(configPath, config.ProviderProfile{
 		Name:         "openai",
 		ProviderKind: config.ProviderKindOpenAI,
@@ -1434,7 +1434,7 @@ func TestStaleExplanationDropped(t *testing.T) {
 }
 
 // TestBeginRunResetsSidebarHidden: a new run clears the sidebar's content, so the
-	// stale Ctrl+X hide preference is reset (the new run's sidebar isn't suppressed)
+// stale Ctrl+X hide preference is reset (the new run's sidebar isn't suppressed)
 // and the explanation generation advances.
 func TestBeginRunResetsSidebarHidden(t *testing.T) {
 	m := newModel(context.Background(), Options{})
@@ -2123,7 +2123,7 @@ func TestSelectionHighlightUsesGutterShiftedCoordinate(t *testing.T) {
 	if !strings.Contains(plainRender(t, styled), "    Hello world") {
 		t.Fatalf("expected a 4-cell gutter-padded line, got %q", styled)
 	}
-	if !strings.Contains(styled, zeroTheme.selection.Render("world")) {
+	if !strings.Contains(styled, pvyaiTheme.selection.Render("world")) {
 		t.Fatalf("expected 'world' highlighted at the gutter-shifted position, got %q", styled)
 	}
 }
@@ -2178,7 +2178,7 @@ func TestTranscriptSelectionPaintsHighlightOnceNotTwice(t *testing.T) {
 	}
 	out := strings.Join(row2.render(0).lines, "\n")
 
-	sentinel := zeroTheme.selection.Render("\x00")
+	sentinel := pvyaiTheme.selection.Render("\x00")
 	open := sentinel[:strings.IndexByte(sentinel, 0)]
 	if open == "" {
 		t.Fatal("selection style emitted no opening sequence to count")

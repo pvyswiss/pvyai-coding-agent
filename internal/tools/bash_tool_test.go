@@ -255,7 +255,7 @@ func TestBashToolRunsCommandInWorkspace(t *testing.T) {
 
 // A command with runaway output must not be buffered whole in memory: the capture
 // is bounded to head+tail, yet raw_bytes still reports the true (much larger) size.
-// If capture were unbounded this would balloon Zero's memory before truncation.
+// If capture were unbounded this would balloon PVYai's memory before truncation.
 func TestBashToolBoundsRunawayOutputCapture(t *testing.T) {
 	if runtime.GOOS == "windows" {
 		t.Skip("uses a POSIX shell pipeline (yes | head)")

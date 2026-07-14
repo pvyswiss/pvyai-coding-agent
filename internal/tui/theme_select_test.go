@@ -164,9 +164,9 @@ func TestApplyThemeResolution(t *testing.T) {
 			t.Errorf("applyTheme(%q, darkBg=%v) = %q, want %q", c.mode, c.darkBg, got, c.want)
 		}
 		wantR, wantG, wantB, _ := lipgloss.Color(c.wantInk).RGBA()
-		gotR, gotG, gotB, _ := zeroTheme.inkColor.RGBA()
+		gotR, gotG, gotB, _ := pvyaiTheme.inkColor.RGBA()
 		if gotR != wantR || gotG != wantG || gotB != wantB {
-			t.Errorf("applyTheme(%q,%v): zeroTheme.inkColor not the %q ink", c.mode, c.darkBg, c.want)
+			t.Errorf("applyTheme(%q,%v): pvyaiTheme.inkColor not the %q ink", c.mode, c.darkBg, c.want)
 		}
 	}
 }
@@ -240,7 +240,7 @@ func TestHandleThemeCommand(t *testing.T) {
 	if m.themeMode != themeLight {
 		t.Fatalf("after /theme light, mode = %q", m.themeMode)
 	}
-	if r, _, _, _ := zeroTheme.inkColor.RGBA(); r != mustR(t, lightPalette.ink) {
+	if r, _, _, _ := pvyaiTheme.inkColor.RGBA(); r != mustR(t, lightPalette.ink) {
 		t.Error("/theme light did not swap the active palette")
 	}
 	if !strings.Contains(out, "light") {

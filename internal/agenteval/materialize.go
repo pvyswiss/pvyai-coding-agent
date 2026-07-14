@@ -190,10 +190,10 @@ func initGitBaseline(ctx context.Context, workspace string) error {
 		cmd := exec.CommandContext(ctx, "git", args...)
 		cmd.Dir = workspace
 		cmd.Env = append(os.Environ(),
-			"GIT_AUTHOR_NAME=Zero Eval",
-			"GIT_AUTHOR_EMAIL=zero-eval@example.invalid",
-			"GIT_COMMITTER_NAME=Zero Eval",
-			"GIT_COMMITTER_EMAIL=zero-eval@example.invalid",
+			"GIT_AUTHOR_NAME=PVYai Eval",
+			"GIT_AUTHOR_EMAIL=pvyai-eval@example.invalid",
+			"GIT_COMMITTER_NAME=PVYai Eval",
+			"GIT_COMMITTER_EMAIL=pvyai-eval@example.invalid",
 		)
 		var output bytes.Buffer
 		cmd.Stdout = &output

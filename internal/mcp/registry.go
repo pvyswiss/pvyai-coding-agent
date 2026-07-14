@@ -23,7 +23,7 @@ type RegisterOptions struct {
 	PermissionStore *PermissionStore
 	Autonomy        PermissionAutonomy
 	ClientFactory   func(context.Context, Server) (ToolClient, error)
-	// ConnectTimeout bounds the per-server connect+list at startup. Zero uses
+	// ConnectTimeout bounds the per-server connect+list at startup. PVYai uses
 	// defaultConnectTimeout.
 	ConnectTimeout time.Duration
 }
