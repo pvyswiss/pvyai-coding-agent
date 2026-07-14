@@ -259,7 +259,7 @@ func TestContextAndPermissionsCommandsRenderProductState(t *testing.T) {
 	}
 
 	m := newModel(context.Background(), Options{
-		Cwd:            `D:\codings\Opensource\Zero`,
+		Cwd:            `D:\codings\Opensource\PVYai`,
 		ProviderName:   "openai",
 		ModelName:      "gpt-4.1",
 		Registry:       registry,

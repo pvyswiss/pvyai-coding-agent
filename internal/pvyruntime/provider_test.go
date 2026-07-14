@@ -309,8 +309,8 @@ func TestCollectStreamWithOptionsEmitsTextReasoningAndUsageCallbacks(t *testing.
 		OnUsage:     func(usage Usage) { usageEvents = append(usageEvents, usage) },
 	})
 
-	if collected.Text != "Hello zero" {
-		t.Fatalf("text = %q, want Hello zero", collected.Text)
+	if collected.Text != "Hello pvyai" {
+		t.Fatalf("text = %q, want Hello pvyai", collected.Text)
 	}
 	if !collected.HasReasoning {
 		t.Fatal("expected reasoning stream to mark collected turn as reasoning-bearing")

@@ -463,7 +463,7 @@ func TestContextCommandShowsSessionState(t *testing.T) {
 	registry := tools.NewRegistry()
 	registry.Register(tools.NewReadFileTool("."))
 	m := newModel(context.Background(), Options{
-		Cwd:            `D:\codings\Opensource\Zero`,
+		Cwd:            `D:\codings\Opensource\PVYai`,
 		ProviderName:   "openai",
 		ModelName:      "gpt-4.1",
 		Registry:       registry,
@@ -478,7 +478,7 @@ func TestContextCommandShowsSessionState(t *testing.T) {
 		t.Fatal("expected /context to be handled without starting an agent run")
 	}
 	for _, want := range []string{
-		`D:\codings\Opensource\Zero`,
+		`D:\codings\Opensource\PVYai`,
 		"go runtime | ask permissions | 1 tool",
 		"provider   openai",
 		"model      gpt-4.1",

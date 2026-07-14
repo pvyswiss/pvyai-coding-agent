@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-const Marker = "<!-- zero-auto-review -->"
+const Marker = "<!-- pvyai-auto-review -->"
 
 type Outcome string
 
