@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/pvai-logo.png" alt="PVYai" width="385">
+  <img src="https://raw.githubusercontent.com/pvyswiss/pvyai-coding-agent/main/docs/assets/pvai-logo.png" alt="PVYai" width="385">
 </p>
 
 <p align="center"><strong>一个独属于你的终端编码智能体。</strong></p>
@@ -143,26 +143,26 @@ pvyai
 
 常用控制：
 
-| 控制 | 操作 |
-|---|---|
-| `Enter` | 发送提示 |
-| `/` | 打开斜杠命令建议 |
-| `Shift+Tab` | 切换权限模式 |
-| `Ctrl+X` | 显示/隐藏侧边栏 |
-| `Ctrl+C` | 取消或退出 |
+| 控制          | 操作       |
+| ----------- | -------- |
+| `Enter`     | 发送提示     |
+| `/`         | 打开斜杠命令建议 |
+| `Shift+Tab` | 切换权限模式   |
+| `Ctrl+X`    | 显示/隐藏侧边栏 |
+| `Ctrl+C`    | 取消或退出    |
 
 常用斜杠命令：
 
-| 命令 | 用途 |
-|---|---|
-| `/model`、`/provider` | 切换活动模型/提供商 |
-| `/spec`、`/plan` | 在构建之前起草和审查计划 |
-| `/image` | 为视觉模型附加图片 |
-| `/resume`、`/rewind` | 继续或回滚本地会话 |
-| `/compact`、`/context` | 管理上下文使用 |
-| `/permissions`、`/tools` | 检查可用工具和策略 |
-| `/add-dir` | 为此会话授予额外的写入目录 |
-| `/theme`、`/doctor`、`/config` | 调整外观和检查设置 |
+| 命令                           | 用途            |
+| ---------------------------- | ------------- |
+| `/model`、`/provider`         | 切换活动模型/提供商    |
+| `/spec`、`/plan`              | 在构建之前起草和审查计划  |
+| `/image`                     | 为视觉模型附加图片     |
+| `/resume`、`/rewind`          | 继续或回滚本地会话     |
+| `/compact`、`/context`        | 管理上下文使用       |
+| `/permissions`、`/tools`      | 检查可用工具和策略     |
+| `/add-dir`                   | 为此会话授予额外的写入目录 |
+| `/theme`、`/doctor`、`/config` | 调整外观和检查设置     |
 
 ### 无头 `exec` 模式
 
@@ -249,13 +249,13 @@ pvyai update           检查更新版本
 
 ## 外观和无障碍
 
-| 控制 | 效果 |
-|---|---|
-| `NO_COLOR=<任意值>` | 禁用颜色输出 |
+| 控制                 | 效果                                                                                                                                                                |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NO_COLOR=<任意值>`   | 禁用颜色输出                                                                                                                                                            |
 | `PVYAI_THEME=<名称>` | 选择启动主题（`auto`、`dark`、`light`，或颜色主题如 `dracula`、`nord`、`gruvbox`、`tokyo-night`、`catppuccin`、`one-dark`、`solarized-dark`、`rose-pine`、`everforest`、`solarized-light`） |
-| `--theme <名称>` | 从 CLI 选择 TUI 主题（相同名称） |
-| `/theme` | 在 TUI 中打开主题选择器（实时预览；`/theme <名称>` 直接切换） |
-| `PVYAI_NO_FADE=1` | 禁用流式淡入动画 |
+| `--theme <名称>`     | 从 CLI 选择 TUI 主题（相同名称）                                                                                                                                             |
+| `/theme`           | 在 TUI 中打开主题选择器（实时预览；`/theme <名称>` 直接切换）                                                                                                                           |
+| `PVYAI_NO_FADE=1`  | 禁用流式淡入动画                                                                                                                                                          |
 
 含义不仅仅依赖于颜色；差异、权限和状态也使用文本或标记符号。
 

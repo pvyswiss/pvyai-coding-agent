@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/pvai-logo.png" alt="PVYai" width="385">
+  <img src="https://raw.githubusercontent.com/pvyswiss/pvyai-coding-agent/main/docs/assets/pvai-logo.png" alt="PVYai" width="385">
 </p>
 
 <p align="center"><strong>A terminal coding agent you actually own.</strong></p>
