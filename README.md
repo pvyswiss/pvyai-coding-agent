@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="docs/assets/pvyai-logo.png" alt="PVYai" width="385">
+  <img src="docs/assets/pvai-logo.png" alt="PVYai" width="385">
 </p>
 
-<p align="center"><strong>A terminal coding agent you own.</strong></p>
+<p align="center"><strong>A terminal coding agent you actually own.</strong></p>
 
 <p align="center">
   <a href="LICENSE"><img alt="license" src="https://img.shields.io/badge/license-MIT-blue"></a>
@@ -17,18 +17,18 @@ edit files, run commands, use browser/terminal helpers, and keep durable local
 sessions while you choose the model and the permission level.
 
 ```bash
-zero
+pvyai
 pvyai exec "fix the failing test in ./pkg"
 pvyai exec --output-format stream-json < turns.jsonl
 ```
 
-## Why Zero
+## Why PVYai Agent
 
-- **Use the model you want.** Bring OpenAI, Anthropic, Gemini, Groq, OpenRouter,
+- **Use the model you want.** Bring PVYai, OpenAI, Anthropic, Gemini, Groq, OpenRouter,
   DeepSeek, Mistral, xAI, Qwen, Kimi, GitHub Models, Ollama, LM Studio, or any
   OpenAI-/Anthropic-compatible endpoint.
 - **Stay in control.** File writes, shell commands, network access, and
-  out-of-workspace writes go through Zero's permission and sandbox policy.
+  out-of-workspace writes go through PVYai Agent permission and sandbox policy.
 - **Works in the terminal.** The TUI has model/provider pickers, image input,
   slash commands, live plan/tool rendering, scrollback, themes, and resume/fork
   support.
@@ -36,9 +36,24 @@ pvyai exec --output-format stream-json < turns.jsonl
   stream-JSON I/O, isolated worktrees, spec-first runs, and meaningful exit
   codes for CI.
 - **Keeps context local.** Sessions are stored on disk, searchable, resumable,
-  and never uploaded as telemetry by Zero.
-- **Extensible when you need it.** Use MCP servers, skills, plugins, hooks, and
+  and never uploaded as telemetry by PVYai.
+- **Extensible when you need it.** Use local MCP servers, skills, plugins, hooks, and
   specialist subagents from the same CLI.
+- **PVYai Sentinel integration.** PVYai Sentinel watch and simulates the outcome 
+  of your LLM interations in real time, and prevents harmful actions before LLM can execute.
+- **PVYai Memory integration.** PVYai Memory offers for PVYai LLM Models automatic and manual
+  Memory management for findings, session handover, iniated and monitored by PVYai Sentinel Intelligence.
+  It offers users Private Memory Wing or allocated Primary Shared Memory, Secondary Shared Memory and Third,
+  for interdisciplinary cross-domain preservation.
+- **PVYai Sentinel Orchestration.** As an Orchestrator, he manage your Team Agents and evict and re-onboard 
+  them automatic based on real-time metrics instead of classical turn/tool call count.
+- **PVYai Unified SSE API.** Chosing PVYai as Provider, drives our sophisticated, OpenAI API compatible,
+  unified SSE Stream API, which offers native function call for our MCP Services. Your PVYai Agent can execute
+  all tools offered in parallel instead of serial curl commands, also the Specialists/Sub-agents.
+
+## Informations: 
+- Website: [https://pvy.swiss/ai](https://pvy.swiss/ai)
+- Documentation: [https://docs.pvy.swiss/en/pvyapps/pvyai/pvyai-agent](https://docs.pvy.swiss/en/pvyapps/pvyai/pvyai-agent)
 
 ## Install
 
@@ -46,7 +61,7 @@ pvyai exec --output-format stream-json < turns.jsonl
 
 ```bash
 npm install -g @pvyswiss/pvyai-agent
-zero
+pvyai
 ```
 
 The npm package installs a small wrapper plus the matching PVYai binary for your
@@ -128,7 +143,7 @@ More install details: [docs/INSTALL.md](docs/INSTALL.md).
 Start the TUI:
 
 ```bash
-zero
+pvyai
 ```
 
 The setup wizard helps you pick a provider and model. You can also configure
@@ -165,7 +180,7 @@ For local models, run Ollama or LM Studio and then use `pvyai setup` or
 ### Interactive TUI
 
 ```bash
-zero
+pvai
 ```
 
 Useful controls:
@@ -223,6 +238,7 @@ PVYai is designed to make side effects visible.
   giving the agent the whole filesystem.
 - Unsafe/autonomous modes are explicit opt-ins.
 - Secrets are redacted from tool output and logs where PVYai controls the surface.
+- PVYai Sentinel Real World Model watches, predicts and simulate real action outcome, blocks harfmul action before LLM can execute it (Only for PVYai as Provider, but Anthropic Models included)
 
 Example:
 
@@ -250,7 +266,7 @@ TUI.
 
 The npm package also includes browser and terminal helper packages used by local
 browser/terminal tools. Source builds can use the same helpers when they are on
-`PATH` or configured in Zero's local-control settings.
+`PATH` or configured in PVYai's local-control settings.
 
 ## Common Commands
 
@@ -283,19 +299,19 @@ pvyai cron             scheduled agent jobs
 pvyai update           check for newer releases
 ```
 
-## Extending Zero
+## Extending PVYai
 
 ### Project and personal instructions
 
 PVYai appends project-specific guidance to the system prompt from the first
-`AGENTS.md`, `ZERO.md`, or `.pvyai/AGENTS.md` file found in each directory from
+`AGENTS.md`, `PVYAI.md`, or `.pvyai/AGENTS.md` file found in each directory from
 the git root down to your current working directory (checked in that order
 per directory). Files are injected general-to-specific, capped at 8 KiB per
 file and 32 KiB total.
 
-A personal `ZERO.md` under `config.UserConfigDir()/pvyai/ZERO.md`
-(`$XDG_CONFIG_HOME/pvyai/ZERO.md` or `~/.config/pvyai/ZERO.md` on Linux/macOS,
-`%AppData%\Roaming\pvyai\ZERO.md` on Windows) applies across every workspace, ahead of any project guidelines.
+A personal `PVYAI.md` under `config.UserConfigDir()/pvyai/PVYAI.md`
+(`$XDG_CONFIG_HOME/pvyai/PVYAI.md` or `~/.config/pvyai/PVYAI.md` on Linux/macOS,
+`%AppData%\Roaming\pvyai\PVYAI.md` on Windows) applies across every workspace, ahead of any project guidelines.
 
 ### Plugins
 
