@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   contents: write # push the release-PR branch, create the tag + GitHub Release
@@ -18,7 +19,7 @@ jobs:
     steps:
       - name: Run release-please
         id: release
-        uses: googleapis/release-please-action@a02a34c4d625f9be7cb89156071d8567266a2445 # v4.2.0
+        uses: googleapis/release-please-action@v4
 
       # Tags created with the default GITHUB_TOKEN never fire `on: push: tags`
       # workflows (GitHub suppresses workflows triggered by workflow-created
