@@ -1,6 +1,6 @@
 {
   "name": "@pvyswiss/pvyai-agent",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "PVYai — a fast, multi-provider terminal coding agent.",
   "type": "module",
   "module": "bin/pvyai.js",
