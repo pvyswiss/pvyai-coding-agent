@@ -16,7 +16,7 @@ import (
 const acpUsage = `pvyai acp — serve the Agent Client Protocol (ACP) over stdio
 
 Editors that speak ACP (Zed, JetBrains, Neovim, ...) spawn this command and drive
-ZERO as a backend over JSON-RPC 2.0 on stdin/stdout. ZERO keeps your provider,
+PVYai as a backend over JSON-RPC 2.0 on stdin/stdout. PVYai keeps your provider,
 model, and API keys (BYOK); the editor only hosts the conversation thread.
 
 Usage:
@@ -25,10 +25,10 @@ Usage:
 Not meant to be run interactively — point your editor's ACP / external-agent
 setting at "pvyai acp".`
 
-// runACP serves ACP over stdio so an editor can drive ZERO's agent core. It
+// runACP serves ACP over stdio so an editor can drive PVYai's agent core. It
 // speaks JSON-RPC 2.0 (newline-delimited JSON) on stdin/stdout; stderr stays free
-// for human-readable diagnostics. The session lifecycle maps onto ZERO's own
-// session store, and provider/model/keys remain owned by ZERO.
+// for human-readable diagnostics. The session lifecycle maps onto PVYai's own
+// session store, and provider/model/keys remain owned by PVYai.
 func runACP(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) int {
 	for _, arg := range args {
 		switch arg {
@@ -79,7 +79,7 @@ func runACP(args []string, stdout io.Writer, stderr io.Writer, deps appDeps) int
 // acpWorkspaceRootResolver validates a client-supplied cwd into a confinement
 // root. It reuses exec's resolveWorkspaceRoot (abs+clean, must be an existing
 // dir) and additionally rejects the filesystem root and the home directory — an
-// editor must not be able to point ZERO's file/shell tools at the whole disk.
+// editor must not be able to point PVYai's file/shell tools at the whole disk.
 func acpWorkspaceRootResolver(deps appDeps) func(string) (string, error) {
 	return func(cwd string) (string, error) {
 		root, err := resolveWorkspaceRoot(cwd, deps)

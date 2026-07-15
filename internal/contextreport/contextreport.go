@@ -27,7 +27,7 @@ const (
 	CategoryFree              = "free"
 )
 
-var defaultProjectContextFiles = []string{"AGENTS.md", "ZERO.md", ".pvyai/AGENTS.md"}
+var defaultProjectContextFiles = []string{"AGENTS.md", "PVYAI.md", ".pvyai/AGENTS.md"}
 
 const maxProjectContextBytes = 8 << 10
 const maxWorkspaceMapContextBytes = 4 << 10

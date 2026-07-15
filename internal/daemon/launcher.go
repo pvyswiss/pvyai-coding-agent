@@ -14,9 +14,9 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/sandbox"
 )
 
-// reentrancyMarkers are the env vars zero sets on a command it has ALREADY
+// reentrancyMarkers are the env vars PVYai sets on a command it has ALREADY
 // wrapped in a sandbox. The daemon MUST strip them from every worker's
-// environment: a worker that inherited them would trip zero's re-entrancy guard
+// environment: a worker that inherited them would trip PVYai's re-entrancy guard
 // (sandbox.IsAlreadySandboxed needs BOTH) and run with a pass-through plan —
 // i.e. UNSANDBOXED — silently defeating the sandbox. Stripping them forces each
 // worker to (re)establish its own sandbox. This is the daemon's #1 security
@@ -103,7 +103,7 @@ func (rl *readerLines) Next() (string, bool, error) {
 
 // ExecLauncherConfig configures the production worker launcher.
 type ExecLauncherConfig struct {
-	// Executable is the zero binary to spawn (defaults to os.Executable()).
+	// Executable is the pvyai binary to spawn (defaults to os.Executable()).
 	Executable string
 	// BaseArgs are prepended before the per-session args (defaults to the headless
 	// stream-json exec invocation `exec --output-format stream-json`).
@@ -128,7 +128,7 @@ func NewExecLauncher(cfg ExecLauncherConfig) (Launcher, error) {
 	if exe == "" {
 		resolved, err := os.Executable()
 		if err != nil {
-			return nil, fmt.Errorf("daemon: locate zero executable: %w", err)
+			return nil, fmt.Errorf("daemon: locate pvyai executable: %w", err)
 		}
 		exe = resolved
 	}

@@ -363,9 +363,9 @@ func TestPluginSnapshotFromPluginCollapsesSlicesToCounts(t *testing.T) {
 		Description:  "  A demo plugin.  ",
 		Enabled:      true,
 		Source:       plugins.SourceCustom,
-		Root:         "  /home/user/.config/zero/plugins/example  ",
-		PluginDir:    "  /home/user/.config/zero/plugins/example/v1  ",
-		ManifestPath: "  /home/user/.config/zero/plugins/example/v1/manifest.json  ",
+		Root:         "  /home/user/.config/pvyai/plugins/example  ",
+		PluginDir:    "  /home/user/.config/pvyai/plugins/example/v1  ",
+		ManifestPath: "  /home/user/.config/pvyai/plugins/example/v1/manifest.json  ",
 		Tools: []plugins.ToolExtension{
 			{Name: "t1", Command: "echo", Args: []string{"t1"}},
 			{Name: "t2", Command: "echo", Args: []string{"t2"}},

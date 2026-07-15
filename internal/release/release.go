@@ -599,7 +599,7 @@ func PackageVersion(rootDir string) (string, error) {
 }
 
 func buildPVYai(ctx context.Context, rootDir string, output string, version string, goos string, goarch string) error {
-	return buildGoPackage(ctx, rootDir, output, version, goos, goarch, "./cmd/zero")
+	return buildGoPackage(ctx, rootDir, output, version, goos, goarch, "./cmd/pvyai")
 }
 
 func buildLinuxSandboxHelper(ctx context.Context, rootDir string, output string, goos string, goarch string) error {

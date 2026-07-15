@@ -110,11 +110,11 @@ func TestRunEvalRunJSONModePassesRunnerOptions(t *testing.T) {
 		"eval", "run",
 		"--suite", "evals/context.json",
 		"--task", "edit-reader",
-		"--workspace", "D:\\work\\zero-fixture",
+		"--workspace", "D:\\work\\pvyai-fixture",
 		"--json",
 	}, &stdout, &stderr, appDeps{
 		runAgentEval: func(ctx context.Context, options agentEvalOptions) (agentEvalReport, error) {
-			if options.Mode != "run" || options.SuitePath != "evals/context.json" || options.TaskID != "edit-reader" || options.WorkspacePath != "D:\\work\\zero-fixture" || !options.JSON {
+			if options.Mode != "run" || options.SuitePath != "evals/context.json" || options.TaskID != "edit-reader" || options.WorkspacePath != "D:\\work\\pvyai-fixture" || !options.JSON {
 				t.Fatalf("unexpected eval run options: %#v", options)
 			}
 			return agentEvalReport{
@@ -151,12 +151,12 @@ func TestRunEvalBenchJSONModePassesHarnessOptions(t *testing.T) {
 		"eval", "bench",
 		"--suite", "evals/context.json",
 		"--task", "edit-reader",
-		"--work-root", "D:\\tmp\\zero-evals",
+		"--work-root", "D:\\tmp\\pvyai-evals",
 		"--json",
 		"--agent-command", "pvyai", "exec", "{prompt}",
 	}, &stdout, &stderr, appDeps{
 		runAgentEval: func(ctx context.Context, options agentEvalOptions) (agentEvalReport, error) {
-			if options.Mode != "bench" || options.SuitePath != "evals/context.json" || options.TaskID != "edit-reader" || options.WorkRoot != "D:\\tmp\\zero-evals" || !options.JSON {
+			if options.Mode != "bench" || options.SuitePath != "evals/context.json" || options.TaskID != "edit-reader" || options.WorkRoot != "D:\\tmp\\pvyai-evals" || !options.JSON {
 				t.Fatalf("unexpected eval bench options: %#v", options)
 			}
 			if got, want := strings.Join(options.AgentCommand, "\x00"), strings.Join([]string{"pvyai", "exec", "{prompt}"}, "\x00"); got != want {
@@ -416,7 +416,7 @@ func TestRunEvalBenchTextOutputSurfacesWorkRoot(t *testing.T) {
 				OK:       true,
 				Total:    1,
 				Passed:   1,
-				WorkRoot: "/tmp/zero-eval-abc",
+				WorkRoot: "/tmp/pvyai-eval-abc",
 			}, nil
 		},
 	})
@@ -424,7 +424,7 @@ func TestRunEvalBenchTextOutputSurfacesWorkRoot(t *testing.T) {
 	if exitCode != exitSuccess {
 		t.Fatalf("expected success exit %d, got %d: %s", exitSuccess, exitCode, stderr.String())
 	}
-	if !strings.Contains(stdout.String(), "work-root: /tmp/zero-eval-abc") {
+	if !strings.Contains(stdout.String(), "work-root: /tmp/pvyai-eval-abc") {
 		t.Fatalf("expected kept work root in text output, got:\n%s", stdout.String())
 	}
 }
@@ -588,7 +588,7 @@ func TestRunEvalRunRejectsBenchOnlyFlags(t *testing.T) {
 	}{
 		{
 			name: "work root",
-			args: []string{"eval", "run", "--suite", "evals/context.json", "--work-root", "D:\\tmp\\zero-evals"},
+			args: []string{"eval", "run", "--suite", "evals/context.json", "--work-root", "D:\\tmp\\pvyai-evals"},
 			want: "--work-root is only valid for eval bench",
 		},
 		{
@@ -833,7 +833,7 @@ func TestRunEvalDefaultRunnerLoadsSuite(t *testing.T) {
 			"id": "prompt-discipline",
 			"name": "Prompt discipline",
 			"prompt": "Improve the system prompt.",
-			"workspaceFixture": "fixtures/zero",
+			"workspaceFixture": "fixtures/pvyai",
 			"verificationCommands": [
 				{"id": "test", "name": "Tests", "command": ["go", "test", "./internal/agent"]}
 			],

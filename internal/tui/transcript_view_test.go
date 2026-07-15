@@ -114,7 +114,7 @@ func TestDetailedTranscriptSwallowsNormalChatSubmit(t *testing.T) {
 
 func transcriptViewTestModel() model {
 	m := newModel(context.Background(), Options{
-		Cwd:          "/work/zero",
+		Cwd:          "/work/pvyai",
 		ProviderName: "openai",
 		ModelName:    "gpt-test",
 	})

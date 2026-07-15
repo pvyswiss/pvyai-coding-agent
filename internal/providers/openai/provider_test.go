@@ -33,7 +33,7 @@ func TestStreamCompletionPostsChatCompletionRequest(t *testing.T) {
 		APIKey:    "sk-secret",
 		BaseURL:   server.URL + "/",
 		Model:     "gpt-test",
-		UserAgent: "zero-test",
+		UserAgent: "pvyai-test",
 	})
 	if err != nil {
 		t.Fatalf("New returned error: %v", err)
@@ -71,8 +71,8 @@ func TestStreamCompletionPostsChatCompletionRequest(t *testing.T) {
 	if gotAuth != "Bearer sk-secret" {
 		t.Fatalf("auth = %q, want bearer token", gotAuth)
 	}
-	if gotUserAgent != "zero-test" {
-		t.Fatalf("user agent = %q, want zero-test", gotUserAgent)
+	if gotUserAgent != "pvyai-test" {
+		t.Fatalf("user agent = %q, want pvyai-test", gotUserAgent)
 	}
 	if gotBody["model"] != "gpt-test" || gotBody["stream"] != true {
 		t.Fatalf("unexpected model/stream: %#v", gotBody)
@@ -352,7 +352,7 @@ func TestStreamCompletionBuffersToolArgsUntilIDAndNameArrive(t *testing.T) {
 func TestStreamCompletionTracksMultipleToolCallsByIndex(t *testing.T) {
 	provider := newTestProvider(t, func(w http.ResponseWriter, r *http.Request) {
 		writeSSE(w, `{"choices":[{"delta":{"tool_calls":[{"index":1,"function":{"arguments":"{\"query\":"}},{"index":0,"id":"call_a","function":{"name":"read_file","arguments":"{\"path\":\"a\"}"}}]}}]}`)
-		writeSSE(w, `{"choices":[{"delta":{"tool_calls":[{"index":1,"id":"call_b","function":{"name":"grep","arguments":"\"zero\"}"}}]},"finish_reason":"tool_calls"}]}`)
+		writeSSE(w, `{"choices":[{"delta":{"tool_calls":[{"index":1,"id":"call_b","function":{"name":"grep","arguments":"\"pvyai\"}"}}]},"finish_reason":"tool_calls"}]}`)
 		writeSSE(w, `[DONE]`)
 	})
 

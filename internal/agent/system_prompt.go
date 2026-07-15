@@ -91,7 +91,7 @@ func buildSystemPrompt(options Options) string {
 		sections = append(sections, seed)
 	}
 	// User guidelines are injected before workspace/project guidelines so the
-	// project's AGENTS.md/ZERO.md is the later, more specific instruction
+	// project's AGENTS.md/PVYAI.md is the later, more specific instruction
 	// block. See userGuidelines for the explicit precedence note carried in
 	// the section text itself.
 	if user := userGuidelines(); user != "" {
@@ -380,7 +380,7 @@ func userGuidelines() string {
 	content = truncateGuidelineContent(content, maxProjectContextBytes)
 	return "## User guidelines (" + filepath.Base(match) + ")\n\n" +
 		"These are the operator's personal preferences, not project policy. " +
-		"Where they conflict with a repository's project guidelines below (AGENTS.md/ZERO.md), the project guidelines take precedence.\n\n" +
+		"Where they conflict with a repository's project guidelines below (AGENTS.md/PVYAI.md), the project guidelines take precedence.\n\n" +
 		content
 }
 

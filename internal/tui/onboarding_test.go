@@ -72,7 +72,7 @@ func TestSetupTakeoverRendersAndCompletes(t *testing.T) {
 		Setup: SetupOptions{
 			Visible:    true,
 			Required:   true,
-			ConfigPath: "/tmp/zero/config.json",
+			ConfigPath: "/tmp/pvyai/config.json",
 			Providers: []SetupProviderOption{
 				{ID: "openai", Name: "OpenAI", DefaultModel: "gpt-4.1", EnvVar: "OPENAI_API_KEY", RequiresAuth: true},
 				{ID: "ollama", Name: "Ollama Local", DefaultModel: "llama3.1", Local: true},
@@ -80,7 +80,7 @@ func TestSetupTakeoverRendersAndCompletes(t *testing.T) {
 			Save: func(selection SetupSelection) (SetupResult, error) {
 				saved = selection
 				return SetupResult{
-					ConfigPath: "/tmp/zero/config.json",
+					ConfigPath: "/tmp/pvyai/config.json",
 					Provider: config.ProviderProfile{
 						Name:      selection.CatalogID,
 						CatalogID: selection.CatalogID,
@@ -152,7 +152,7 @@ func TestSetupTakeoverCustomCompatibleCollectsEndpointNameAndModel(t *testing.T)
 			Save: func(selection SetupSelection) (SetupResult, error) {
 				saved = selection
 				return SetupResult{
-					ConfigPath: "/tmp/zero/config.json",
+					ConfigPath: "/tmp/pvyai/config.json",
 					Provider: config.ProviderProfile{
 						Name:      selection.Name,
 						CatalogID: selection.CatalogID,
@@ -292,7 +292,7 @@ func TestSetupCompletionResetsChatSurfaceInsideAltScreen(t *testing.T) {
 			},
 			Save: func(selection SetupSelection) (SetupResult, error) {
 				return SetupResult{
-					ConfigPath: "/tmp/zero/config.json",
+					ConfigPath: "/tmp/pvyai/config.json",
 					Provider: config.ProviderProfile{
 						Name:      selection.CatalogID,
 						CatalogID: selection.CatalogID,
@@ -616,7 +616,7 @@ func TestSetupCredentialsAcceptsPastedAPIKeyWithoutRenderingSecret(t *testing.T)
 			Save: func(selection SetupSelection) (SetupResult, error) {
 				saved = selection
 				return SetupResult{
-					ConfigPath: "/tmp/zero/config.json",
+					ConfigPath: "/tmp/pvyai/config.json",
 					Provider: config.ProviderProfile{
 						Name:      selection.CatalogID,
 						CatalogID: selection.CatalogID,

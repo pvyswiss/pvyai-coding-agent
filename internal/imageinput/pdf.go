@@ -19,7 +19,7 @@ import (
 
 // Dependency posture (see stage 12): the DEFAULT build extracts a PDF's text
 // layer in pure Go via github.com/ledongthuc/pdf (BSD-licensed, no CGO, no
-// transitive deps), so ZERO stays a single static cross-compilable binary with
+// transitive deps), so PVYai stays a single static cross-compilable binary with
 // no runtime dependencies. Rasterizing pages to images for vision models needs
 // real font/graphics rendering, which no maintained pure-Go library does well;
 // that path is OPTIONAL and uses the poppler tools (pdftotext / pdftoppm) only
@@ -88,7 +88,7 @@ func isPDF(data []byte) bool {
 	return bytes.HasPrefix(data, pdfMagic)
 }
 
-// IsProbablyDocumentPath reports whether a path looks like a document ZERO can
+// IsProbablyDocumentPath reports whether a path looks like a document PVYai can
 // ingest (currently: a ".pdf" extension, case-insensitive). It is only a routing
 // hint for input surfaces deciding whether to call LoadDocument vs LoadFile;
 // LoadDocument re-verifies the real content via magic bytes.

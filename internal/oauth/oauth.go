@@ -1,4 +1,4 @@
-// Package oauth is zero's reusable OAuth 2.0 engine. It generalizes the
+// Package oauth is PVYai's reusable OAuth 2.0 engine. It generalizes the
 // authorization-code + PKCE flow that internal/mcp already uses for MCP servers
 // into a transport/identity-agnostic core, and adds the pieces provider login
 // needs: a device-authorization (RFC 8628) grant, a provider registry, a

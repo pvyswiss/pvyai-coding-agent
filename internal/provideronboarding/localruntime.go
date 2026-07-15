@@ -11,7 +11,7 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/providercatalog"
 )
 
-// LocalRuntime describes a local, OpenAI-compatible model server that ZERO can
+// LocalRuntime describes a local, OpenAI-compatible model server that PVYai can
 // adopt with no API key. These are the runtimes the launch audience is most
 // likely to already be running (Ollama, LM Studio), so the first-run wizard
 // auto-detects them on their default ports and offers them with no key step.

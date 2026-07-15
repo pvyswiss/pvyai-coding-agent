@@ -94,7 +94,7 @@ func TestDisplayPathTruncatesExternalToTail(t *testing.T) {
 }
 
 func TestDisplayPathLeavesRelativeInputUntouched(t *testing.T) {
-	if got := displayPath("/work/zero", "examples/calc.go"); got != "examples/calc.go" {
+	if got := displayPath("/work/pvyai", "examples/calc.go"); got != "examples/calc.go" {
 		t.Fatalf("relative input = %q, want examples/calc.go", got)
 	}
 }
@@ -108,7 +108,7 @@ func TestRedundantConfirmationCollapsesSuccessBody(t *testing.T) {
 		id:     "c1",
 		tool:   "mcp_filesystem_create_directory",
 		status: tools.StatusOK,
-		detail: "Successfully created directory /work/zero/examples/calc",
+		detail: "Successfully created directory /work/pvyai/examples/calc",
 	}
 	card := plainRender(t, m.renderRow(row, 80, buildRowContext(nil)))
 	lines := strings.Split(strings.TrimRight(card, "\n"), "\n")

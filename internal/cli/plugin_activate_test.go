@@ -31,7 +31,7 @@ func fakePluginDeps(t *testing.T, loaded []plugins.LoadedPlugin) appDeps {
 func TestActivatePluginsRegistersToolAndCollectsHooks(t *testing.T) {
 	pluginDir := t.TempDir()
 	loaded := []plugins.LoadedPlugin{{
-		ID:        "zero.demo",
+		ID:        "pvyai.demo",
 		Name:      "Demo",
 		Enabled:   true,
 		Source:    plugins.SourceProject,
@@ -59,8 +59,8 @@ func TestActivatePluginsRegistersToolAndCollectsHooks(t *testing.T) {
 	if len(activation.hooks) != 1 || activation.hooks[0].Event != hooks.EventBeforeTool {
 		t.Fatalf("expected one beforeTool plugin hook, got %#v", activation.hooks)
 	}
-	if activation.hooks[0].ID != "zero.demo.pre" {
-		t.Fatalf("plugin hook id = %q, want namespaced zero.demo.pre", activation.hooks[0].ID)
+	if activation.hooks[0].ID != "pvyai.demo.pre" {
+		t.Fatalf("plugin hook id = %q, want namespaced pvyai.demo.pre", activation.hooks[0].ID)
 	}
 	if stderr.Len() != 0 {
 		t.Fatalf("unexpected stderr for a clean activation: %s", stderr.String())
@@ -79,7 +79,7 @@ func TestActivatePluginsRegistersPluginSkillTool(t *testing.T) {
 	}
 
 	loaded := []plugins.LoadedPlugin{{
-		ID:        "zero.skills",
+		ID:        "pvyai.skills",
 		Name:      "Skills",
 		Enabled:   true,
 		Source:    plugins.SourceProject,
@@ -155,7 +155,7 @@ func TestActivatePluginsFailsOpenOnLoadError(t *testing.T) {
 
 func TestActivatePluginsWarnsOnMalformedPluginButKeepsGood(t *testing.T) {
 	good := plugins.LoadedPlugin{
-		ID:        "zero.good",
+		ID:        "pvyai.good",
 		Name:      "Good",
 		Enabled:   true,
 		Source:    plugins.SourceProject,
@@ -163,7 +163,7 @@ func TestActivatePluginsWarnsOnMalformedPluginButKeepsGood(t *testing.T) {
 		Tools:     []plugins.ToolExtension{{Name: "good_tool", Command: "true", Permission: plugins.PermissionPrompt}},
 	}
 	bad := plugins.LoadedPlugin{
-		ID:        "zero.bad",
+		ID:        "pvyai.bad",
 		Name:      "Bad",
 		Enabled:   true,
 		Source:    plugins.SourceProject,
@@ -192,7 +192,7 @@ func TestNewHookDispatcherWithExtraFoldsPluginHooks(t *testing.T) {
 	t.Setenv("XDG_DATA_HOME", t.TempDir())
 	workspace := t.TempDir()
 	extra := []hooks.Definition{{
-		ID:      "zero.demo.pre",
+		ID:      "pvyai.demo.pre",
 		Event:   hooks.EventBeforeTool,
 		Command: "guard.sh",
 		Enabled: true,

@@ -36,7 +36,7 @@ func TestStreamCompletionPostsGenerateContentRequest(t *testing.T) {
 		BaseURL:   server.URL + "/",
 		Model:     "models/gemini-2.5-flash",
 		MaxTokens: 65_536,
-		UserAgent: "zero-test",
+		UserAgent: "pvyai-test",
 	})
 	if err != nil {
 		t.Fatalf("New returned error: %v", err)
@@ -78,8 +78,8 @@ func TestStreamCompletionPostsGenerateContentRequest(t *testing.T) {
 	if gotAPIKey != "sk-google" {
 		t.Fatalf("x-goog-api-key = %q, want key", gotAPIKey)
 	}
-	if gotUserAgent != "zero-test" {
-		t.Fatalf("User-Agent = %q, want zero-test", gotUserAgent)
+	if gotUserAgent != "pvyai-test" {
+		t.Fatalf("User-Agent = %q, want pvyai-test", gotUserAgent)
 	}
 	systemInstruction := gotBody["systemInstruction"].(map[string]any)
 	if _, ok := systemInstruction["role"]; ok {

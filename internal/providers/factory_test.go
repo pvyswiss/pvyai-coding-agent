@@ -27,7 +27,7 @@ func TestNewCreatesOpenAIProviderWithFactoryOptions(t *testing.T) {
 		Model:        "factory-model",
 	}, Options{
 		HTTPClient: client,
-		UserAgent:  "zero-factory-test",
+		UserAgent:  "pvyai-factory-test",
 	})
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
@@ -51,7 +51,7 @@ func TestNewCreatesOpenAIProviderWithFactoryOptions(t *testing.T) {
 	if transport.request.Header.Get("Authorization") != "Bearer sk-factory" {
 		t.Fatalf("Authorization = %q, want bearer token", transport.request.Header.Get("Authorization"))
 	}
-	if transport.request.Header.Get("User-Agent") != "zero-factory-test" {
+	if transport.request.Header.Get("User-Agent") != "pvyai-factory-test" {
 		t.Fatalf("User-Agent = %q, want factory user agent", transport.request.Header.Get("User-Agent"))
 	}
 }
@@ -148,7 +148,7 @@ func TestNewResolvesKnownModelToAPIModelAndProvider(t *testing.T) {
 		Model:  "claude-sonnet-4.5",
 	}, Options{
 		HTTPClient: client,
-		UserAgent:  "zero-factory-test",
+		UserAgent:  "pvyai-factory-test",
 	})
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
@@ -172,7 +172,7 @@ func TestNewResolvesKnownModelToAPIModelAndProvider(t *testing.T) {
 	if transport.request.Header.Get("x-api-key") != "sk-ant" {
 		t.Fatalf("x-api-key = %q, want Anthropic key", transport.request.Header.Get("x-api-key"))
 	}
-	if transport.request.Header.Get("User-Agent") != "zero-factory-test" {
+	if transport.request.Header.Get("User-Agent") != "pvyai-factory-test" {
 		t.Fatalf("User-Agent = %q, want factory user agent", transport.request.Header.Get("User-Agent"))
 	}
 	var body map[string]any
@@ -200,7 +200,7 @@ func TestNewCreatesGeminiProviderFromFactoryOptions(t *testing.T) {
 		Model:        "gemini-2.5-flash",
 	}, Options{
 		HTTPClient: client,
-		UserAgent:  "zero-factory-test",
+		UserAgent:  "pvyai-factory-test",
 	})
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
@@ -283,7 +283,7 @@ func TestNewRoutesChatGPTCatalogToCodexProvider(t *testing.T) {
 		Model:     "gpt-5",
 	}, Options{
 		HTTPClient: client,
-		UserAgent:  "zero-factory-test",
+		UserAgent:  "pvyai-factory-test",
 	})
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
@@ -345,7 +345,7 @@ func TestNewRoutesChatGPTCatalogWithStoredAccountID(t *testing.T) {
 		Model:     "gpt-5",
 	}, Options{
 		HTTPClient:    &http.Client{Transport: transport},
-		UserAgent:     "zero-factory-test",
+		UserAgent:     "pvyai-factory-test",
 		OAuthLoginKey: oauth.ProviderKey("chatgpt"),
 	})
 	if err != nil {

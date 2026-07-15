@@ -25,7 +25,7 @@ func TestParseDoctorCommandArgsRejectsFixWithConnectivity(t *testing.T) {
 
 func TestDoctorOptionsIncludeConfigPaths(t *testing.T) {
 	m := newModel(context.Background(), Options{
-		UserConfigPath:    "C:/zero/user.json",
+		UserConfigPath:    "C:/pvyai/user.json",
 		ProjectConfigPath: "C:/repo/.pvyai/config.json",
 		ProviderProfile: config.ProviderProfile{
 			Name:         "openai",
@@ -36,8 +36,8 @@ func TestDoctorOptionsIncludeConfigPaths(t *testing.T) {
 
 	options := m.doctorOptions(false)
 
-	if options.UserConfig != "C:/zero/user.json" {
-		t.Fatalf("UserConfig = %q, want %q", options.UserConfig, "C:/zero/user.json")
+	if options.UserConfig != "C:/pvyai/user.json" {
+		t.Fatalf("UserConfig = %q, want %q", options.UserConfig, "C:/pvyai/user.json")
 	}
 	if options.ProjectConfig != "C:/repo/.pvyai/config.json" {
 		t.Fatalf("ProjectConfig = %q, want %q", options.ProjectConfig, "C:/repo/.pvyai/config.json")
@@ -61,7 +61,7 @@ func TestDoctorOptionsConnectivityInvokesConfiguredProviderHealthProbe(t *testin
 	var gotOptions providerhealth.Options
 	m := newModel(context.Background(), Options{
 		ProviderProfile: profile,
-		UserAgent:       "zero-test",
+		UserAgent:       "pvyai-test",
 		ProbeProviderHealth: func(_ context.Context, options providerhealth.Options) providerhealth.Result {
 			called++
 			gotOptions = options
@@ -85,8 +85,8 @@ func TestDoctorOptionsConnectivityInvokesConfiguredProviderHealthProbe(t *testin
 	if !gotOptions.Connectivity {
 		t.Fatal("probe Connectivity = false, want true")
 	}
-	if gotOptions.UserAgent != "zero-test" {
-		t.Fatalf("probe UserAgent = %q, want %q", gotOptions.UserAgent, "zero-test")
+	if gotOptions.UserAgent != "pvyai-test" {
+		t.Fatalf("probe UserAgent = %q, want %q", gotOptions.UserAgent, "pvyai-test")
 	}
 	if !reflect.DeepEqual(gotOptions.Profile, profile) {
 		t.Fatalf("probe Profile = %#v, want %#v", gotOptions.Profile, profile)

@@ -41,7 +41,7 @@ func (tool *fakeRegisteredTool) Run(context.Context, map[string]any) tools.Resul
 func toolPlugin(pluginDir string, tool ToolExtension) LoadedPlugin {
 	return LoadedPlugin{
 		SchemaVersion: 1,
-		ID:            "zero.demo",
+		ID:            "pvyai.demo",
 		Name:          "PVYai Demo",
 		Version:       "0.1.0",
 		Enabled:       true,
@@ -105,7 +105,7 @@ func TestActivateRegistersToolThatInvokesCommand(t *testing.T) {
 	if !envContains(call.Env, "AGENT_PLUGIN_ROOT="+pluginDir) {
 		t.Fatalf("env missing AGENT_PLUGIN_ROOT=%s: %#v", pluginDir, call.Env)
 	}
-	if result.Tools[0].ToolName != "lookup" || result.Tools[0].PluginID != "zero.demo" {
+	if result.Tools[0].ToolName != "lookup" || result.Tools[0].PluginID != "pvyai.demo" {
 		t.Fatalf("provenance = %#v", result.Tools)
 	}
 }
@@ -224,7 +224,7 @@ func TestActivateSkipsToolWhoseNameCollidesWithRegisteredTool(t *testing.T) {
 func TestActivateBuildsHookDefinitionsForMappedEvent(t *testing.T) {
 	registry := tools.NewRegistry()
 	plugin := LoadedPlugin{
-		ID:        "zero.guard",
+		ID:        "pvyai.guard",
 		Name:      "Guard",
 		Enabled:   true,
 		Source:    SourceProject,
@@ -287,7 +287,7 @@ func TestActivateExposesSkillDirInLoaderRoots(t *testing.T) {
 
 	registry := tools.NewRegistry()
 	plugin := LoadedPlugin{
-		ID:        "zero.review",
+		ID:        "pvyai.review",
 		Name:      "Review",
 		Enabled:   true,
 		Source:    SourceProject,
@@ -328,7 +328,7 @@ func TestActivateResolvesManifestRelativeSkillRoot(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			pluginDir := t.TempDir()
 			plugin := LoadedPlugin{
-				ID:        "zero.review",
+				ID:        "pvyai.review",
 				Name:      "Review",
 				Enabled:   true,
 				Source:    SourceProject,
@@ -432,7 +432,7 @@ func TestActivateSkipsMalformedPluginAndContinues(t *testing.T) {
 	// A tool extension with an empty command is malformed: it can never be invoked,
 	// so activation must skip it with a warning rather than register a broken tool.
 	bad := toolPlugin(t.TempDir(), ToolExtension{Name: "bad", Command: "   ", Permission: PermissionPrompt})
-	bad.ID = "zero.bad"
+	bad.ID = "pvyai.bad"
 
 	result := Activate(registry, []LoadedPlugin{bad, good}, ActivateOptions{runTool: (&fakeToolRunner{}).run})
 
@@ -445,7 +445,7 @@ func TestActivateSkipsMalformedPluginAndContinues(t *testing.T) {
 	if len(result.Warnings) == 0 {
 		t.Fatalf("expected a warning for the malformed plugin")
 	}
-	if !containsSubstring(result.Warnings, "bad") && !containsSubstring(result.Warnings, "zero.bad") {
+	if !containsSubstring(result.Warnings, "bad") && !containsSubstring(result.Warnings, "pvyai.bad") {
 		t.Fatalf("warning should identify the offending plugin/tool: %#v", result.Warnings)
 	}
 }
@@ -469,8 +469,8 @@ func TestActivateIsDeterministic(t *testing.T) {
 	dirA := t.TempDir()
 	dirB := t.TempDir()
 	plugins := []LoadedPlugin{
-		{ID: "zero.b", Name: "B", Enabled: true, PluginDir: dirB, Hooks: []HookExtension{{Name: "hb", Event: HookSessionStart, Command: "b.sh"}}},
-		{ID: "zero.a", Name: "A", Enabled: true, PluginDir: dirA, Hooks: []HookExtension{{Name: "ha", Event: HookSessionStart, Command: "a.sh"}}},
+		{ID: "pvyai.b", Name: "B", Enabled: true, PluginDir: dirB, Hooks: []HookExtension{{Name: "hb", Event: HookSessionStart, Command: "b.sh"}}},
+		{ID: "pvyai.a", Name: "A", Enabled: true, PluginDir: dirA, Hooks: []HookExtension{{Name: "ha", Event: HookSessionStart, Command: "a.sh"}}},
 	}
 
 	first := Activate(tools.NewRegistry(), plugins, ActivateOptions{})

@@ -1126,7 +1126,7 @@ func addDirFlagArgs(addDirs []string) []string {
 }
 
 // splitLeadingAddDirFlags strips leading --add-dir flags from the root
-// argument list (zero --add-dir <path> [--add-dir <path>] [subcommand …]).
+// argument list (pvyai --add-dir <path> [--add-dir <path>] [subcommand …]).
 // Subcommands like exec parse their own --add-dir occurrences.
 func splitLeadingAddDirFlags(args []string) ([]string, []string, error) {
 	addDirs := []string{}

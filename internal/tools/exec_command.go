@@ -33,7 +33,7 @@ const (
 	// again (e.g. a dev server left running after its initiating run was
 	// cancelled) grows this buffer forever as long as the process keeps writing
 	// output, with no ceiling — this previously ran a session's memory into the
-	// tens of gigabytes over several hours and got the whole zero process
+	// tens of gigabytes over several hours and got the whole pvyai process
 	// OOM-killed by the OS.
 	maxExecOutputBufferBytes         = 2 * 1024 * 1024
 	execSessionStopTimeout           = 3 * time.Second

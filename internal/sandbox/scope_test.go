@@ -109,7 +109,7 @@ func TestScopeAddTildeExpansion(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewScope: %v", err)
 	}
-	if _, err := scope.Add("~nonexistent-subdir-zero-test"); err == nil {
+	if _, err := scope.Add("~nonexistent-subdir-pvyai-test"); err == nil {
 		t.Fatal("Add(~nonexistent-subdir) = nil error, want rejection")
 	}
 }
@@ -206,11 +206,11 @@ func TestDefaultTempWriteRootCandidatesMatchPlatformEnvironment(t *testing.T) {
 	}
 
 	unix := defaultTempWriteRootCandidatesForGOOS("linux", env(map[string]string{
-		"TMPDIR": "/var/tmp/zero",
+		"TMPDIR": "/var/tmp/pvyai",
 		"TEMP":   "/ignored",
 		"TMP":    "/ignored",
 	}))
-	if len(unix) != 2 || unix[0] != "/tmp" || unix[1] != "/var/tmp/zero" {
+	if len(unix) != 2 || unix[0] != "/tmp" || unix[1] != "/var/tmp/pvyai" {
 		t.Fatalf("unix temp roots = %#v, want /tmp and TMPDIR", unix)
 	}
 }

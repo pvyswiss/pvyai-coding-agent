@@ -128,8 +128,8 @@ func doctorSandboxPolicy(cfg config.SandboxConfig) sandbox.Policy {
 	return policy
 }
 
-// lspServersCheck reports which language servers ZERO would use are present on
-// PATH. Missing servers are not a failure — ZERO degrades to text-only edits for
+// lspServersCheck reports which language servers PVYai would use are present on
+// PATH. Missing servers are not a failure — PVYai degrades to text-only edits for
 // those languages — so the worst status is WARN, and each missing server gets an
 // actionable install command keyed by its binary name. Only the tier-1 servers
 // (lsp.CoreServerBinaries) drive the status: the long-tail servers configured

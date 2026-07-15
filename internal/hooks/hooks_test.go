@@ -41,7 +41,7 @@ func TestLoadConfigLayersProjectOverridesAndDiagnostics(t *testing.T) {
 		"enabled": true,
 		"hooks": []any{
 			map[string]any{
-				"id":      "zero.format",
+				"id":      "pvyai.format",
 				"name":    "Format after edits",
 				"event":   "afterTool",
 				"matcher": "edit_file",
@@ -49,7 +49,7 @@ func TestLoadConfigLayersProjectOverridesAndDiagnostics(t *testing.T) {
 				"args":    []string{"run", "format"},
 			},
 			map[string]any{
-				"id":      "zero.audit",
+				"id":      "pvyai.audit",
 				"event":   "sessionEnd",
 				"command": "node",
 				"args":    []string{"audit.mjs"},
@@ -58,7 +58,7 @@ func TestLoadConfigLayersProjectOverridesAndDiagnostics(t *testing.T) {
 	})
 	writeHookJSON(t, projectConfigPath, map[string]any{
 		"hooks": []any{map[string]any{
-			"id":      "zero.format",
+			"id":      "pvyai.format",
 			"event":   "afterTool",
 			"matcher": "write_file",
 			"command": "bun",
@@ -74,14 +74,14 @@ func TestLoadConfigLayersProjectOverridesAndDiagnostics(t *testing.T) {
 	if !result.Config.Enabled {
 		t.Fatalf("config should be enabled")
 	}
-	if got := []string{result.Config.Hooks[0].ID, result.Config.Hooks[1].ID}; !reflect.DeepEqual(got, []string{"zero.audit", "zero.format"}) {
+	if got := []string{result.Config.Hooks[0].ID, result.Config.Hooks[1].ID}; !reflect.DeepEqual(got, []string{"pvyai.audit", "pvyai.format"}) {
 		t.Fatalf("hook order = %#v", got)
 	}
 	format := result.Config.Hooks[1]
 	if format.Enabled || format.Matcher != "write_file" || !reflect.DeepEqual(format.Args, []string{"run", "lint"}) {
 		t.Fatalf("project override not applied: %#v", format)
 	}
-	if !hasHookDiagnostic(result.Diagnostics, DiagnosticDuplicate, "zero.format", "") {
+	if !hasHookDiagnostic(result.Diagnostics, DiagnosticDuplicate, "pvyai.format", "") {
 		t.Fatalf("missing duplicate diagnostic: %#v", result.Diagnostics)
 	}
 }
@@ -93,7 +93,7 @@ func TestLoadConfigPreservesUserDisabledStateWhenProjectOmitsEnabled(t *testing.
 	writeHookJSON(t, userConfigPath, map[string]any{
 		"enabled": false,
 		"hooks": []any{map[string]any{
-			"id":      "zero.format",
+			"id":      "pvyai.format",
 			"event":   "afterTool",
 			"matcher": "edit_file",
 			"command": "bun",
@@ -103,7 +103,7 @@ func TestLoadConfigPreservesUserDisabledStateWhenProjectOmitsEnabled(t *testing.
 	})
 	writeHookJSON(t, projectConfigPath, map[string]any{
 		"hooks": []any{map[string]any{
-			"id":      "zero.format",
+			"id":      "pvyai.format",
 			"event":   "afterTool",
 			"matcher": "write_file",
 			"command": "bun",
@@ -134,7 +134,7 @@ func TestLoadConfigRejectsMatchersOnLifecycleHooks(t *testing.T) {
 			projectConfigPath := filepath.Join(dir, "hooks.json")
 			writeHookJSON(t, projectConfigPath, map[string]any{
 				"hooks": []any{map[string]any{
-					"id":      "zero.lifecycle",
+					"id":      "pvyai.lifecycle",
 					"event":   event,
 					"matcher": "bash",
 					"command": "node",
@@ -166,7 +166,7 @@ func TestConfigStorePersistsUpdates(t *testing.T) {
 	}
 
 	_, err = store.Upsert(Definition{
-		ID:      "zero.preflight",
+		ID:      "pvyai.preflight",
 		Name:    "Preflight",
 		Event:   EventBeforeTool,
 		Matcher: "bash",
@@ -184,7 +184,7 @@ func TestConfigStorePersistsUpdates(t *testing.T) {
 		t.Fatalf("new hooks should default to enabled: %#v", config.Hooks[0])
 	}
 	upserted, err := store.Upsert(Definition{
-		ID:      "zero.explicit",
+		ID:      "pvyai.explicit",
 		Event:   EventAfterTool,
 		Command: "node",
 		Enabled: false,
@@ -195,7 +195,7 @@ func TestConfigStorePersistsUpdates(t *testing.T) {
 	if !upserted.Enabled {
 		t.Fatalf("Upsert should default pvyai-value Enabled to true; use SetEnabled to disable: %#v", upserted)
 	}
-	changed, err := store.SetEnabled("zero.preflight", false)
+	changed, err := store.SetEnabled("pvyai.preflight", false)
 	if err != nil || !changed {
 		t.Fatalf("SetEnabled changed=%v err=%v", changed, err)
 	}
@@ -204,11 +204,11 @@ func TestConfigStorePersistsUpdates(t *testing.T) {
 	if err != nil {
 		t.Fatalf("List returned error: %v", err)
 	}
-	preflight := findHook(config.Hooks, "zero.preflight")
+	preflight := findHook(config.Hooks, "pvyai.preflight")
 	if preflight == nil || preflight.Enabled || preflight.Matcher != "bash" {
 		t.Fatalf("unexpected stored hook: %#v", preflight)
 	}
-	removed, err := store.Remove("zero.preflight")
+	removed, err := store.Remove("pvyai.preflight")
 	if err != nil || !removed {
 		t.Fatalf("Remove removed=%v err=%v", removed, err)
 	}
@@ -216,8 +216,8 @@ func TestConfigStorePersistsUpdates(t *testing.T) {
 	if err != nil {
 		t.Fatalf("List returned error: %v", err)
 	}
-	if findHook(config.Hooks, "zero.preflight") != nil {
-		t.Fatalf("expected zero.preflight to be removed, got %#v", config.Hooks)
+	if findHook(config.Hooks, "pvyai.preflight") != nil {
+		t.Fatalf("expected pvyai.preflight to be removed, got %#v", config.Hooks)
 	}
 }
 
@@ -226,14 +226,14 @@ func TestConfigStoreListReadsOnlyStorePath(t *testing.T) {
 	configPath := filepath.Join(dir, "hooks.json")
 	writeHookJSON(t, configPath, map[string]any{
 		"hooks": []any{map[string]any{
-			"id":      "zero.real",
+			"id":      "pvyai.real",
 			"event":   "beforeTool",
 			"command": "node",
 		}},
 	})
 	writeHookJSON(t, configPath+".user-missing", map[string]any{
 		"hooks": []any{map[string]any{
-			"id":      "zero.fake",
+			"id":      "pvyai.fake",
 			"event":   "afterTool",
 			"command": "node",
 		}},
@@ -247,23 +247,23 @@ func TestConfigStoreListReadsOnlyStorePath(t *testing.T) {
 	if err != nil {
 		t.Fatalf("List returned error: %v", err)
 	}
-	if got := hookIDs(config.Hooks); !reflect.DeepEqual(got, []string{"zero.real"}) {
+	if got := hookIDs(config.Hooks); !reflect.DeepEqual(got, []string{"pvyai.real"}) {
 		t.Fatalf("hook ids = %#v", got)
 	}
 }
 
 func TestSelectMatchesEnabledHooksByEventAndWildcard(t *testing.T) {
 	config := Config{Enabled: true, Hooks: []Definition{
-		{ID: "zero.reads", Event: EventBeforeTool, Matcher: "read_*", Command: "node", Enabled: true},
-		{ID: "zero.shell", Event: EventBeforeTool, Matcher: "bash", Command: "node", Enabled: false},
-		{ID: "zero.done", Event: EventSessionEnd, Command: "node", Enabled: true},
-		{ID: "zero.shell-edit", Event: EventBeforeTool, Matcher: "shell_*_edit", Command: "node", Enabled: true},
+		{ID: "pvyai.reads", Event: EventBeforeTool, Matcher: "read_*", Command: "node", Enabled: true},
+		{ID: "pvyai.shell", Event: EventBeforeTool, Matcher: "bash", Command: "node", Enabled: false},
+		{ID: "pvyai.done", Event: EventSessionEnd, Command: "node", Enabled: true},
+		{ID: "pvyai.shell-edit", Event: EventBeforeTool, Matcher: "shell_*_edit", Command: "node", Enabled: true},
 	}}
 
-	if got := hookIDs(Select(config, SelectInput{Event: EventBeforeTool, ToolName: "read_file"})); !reflect.DeepEqual(got, []string{"zero.reads"}) {
+	if got := hookIDs(Select(config, SelectInput{Event: EventBeforeTool, ToolName: "read_file"})); !reflect.DeepEqual(got, []string{"pvyai.reads"}) {
 		t.Fatalf("read selection = %#v", got)
 	}
-	if got := hookIDs(Select(config, SelectInput{Event: EventBeforeTool, ToolName: "shell_safe_edit"})); !reflect.DeepEqual(got, []string{"zero.shell-edit"}) {
+	if got := hookIDs(Select(config, SelectInput{Event: EventBeforeTool, ToolName: "shell_safe_edit"})); !reflect.DeepEqual(got, []string{"pvyai.shell-edit"}) {
 		t.Fatalf("shell edit selection = %#v", got)
 	}
 	if got := Select(config, SelectInput{Event: EventBeforeTool, ToolName: "shell_safe_view"}); len(got) != 0 {
@@ -277,12 +277,12 @@ func TestSpecialistHookEventsLoadAndSelect(t *testing.T) {
 	writeHookJSON(t, projectConfigPath, map[string]any{
 		"hooks": []any{
 			map[string]any{
-				"id":      "zero.specialist-start",
+				"id":      "pvyai.specialist-start",
 				"event":   "specialistStart",
 				"command": "node",
 			},
 			map[string]any{
-				"id":      "zero.specialist-stop",
+				"id":      "pvyai.specialist-stop",
 				"event":   "specialistStop",
 				"command": "node",
 			},
@@ -296,13 +296,13 @@ func TestSpecialistHookEventsLoadAndSelect(t *testing.T) {
 	if err != nil {
 		t.Fatalf("LoadConfig returned error: %v", err)
 	}
-	if got := hookIDs(result.Config.Hooks); !reflect.DeepEqual(got, []string{"zero.specialist-start", "zero.specialist-stop"}) {
+	if got := hookIDs(result.Config.Hooks); !reflect.DeepEqual(got, []string{"pvyai.specialist-start", "pvyai.specialist-stop"}) {
 		t.Fatalf("hook ids = %#v", got)
 	}
-	if got := hookIDs(Select(result.Config, SelectInput{Event: EventSpecialistStart})); !reflect.DeepEqual(got, []string{"zero.specialist-start"}) {
+	if got := hookIDs(Select(result.Config, SelectInput{Event: EventSpecialistStart})); !reflect.DeepEqual(got, []string{"pvyai.specialist-start"}) {
 		t.Fatalf("specialistStart selection = %#v", got)
 	}
-	if got := hookIDs(Select(result.Config, SelectInput{Event: EventSpecialistStop})); !reflect.DeepEqual(got, []string{"zero.specialist-stop"}) {
+	if got := hookIDs(Select(result.Config, SelectInput{Event: EventSpecialistStop})); !reflect.DeepEqual(got, []string{"pvyai.specialist-stop"}) {
 		t.Fatalf("specialistStop selection = %#v", got)
 	}
 }
@@ -310,9 +310,9 @@ func TestSpecialistHookEventsLoadAndSelect(t *testing.T) {
 func TestAuditStoreAppendsAndSkipsMalformedLines(t *testing.T) {
 	auditPath := filepath.Join(t.TempDir(), "audit.jsonl")
 	if err := os.WriteFile(auditPath, []byte(strings.Join([]string{
-		`{"sequence":1,"createdAt":"2026-06-04T00:00:00Z","type":"hook_execution_started","hookId":"zero.seed","event":"sessionStart"}`,
+		`{"sequence":1,"createdAt":"2026-06-04T00:00:00Z","type":"hook_execution_started","hookId":"pvyai.seed","event":"sessionStart"}`,
 		"{not-json",
-		`{"sequence":2,"createdAt":"2026-06-04T00:00:01Z","type":"hook_execution_completed","hookId":"zero.seed","event":"sessionStart","status":"completed"}`,
+		`{"sequence":2,"createdAt":"2026-06-04T00:00:01Z","type":"hook_execution_completed","hookId":"pvyai.seed","event":"sessionStart","status":"completed"}`,
 		"",
 	}, "\n")), 0o600); err != nil {
 		t.Fatal(err)
@@ -334,7 +334,7 @@ func TestAuditStoreAppendsAndSkipsMalformedLines(t *testing.T) {
 	}
 
 	appended, err := store.AppendStarted(AppendStartedInput{
-		HookID:   "zero.preflight",
+		HookID:   "pvyai.preflight",
 		Event:    EventBeforeTool,
 		Matcher:  "bash",
 		Commands: []AuditCommand{{Command: "node", Args: []string{"hooks/preflight.mjs"}}},

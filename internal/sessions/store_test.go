@@ -18,7 +18,7 @@ func TestStoreCreatesAppendsListsAndReadsEvents(t *testing.T) {
 	store := NewStore(StoreOptions{RootDir: t.TempDir(), Now: now})
 
 	session, err := store.Create(CreateInput{
-		SessionID: "zero_test_1",
+		SessionID: "pvyai_test_1",
 		Title:     "First run",
 		Cwd:       "/repo",
 		ModelID:   "gpt-4.1",
@@ -46,7 +46,7 @@ func TestStoreCreatesAppendsListsAndReadsEvents(t *testing.T) {
 	if err != nil {
 		t.Fatalf("AppendEvent returned error: %v", err)
 	}
-	if event.ID != "zero_test_1:1" || event.Sequence != 1 {
+	if event.ID != "pvyai_test_1:1" || event.Sequence != 1 {
 		t.Fatalf("unexpected event identity: %#v", event)
 	}
 

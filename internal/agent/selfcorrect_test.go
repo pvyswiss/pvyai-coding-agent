@@ -87,7 +87,7 @@ func TestLSPDiagnosticsCheckerPropagatesReadError(t *testing.T) {
 	// can decide how to handle it, rather than being swallowed as "no diagnostics".
 	// manager is never reached on a read error, so a nil manager is fine here.
 	c := lspDiagnosticsChecker{}
-	if _, err := c.Check(context.Background(), "/nonexistent/zero-selfcorrect/missing.go"); err == nil {
+	if _, err := c.Check(context.Background(), "/nonexistent/pvyai-selfcorrect/missing.go"); err == nil {
 		t.Fatal("expected Check to propagate the file-read error, got nil")
 	}
 }

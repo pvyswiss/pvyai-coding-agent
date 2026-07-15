@@ -15,7 +15,7 @@ func TestEmptyStateShowsBrandAndTaglineOnly(t *testing.T) {
 	view := plainRender(t, m.View())
 	assertContains(t, view, "PVYai")
 	assertContains(t, view, emptyStateTagline)
-	assertNotContains(t, view, "running zero against ")
+	assertNotContains(t, view, "running pvyai against ")
 	assertNotContains(t, view, "add a --version flag")
 	assertNotContains(t, view, "explain internal/agent/loop.go")
 	assertNotContains(t, view, "fix the failing test in internal/tools")

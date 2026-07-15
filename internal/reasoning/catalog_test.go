@@ -151,7 +151,7 @@ func TestGroundTruthGemini(t *testing.T) {
 	}
 }
 
-// TestCoversPVYaiShippedReasoningModels pins that every reasoning model Zero
+// TestCoversPVYaiShippedReasoningModels pins that every reasoning model PVYai
 // currently ships resolves in the catalog (by its api model id), so the
 // models.dev fallback actually covers PVYai's catalog rather than just well-known
 // ids. The api ids mirror internal/modelregistry's curated entries.

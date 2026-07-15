@@ -125,7 +125,7 @@ func TestFetchModelsDevAndOpenGatewayOverHTTP(t *testing.T) {
 	}
 
 	// FetchRemote routes the opengateway provider to FetchOpenGateway via the override URL.
-	routed, err := FetchRemote(context.Background(), providercatalog.Descriptor{ID: "pvyswiss-opengateway"}, FetchOptions{HTTPClient: gateway.Client(), OpenGatewayURL: gateway.URL})
+	routed, err := FetchRemote(context.Background(), providercatalog.Descriptor{ID: "pvyai-opengateway"}, FetchOptions{HTTPClient: gateway.Client(), OpenGatewayURL: gateway.URL})
 	if err != nil {
 		t.Fatalf("FetchRemote error: %v", err)
 	}

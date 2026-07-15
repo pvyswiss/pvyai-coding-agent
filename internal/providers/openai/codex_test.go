@@ -214,7 +214,7 @@ func TestCodexProviderBrandsUserAgent(t *testing.T) {
 			BaseURL: srv.URL,
 			Model:   "gpt-5",
 			// openai Options.UserAgent overridden by CodexOptions.UserAgent below.
-			UserAgent: "zero/dev",
+			UserAgent: "pvyai/dev",
 		},
 		// CodexOptions.UserAgent wins over openai Options.UserAgent.
 		UserAgent: "codex_cli_rs/0.1",

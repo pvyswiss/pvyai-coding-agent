@@ -15,7 +15,7 @@ const WindowsSandboxCommandRunnerName = "pvyai-windows-command-runner.exe"
 
 const windowsCapabilitySIDSchemaVersion = 2
 
-// Hidden subcommands the main zero binary answers to when it acts as its own
+// Hidden subcommands the main pvyai binary answers to when it acts as its own
 // Windows sandbox helper (self-dispatch). The "__" prefix can never collide with
 // a real user subcommand; internal/cli/app.go routes these before normal CLI
 // parsing.
@@ -27,7 +27,7 @@ const (
 // WindowsSandboxHelper locates a Windows sandbox helper to launch. Name is the
 // executable; ArgsPrefix is prepended to the helper's own arguments. For a
 // standalone helper .exe (the release layout) ArgsPrefix is empty; for
-// self-dispatch — the running zero binary acting as its own helper — Name is
+// self-dispatch — the running pvyai binary acting as its own helper — Name is
 // os.Executable() and ArgsPrefix carries the hidden subcommand token.
 type WindowsSandboxHelper struct {
 	Name       string
@@ -64,7 +64,7 @@ var osExecutable = os.Executable
 // resolveWindowsSandboxHelper resolves a helper in three tiers, mirroring the
 // Linux helper resolution (linux_helper.go): (1) a standalone .exe adjacent to
 // the running binary — the release layout, kept first so a packaged helper still
-// wins; (2) the same name on PATH; (3) SELF-DISPATCH — the running zero binary
+// wins; (2) the same name on PATH; (3) SELF-DISPATCH — the running pvyai binary
 // itself, invoked with the hidden subcommand. Tier 3 is what makes the sandbox
 // reachable under `go run`/plain `go build` (no separate helper shipped),
 // fixing the dev-only "command runner is not available" failure that hard-failed
@@ -347,7 +347,7 @@ func windowsRestrictedTokenCommandPlan(execRequest SandboxExecutionRequest, poli
 		return CommandPlan{}, err
 	}
 	// Prepend the helper's args prefix: for self-dispatch this is the hidden
-	// subcommand token (Name is the running zero binary), so the launched command
+	// subcommand token (Name is the running pvyai binary), so the launched command
 	// is `pvyai __windows-command-runner <sandbox args>`. Empty for a standalone
 	// helper .exe, where args are passed unchanged.
 	fullArgs := append(append([]string{}, execRequest.Backend.ExecutableArgsPrefix...), args...)

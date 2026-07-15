@@ -43,7 +43,7 @@ func TestRuntimeCloseKillsRunningTasksAndCleansPromptFiles(t *testing.T) {
 	if _, err := manager.Register(background.RegisterInput{TaskID: "child_task", Type: "specialist", PID: 42}); err != nil {
 		t.Fatalf("Register returned error: %v", err)
 	}
-	promptDir := filepath.Join(t.TempDir(), "zero-specialist-test")
+	promptDir := filepath.Join(t.TempDir(), "pvyai-specialist-test")
 	if err := os.MkdirAll(promptDir, 0o700); err != nil {
 		t.Fatal(err)
 	}

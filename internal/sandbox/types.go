@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// EnvSandboxed marks a process that zero has already wrapped in a sandbox: every
+// EnvSandboxed marks a process that PVYai has already wrapped in a sandbox: every
 // wrapped command carries PVYAI_SANDBOXED=1 in its environment. When such a
 // process spawns another command through the engine, the re-entrancy guard
 // returns a pass-through plan instead of double-wrapping it; nested platform
@@ -22,10 +22,10 @@ const EnvSandboxed = "PVYAI_SANDBOXED"
 const EnvSandboxBackend = "PVYAI_SANDBOX_BACKEND"
 
 // IsAlreadySandboxed reports whether the current process is already running
-// inside a zero-created sandbox. It requires BOTH correlated markers that
+// inside a PVYai-created sandbox. It requires BOTH correlated markers that
 // sandboxEnvironment sets together — EnvSandboxed == "1" AND a non-empty
 // EnvSandboxBackend — so a single user-set/inherited PVYAI_SANDBOXED=1 cannot by
-// itself disable wrapping. zero sets both only on genuinely wrapped commands;
+// itself disable wrapping. PVYai sets both only on genuinely wrapped commands;
 // pass-through (direct) plans set neither.
 func IsAlreadySandboxed() bool {
 	return os.Getenv(EnvSandboxed) == "1" && strings.TrimSpace(os.Getenv(EnvSandboxBackend)) != ""

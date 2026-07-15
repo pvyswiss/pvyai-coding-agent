@@ -29,7 +29,7 @@ func TestNewBackendDoctorReportSurfacesDiagnosticsAndActions(t *testing.T) {
 		}},
 		Hooks: hooks.LoadResult{
 			Config: hooks.Config{Enabled: false, Hooks: []hooks.Definition{{
-				ID:      "zero.preflight",
+				ID:      "pvyai.preflight",
 				Event:   hooks.EventBeforeTool,
 				Command: "sh",
 				Enabled: true,
@@ -38,13 +38,13 @@ func TestNewBackendDoctorReportSurfacesDiagnosticsAndActions(t *testing.T) {
 				Kind:      hooks.DiagnosticSchema,
 				Message:   "bad arg " + secret,
 				Path:      "/tmp/" + secret + "/hooks.json",
-				HookID:    "zero.preflight-" + secret,
+				HookID:    "pvyai.preflight-" + secret,
 				FieldPath: "hooks.0.command." + secret,
 			}},
 		},
 		Plugins: plugins.LoadResult{
 			Plugins: []plugins.LoadedPlugin{{
-				ID:      "zero.docs",
+				ID:      "pvyai.docs",
 				Name:    "Docs",
 				Enabled: false,
 				Source:  plugins.SourceProject,
@@ -56,7 +56,7 @@ func TestNewBackendDoctorReportSurfacesDiagnosticsAndActions(t *testing.T) {
 				PluginPath:   "/tmp/" + secret + "/plugins/docs",
 				ManifestPath: "/tmp/plugin.json?token=" + secret,
 				FieldPath:    "tools.0.command." + secret,
-				PluginID:     "zero.docs-" + secret,
+				PluginID:     "pvyai.docs-" + secret,
 			}},
 		},
 	})
@@ -71,9 +71,9 @@ func TestNewBackendDoctorReportSurfacesDiagnosticsAndActions(t *testing.T) {
 	assertBackendDoctorCheck(t, report, "backend.mcp.invalid", "broken", BackendDoctorStatusFail, "pvyai mcp add broken")
 	assertBackendDoctorCheck(t, report, "backend.mcp.disabled", "disabled", BackendDoctorStatusWarn, "pvyai mcp enable disabled")
 	assertBackendDoctorCheck(t, report, "backend.hooks.disabled", "hooks", BackendDoctorStatusWarn, "pvyai hooks list")
-	assertBackendDoctorCheck(t, report, "backend.hooks.diagnostic", "zero.preflight-[REDACTED]", BackendDoctorStatusFail, "pvyai hooks list")
-	assertBackendDoctorCheck(t, report, "backend.plugins.disabled", "zero.docs", BackendDoctorStatusWarn, "pvyai plugins list")
-	assertBackendDoctorCheck(t, report, "backend.plugins.diagnostic", "zero.docs-[REDACTED]", BackendDoctorStatusWarn, "pvyai plugins list")
+	assertBackendDoctorCheck(t, report, "backend.hooks.diagnostic", "pvyai.preflight-[REDACTED]", BackendDoctorStatusFail, "pvyai hooks list")
+	assertBackendDoctorCheck(t, report, "backend.plugins.disabled", "pvyai.docs", BackendDoctorStatusWarn, "pvyai plugins list")
+	assertBackendDoctorCheck(t, report, "backend.plugins.diagnostic", "pvyai.docs-[REDACTED]", BackendDoctorStatusWarn, "pvyai plugins list")
 
 	encoded, err := json.Marshal(report)
 	if err != nil {

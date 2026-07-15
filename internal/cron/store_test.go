@@ -106,7 +106,7 @@ func TestDefaultRootEmptyHomeFallsBackToUserHome(t *testing.T) {
 		t.Fatalf("DefaultRoot leaked a relative .local/share path: %q", root)
 	}
 	if filepath.Base(root) != "cron" || filepath.Base(filepath.Dir(root)) != "pvyai" {
-		t.Fatalf("DefaultRoot tail = %q, want .../zero/cron", root)
+		t.Fatalf("DefaultRoot tail = %q, want .../pvyai/cron", root)
 	}
 }
 

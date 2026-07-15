@@ -58,7 +58,7 @@ func TestRunBackendsJSONUsesLifecycleSnapshotWithoutConnectingMCP(t *testing.T) 
 				t.Fatalf("hook Cwd = %q, want %q", options.Cwd, cwd)
 			}
 			return hooks.LoadResult{Config: hooks.Config{Hooks: []hooks.Definition{{
-				ID:      "zero.preflight",
+				ID:      "pvyai.preflight",
 				Event:   hooks.EventBeforeTool,
 				Matcher: "bash",
 				Command: "sh",
@@ -71,7 +71,7 @@ func TestRunBackendsJSONUsesLifecycleSnapshotWithoutConnectingMCP(t *testing.T) 
 				t.Fatalf("plugin Cwd = %q, want %q", options.Cwd, cwd)
 			}
 			return plugins.LoadResult{Plugins: []plugins.LoadedPlugin{{
-				ID:           "zero.docs",
+				ID:           "pvyai.docs",
 				Name:         "Docs",
 				Description:  "uses " + secret,
 				Enabled:      true,
@@ -112,10 +112,10 @@ func TestRunBackendsJSONUsesLifecycleSnapshotWithoutConnectingMCP(t *testing.T) 
 	if snapshot.MCPServers[1].HeaderCount != 1 || !strings.Contains(snapshot.MCPServers[1].URL, "mode=readonly") {
 		t.Fatalf("http MCP snapshot missing safe status data: %#v", snapshot.MCPServers[1])
 	}
-	if len(snapshot.Hooks) != 1 || snapshot.Hooks[0].ID != "zero.preflight" || strings.Contains(strings.Join(snapshot.Hooks[0].Args, " "), secret) {
+	if len(snapshot.Hooks) != 1 || snapshot.Hooks[0].ID != "pvyai.preflight" || strings.Contains(strings.Join(snapshot.Hooks[0].Args, " "), secret) {
 		t.Fatalf("unexpected hook snapshots: %#v", snapshot.Hooks)
 	}
-	if len(snapshot.Plugins) != 1 || snapshot.Plugins[0].ID != "zero.docs" || snapshot.Plugins[0].ToolCount != 1 || snapshot.Plugins[0].PromptCount != 1 || snapshot.Plugins[0].HookCount != 1 {
+	if len(snapshot.Plugins) != 1 || snapshot.Plugins[0].ID != "pvyai.docs" || snapshot.Plugins[0].ToolCount != 1 || snapshot.Plugins[0].PromptCount != 1 || snapshot.Plugins[0].HookCount != 1 {
 		t.Fatalf("unexpected plugin snapshots: %#v", snapshot.Plugins)
 	}
 }
@@ -185,7 +185,7 @@ func TestRunBackendsDoctorJSONAndTextWithoutConnectingMCP(t *testing.T) {
 			return hooks.LoadResult{Diagnostics: []hooks.Diagnostic{{
 				Kind:    hooks.DiagnosticSchema,
 				Message: "schema failed " + secret,
-				HookID:  "zero.bad",
+				HookID:  "pvyai.bad",
 			}}}, nil
 		},
 		loadPlugins: func(options plugins.LoadOptions) (plugins.LoadResult, error) {
@@ -193,7 +193,7 @@ func TestRunBackendsDoctorJSONAndTextWithoutConnectingMCP(t *testing.T) {
 				t.Fatalf("plugin Cwd = %q, want %q", options.Cwd, cwd)
 			}
 			return plugins.LoadResult{Plugins: []plugins.LoadedPlugin{{
-				ID:      "zero.docs",
+				ID:      "pvyai.docs",
 				Name:    "Docs",
 				Enabled: true,
 				Source:  plugins.SourceProject,
@@ -224,7 +224,7 @@ func TestRunBackendsDoctorJSONAndTextWithoutConnectingMCP(t *testing.T) {
 		t.Fatalf("payload.Status = %q, want %q", payload.Status, pvycmd.BackendDoctorStatusFail)
 	}
 	assertBackendDoctorPayloadCheck(t, payload, "backend.mcp.invalid", "broken")
-	assertBackendDoctorPayloadCheck(t, payload, "backend.hooks.diagnostic", "zero.bad")
+	assertBackendDoctorPayloadCheck(t, payload, "backend.hooks.diagnostic", "pvyai.bad")
 
 	stdout.Reset()
 	stderr.Reset()
@@ -260,7 +260,7 @@ func TestRunBackendsDoctorDoesNotConnectOrExecuteConfiguredBackends(t *testing.T
 	pluginHookSentinel := filepath.Join(cwd, "plugin-hook-ran")
 	helperCommand := os.Args[0]
 	helperArgs := func(path string) []string {
-		return []string{"-test.run=TestBackendDoctorHelperProcess", "--", "--zero-backend-doctor-sentinel", path}
+		return []string{"-test.run=TestBackendDoctorHelperProcess", "--", "--pvyai-backend-doctor-sentinel", path}
 	}
 
 	var hits int32
@@ -274,7 +274,7 @@ func TestRunBackendsDoctorDoesNotConnectOrExecuteConfiguredBackends(t *testing.T
 	writeBackendDoctorJSON(t, hookConfigPath, map[string]any{
 		"enabled": true,
 		"hooks": []any{map[string]any{
-			"id":      "zero.sentinel",
+			"id":      "pvyai.sentinel",
 			"event":   "sessionStart",
 			"command": helperCommand,
 			"args":    helperArgs(hookSentinel),
@@ -283,7 +283,7 @@ func TestRunBackendsDoctorDoesNotConnectOrExecuteConfiguredBackends(t *testing.T
 	pluginDir := filepath.Join(cwd, ".pvyai", "plugins", "sentinel")
 	writeBackendDoctorJSON(t, filepath.Join(pluginDir, "plugin.json"), map[string]any{
 		"schemaVersion": 1,
-		"id":            "zero.sentinel",
+		"id":            "pvyai.sentinel",
 		"name":          "Sentinel",
 		"version":       "1.0.0",
 		"tools": []any{map[string]any{
@@ -366,7 +366,7 @@ func writeBackendDoctorJSON(t *testing.T, path string, value any) {
 
 func TestBackendDoctorHelperProcess(t *testing.T) {
 	for index, arg := range os.Args {
-		if arg != "--zero-backend-doctor-sentinel" || index+1 >= len(os.Args) {
+		if arg != "--pvyai-backend-doctor-sentinel" || index+1 >= len(os.Args) {
 			continue
 		}
 		if err := os.WriteFile(os.Args[index+1], []byte("executed"), 0o600); err != nil {

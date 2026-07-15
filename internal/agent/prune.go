@@ -7,7 +7,7 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/pvyruntime"
 )
 
-// Stale tool-output pruning reclaims context at ZERO token/latency cost before
+// Stale tool-output pruning reclaims context at PVYai token/latency cost before
 // the loop falls back to the paid LLM summarizer. A long, dump-heavy session
 // accumulates large read_file/grep/glob/bash tool results that the model has
 // long since acted on; their bodies are dead weight. Pruning replaces those

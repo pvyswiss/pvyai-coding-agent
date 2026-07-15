@@ -16,10 +16,10 @@ import (
 	"github.com/pvyswiss/pvyai-coding-agent/internal/tools"
 )
 
-// Deps are the ZERO capabilities the ACP Agent drives. The CLI fills these with
+// Deps are the PVYai capabilities the ACP Agent drives. The CLI fills these with
 // real implementations; tests inject fakes (e.g. a canned provider) to drive the
 // full ACP flow without a live model. Keeping auth/model/keys behind these deps
-// means the editor only hosts the thread — ZERO owns BYOK and telemetry-free
+// means the editor only hosts the thread — PVYai owns BYOK and telemetry-free
 // operation.
 type Deps struct {
 	ResolveConfig func(workspaceRoot string, overrides config.Overrides) (config.ResolvedConfig, error)
@@ -105,14 +105,14 @@ func (a *Agent) handleInitialize(_ context.Context, params json.RawMessage) (any
 	return InitializeResult{
 		ProtocolVersion: negotiated,
 		AgentCapabilities: AgentCapabilities{
-			// Only advertise what ZERO actually implements: session/load (loadSession)
+			// Only advertise what PVYai actually implements: session/load (loadSession)
 			// and image prompts. session/resume + the session-capability sub-object
 			// are intentionally omitted since there is no resume handler yet.
 			LoadSession:        true,
 			PromptCapabilities: PromptCapabilities{Image: true},
 		},
 		AgentInfo: &info,
-		// ZERO owns credentials (BYOK) and does not delegate auth to the editor.
+		// PVYai owns credentials (BYOK) and does not delegate auth to the editor.
 		AuthMethods: []AuthMethod{},
 	}, nil
 }
@@ -273,7 +273,7 @@ func stopReasonFor(result agent.Result, err error) (string, error) {
 	return StopEndTurn, nil
 }
 
-// requestPermission forwards a ZERO permission prompt to the client as an ACP
+// requestPermission forwards a PVYai permission prompt to the client as an ACP
 // session/request_permission request and maps the outcome back. Failure to reach
 // the client fails closed to deny.
 func (a *Agent) requestPermission(ctx context.Context, sessionID string, req agent.PermissionRequest) (agent.PermissionDecision, error) {
@@ -350,7 +350,7 @@ func (a *Agent) handleSetConfigOption(_ context.Context, params json.RawMessage)
 func (a *Agent) handlePVYaiSetModel(_ context.Context, params json.RawMessage) (any, error) {
 	var p PVYaiSetModelParams
 	if err := json.Unmarshal(params, &p); err != nil {
-		return nil, RPCError(codeInvalidParams, "invalid _zero/set_model params")
+		return nil, RPCError(codeInvalidParams, "invalid _pvyai/set_model params")
 	}
 	sess := a.session(p.SessionID)
 	if sess == nil {

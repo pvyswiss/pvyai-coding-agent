@@ -7,13 +7,13 @@ import (
 )
 
 // npmPackageName is the published package name for the npm distribution of
-// zero (see package.json). scripts/postinstall.mjs downloads the native
+// pvyai (see package.json). scripts/postinstall.mjs downloads the native
 // binary into the same directory as package.json and leaves a
 // ".pvyai-binary-version" marker file next to it — both are reliable signals
 // that a given executable came from an npm install.
 const npmPackageName = "@pvyswiss/pvyai-agent"
 
-// InstallMethod identifies how the running zero binary was installed.
+// InstallMethod identifies how the running pvyai binary was installed.
 type InstallMethod string
 
 const (

@@ -100,7 +100,7 @@ type execOptions struct {
 	// switcher).
 	allowEscalation bool
 	// selfCorrect opts the run into the post-edit verify-and-correct loop: after a
-	// mutating tool call ZERO runs the workspace verification plan and feeds
+	// mutating tool call PVYai runs the workspace verification plan and feeds
 	// failures back to the model to fix, bounded by an attempt ceiling and the
 	// autonomy gate. Off by default — a run without the flag wires a nil
 	// SelfCorrector, leaving the agent loop byte-identical to before.

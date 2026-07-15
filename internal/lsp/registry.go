@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// serverCommands maps a file extension to the language-server command (argv) ZERO
+// serverCommands maps a file extension to the language-server command (argv) PVYai
 // will spawn. The first element is the binary looked up on PATH; missing binaries
 // are not an error, the agent just degrades to text-only for that file. Every
 // command is the language's community-standard server invoked in stdio mode, so
@@ -139,7 +139,7 @@ func CoreServerBinaries() []string {
 	return binaries
 }
 
-// ServerBinaries returns the unique set of language-server binaries ZERO may
+// ServerBinaries returns the unique set of language-server binaries PVYai may
 // spawn, sorted for stable output. It is the canonical list `pvyai doctor` checks
 // against PATH, so the configured commands stay the single source of truth.
 func ServerBinaries() []string {

@@ -35,9 +35,9 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 .cursor
 
-/zero
-/zero.exe
-/zero-skills
+/pvyai
+/pvyai.exe
+/pvyai-skills
 /snake-game.html
 
 # Superpowers skill artifacts (brainstorm mockups, specs, plans) — local only
@@ -45,5 +45,5 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 docs/superpowers/
 
 # Termux/Android build artifacts
-zero-termux-arm64
-zero-linux-sandbox
+pvyai-termux-arm64
+pvyai-linux-sandbox

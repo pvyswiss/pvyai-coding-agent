@@ -2,7 +2,7 @@ package acp
 
 import "encoding/json"
 
-// ProtocolVersion is the ACP protocol version ZERO speaks. Wire compatibility is
+// ProtocolVersion is the ACP protocol version PVYai speaks. Wire compatibility is
 // negotiated during initialize; v1 is the current stable version.
 const ProtocolVersion = 1
 
@@ -21,7 +21,7 @@ const (
 	MethodFSReadTextFile         = "fs/read_text_file"          // agent -> client
 	MethodFSWriteTextFile        = "fs/write_text_file"         // agent -> client
 
-	// Vendor-prefixed ZERO extensions (clients that don't support them ignore the
+	// Vendor-prefixed PVYai extensions (clients that don't support them ignore the
 	// method and degrade cleanly, per the spec's _-prefixed convention).
 	MethodPVYaiSetModel = "_pvyai/set_model"
 )
@@ -87,10 +87,10 @@ type InitializeResult struct {
 
 // ---- content blocks ----
 
-// ContentBlock is the polymorphic content type. ZERO emits "text" (and "image"
+// ContentBlock is the polymorphic content type. PVYai emits "text" (and "image"
 // on tool content); it parses "text", "image", and "resource"/"resource_link"
 // from inbound prompts. A single struct with omitempty fields covers both
-// directions since the field names do not collide across the variants ZERO uses.
+// directions since the field names do not collide across the variants PVYai uses.
 type ContentBlock struct {
 	Type     string          `json:"type"`
 	Text     string          `json:"text,omitempty"`
@@ -109,8 +109,8 @@ func ImageBlock(base64Data, mimeType string) ContentBlock {
 
 // ---- sessions ----
 
-// McpServer mirrors the editor-provided MCP server entry. ZERO owns its own MCP
-// configuration (BYOK), so these are accepted for spec compliance; ZERO's
+// McpServer mirrors the editor-provided MCP server entry. PVYai owns its own MCP
+// configuration (BYOK), so these are accepted for spec compliance; PVYai's
 // configured servers remain authoritative.
 type McpServer struct {
 	Name    string          `json:"name"`
@@ -216,9 +216,9 @@ type ToolCallUpdate struct {
 	Locations     []ToolCallLocation `json:"locations,omitempty"`
 }
 
-// ToolCallContent is a tool call's rendered output. ZERO emits "content" (a
+// ToolCallContent is a tool call's rendered output. PVYai emits "content" (a
 // text/image block) and "diff" (a file change); "terminal" is part of the spec
-// but unused because ZERO executes locally.
+// but unused because PVYai executes locally.
 type ToolCallContent struct {
 	Type string `json:"type"`
 	// type == "content"
@@ -362,7 +362,7 @@ type SetSessionConfigOptionResult struct {
 	ConfigOptions []SessionConfigOption `json:"configOptions"`
 }
 
-// ---- vendor: _zero/set_model ----
+// ---- vendor: _pvyai/set_model ----
 
 type PVYaiSetModelParams struct {
 	SessionID string `json:"sessionId"`
@@ -373,6 +373,6 @@ type PVYaiSetModelResult struct {
 	Model string `json:"model"`
 }
 
-// configIDModel is the SessionConfigOption id ZERO uses to expose model choice
+// configIDModel is the SessionConfigOption id PVYai uses to expose model choice
 // through the standard session/set_config_option method.
 const configIDModel = "model"

@@ -72,7 +72,7 @@ func TestScanBuildsDeterministicSnapshot(t *testing.T) {
 		".",
 		"README.md",
 		"cmd/",
-		"  zero/",
+		"  pvyai/",
 		"    main.go",
 		"go.mod",
 		"internal/",

@@ -1,4 +1,4 @@
-// Package swarm adds a multi-agent SWARM on top of zero's single sub-agent
+// Package swarm adds a multi-agent SWARM on top of PVYai's single sub-agent
 // mechanism (internal/specialist): an orchestrator can spawn and coordinate
 // MULTIPLE specialist members that run concurrently, communicate via per-agent
 // mailboxes, and hand work off. It composes internal/specialist (to launch each

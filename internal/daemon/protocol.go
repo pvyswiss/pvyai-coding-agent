@@ -1,8 +1,8 @@
-// Package daemon implements zero's long-running daemon/server mode: a local
+// Package daemon implements PVYai's long-running daemon/server mode: a local
 // control server that supervises a pool of headless `pvyai exec` worker processes
 // and routes multiple agent sessions to them over an owner-only local socket.
 //
-// It reuses zero's existing building blocks rather than inventing new ones:
+// It reuses PVYai's existing building blocks rather than inventing new ones:
 //   - internal/background : child-process group setup + cross-platform terminate.
 //   - internal/streamjson : the line-based agent event protocol on worker stdio.
 //   - internal/cli (exec) : a worker is a `pvyai exec -i/-o stream-json` process.

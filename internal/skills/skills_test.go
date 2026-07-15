@@ -286,8 +286,8 @@ func TestDefaultDirHonorsXDGDataHome(t *testing.T) {
 }
 
 func TestDefaultDirFallsBackToHome(t *testing.T) {
-	got := DefaultDir(map[string]string{"HOME": "/home/zero"})
-	want := filepath.Join("/home/zero", ".local", "share", "pvyai", "skills")
+	got := DefaultDir(map[string]string{"HOME": "/home/pvyai"})
+	want := filepath.Join("/home/pvyai", ".local", "share", "pvyai", "skills")
 	if got != want {
 		t.Fatalf("DefaultDir = %q, want %q", got, want)
 	}

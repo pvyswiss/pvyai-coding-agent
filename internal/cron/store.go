@@ -68,7 +68,7 @@ func NewStore(opts StoreOptions) *Store {
 	return &Store{root: root, now: now}
 }
 
-// DefaultRoot mirrors sessions.DefaultRoot: <XDG_DATA_HOME|~/.local/share>/zero/cron.
+// DefaultRoot mirrors sessions.DefaultRoot: <XDG_DATA_HOME|~/.local/share>/pvyai/cron.
 func DefaultRoot(env map[string]string) string {
 	dataHome := strings.TrimSpace(env["XDG_DATA_HOME"])
 	home := strings.TrimSpace(env["HOME"])

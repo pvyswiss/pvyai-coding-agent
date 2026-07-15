@@ -445,7 +445,7 @@ func effectiveProviderKind(profile ProviderProfile) ProviderKind {
 // catalogDefaultModel returns the default model of a catalog provider ("" when
 // the id is unknown), used to fill a missing profile.Model for the official-API
 // kinds so a hand-written profile without a model resolves instead of bricking
-// every command that resolves config up front (zero config, bare zero setup).
+// every command that resolves config up front (zero config, bare pvyai setup).
 func catalogDefaultModel(catalogID string) string {
 	descriptor, ok := providercatalog.Get(catalogID)
 	if !ok {
@@ -918,7 +918,7 @@ func normalizeProvidersWithOptions(providers []ProviderProfile, activeName strin
 	}
 	if active.Model == "" {
 		return nil, ProviderProfile{}, &setupFixableError{
-			err:      providerError(active, "provider %s requires model — add \"model\" to its entry in config.json, or re-run: zero setup <catalog-id> --model <model>", active.Name),
+			err:      providerError(active, "provider %s requires model — add \"model\" to its entry in config.json, or re-run: pvyai setup <catalog-id> --model <model>", active.Name),
 			sentinel: ErrProviderRequiresModel,
 		}
 	}

@@ -158,7 +158,7 @@ func TestMCPCommandRendersConfiguredStateWithoutAgentRun(t *testing.T) {
 	m.mcpConfig = config.MCPConfig{Servers: map[string]config.MCPServerConfig{
 		"docs": {
 			Type:    "stdio",
-			Command: "zero-docs-mcp",
+			Command: "pvyai-docs-mcp",
 			Args:    []string{"--workspace", "."},
 		},
 		"github": {
@@ -726,7 +726,7 @@ func TestMCPManagerRunsSelectedServerAction(t *testing.T) {
 	m := newModel(context.Background(), Options{
 		PermissionMode: agent.PermissionModeAsk,
 		MCPConfig: config.MCPConfig{Servers: map[string]config.MCPServerConfig{
-			"docs": {Type: "stdio", Command: "zero-docs-mcp"},
+			"docs": {Type: "stdio", Command: "pvyai-docs-mcp"},
 		}},
 		MCPCommand: func(_ context.Context, args []string) MCPCommandResult {
 			called = append([]string{}, args...)
@@ -734,7 +734,7 @@ func TestMCPManagerRunsSelectedServerAction(t *testing.T) {
 				ExitCode: 0,
 				Output:   "MCP server docs is now disabled.",
 				Config: config.MCPConfig{Servers: map[string]config.MCPServerConfig{
-					"docs": {Type: "stdio", Command: "zero-docs-mcp", Disabled: true},
+					"docs": {Type: "stdio", Command: "pvyai-docs-mcp", Disabled: true},
 				}},
 			}
 		},
@@ -780,7 +780,7 @@ func TestMCPCommandRunsManagerActionAndRefreshesState(t *testing.T) {
 	m := newModel(context.Background(), Options{
 		PermissionMode: agent.PermissionModeAsk,
 		MCPConfig: config.MCPConfig{Servers: map[string]config.MCPServerConfig{
-			"docs": {Type: "stdio", Command: "zero-docs-mcp"},
+			"docs": {Type: "stdio", Command: "pvyai-docs-mcp"},
 		}},
 		MCPCommand: func(_ context.Context, args []string) MCPCommandResult {
 			if !reflect.DeepEqual(args, []string{"disable", "docs"}) {
@@ -790,7 +790,7 @@ func TestMCPCommandRunsManagerActionAndRefreshesState(t *testing.T) {
 				ExitCode: 0,
 				Output:   "MCP server docs is now disabled.",
 				Config: config.MCPConfig{Servers: map[string]config.MCPServerConfig{
-					"docs": {Type: "stdio", Command: "zero-docs-mcp", Disabled: true},
+					"docs": {Type: "stdio", Command: "pvyai-docs-mcp", Disabled: true},
 				}},
 			}
 		},
@@ -855,7 +855,7 @@ func TestMCPCommandPreservesQuotedArguments(t *testing.T) {
 func TestMCPCommandDoesNotApplyFailedConfig(t *testing.T) {
 	m := newModel(context.Background(), Options{
 		MCPConfig: config.MCPConfig{Servers: map[string]config.MCPServerConfig{
-			"docs": {Type: "stdio", Command: "zero-docs-mcp"},
+			"docs": {Type: "stdio", Command: "pvyai-docs-mcp"},
 		}},
 		MCPCommand: func(_ context.Context, args []string) MCPCommandResult {
 			return MCPCommandResult{

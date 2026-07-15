@@ -131,7 +131,7 @@ go build -o pvyai-sandbox ./cmd/pvyai-linux-sandbox
 go build -o pvyai-seccomp ./cmd/pvyai-seccomp   # optional compatibility wrapper
 ```
 
-Put `zero` and `pvyai-sandbox` in the same directory on `PATH`
+Put `pvyai` and `pvyai-sandbox` in the same directory on `PATH`
 (`~/.local/bin` is a good default). macOS does not need an extra helper binary.
 Windows source builds can use the main `pvyai.exe` as their sandbox helper; release
 archives still ship standalone Windows helper executables.

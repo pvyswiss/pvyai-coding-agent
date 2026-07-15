@@ -50,12 +50,12 @@ func (m model) emptyStateWithOverlay(width int, overlay string) string {
 
 func (m model) emptyStateLines(width int) []string {
 	lines := []string{}
-	for _, glyph := range zeroWordmarkLines() {
+	for _, glyph := range pvyaiWordmarkLines() {
 		lines = append(lines, centerLine(glyph, width))
 	}
 	lines = append(lines, "")
 	lines = append(lines, centerLine(pvyaiTheme.muted.Render(emptyStateTagline), width))
-	// Orientation: where ZERO is pointed (cwd · branch · model) so a returning user
+	// Orientation: where PVYai is pointed (cwd · branch · model) so a returning user
 	// sees the context before typing instead of a blank brand screen.
 	if orient := m.emptyStateOrientation(); orient != "" {
 		lines = append(lines, "")
@@ -96,7 +96,7 @@ func (m model) emptyStateOrientation() string {
 	return pvyaiTheme.faint.Render(strings.Join(parts, "  ·  "))
 }
 
-func zeroWordmarkLines() []string {
+func pvyaiWordmarkLines() []string {
 	pvy := pvyaiTheme.brandBlue.Render(pvyaiWordmarkPVY)
 	ai := pvyaiTheme.brandRed.Render(pvyaiWordmarkAI)
 	return []string{pvy + ai}

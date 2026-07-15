@@ -43,7 +43,7 @@ func TestServeListsAndCallsRegistryTools(t *testing.T) {
 	})
 
 	var output bytes.Buffer
-	if err := Serve(context.Background(), &input, &output, registry, ServeOptions{Name: "zero-test", Version: "1.2.3"}); err != nil {
+	if err := Serve(context.Background(), &input, &output, registry, ServeOptions{Name: "pvyai-test", Version: "1.2.3"}); err != nil {
 		t.Fatalf("Serve() error = %v", err)
 	}
 
@@ -58,7 +58,7 @@ func TestServeListsAndCallsRegistryTools(t *testing.T) {
 		} `json:"serverInfo"`
 	}
 	decodeServerTestResult(t, initialize, &initResult)
-	if initResult.ProtocolVersion != defaultProtocolVersion || initResult.ServerInfo.Name != "zero-test" || initResult.ServerInfo.Version != "1.2.3" {
+	if initResult.ProtocolVersion != defaultProtocolVersion || initResult.ServerInfo.Name != "pvyai-test" || initResult.ServerInfo.Version != "1.2.3" {
 		t.Fatalf("initialize result = %#v", initResult)
 	}
 	if _, ok := initResult.Capabilities["tools"]; !ok {

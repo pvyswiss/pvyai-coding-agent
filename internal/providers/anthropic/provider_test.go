@@ -36,7 +36,7 @@ func TestStreamCompletionPostsMessagesRequest(t *testing.T) {
 		BaseURL:   server.URL + "/",
 		Model:     "claude-test",
 		MaxTokens: 64_000,
-		UserAgent: "zero-test",
+		UserAgent: "pvyai-test",
 	})
 	if err != nil {
 		t.Fatalf("New returned error: %v", err)
@@ -77,8 +77,8 @@ func TestStreamCompletionPostsMessagesRequest(t *testing.T) {
 	if gotVersion != defaultVersion {
 		t.Fatalf("anthropic-version = %q, want %q", gotVersion, defaultVersion)
 	}
-	if gotUserAgent != "zero-test" {
-		t.Fatalf("User-Agent = %q, want zero-test", gotUserAgent)
+	if gotUserAgent != "pvyai-test" {
+		t.Fatalf("User-Agent = %q, want pvyai-test", gotUserAgent)
 	}
 	if gotBody["model"] != "claude-test" || gotBody["stream"] != true || gotBody["max_tokens"] != float64(64_000) {
 		t.Fatalf("unexpected model/stream/max_tokens: %#v", gotBody)

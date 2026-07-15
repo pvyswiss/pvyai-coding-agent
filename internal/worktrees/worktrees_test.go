@@ -72,7 +72,7 @@ func TestPrepareCreatesDetachedGitWorktree(t *testing.T) {
 	if result.RepoRoot != root || result.SourceBranch != "main" || result.SourceCommit != "abc1234" {
 		t.Fatalf("unexpected result metadata: %#v", result)
 	}
-	if !strings.HasPrefix(result.Path, filepath.Join(base, "zero-worktree-")) {
+	if !strings.HasPrefix(result.Path, filepath.Join(base, "pvyai-worktree-")) {
 		t.Fatalf("Path = %q, want under base %q", result.Path, base)
 	}
 	if got := runner.commandLine(3); got != "git worktree add --detach "+result.Path+" HEAD" {
@@ -87,7 +87,7 @@ func TestPrepareReusesExistingGitWorktree(t *testing.T) {
 	if err := os.MkdirAll(sourceGit, 0o700); err != nil {
 		t.Fatal(err)
 	}
-	existing := filepath.Join(base, "zero-worktree-"+repoKey(root), "reuse-me")
+	existing := filepath.Join(base, "pvyai-worktree-"+repoKey(root), "reuse-me")
 	if err := os.MkdirAll(filepath.Join(existing, ".git"), 0o700); err != nil {
 		t.Fatal(err)
 	}
@@ -132,7 +132,7 @@ func TestPrepareRejectsExistingWorktreeFromDifferentRepo(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	existing := filepath.Join(base, "zero-worktree-"+repoKey(root), "other-repo")
+	existing := filepath.Join(base, "pvyai-worktree-"+repoKey(root), "other-repo")
 	if err := os.MkdirAll(filepath.Join(existing, ".git"), 0o700); err != nil {
 		t.Fatal(err)
 	}
@@ -172,7 +172,7 @@ func TestPrepareValidatesNameAndExistingDirectory(t *testing.T) {
 		t.Fatalf("expected invalid name error, got %v", err)
 	}
 
-	blocked := filepath.Join(base, "zero-worktree-"+repoKey(root), "blocked")
+	blocked := filepath.Join(base, "pvyai-worktree-"+repoKey(root), "blocked")
 	if err := os.MkdirAll(blocked, 0o700); err != nil {
 		t.Fatal(err)
 	}
@@ -203,7 +203,7 @@ func TestDefaultBaseDirFallsBackForWindowsUserProfile(t *testing.T) {
 	if runtime.GOOS != "windows" {
 		t.Skip("USERPROFILE fallback is Windows-specific")
 	}
-	profile := `C:\Users\zero`
+	profile := `C:\Users\pvyai`
 	got, err := DefaultBaseDir(map[string]string{"USERPROFILE": profile})
 	if err != nil {
 		t.Fatalf("DefaultBaseDir returned error: %v", err)

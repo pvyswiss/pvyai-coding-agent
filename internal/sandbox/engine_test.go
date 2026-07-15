@@ -803,7 +803,7 @@ func TestEvaluateAllowsWritesInsideDefaultTempRoot(t *testing.T) {
 		ToolName:   "write_file",
 		SideEffect: SideEffectWrite,
 		Permission: PermissionAllow,
-		Args:       map[string]any{"path": filepath.Join(tempRoot, "zero-toolcheck", "go.mod")},
+		Args:       map[string]any{"path": filepath.Join(tempRoot, "pvyai-toolcheck", "go.mod")},
 	})
 	if decision.Action != ActionAllow {
 		t.Fatalf("temp-root write Action=%q (%s), want allow", decision.Action, decision.Reason)

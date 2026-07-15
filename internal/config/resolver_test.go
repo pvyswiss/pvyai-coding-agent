@@ -1769,7 +1769,7 @@ func TestResolveMaxTurnsZeroFallsBackToDefault(t *testing.T) {
 
 // The reported brick: a hand-written google profile with an apiKey but no
 // model made EVERY resolving command fail ("provider google requires model"),
-// including pvyai config and bare zero setup — the only commands that could
+// including pvyai config and bare pvyai setup — the only commands that could
 // have fixed it. Official-API kinds now fall back to their catalog default
 // model, exactly like the openai kind always has.
 func TestResolveDefaultsGoogleModelFromCatalog(t *testing.T) {

@@ -268,7 +268,7 @@ func writeExecStub(t *testing.T, body string) string {
 		t.Skip("exec stub uses a POSIX shell script")
 	}
 	dir := t.TempDir()
-	path := filepath.Join(dir, "zero-stub.sh")
+	path := filepath.Join(dir, "pvyai-stub.sh")
 	script := "#!/bin/sh\n" + body
 	if err := os.WriteFile(path, []byte(script), 0o755); err != nil {
 		t.Fatalf("write exec stub: %v", err)

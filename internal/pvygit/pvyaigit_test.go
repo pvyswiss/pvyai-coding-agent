@@ -249,7 +249,7 @@ func TestInspectBaseRefRealGitDiffsBranchAgainstBase(t *testing.T) {
 	runGitCommand(t, root, "checkout", "-q", "-b", "feature")
 	writeTestFile(t, filepath.Join(root, "feature.md"), "branch only\n")
 	runGitCommand(t, root, "add", "feature.md")
-	runGitCommand(t, root, "-c", "user.name=PVYai", "-c", "user.email=zero@example.invalid", "commit", "-m", "Add feature")
+	runGitCommand(t, root, "-c", "user.name=PVYai", "-c", "user.email=pvyai@example.invalid", "commit", "-m", "Add feature")
 
 	summary, err := Inspect(context.Background(), InspectOptions{Cwd: root, BaseRef: strings.TrimSpace(baseRef)})
 	if err != nil {
@@ -443,7 +443,7 @@ func initGitRepo(t *testing.T, withCommit bool) string {
 	if withCommit {
 		writeTestFile(t, filepath.Join(root, "README.md"), "initial\n")
 		runGitCommand(t, root, "add", "README.md")
-		runGitCommand(t, root, "-c", "user.name=PVYai", "-c", "user.email=zero@example.invalid", "commit", "-m", "Initial commit")
+		runGitCommand(t, root, "-c", "user.name=PVYai", "-c", "user.email=pvyai@example.invalid", "commit", "-m", "Initial commit")
 	}
 	return root
 }

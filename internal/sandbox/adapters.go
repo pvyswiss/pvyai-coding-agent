@@ -19,7 +19,7 @@ type Backend struct {
 	Executable      string      `json:"executable,omitempty"`
 	// ExecutableArgsPrefix is prepended to a wrapped command's args before the
 	// sandbox arguments. Non-empty only for the Windows self-dispatch helper,
-	// where Executable is the running zero binary and this carries the hidden
+	// where Executable is the running pvyai binary and this carries the hidden
 	// subcommand token (e.g. "__windows-command-runner"). nil for every other
 	// backend, so their serialized form is unchanged.
 	ExecutableArgsPrefix []string `json:"executableArgsPrefix,omitempty"`

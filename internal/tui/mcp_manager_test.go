@@ -11,7 +11,7 @@ import (
 func TestMCPManagerViewRendersServerActionHints(t *testing.T) {
 	got := plainRender(t, renderMCPView(MCPViewState{
 		Servers: []MCPServerView{
-			{Name: "docs", Transport: "stdio", State: "enabled", Target: "zero-docs-mcp --workspace .", ToolCount: 2},
+			{Name: "docs", Transport: "stdio", State: "enabled", Target: "pvyai-docs-mcp --workspace .", ToolCount: 2},
 			{Name: "linear", Transport: "http", State: "disabled", Target: "https://mcp.linear.example", Auth: "oauth"},
 		},
 	}, 140))
@@ -84,7 +84,7 @@ func TestMCPManagerTargetsRedactSecretsFromURLsAndArgs(t *testing.T) {
 		Config: config.MCPConfig{Servers: map[string]config.MCPServerConfig{
 			"docs": {
 				Type:    "stdio",
-				Command: "zero-docs-mcp",
+				Command: "pvyai-docs-mcp",
 				Args:    []string{"--workspace", ".", "--token", "arg-secret", "--api-key=inline-secret", "--endpoint", "https://remote.example/mcp?access_token=arg-url-secret#token=frag-secret", "--inline-endpoint=https://remote.example/mcp?access_token=inline-url-secret#token=inline-frag-secret"},
 				Env:     map[string]string{"PVYAI_DOCS_TOKEN": "env-secret"},
 			},

@@ -226,7 +226,7 @@ func TestCompactCarriesLoadedToolsAndProjectInstructionsAcrossRepeatedCompaction
 // round-trip across TWO compactions without truncation or bogus extra skills —
 // which the old markdown-delimited format could not guarantee.
 func TestCompactPreservesSkillBodyWithMarkdownHeadings(t *testing.T) {
-	body := "## Usage\nrun it\n### Examples\n```\nzero do\n```\n## Notes\ndone"
+	body := "## Usage\nrun it\n### Examples\n```\npvyai do\n```\n## Notes\ndone"
 	conv := []pvyruntime.Message{
 		{Role: pvyruntime.MessageRoleSystem, Content: "system"},
 		{Role: pvyruntime.MessageRoleUser, Content: "load a skill"},

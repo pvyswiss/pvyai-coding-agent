@@ -22,7 +22,7 @@ const TaskSchemaVersion = 1
 
 // TaskSet is a reproducible benchmark task list. It mirrors the shape of a
 // Terminal-Bench task manifest: each task is an isolated workspace plus a prompt
-// ZERO must satisfy. The set is recorded by ID with every result so a published
+// PVYai must satisfy. The set is recorded by ID with every result so a published
 // number is traceable to the exact tasks that produced it.
 type TaskSet struct {
 	ID    string      `json:"id"`
@@ -32,7 +32,7 @@ type TaskSet struct {
 
 // BenchTask is one benchmark task. WorkspaceFixture is the relative path of the
 // task's starting workspace; VerificationCommand (optional) is the command the
-// default runner executes to decide pass/fail after ZERO finishes.
+// default runner executes to decide pass/fail after PVYai finishes.
 type BenchTask struct {
 	ID                  string   `json:"id"`
 	Name                string   `json:"name,omitempty"`
@@ -378,7 +378,7 @@ func runVerification(ctx context.Context, task BenchTask) TaskOutcome {
 }
 
 // streamJSONExitCode scans stream-json output for the terminal run_end event and
-// returns its exit code. ZERO emits one JSON object per line; the last run_end
+// returns its exit code. PVYai emits one JSON object per line; the last run_end
 // (or final) event carries the exit code. Lines that don't parse are skipped.
 func streamJSONExitCode(output []byte) (int, bool) {
 	scanner := bufio.NewScanner(bytes.NewReader(output))

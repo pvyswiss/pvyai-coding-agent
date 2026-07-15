@@ -11,12 +11,12 @@ import (
 
 func TestParseManifestNormalizesExtensionsAndPaths(t *testing.T) {
 	root := filepath.Join(t.TempDir(), "plugins")
-	pluginDir := filepath.Join(root, "zero-demo")
+	pluginDir := filepath.Join(root, "pvyai-demo")
 	manifestPath := filepath.Join(pluginDir, "plugin.json")
 
 	plugin, err := ParseManifest(map[string]any{
 		"schemaVersion": float64(1),
-		"id":            "zero.demo",
+		"id":            "pvyai.demo",
 		"name":          "PVYai Demo",
 		"version":       "0.1.0",
 		"description":   "Demo plugin",
@@ -46,7 +46,7 @@ func TestParseManifestNormalizesExtensionsAndPaths(t *testing.T) {
 		t.Fatalf("ParseManifest returned error: %v", err)
 	}
 
-	if plugin.ID != "zero.demo" || plugin.Name != "PVYai Demo" || !plugin.Enabled {
+	if plugin.ID != "pvyai.demo" || plugin.Name != "PVYai Demo" || !plugin.Enabled {
 		t.Fatalf("unexpected plugin metadata: %#v", plugin)
 	}
 	if plugin.Tools[0].Permission != PermissionPrompt || plugin.Tools[0].Args[0] != "tools/lookup.mjs" {
@@ -65,12 +65,12 @@ func TestParseManifestNormalizesExtensionsAndPaths(t *testing.T) {
 
 func TestParseManifestReadsOptionalMetadata(t *testing.T) {
 	root := filepath.Join(t.TempDir(), "plugins")
-	pluginDir := filepath.Join(root, "zero-demo")
+	pluginDir := filepath.Join(root, "pvyai-demo")
 	manifestPath := filepath.Join(pluginDir, "plugin.json")
 
 	plugin, err := ParseManifest(map[string]any{
 		"schemaVersion": float64(1),
-		"id":            "zero.demo",
+		"id":            "pvyai.demo",
 		"name":          "PVYai Demo",
 		"version":       "0.1.0",
 		"author": map[string]any{
@@ -123,7 +123,7 @@ func TestParseManifestWithoutOptionalMetadataLeavesZeroValues(t *testing.T) {
 
 	plugin, err := ParseManifest(map[string]any{
 		"schemaVersion": float64(1),
-		"id":            "zero.bare",
+		"id":            "pvyai.bare",
 		"name":          "Bare",
 		"version":       "0.1.0",
 	}, ParseManifestOptions{
@@ -152,7 +152,7 @@ func TestParseManifestWithoutOptionalMetadataLeavesZeroValues(t *testing.T) {
 func TestFormatListSurfacesOptionalMetadata(t *testing.T) {
 	output := FormatList([]LoadedPlugin{{
 		SchemaVersion: 1,
-		ID:            "zero.demo",
+		ID:            "pvyai.demo",
 		Name:          "PVYai Demo",
 		Version:       "0.1.0",
 		Enabled:       true,
@@ -170,10 +170,10 @@ func TestFormatListSurfacesOptionalMetadata(t *testing.T) {
 
 func TestParseManifestClampsAutoApprovalByDefault(t *testing.T) {
 	root := t.TempDir()
-	pluginDir := filepath.Join(root, "zero-demo")
+	pluginDir := filepath.Join(root, "pvyai-demo")
 	manifest := map[string]any{
 		"schemaVersion": float64(1),
-		"id":            "zero.demo",
+		"id":            "pvyai.demo",
 		"name":          "PVYai Demo",
 		"version":       "0.1.0",
 		"tools": []any{map[string]any{
@@ -221,7 +221,7 @@ func TestParseManifestRejectsUnsafePluginLocalPaths(t *testing.T) {
 		t.Run(path, func(t *testing.T) {
 			_, err := ParseManifest(map[string]any{
 				"schemaVersion": float64(1),
-				"id":            "zero.bad",
+				"id":            "pvyai.bad",
 				"name":          "Bad",
 				"version":       "0.1.0",
 				"prompts":       []any{map[string]any{"name": "escape", "path": path}},
@@ -253,7 +253,7 @@ func TestParseManifestRejectsSymlinkEscapes(t *testing.T) {
 
 	_, err := ParseManifest(map[string]any{
 		"schemaVersion": float64(1),
-		"id":            "zero.bad",
+		"id":            "pvyai.bad",
 		"name":          "Bad",
 		"version":       "0.1.0",
 		"prompts":       []any{map[string]any{"name": "escape", "path": filepath.Join("link", "escape.md")}},
@@ -285,7 +285,7 @@ func TestParseManifestRejectsSymlinkEscapesWithMissingLeaf(t *testing.T) {
 
 	_, err := ParseManifest(map[string]any{
 		"schemaVersion": float64(1),
-		"id":            "zero.bad",
+		"id":            "pvyai.bad",
 		"name":          "Bad",
 		"version":       "0.1.0",
 		"prompts":       []any{map[string]any{"name": "escape", "path": filepath.Join("link", "missing.md")}},
@@ -333,20 +333,20 @@ func TestLoadPluginsDiscoversDiagnosticsAndProjectPrecedence(t *testing.T) {
 	projectRoot := filepath.Join(dir, "project-plugins")
 	writePluginManifest(t, filepath.Join(userRoot, "demo"), map[string]any{
 		"schemaVersion": 1,
-		"id":            "zero.demo",
+		"id":            "pvyai.demo",
 		"name":          "User Demo",
 		"version":       "0.1.0",
 	})
 	writePluginManifest(t, filepath.Join(projectRoot, "demo"), map[string]any{
 		"schemaVersion": 1,
-		"id":            "zero.demo",
+		"id":            "pvyai.demo",
 		"name":          "Project Demo",
 		"version":       "0.2.0",
 		"enabled":       false,
 	})
 	writePluginManifest(t, filepath.Join(projectRoot, "docs"), map[string]any{
 		"schemaVersion": 1,
-		"id":            "zero.docs",
+		"id":            "pvyai.docs",
 		"name":          "Docs",
 		"version":       "1.0.0",
 	})
@@ -366,13 +366,13 @@ func TestLoadPluginsDiscoversDiagnosticsAndProjectPrecedence(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Load returned error: %v", err)
 	}
-	if got := []string{result.Plugins[0].ID + ":" + result.Plugins[0].Name, result.Plugins[1].ID + ":" + result.Plugins[1].Name}; got[0] != "zero.demo:Project Demo" || got[1] != "zero.docs:Docs" {
+	if got := []string{result.Plugins[0].ID + ":" + result.Plugins[0].Name, result.Plugins[1].ID + ":" + result.Plugins[1].Name}; got[0] != "pvyai.demo:Project Demo" || got[1] != "pvyai.docs:Docs" {
 		t.Fatalf("unexpected plugins: %#v", result.Plugins)
 	}
 	if result.Plugins[0].Enabled {
 		t.Fatalf("project plugin should remain disabled")
 	}
-	if !hasPluginDiagnostic(result.Diagnostics, DiagnosticDuplicate, "zero.demo") {
+	if !hasPluginDiagnostic(result.Diagnostics, DiagnosticDuplicate, "pvyai.demo") {
 		t.Fatalf("missing duplicate diagnostic: %#v", result.Diagnostics)
 	}
 	if !hasPluginDiagnostic(result.Diagnostics, DiagnosticJSON, "") {

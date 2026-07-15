@@ -252,7 +252,7 @@ func TestTranscriptReducer(t *testing.T) {
 
 func TestInitialRenderShowsLimeChatSurface(t *testing.T) {
 	model := newModel(context.Background(), Options{
-		Cwd:          `/workspace/zero`,
+		Cwd:          `/workspace/pvyai`,
 		ProviderName: "openai",
 		ModelName:    "gpt-4.1",
 	})
@@ -260,10 +260,10 @@ func TestInitialRenderShowsLimeChatSurface(t *testing.T) {
 	model.height = 34
 
 	view := viewString(model.View())
-	assertContains(t, view, `/workspace/zero`)
+	assertContains(t, view, `/workspace/pvyai`)
 	assertContains(t, view, "openai/gpt-4.1")
 	assertContains(t, view, emptyStateTagline)
-	assertNotContains(t, view, "running zero against ")
+	assertNotContains(t, view, "running pvyai against ")
 	assertNotContains(t, view, " 0 ")
 	assertContains(t, view, composerPlaceholder)
 	assertNotContains(t, view, "interactive")
@@ -1049,12 +1049,12 @@ func TestResumeHonorsPriorCompaction(t *testing.T) {
 
 func TestResumeCommandWithUnknownIDReportsMissingSession(t *testing.T) {
 	m := newModel(context.Background(), Options{SessionStore: testSessionStore(t)})
-	m.input.SetValue("/resume zero_123")
+	m.input.SetValue("/resume pvyai_123")
 
 	updated, _ := m.Update(testKey(tea.KeyEnter))
 	next := updated.(model)
 
-	if !transcriptContains(next.transcript, "pvyai session not found: zero_123") {
+	if !transcriptContains(next.transcript, "pvyai session not found: pvyai_123") {
 		t.Fatalf("expected missing session message, got %#v", next.transcript)
 	}
 }

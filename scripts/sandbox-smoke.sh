@@ -43,15 +43,15 @@ build_cmd windows ./cmd/pvyai-windows-sandbox-setup pvyai-windows-sandbox-setup.
 
 case "$(go env GOOS)" in
   linux)
-    ZERO_SANDBOX_REAL_SMOKE=1 go test ./internal/sandbox -run 'TestLinuxHelperRealSandboxSmoke|TestLinuxLandlockRealSandboxSmoke' -count=1
+    PVYAI_SANDBOX_REAL_SMOKE=1 go test ./internal/sandbox -run 'TestLinuxHelperRealSandboxSmoke|TestLinuxLandlockRealSandboxSmoke' -count=1
     ;;
   darwin)
     go test ./internal/sandbox -run TestSandboxExecProfileAllowsDevNullAndTemp -count=1
     ;;
   windows)
-    ZERO_SANDBOX_REAL_SMOKE=1 \
+    PVYAI_SANDBOX_REAL_SMOKE=1 \
       PVYAI_WINDOWS_COMMAND_RUNNER_EXE="$tmpdir/windows-pvyai-windows-command-runner.exe" \
-      ZERO_WINDOWS_SANDBOX_SETUP_EXE="$tmpdir/windows-pvyai-windows-sandbox-setup.exe" \
+      PVYAI_WINDOWS_SANDBOX_SETUP_EXE="$tmpdir/windows-pvyai-windows-sandbox-setup.exe" \
       go test ./internal/sandbox -run TestWindowsRestrictedTokenRealSandboxSmoke -count=1
     ;;
   *)

@@ -1117,7 +1117,7 @@ func TestLocalControlCardsUseFriendlyCompactLabels(t *testing.T) {
 		t.Fatalf("browser_snapshot card should stay compact and friendly:\n%s", got)
 	}
 
-	artifact := transcriptRow{kind: rowToolResult, id: "call_3", tool: "capture_artifact", status: tools.StatusOK, detail: "Artifact captured: /tmp/zero-artifacts/page.png\n\nhelper wrote screenshot"}
+	artifact := transcriptRow{kind: rowToolResult, id: "call_3", tool: "capture_artifact", status: tools.StatusOK, detail: "Artifact captured: /tmp/pvyai-artifacts/page.png\n\nhelper wrote screenshot"}
 	got = plainRender(t, m.renderRow(artifact, 100, buildRowContext(nil)))
 	for _, want := range []string{"Captured", "page.png"} {
 		if !strings.Contains(got, want) {
@@ -1432,10 +1432,10 @@ func TestStatusLineOmitsEffortWhenAuto(t *testing.T) {
 func TestTitleBarShowsWorkspaceAndModel(t *testing.T) {
 	m := limeTestModel()
 	m.width = 120
-	m.cwd = "/workspace/zero"
+	m.cwd = "/workspace/pvyai"
 	m.gitBranch = "main"
 	got := plainRender(t, m.titleBar(120))
-	for _, want := range []string{" main", "/workspace/zero", "test-provider/test-model"} {
+	for _, want := range []string{" main", "/workspace/pvyai", "test-provider/test-model"} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("title bar = %q, missing %q", got, want)
 		}
@@ -1455,12 +1455,12 @@ func TestTitleBarHighlightsBranchOverWorkspace(t *testing.T) {
 	})
 
 	m := limeTestModel()
-	m.cwd = "/workspace/zero"
+	m.cwd = "/workspace/pvyai"
 	m.gitBranch = "main"
 	got := m.titleWorkspaceSegment()
 
 	highlightedBranch := pvyaiTheme.muted.Render("") + " " + pvyaiTheme.muted.Render("main")
-	recessedWorkspace := pvyaiTheme.faint.Render("/workspace/zero")
+	recessedWorkspace := pvyaiTheme.faint.Render("/workspace/pvyai")
 	for _, want := range []string{highlightedBranch, recessedWorkspace} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("title workspace segment = %q, missing styled segment %q", got, want)
@@ -1813,10 +1813,10 @@ func TestModelPickerItemsCarryProviderTag(t *testing.T) {
 
 func TestSpecReviewCardShowsBadgePathAndKeys(t *testing.T) {
 	got := plainRender(t, renderFocusedSpecReviewPrompt(pendingSpecReviewPrompt{
-		SpecFilePath: "/repo/specs/zero-1.md",
-		RelativePath: "specs/zero-1.md",
+		SpecFilePath: "/repo/specs/pvyai-1.md",
+		RelativePath: "specs/pvyai-1.md",
 	}, 80))
-	for _, want := range []string{"SPEC REVIEW", "specs/zero-1.md", "[a] approve", "[r] reject", "[e] edit file", "[esc] cancel"} {
+	for _, want := range []string{"SPEC REVIEW", "specs/pvyai-1.md", "[a] approve", "[r] reject", "[e] edit file", "[esc] cancel"} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("spec review card = %q, missing %q", got, want)
 		}

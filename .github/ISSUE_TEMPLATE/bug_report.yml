@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a reproducible problem in Zero
+description: Report a reproducible problem in PVYai
 labels: ["bug"]
 body:
   - type: markdown
@@ -11,7 +11,7 @@ body:
     id: version
     attributes:
       label: Version / branch / commit
-      description: Output of `zero version`, or the branch/commit you built from.
+      description: Output of `pvyai version`, or the branch/commit you built from.
       placeholder: "pvyai dev (commit abc1234) / main"
     validations:
       required: true
@@ -29,7 +29,7 @@ body:
       label: Steps to reproduce
       description: A minimal reproduction case when possible.
       placeholder: |
-        1. Run `zero ...`
+        1. Run `pvyai ...`
         2. ...
     validations:
       required: true

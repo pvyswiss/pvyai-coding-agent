@@ -357,7 +357,7 @@ func TestCollectStreamFlushesOpenToolCallsWhenChannelCloses(t *testing.T) {
 		defer close(events)
 		events <- StreamEvent{Type: StreamEventToolCallStart, ToolCallID: "call_closed", ToolName: "grep"}
 		events <- StreamEvent{Type: StreamEventToolCallDelta, ToolCallID: "call_closed", ArgumentsFragment: `{"query":"`}
-		events <- StreamEvent{Type: StreamEventToolCallDelta, ToolCallID: "call_closed", ArgumentsFragment: `zero"}`}
+		events <- StreamEvent{Type: StreamEventToolCallDelta, ToolCallID: "call_closed", ArgumentsFragment: `pvyai"}`}
 	}()
 
 	collected := CollectStream(context.Background(), events)

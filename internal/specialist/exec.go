@@ -638,7 +638,7 @@ func (executor Executor) binaryPath() (string, error) {
 	}
 	path, err := os.Executable()
 	if err != nil {
-		return "", fmt.Errorf("resolve zero executable: %w", err)
+		return "", fmt.Errorf("resolve pvyai executable: %w", err)
 	}
 	return path, nil
 }

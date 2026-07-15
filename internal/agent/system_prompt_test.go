@@ -18,7 +18,7 @@ import (
 // guidelines stub userConfigDirForPrompt themselves via
 // withSystemPromptTestUserConfigDir(Func) and restore this default on cleanup.
 func TestMain(m *testing.M) {
-	dir, err := os.MkdirTemp("", "zero-agent-tests-*")
+	dir, err := os.MkdirTemp("", "pvyai-agent-tests-*")
 	if err != nil {
 		panic(err)
 	}
@@ -66,7 +66,7 @@ func TestSystemPromptExplainsSandboxEscalationForHiddenHostState(t *testing.T) {
 
 func TestBuildSystemPromptIncludesWorkspaceSeedFromCwd(t *testing.T) {
 	cwd := t.TempDir()
-	writeSystemPromptTestFile(t, cwd, "go.mod", "module example.test/zero\n")
+	writeSystemPromptTestFile(t, cwd, "go.mod", "module example.test/pvyai\n")
 	writeSystemPromptTestFile(t, cwd, "AGENTS.md", "Use Go commands.\n")
 	writeSystemPromptTestFile(t, cwd, "cmd/pvyai/main.go", "package main\n")
 	writeSystemPromptTestFile(t, cwd, "internal/agent/loop.go", "package agent\n")

@@ -1,4 +1,4 @@
-// Package remote adds an OPT-IN, TLS-only network bridge on top of zero's local
+// Package remote adds an OPT-IN, TLS-only network bridge on top of PVYai's local
 // daemon (internal/daemon). It lets a remote client drive the SAME daemon
 // SessionManager/Pool over the network, behind bearer-token authentication and a
 // protocol-version floor. The local Unix-socket daemon is unchanged and remains

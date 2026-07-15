@@ -151,7 +151,7 @@ func TestRenderClampsOnRuneBoundaries(t *testing.T) {
 
 func TestBuildFromWorkspaceUsesWorkspaceIndexWithoutGit(t *testing.T) {
 	root := t.TempDir()
-	writeSeedFile(t, root, "go.mod", "module example.test/zero\n")
+	writeSeedFile(t, root, "go.mod", "module example.test/pvyai\n")
 	writeSeedFile(t, root, "cmd/pvyai/main.go", "package main\n")
 	writeSeedFile(t, root, "docs/INSTALL.md", "# Install\n")
 	writeSeedFile(t, root, "node_modules/pkg/index.js", "ignored")

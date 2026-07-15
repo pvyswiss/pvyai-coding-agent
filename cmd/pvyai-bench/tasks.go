@@ -13,7 +13,7 @@ import (
 )
 
 // taskOptions configures the `pvyai-perf-bench tasks` subcommand: the reproducible
-// Terminal-Bench-style harness that runs ZERO headlessly against a task set and
+// Terminal-Bench-style harness that runs PVYai headlessly against a task set and
 // records a publishable result (model + commit + self-correct flag + date).
 type taskOptions struct {
 	SuitePath   string
@@ -197,7 +197,7 @@ func taskHelpText() string {
 	return strings.Join([]string{
 		"Usage: pvyai-perf-bench tasks [options]",
 		"",
-		"Runs ZERO headlessly against a Terminal-Bench-style task set and records a",
+		"Runs PVYai headlessly against a Terminal-Bench-style task set and records a",
 		"reproducible, publishable result (model + commit + self-correct flag + date).",
 		"",
 		"Options:",
@@ -206,8 +206,8 @@ func taskHelpText() string {
 		"  --mode <name>       Exec mode preset to apply",
 		"  --self-correct      Enable the post-edit verify-and-correct loop",
 		"  --binary <path>     Path to the `pvyai` binary (required unless --dry-run)",
-		"  --version <v>       Record the ZERO version (default: $PVYAI_BENCH_VERSION)",
-		"  --commit <sha>      Record the ZERO commit (default: $PVYAI_BENCH_COMMIT)",
+		"  --version <v>       Record the PVYai version (default: $PVYAI_BENCH_VERSION)",
+		"  --commit <sha>      Record the PVYai commit (default: $PVYAI_BENCH_COMMIT)",
 		"  --output <path>     Write the JSON result to path",
 		"  --json              Print only the JSON result",
 		"  --dry-run           Record every task as skipped without invoking the agent",
