@@ -166,11 +166,11 @@ jobs:
           version="$(node -p "require('./package.json').version")"
           base="https://github.com/${GITHUB_REPOSITORY}/releases/download/v${version}"
           for asset in \
-            pvyai-v${version}-linux-x64.tar.gz" \
-            pvyai-v${version}-linux-arm64.tar.gz" \
-            pvyai-v${version}-macos-x64.tar.gz" \
-            pvyai-v${version}-macos-arm64.tar.gz" \
-            pvyai-v${version}-windows-x64.zip"; do
+            pvyai-v${version}-linux-x64.tar.gz \
+            pvyai-v${version}-linux-arm64.tar.gz \
+            pvyai-v${version}-macos-x64.tar.gz \
+            pvyai-v${version}-macos-arm64.tar.gz \
+            pvyai-v${version}-windows-x64.zip; do
             for url in "${base}/${asset}" "${base}/${asset}.sha256"; do
               if ! curl -fsSLI -o /dev/null "$url"; then
                 echo "::error::${url} is not publicly downloadable — npm postinstall would fail. Is the repo public and are all assets uploaded?" >&2
