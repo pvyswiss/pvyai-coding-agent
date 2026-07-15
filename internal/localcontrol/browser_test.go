@@ -131,7 +131,7 @@ func TestMergeEnvReplacesPathCaseInsensitivelyOnWindows(t *testing.T) {
 	if runtime.GOOS != "windows" {
 		t.Skip("Windows env keys are case-insensitive")
 	}
-	env := mergeEnv([]string{`Path=C:\Windows`, "PVYAI=1"}, []string{`PATH=C:\Pvyai`})
+	env := mergeEnv([]string{`Path=C:\Windows`, "PVYAI=1"}, []string{`PATH=C:\PVYai`})
 	pathCount := 0
 	for _, item := range env {
 		key, value, ok := strings.Cut(item, "=")

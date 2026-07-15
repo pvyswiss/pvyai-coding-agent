@@ -483,9 +483,9 @@ func TestActivateIsDeterministic(t *testing.T) {
 			t.Fatalf("hook order not deterministic at %d: %q vs %q", i, first.Hooks[i].ID, second.Hooks[i].ID)
 		}
 	}
-	// Deterministic order is by plugin ID then extension name: zero.a before zero.b.
-	if first.Hooks[0].ID != "zero.a.ha" {
-		t.Fatalf("first hook id = %q, want zero.a.ha (deterministic by plugin then name)", first.Hooks[0].ID)
+	// Deterministic order is by plugin ID then extension name: pvyai.a before pvyai.b.
+	if first.Hooks[0].ID != "pvyai.a.ha" {
+		t.Fatalf("first hook id = %q, want pvyai.a.ha (deterministic by plugin then name)", first.Hooks[0].ID)
 	}
 }
 
