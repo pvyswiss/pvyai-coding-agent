@@ -180,6 +180,26 @@ func tuiSessionTitle(prompt string) string {
 	return title
 }
 
+func (m model) handleRenameCommand(args string) (model, string) {
+	title := strings.TrimSpace(args)
+	if title == "" {
+		return m, "Rename\nusage: /rename <title>"
+	}
+	if m.activeSession.SessionID == "" {
+		return m, "Rename\nno active session to rename."
+	}
+	updated, err := m.sessionStore.UpdateTitle(m.activeSession.SessionID, title)
+	if err != nil {
+		return m, "Rename\nerror: " + err.Error()
+	}
+	m.activeSession = updated
+	if m.titledSessions == nil {
+		m.titledSessions = map[string]bool{}
+	}
+	m.titledSessions[m.activeSession.SessionID] = true
+	return m, "Session renamed to: " + updated.Title
+}
+
 func (m model) handleResumeCommand(args string) (model, string) {
 	args = strings.TrimSpace(args)
 	if args == "" {

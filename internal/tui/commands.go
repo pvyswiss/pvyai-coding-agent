@@ -45,6 +45,7 @@ const (
 	commandEdit
 	commandCopy
 	commandExport
+	commandRename
 	commandNew
 	commandSkills
 	commandUnknown
@@ -204,6 +205,13 @@ var commandDefinitions = []commandDefinition{
 		group:       commandGroupSession,
 		description: "Generate concise titles for resumable sessions.",
 		kind:        commandRetitle,
+	},
+	{
+		name:        "/rename",
+		usage:       "/rename <title>",
+		group:       commandGroupSession,
+		description: "Set a custom title for the current session.",
+		kind:        commandRename,
 	},
 	{
 		name:        "/spec",

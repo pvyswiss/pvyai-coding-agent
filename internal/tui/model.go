@@ -3977,6 +3977,11 @@ func (m model) handleSubmit() (tea.Model, tea.Cmd) {
 			m.transcript = reduceTranscript(m.transcript, transcriptAction{kind: actionAppendSystem, text: text})
 		}
 		return m, retitleCmd
+	case commandRename:
+		text := ""
+		m, text = m.handleRenameCommand(command.text)
+		m.transcript = reduceTranscript(m.transcript, transcriptAction{kind: actionAppendSystem, text: text})
+		return m, nil
 	case commandSpec:
 		return m.handleSpecCommand(command.text)
 	case commandInit:
