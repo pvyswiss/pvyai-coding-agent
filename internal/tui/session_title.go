@@ -31,7 +31,7 @@ const (
 // titleTrimCutset is stripped from both ends of a model-produced title:
 // whitespace, surrounding quotes/backticks, markdown emphasis/heading marks, and
 // trailing sentence punctuation. ` is a backtick.
-const titleTrimCutset = " \t\r\n\"'`*#.,:;!"
+const titleTrimCutset = " \t\r\n\"'`*#.,:;!<>"
 
 const sessionTitleSystemPrompt = "You write a short, specific title for a coding-assistant conversation so a user can tell it apart from others in a list. " +
 	"Reply with ONLY the title and nothing else: 3 to 6 words, Title Case, naming the concrete task or topic. " +
@@ -85,10 +85,11 @@ func sessionTitleDigest(events []sessions.Event) string {
 				if !add("User", content) {
 					return strings.TrimSpace(builder.String())
 				}
-			case "assistant":
-				if !add("Assistant", content) {
-					return strings.TrimSpace(builder.String())
-				}
+		case "assistant":
+			content = stripThinkTags(content)
+			if !add("Assistant", content) {
+				return strings.TrimSpace(builder.String())
+			}
 			}
 		case sessions.EventToolCall:
 			if name := strings.TrimSpace(payloadString(payload, "name")); name != "" {
@@ -160,7 +161,7 @@ func generateSessionTitle(ctx context.Context, provider pvyruntime.Provider, dig
 	if collected.Error != "" {
 		return "", errors.New(collected.Error)
 	}
-	title := cleanGeneratedTitle(collected.Text)
+	title := cleanGeneratedTitle(stripThinkTags(collected.Text))
 	if title == "" {
 		return "", errors.New("model returned no usable title")
 	}
@@ -218,10 +219,15 @@ func firstUserMessageTitle(events []sessions.Event) string {
 // sessionTitleIsAuto reports whether a session still carries its default
 // first-message title (so it is worth replacing with a model-generated one). A
 // title the model already produced differs from the first message and is left
-// alone.
+// alone. A tag-like title (e.g. "thinking") is garbage from a failed model
+// title generation where the LLM echoed a think tag — treat it as auto so
+// /retitle and auto-title can fix it.
 func sessionTitleIsAuto(currentTitle string, events []sessions.Event) bool {
 	trimmed := strings.TrimSpace(currentTitle)
 	if trimmed == "" || trimmed == tuiSessionTitle("") {
+		return true
+	}
+	if isTagLikeTitle(trimmed) {
 		return true
 	}
 	if first := firstUserMessageTitle(events); first != "" && trimmed == first {
@@ -339,4 +345,44 @@ func (m model) handleSessionTitleGenerated(msg sessionTitleGeneratedMsg) (model,
 	summary := fmt.Sprintf("Generated titles for %d of %d session(s). Open /resume to see them.", m.retitleOK, m.retitleTotal)
 	m.transcript = appendTranscriptRow(m.transcript, transcriptRow{kind: rowSystem, tool: "sessions", text: summary})
 	return m, nil
+}
+
+// stripThinkTags removes <think>...</think> blocks from content. Some providers
+// (e.g. Qwen 3.6 via PVY.ai Platform) store the raw think tags in session
+// event content. If left in, they pollute the title digest and the LLM may
+// echo "thinking" as the generated title.
+func stripThinkTags(content string) string {
+	const openTag = "<think>"
+	const closeTag = "</think>"
+	for {
+		start := strings.Index(content, openTag)
+		if start == -1 {
+			break
+		}
+		end := strings.Index(content[start:], closeTag)
+		if end == -1 {
+			content = content[:start]
+			break
+		}
+		content = content[:start] + content[start+end+len(closeTag):]
+	}
+	return strings.TrimSpace(content)
+}
+
+// isTagLikeTitle reports whether a title is an HTML/XML tag fragment (e.g.
+// "thinking", "/think>") — garbage from a failed model title generation where
+// the LLM echoed a think tag instead of writing a real title. Also catches
+// the bare inner word left after angle-bracket trimming (e.g. "think").
+func isTagLikeTitle(title string) bool {
+	if strings.HasPrefix(title, "<") || strings.HasSuffix(title, ">") {
+		inner := strings.Trim(title, "<>/ ")
+		if inner != "" && !strings.ContainsAny(inner, " \t\n") {
+			return true
+		}
+	}
+	switch strings.ToLower(title) {
+	case "think", "thinking", "reasoning", "reflection":
+		return true
+	}
+	return false
 }
