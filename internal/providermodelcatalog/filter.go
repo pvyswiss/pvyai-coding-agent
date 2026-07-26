@@ -31,7 +31,7 @@ func LooksLikeCodingModelID(id string) bool {
 		"mistral", "codestral", "devstral", "magistral", "ministral",
 		"grok", "glm", "command", "nemotron", "mixtral", "coder",
 		"code", "chat", "instruct", "reasoner", "reasoning", "mimo",
-		"maverick", "scout", "bankr",
+		"maverick", "scout", "bankr", "pvy",
 	} {
 		if strings.Contains(normalized, term) {
 			return true
