@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html) once the first release is
 tagged. Until then, source builds report the version `dev`.
 
+## [0.3.3](https://github.com/pvyswiss/pvyai-coding-agent/compare/v0.3.2...v0.3.3) (2026-07-26)
+
+
+### Bug Fixes
+
+* gofmt session_title.go ([4355a53](https://github.com/pvyswiss/pvyai-coding-agent/commit/4355a536e158f174f0798e4927ad0e729bcf8a71))
+
 ## 0.1.0 (2026-07-02)
 
 
