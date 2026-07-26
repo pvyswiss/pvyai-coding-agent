@@ -85,11 +85,11 @@ func sessionTitleDigest(events []sessions.Event) string {
 				if !add("User", content) {
 					return strings.TrimSpace(builder.String())
 				}
-		case "assistant":
-			content = stripThinkTags(content)
-			if !add("Assistant", content) {
-				return strings.TrimSpace(builder.String())
-			}
+			case "assistant":
+				content = stripThinkTags(content)
+				if !add("Assistant", content) {
+					return strings.TrimSpace(builder.String())
+				}
 			}
 		case sessions.EventToolCall:
 			if name := strings.TrimSpace(payloadString(payload, "name")); name != "" {
