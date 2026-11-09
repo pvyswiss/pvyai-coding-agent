@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"charm.land/lipgloss/v2"
@@ -46,12 +47,15 @@ type PrService struct {
 	listeners []func(PrState)
 	cwd       string
 	run       prCommandRunner
+
+	// detectInFlight prevents overlapping detect goroutines.
+	detectInFlight atomic.Bool
 }
 
 type prCommandRunner func(context.Context, string, string, ...string) (string, error)
 
-const prRefreshInterval = 60 * time.Second
-const prCommandTimeout = 8 * time.Second
+const prRefreshInterval = 5 * time.Minute
+const prCommandTimeout = 10 * time.Second
 
 func NewPrService(cwdValues ...string) *PrService {
 	cwd := ""
@@ -102,10 +106,16 @@ func (s *PrService) Refresh() {
 	if s == nil {
 		return
 	}
+	// Single-worker guard: skip if a detect goroutine is already running.
+	if s.detectInFlight.Load() {
+		return
+	}
+	s.detectInFlight.Store(true)
 	if s.GetState().Status == PrIdle {
 		s.setState(PrState{Status: PrLoading})
 	}
 	go func() {
+		defer s.detectInFlight.Store(false)
 		ctx, cancel := context.WithTimeout(context.Background(), prCommandTimeout)
 		defer cancel()
 		s.setState(s.detect(ctx))
@@ -320,6 +330,12 @@ func defaultPRCommandRunner(ctx context.Context, cwd string, name string, args .
 		return "", fmt.Errorf("%s: %s", name, detail)
 	}
 	return stdout.String(), nil
+}
+
+// commandExists checks whether a binary is on PATH without spawning a subprocess.
+func commandExists(name string) bool {
+	_, err := exec.LookPath(name)
+	return err == nil
 }
 
 type Color string

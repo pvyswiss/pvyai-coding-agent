@@ -154,6 +154,15 @@ type model struct {
 	composer              composerState
 	composerActive        bool
 	composerCursorVisible bool
+	// lastBlinkSeen records the last time a composerBlinkMsg was processed.
+	// The watchdog uses this to detect a dead blink chain.
+	lastBlinkSeen time.Time
+	// lastInputSeen records the last time a KeyMsg or MouseMsg was processed.
+	// The watchdog uses this to gate RequestWindowSize: only fire when the user
+	// has been idle (no flicker during active use). On the first input after a
+	// long idle gap, an instant RequestWindowSize is appended for immediate
+	// alt-screen recovery (the "TUI invisible after backgrounding" fix).
+	lastInputSeen         time.Time
 	composerPastePreviews []composerPastePreview
 	composerSelection     composerSelectionState
 	// plan holds the sticky plan panel state (steps, expansion, timings)
@@ -848,10 +857,26 @@ const (
 // composerCursorBlinkInterval is the on/off period of the composer text cursor.
 const composerCursorBlinkInterval = 530 * time.Millisecond
 
+// watchdogTickInterval is the self-healing keepalive interval. Every tick the
+// watchdog forces a frame and checks whether the blink chain is alive. If the
+// blink chain has stalled (no composerBlinkMsg received within 2× its interval),
+// the watchdog re-arms it. This prevents the "stale after 30 min idle" bug where
+// a dead blink chain leaves the screen permanently static with no recovery path.
+const watchdogTickInterval = 30 * time.Second
+
+// watchdogBlinkGrace is how long without a composerBlinkMsg before the watchdog
+// re-arms the blink chain. 2× the blink interval (~1.06s) gives one missed
+// tick of slack before intervention.
+const watchdogBlinkGrace = 2 * composerCursorBlinkInterval
+
 // composerBlinkMsg toggles the composer cursor's visibility each tick. The custom
 // composer render draws its own cursor (not textinput's), so it drives its own
 // blink rather than relying on textinput.Blink.
 type composerBlinkMsg struct{}
+
+// watchdogTickMsg is the self-healing keepalive. It forces a frame render and
+// re-arms the blink chain if it has stalled. See watchdogTickInterval.
+type watchdogTickMsg struct{ time.Time }
 
 func composerBlinkCmd() tea.Cmd {
 	return tea.Tick(composerCursorBlinkInterval, func(time.Time) tea.Msg {
@@ -859,8 +884,14 @@ func composerBlinkCmd() tea.Cmd {
 	})
 }
 
+func watchdogTickCmd() tea.Cmd {
+	return tea.Tick(watchdogTickInterval, func(t time.Time) tea.Msg {
+		return watchdogTickMsg{Time: t}
+	})
+}
+
 func (m model) Init() tea.Cmd {
-	cmds := []tea.Cmd{textinput.Blink, composerBlinkCmd()}
+	cmds := []tea.Cmd{textinput.Blink, composerBlinkCmd(), watchdogTickCmd()}
 	// Bubble Tea documents an initial WindowSizeMsg as delivered automatically
 	// on program start, so m.height/m.width are normally set before the first
 	// render. But that's the terminal proactively pushing a size — if it's
@@ -1005,6 +1036,26 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.printInFlight = false
 		return m.drainFlushQueue()
 	}
+	// Track input activity for the watchdog's gated repaint. KeyMsg and MouseMsg
+	// are the only user-initiated events; when they stop arriving for >30s the
+	// watchdog fires RequestWindowSize to recover the alt-screen after
+	// backgrounding. On the first input after a long idle gap, we also fire an
+	// instant RequestWindowSize for immediate recovery.
+	var instantRepaint tea.Cmd
+	if km, ok := msg.(tea.KeyMsg); ok {
+		idleGap := m.now().Sub(m.lastInputSeen)
+		m.lastInputSeen = m.now()
+		if idleGap > watchdogTickInterval {
+			instantRepaint = tea.RequestWindowSize
+		}
+		_ = km
+	} else if _, ok := msg.(tea.MouseMsg); ok {
+		idleGap := m.now().Sub(m.lastInputSeen)
+		m.lastInputSeen = m.now()
+		if idleGap > watchdogTickInterval {
+			instantRepaint = tea.RequestWindowSize
+		}
+	}
 	next, cmd := m.updateModel(msg)
 	nm, ok := next.(model)
 	if !ok {
@@ -1013,7 +1064,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	nm = nm.syncChatScroll()
 	nm, mouseCmd := nm.syncMouseCapture()
 	nm, flushCmd := nm.settleTranscript()
-	return nm, batchCommands(cmd, mouseCmd, flushCmd)
+	return nm, batchCommands(cmd, mouseCmd, flushCmd, instantRepaint)
 }
 
 func batchCommands(cmds ...tea.Cmd) tea.Cmd {
@@ -1037,7 +1088,24 @@ func (m model) updateModel(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case composerBlinkMsg:
 		m.composerCursorVisible = !m.composerCursorVisible
+		m.lastBlinkSeen = m.now()
 		return m, composerBlinkCmd()
+	case watchdogTickMsg:
+		var cmds []tea.Cmd
+		cmds = append(cmds, watchdogTickCmd())
+		// Re-arm the blink chain if it appears dead (no blink in 2× interval).
+		if m.now().Sub(m.lastBlinkSeen) > watchdogBlinkGrace {
+			cmds = append(cmds, composerBlinkCmd())
+		}
+		// Gated full repaint: only request a WindowSizeMsg (which triggers a
+		// complete layout recalculation and alt-screen buffer repaint) when the
+		// user has been idle for >30s. This avoids flicker during active use
+		// while recovering the alt-screen after terminal backgrounding (the
+		// "TUI becomes invisible after ~31 min" bug caused by macOS App Nap).
+		if m.now().Sub(m.lastInputSeen) > watchdogTickInterval {
+			cmds = append(cmds, tea.RequestWindowSize)
+		}
+		return m, tea.Batch(cmds...)
 	case tea.BackgroundColorMsg:
 		// Terminal background-color reply (from Init's RequestBackgroundColor). In
 		// auto mode it selects light vs dark; applyTheme repaints (clears the render
