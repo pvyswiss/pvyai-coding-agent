@@ -1042,19 +1042,22 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// backgrounding. On the first input after a long idle gap, we also fire an
 	// instant RequestWindowSize for immediate recovery.
 	var instantRepaint tea.Cmd
-	if km, ok := msg.(tea.KeyMsg); ok {
-		idleGap := m.now().Sub(m.lastInputSeen)
-		m.lastInputSeen = m.now()
-		if idleGap > watchdogTickInterval {
-			instantRepaint = tea.RequestWindowSize
+	if _, ok := msg.(tea.KeyMsg); ok {
+		if !m.lastInputSeen.IsZero() {
+			idleGap := m.now().Sub(m.lastInputSeen)
+			if idleGap > watchdogTickInterval {
+				instantRepaint = tea.RequestWindowSize
+			}
 		}
-		_ = km
+		m.lastInputSeen = m.now()
 	} else if _, ok := msg.(tea.MouseMsg); ok {
-		idleGap := m.now().Sub(m.lastInputSeen)
-		m.lastInputSeen = m.now()
-		if idleGap > watchdogTickInterval {
-			instantRepaint = tea.RequestWindowSize
+		if !m.lastInputSeen.IsZero() {
+			idleGap := m.now().Sub(m.lastInputSeen)
+			if idleGap > watchdogTickInterval {
+				instantRepaint = tea.RequestWindowSize
+			}
 		}
+		m.lastInputSeen = m.now()
 	}
 	next, cmd := m.updateModel(msg)
 	nm, ok := next.(model)
