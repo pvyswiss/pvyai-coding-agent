@@ -1041,23 +1041,27 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// watchdog fires RequestWindowSize to recover the alt-screen after
 	// backgrounding. On the first input after a long idle gap, we also fire an
 	// instant RequestWindowSize for immediate recovery.
+	//
+	// Uses time.Now() (wall clock) instead of m.now() so it doesn't interfere
+	// with tests that mock m.now() for agent-run elapsed-time tracking.
 	var instantRepaint tea.Cmd
+	now := time.Now()
 	if _, ok := msg.(tea.KeyMsg); ok {
 		if !m.lastInputSeen.IsZero() {
-			idleGap := m.now().Sub(m.lastInputSeen)
+			idleGap := now.Sub(m.lastInputSeen)
 			if idleGap > watchdogTickInterval {
 				instantRepaint = tea.RequestWindowSize
 			}
 		}
-		m.lastInputSeen = m.now()
+		m.lastInputSeen = now
 	} else if _, ok := msg.(tea.MouseMsg); ok {
 		if !m.lastInputSeen.IsZero() {
-			idleGap := m.now().Sub(m.lastInputSeen)
+			idleGap := now.Sub(m.lastInputSeen)
 			if idleGap > watchdogTickInterval {
 				instantRepaint = tea.RequestWindowSize
 			}
 		}
-		m.lastInputSeen = m.now()
+		m.lastInputSeen = now
 	}
 	next, cmd := m.updateModel(msg)
 	nm, ok := next.(model)
