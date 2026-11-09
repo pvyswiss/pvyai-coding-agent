@@ -45,6 +45,10 @@ func IsKnownNonCodingModelID(id string) bool {
 	if normalized == "" {
 		return false
 	}
+	// PVYai translator presets are coding-agent-capable despite containing "translate".
+	if strings.HasPrefix(normalized, "pvy-translate") {
+		return false
+	}
 	for _, term := range []string{
 		"audio", "dall-e", "deep-research", "embedding", "image",
 		"moderation", "realtime", "rerank", "sora", "speech",
@@ -61,7 +65,8 @@ func hasCodingTag(tags []string) bool {
 	for _, tag := range tags {
 		normalized := strings.ToLower(strings.TrimSpace(tag))
 		switch normalized {
-		case "agentic", "chat", "code", "coder", "coding", "instruct", "reasoning", "tools":
+		case "agentic", "chat", "code", "coder", "coding", "instruct", "reasoning", "tools",
+			"researcher", "translator", "pdf2md", "architect", "lead":
 			return true
 		}
 	}
